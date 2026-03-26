@@ -1,0 +1,484 @@
+<!-- ALR-01: Alert Command Center -->
+<div class="page-header">
+    <h1>Alert Command Center</h1>
+    <div class="page-header-actions">
+        <button class="btn btn-secondary"><i class="fas fa-download"></i> Export</button>
+        <button class="btn btn-primary"><i class="fas fa-bell"></i> Mark All Read</button>
+    </div>
+</div>
+
+<!-- Metrics Bar -->
+<div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+    <div style="background:var(--bg-primary);border-radius:10px;border:1px solid var(--border-color);padding:14px 18px;flex:1;min-width:130px;">
+        <div style="font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">Critical Open</div>
+        <div style="font-size:24px;font-weight:800;color:#DC2626;line-height:1.1;">5</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Requires immediate action</div>
+    </div>
+    <div style="background:var(--bg-primary);border-radius:10px;border:1px solid var(--border-color);padding:14px 18px;flex:1;min-width:130px;">
+        <div style="font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">Total Open</div>
+        <div style="font-size:24px;font-weight:800;color:#F59E0B;line-height:1.1;">10</div>
+    </div>
+    <div style="background:var(--bg-primary);border-radius:10px;border:1px solid var(--border-color);padding:14px 18px;flex:1;min-width:130px;">
+        <div style="font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">MTTA</div>
+        <div style="font-size:24px;font-weight:800;color:#22C55E;line-height:1.1;">4.2 min</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Target: 5 min</div>
+    </div>
+    <div style="background:var(--bg-primary);border-radius:10px;border:1px solid var(--border-color);padding:14px 18px;flex:1;min-width:130px;">
+        <div style="font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">MTTR</div>
+        <div style="font-size:24px;font-weight:800;color:#22C55E;line-height:1.1;">22 min</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Target: 30 min</div>
+    </div>
+    <div style="background:var(--bg-primary);border-radius:10px;border:1px solid var(--border-color);padding:14px 18px;flex:1;min-width:130px;">
+        <div style="font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">Resolved Today</div>
+        <div style="font-size:24px;font-weight:800;color:#22C55E;line-height:1.1;">7</div>
+    </div>
+    <div style="background:var(--bg-primary);border-radius:10px;border:1px solid var(--border-color);padding:14px 18px;flex:1;min-width:130px;">
+        <div style="font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">SLA Breached</div>
+        <div style="font-size:24px;font-weight:800;color:#DC2626;line-height:1.1;">1</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">ALT-260320-004</div>
+    </div>
+</div>
+
+<!-- Critical Alerts Banner -->
+<div class="detail-section" style="border-left:4px solid #DC2626;margin-bottom:16px;">
+    <div class="section-header" style="background:#fef2f2;">
+        <h3 style="color:#DC2626;"><i class="fas fa-exclamation-circle" style="margin-right:6px;"></i> Critical Alerts — Requires Immediate Action</h3>
+        <span style="font-size:11px;color:#dc2626;font-weight:600;">5 active</span>
+    </div>
+    <div class="section-body" style="padding:0;">
+
+        <!-- Critical 1: Compound Alert -->
+        <div style="padding:14px 16px;border-bottom:1px solid var(--border-color);display:flex;align-items:flex-start;gap:12px;cursor:pointer;" onclick="navigateTo('alert-detail')">
+            <div style="width:36px;height:36px;border-radius:8px;background:#fee2e2;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i class="fas fa-bolt" style="color:#DC2626;font-size:14px;"></i>
+            </div>
+            <div style="flex:1;min-width:0;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                    <div style="font-weight:700;font-size:13px;color:#DC2626;">⚠ COMPOUND: Driver Vikram S. — 4 alerts in 48 hrs</div>
+                    <span style="font-size:11px;color:var(--text-muted);">Just now</span>
+                </div>
+                <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                    Pattern detected: Loss-making trip + Fuel anomaly + Frequent cash withdrawals + Expense overrun. Financial irregularity cluster flagged for investigation.
+                </div>
+                <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+                    <span class="status-badge" style="background:#f5f3ff;color:#7c3aed;font-size:10px;">👤 Driver</span>
+                    <span class="status-badge" style="background:#fef2f2;color:#dc2626;font-size:10px;">🚨 Critical</span>
+                    <span class="status-badge" style="background:#f5f3ff;color:#7c3aed;font-size:10px;">⚡ Compound · 4 linked</span>
+                    <span style="font-size:10px;color:var(--text-muted);">₹31,000 impact</span>
+                </div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;">
+                <div style="display:flex;align-items:center;gap:5px;">
+                    <div style="width:22px;height:22px;border-radius:50%;background:#f0e7fe;color:#7c3aed;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;">PS</div>
+                    <span style="font-size:10px;color:var(--text-secondary);">Owner</span>
+                </div>
+                <div style="font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;color:#F59E0B;">SLA: 30 min</div>
+            </div>
+        </div>
+
+        <!-- Critical 2: Loss-making trip -->
+        <div style="padding:14px 16px;border-bottom:1px solid var(--border-color);display:flex;align-items:flex-start;gap:12px;cursor:pointer;" onclick="navigateTo('alert-detail')">
+            <div style="width:36px;height:36px;border-radius:8px;background:#fef2f2;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i class="fas fa-rupee-sign" style="color:#DC2626;font-size:14px;"></i>
+            </div>
+            <div style="flex:1;min-width:0;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                    <div style="font-weight:700;font-size:13px;color:#DC2626;">LOSS-MAKING TRIP — Estimated Loss ₹8,200</div>
+                    <span style="font-size:11px;color:var(--text-muted);">3 min ago</span>
+                </div>
+                <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                    <a href="#" onclick="event.stopPropagation();navigateTo('trip-detail')">TRP-0142</a> (Mumbai → Kolkata) — Expenses ₹1,20,200 have exceeded revenue ₹1,12,000. Fuel cost ₹68,400 is 42% above route average.
+                </div>
+                <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+                    <span class="status-badge" style="background:#ecfdf3;color:#027a48;font-size:10px;">💰 Financial</span>
+                    <span class="status-badge" style="background:#fef2f2;color:#dc2626;font-size:10px;">🚨 Critical</span>
+                    <span class="status-badge info" style="font-size:10px;">TRP-0142</span>
+                    <span style="font-size:10px;color:var(--text-muted);">MH04AB1234 · Vikram S.</span>
+                </div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;">
+                <div style="display:flex;align-items:center;gap:5px;">
+                    <div style="width:22px;height:22px;border-radius:50%;background:#dbeafe;color:#1d4ed8;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;">PM</div>
+                    <span style="font-size:10px;color:var(--text-secondary);">Priya Menon</span>
+                </div>
+                <div style="font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;color:#F59E0B;">SLA: 27 min</div>
+            </div>
+        </div>
+
+        <!-- Critical 3: Expense overrun -->
+        <div style="padding:14px 16px;border-bottom:1px solid var(--border-color);display:flex;align-items:flex-start;gap:12px;cursor:pointer;" onclick="navigateTo('alert-detail')">
+            <div style="width:36px;height:36px;border-radius:8px;background:#fef2f2;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i class="fas fa-chart-line" style="color:#DC2626;font-size:14px;"></i>
+            </div>
+            <div style="flex:1;min-width:0;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                    <div style="font-weight:700;font-size:13px;color:#DC2626;">EXPENSE OVERRUN — 38% above estimate</div>
+                    <span style="font-size:11px;color:var(--text-muted);">12 min ago</span>
+                </div>
+                <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                    <a href="#" onclick="event.stopPropagation();navigateTo('trip-detail')">TRP-0139</a> (Delhi → Jaipur) — Actual ₹38,400 vs Estimated ₹27,800. Major overrun in Diesel (₹12,600 over) and Misc (₹4,200 unreceipted).
+                </div>
+                <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+                    <span class="status-badge" style="background:#ecfdf3;color:#027a48;font-size:10px;">💰 Financial</span>
+                    <span class="status-badge" style="background:#fef2f2;color:#dc2626;font-size:10px;">🚨 Critical</span>
+                    <span class="status-badge info" style="font-size:10px;">TRP-0139</span>
+                    <span style="font-size:10px;color:var(--text-muted);">DL01EF9012 · Manoj K.</span>
+                </div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;">
+                <div style="display:flex;align-items:center;gap:5px;">
+                    <div style="width:22px;height:22px;border-radius:50%;background:#dcfce7;color:#15803d;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;">RG</div>
+                    <span style="font-size:10px;color:var(--text-secondary);">Rahul Gupta</span>
+                </div>
+                <div style="font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;color:#DC2626;">SLA: 18 min</div>
+            </div>
+        </div>
+
+        <!-- Critical 4: Route deviation -->
+        <div style="padding:14px 16px;border-bottom:1px solid var(--border-color);display:flex;align-items:flex-start;gap:12px;cursor:pointer;" onclick="navigateTo('alert-detail')">
+            <div style="width:36px;height:36px;border-radius:8px;background:#fef2f2;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i class="fas fa-map-marked-alt" style="color:#DC2626;font-size:14px;"></i>
+            </div>
+            <div style="flex:1;min-width:0;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                    <div style="font-weight:700;font-size:13px;color:#DC2626;">ROUTE DEVIATION — 85 km off-route detected</div>
+                    <span style="font-size:11px;color:var(--text-muted);">28 min ago</span>
+                </div>
+                <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                    <a href="#" onclick="event.stopPropagation();navigateTo('trip-detail')">TRP-0141</a> (Mumbai → Pune) — Vehicle MH12EF9012 deviated near Lonavala. Last GPS: 18.7548°N, 73.4013°E. (14 occurrences)
+                </div>
+                <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+                    <span class="status-badge" style="background:#fff7ed;color:#ea580c;font-size:10px;">🚛 Operational</span>
+                    <span class="status-badge" style="background:#fef2f2;color:#dc2626;font-size:10px;">🚨 Critical</span>
+                    <span class="status-badge info" style="font-size:10px;">TRP-0141</span>
+                    <span class="status-badge active" style="font-size:10px;">Acknowledged</span>
+                    <span style="font-size:10px;color:var(--text-muted);">(14 occurrences)</span>
+                </div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;">
+                <div style="display:flex;align-items:center;gap:5px;">
+                    <div style="width:22px;height:22px;border-radius:50%;background:#fef3c7;color:#92400e;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;">DO</div>
+                    <span style="font-size:10px;color:var(--text-secondary);">Dispatch Ops</span>
+                </div>
+                <div style="font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;color:#DC2626;">SLA: 2 min</div>
+            </div>
+        </div>
+
+        <!-- Critical 5: Insurance expired -->
+        <div style="padding:14px 16px;display:flex;align-items:flex-start;gap:12px;cursor:pointer;" onclick="navigateTo('alert-detail')">
+            <div style="width:36px;height:36px;border-radius:8px;background:#fef2f2;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i class="fas fa-shield-alt" style="color:#DC2626;font-size:14px;"></i>
+            </div>
+            <div style="flex:1;min-width:0;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                    <div style="font-weight:700;font-size:13px;color:#DC2626;">INSURANCE EXPIRED — Vehicle non-compliant</div>
+                    <span style="font-size:11px;color:var(--text-muted);">1 hr ago</span>
+                </div>
+                <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                    Vehicle MH04CD5678 insurance (ICICI Lombard #LB-9291) expired today at midnight while in transit on Mumbai → Chennai route.
+                </div>
+                <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+                    <span class="status-badge" style="background:#f0fdf4;color:#059669;font-size:10px;">📋 Compliance</span>
+                    <span class="status-badge" style="background:#fef2f2;color:#dc2626;font-size:10px;">🚨 Critical</span>
+                    <span class="status-badge info" style="font-size:10px;">TRP-0138</span>
+                    <span style="font-size:10px;color:var(--text-muted);">MH04CD5678 · Sanjay P.</span>
+                </div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;">
+                <div style="display:flex;align-items:center;gap:5px;">
+                    <div style="width:22px;height:22px;border-radius:50%;background:#e0f2fe;color:#0369a1;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;">CM</div>
+                    <span style="font-size:10px;color:var(--text-secondary);">Compliance Mgr</span>
+                </div>
+                <div style="font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;color:#DC2626;">SLA: BREACHED</div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Alert Category Tabs -->
+<div class="tabs" style="margin-bottom:16px;">
+    <div class="tab active">🔔 All Alerts <span style="background:#6366f1;color:#fff;font-size:10px;padding:2px 6px;border-radius:10px;margin-left:4px;">13</span></div>
+    <div class="tab">💰 Financial <span style="background:#dc2626;color:#fff;font-size:10px;padding:2px 6px;border-radius:10px;margin-left:4px;">5</span></div>
+    <div class="tab">🚛 Operational <span style="background:#f59e0b;color:#000;font-size:10px;padding:2px 6px;border-radius:10px;margin-left:4px;">3</span></div>
+    <div class="tab">👤 Driver <span style="background:#8b5cf6;color:#fff;font-size:10px;padding:2px 6px;border-radius:10px;margin-left:4px;">3</span></div>
+    <div class="tab">📋 Compliance <span style="background:#0891b2;color:#fff;font-size:10px;padding:2px 6px;border-radius:10px;margin-left:4px;">2</span></div>
+</div>
+
+<!-- Alerts Table -->
+<div class="table-container">
+    <div class="table-toolbar">
+        <div class="search-input"><i class="fas fa-search" style="color:var(--text-muted)"></i><input type="text" placeholder="Search alerts..."></div>
+        <div class="filter-btn">Severity ▾</div>
+        <div class="filter-btn">Status ▾</div>
+        <div class="filter-btn">Assignee ▾</div>
+        <div class="pagination-info">1 – 13 of 13</div>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width:30px;"></th>
+                <th>Alert</th>
+                <th>Trip</th>
+                <th>Category</th>
+                <th>Severity</th>
+                <th>Assigned To</th>
+                <th>Triggered</th>
+                <th>SLA</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Compound alert row -->
+            <tr style="cursor:pointer;" onclick="navigateTo('alert-detail')">
+                <td>🔴</td>
+                <td>
+                    <div style="font-weight:600;font-size:12px;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">⚠ COMPOUND: Driver Vikram S. — 4 alerts in 48 hrs</div>
+                    <span style="font-size:9px;color:var(--text-muted);">⚡ Compound · 4 linked</span>
+                </td>
+                <td><a href="#" onclick="event.stopPropagation();navigateTo('trip-detail')" style="font-family:'JetBrains Mono',monospace;font-weight:600;font-size:12px;">TRP-0142</a></td>
+                <td><span class="status-badge" style="background:#f5f3ff;color:#7c3aed;font-size:10px;">Driver</span></td>
+                <td><span class="status-badge" style="background:#fef2f2;color:#dc2626;font-size:10px;">Critical</span></td>
+                <td>
+                    <div style="display:flex;align-items:center;gap:5px;">
+                        <div style="width:22px;height:22px;border-radius:50%;background:#f0e7fe;color:#7c3aed;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;">PS</div>
+                        <span style="font-size:11px;">Owner</span>
+                    </div>
+                </td>
+                <td style="font-size:12px;">Just now</td>
+                <td><span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#F59E0B;">30 min</span></td>
+                <td><span class="status-badge pending">Open</span></td>
+                <td><button class="btn-icon" onclick="event.stopPropagation();navigateTo('alert-detail')"><i class="fas fa-eye"></i></button></td>
+            </tr>
+            <!-- Loss-making trip -->
+            <tr style="cursor:pointer;" onclick="navigateTo('alert-detail')">
+                <td>🔴</td>
+                <td style="font-weight:600;font-size:12px;">LOSS-MAKING TRIP — Est. Loss ₹8,200</td>
+                <td><a href="#" onclick="event.stopPropagation();navigateTo('trip-detail')" style="font-family:'JetBrains Mono',monospace;font-weight:600;font-size:12px;">TRP-0142</a></td>
+                <td><span class="status-badge" style="background:#ecfdf3;color:#027a48;font-size:10px;">Financial</span></td>
+                <td><span class="status-badge" style="background:#fef2f2;color:#dc2626;font-size:10px;">Critical</span></td>
+                <td>
+                    <div style="display:flex;align-items:center;gap:5px;">
+                        <div style="width:22px;height:22px;border-radius:50%;background:#dbeafe;color:#1d4ed8;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;">PM</div>
+                        <span style="font-size:11px;">Priya Menon</span>
+                    </div>
+                </td>
+                <td style="font-size:12px;">3 min ago</td>
+                <td><span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#F59E0B;">27 min</span></td>
+                <td><span class="status-badge pending">Open</span></td>
+                <td><button class="btn-icon" onclick="event.stopPropagation();navigateTo('alert-detail')"><i class="fas fa-eye"></i></button></td>
+            </tr>
+            <!-- Expense overrun -->
+            <tr style="cursor:pointer;" onclick="navigateTo('alert-detail')">
+                <td>🔴</td>
+                <td style="font-weight:600;font-size:12px;">EXPENSE OVERRUN — 38% above estimate</td>
+                <td><a href="#" onclick="event.stopPropagation();navigateTo('trip-detail')" style="font-family:'JetBrains Mono',monospace;font-weight:600;font-size:12px;">TRP-0139</a></td>
+                <td><span class="status-badge" style="background:#ecfdf3;color:#027a48;font-size:10px;">Financial</span></td>
+                <td><span class="status-badge" style="background:#fef2f2;color:#dc2626;font-size:10px;">Critical</span></td>
+                <td>
+                    <div style="display:flex;align-items:center;gap:5px;">
+                        <div style="width:22px;height:22px;border-radius:50%;background:#dcfce7;color:#15803d;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;">RG</div>
+                        <span style="font-size:11px;">Rahul Gupta</span>
+                    </div>
+                </td>
+                <td style="font-size:12px;">12 min ago</td>
+                <td><span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#DC2626;">18 min</span></td>
+                <td><span class="status-badge pending">Open</span></td>
+                <td><button class="btn-icon" onclick="event.stopPropagation();navigateTo('alert-detail')"><i class="fas fa-eye"></i></button></td>
+            </tr>
+            <!-- Route deviation -->
+            <tr style="cursor:pointer;" onclick="navigateTo('alert-detail')">
+                <td>🔴</td>
+                <td>
+                    <div style="font-weight:600;font-size:12px;">ROUTE DEVIATION — 85 km off-route</div>
+                    <span style="font-size:9px;color:var(--text-muted);">(14x)</span>
+                </td>
+                <td><a href="#" onclick="event.stopPropagation();navigateTo('trip-detail')" style="font-family:'JetBrains Mono',monospace;font-weight:600;font-size:12px;">TRP-0141</a></td>
+                <td><span class="status-badge" style="background:#fff7ed;color:#ea580c;font-size:10px;">Operational</span></td>
+                <td><span class="status-badge" style="background:#fef2f2;color:#dc2626;font-size:10px;">Critical</span></td>
+                <td>
+                    <div style="display:flex;align-items:center;gap:5px;">
+                        <div style="width:22px;height:22px;border-radius:50%;background:#fef3c7;color:#92400e;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;">DO</div>
+                        <span style="font-size:11px;">Dispatch Ops</span>
+                    </div>
+                </td>
+                <td style="font-size:12px;">28 min ago</td>
+                <td><span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#DC2626;">2 min</span></td>
+                <td><span class="status-badge active">Acknowledged</span></td>
+                <td><button class="btn-icon" onclick="event.stopPropagation();navigateTo('alert-detail')"><i class="fas fa-eye"></i></button></td>
+            </tr>
+            <!-- Insurance expired -->
+            <tr style="cursor:pointer;" onclick="navigateTo('alert-detail')">
+                <td>🔴</td>
+                <td style="font-weight:600;font-size:12px;">INSURANCE EXPIRED — Vehicle non-compliant</td>
+                <td><a href="#" onclick="event.stopPropagation();navigateTo('trip-detail')" style="font-family:'JetBrains Mono',monospace;font-weight:600;font-size:12px;">TRP-0138</a></td>
+                <td><span class="status-badge" style="background:#f0fdf4;color:#059669;font-size:10px;">Compliance</span></td>
+                <td><span class="status-badge" style="background:#fef2f2;color:#dc2626;font-size:10px;">Critical</span></td>
+                <td>
+                    <div style="display:flex;align-items:center;gap:5px;">
+                        <div style="width:22px;height:22px;border-radius:50%;background:#e0f2fe;color:#0369a1;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;">CM</div>
+                        <span style="font-size:11px;">Compliance Mgr</span>
+                    </div>
+                </td>
+                <td style="font-size:12px;">1 hr ago</td>
+                <td><span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#DC2626;">BREACHED</span></td>
+                <td><span class="status-badge pending">Open</span></td>
+                <td><button class="btn-icon" onclick="event.stopPropagation();navigateTo('alert-detail')"><i class="fas fa-eye"></i></button></td>
+            </tr>
+            <!-- Fuel cost anomaly (High) -->
+            <tr style="cursor:pointer;" onclick="navigateTo('alert-detail')">
+                <td>🟠</td>
+                <td style="font-weight:600;font-size:12px;">Fuel cost anomaly — ₹4.2/km vs ₹3.1/km avg</td>
+                <td><a href="#" onclick="event.stopPropagation();navigateTo('trip-detail')" style="font-family:'JetBrains Mono',monospace;font-weight:600;font-size:12px;">TRP-0140</a></td>
+                <td><span class="status-badge" style="background:#ecfdf3;color:#027a48;font-size:10px;">Financial</span></td>
+                <td><span class="status-badge" style="background:#fff7ed;color:#ea580c;font-size:10px;">High</span></td>
+                <td>
+                    <div style="display:flex;align-items:center;gap:5px;">
+                        <div style="width:22px;height:22px;border-radius:50%;background:#dbeafe;color:#1d4ed8;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;">FM</div>
+                        <span style="font-size:11px;">Fleet Mgr</span>
+                    </div>
+                </td>
+                <td style="font-size:12px;">Today 14:22</td>
+                <td><span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--text-secondary);">1h 38m</span></td>
+                <td><span class="status-badge pending">Open</span></td>
+                <td><button class="btn-icon" onclick="event.stopPropagation();navigateTo('alert-detail')"><i class="fas fa-eye"></i></button></td>
+            </tr>
+            <!-- Trip delayed (High) -->
+            <tr style="cursor:pointer;" onclick="navigateTo('alert-detail')">
+                <td>🟠</td>
+                <td>
+                    <div style="font-weight:600;font-size:12px;">Trip delayed — 4.5 hrs behind schedule</div>
+                    <span style="font-size:9px;color:var(--text-muted);">(3x)</span>
+                </td>
+                <td><a href="#" onclick="event.stopPropagation();navigateTo('trip-detail')" style="font-family:'JetBrains Mono',monospace;font-weight:600;font-size:12px;">TRP-0137</a></td>
+                <td><span class="status-badge" style="background:#fff7ed;color:#ea580c;font-size:10px;">Operational</span></td>
+                <td><span class="status-badge" style="background:#fff7ed;color:#ea580c;font-size:10px;">High</span></td>
+                <td>
+                    <div style="display:flex;align-items:center;gap:5px;">
+                        <div style="width:22px;height:22px;border-radius:50%;background:#dbeafe;color:#1d4ed8;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;">FM</div>
+                        <span style="font-size:11px;">Fleet Mgr</span>
+                    </div>
+                </td>
+                <td style="font-size:12px;">Today 13:45</td>
+                <td><span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--text-secondary);">1h 15m</span></td>
+                <td><span class="status-badge pending">Open</span></td>
+                <td><button class="btn-icon" onclick="event.stopPropagation();navigateTo('alert-detail')"><i class="fas fa-eye"></i></button></td>
+            </tr>
+            <!-- Frequent cash withdrawals (High) -->
+            <tr style="cursor:pointer;" onclick="navigateTo('alert-detail')">
+                <td>🟠</td>
+                <td>
+                    <div style="font-weight:600;font-size:12px;">Frequent cash withdrawals — 5 in 2 days (₹14,200)</div>
+                    <span style="font-size:9px;color:var(--text-muted);">(5x)</span>
+                </td>
+                <td><a href="#" onclick="event.stopPropagation();navigateTo('trip-detail')" style="font-family:'JetBrains Mono',monospace;font-weight:600;font-size:12px;">TRP-0142</a></td>
+                <td><span class="status-badge" style="background:#f5f3ff;color:#7c3aed;font-size:10px;">Driver</span></td>
+                <td><span class="status-badge" style="background:#fff7ed;color:#ea580c;font-size:10px;">High</span></td>
+                <td>
+                    <div style="display:flex;align-items:center;gap:5px;">
+                        <div style="width:22px;height:22px;border-radius:50%;background:#fee2e2;color:#991b1b;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;">AC</div>
+                        <span style="font-size:11px;">Accounts</span>
+                    </div>
+                </td>
+                <td style="font-size:12px;">Today 12:30</td>
+                <td><span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#DC2626;">0h 30m</span></td>
+                <td><span class="status-badge pending">Open</span></td>
+                <td><button class="btn-icon" onclick="event.stopPropagation();navigateTo('alert-detail')"><i class="fas fa-eye"></i></button></td>
+            </tr>
+            <!-- Missing receipts (Medium) -->
+            <tr style="cursor:pointer;" onclick="navigateTo('alert-detail')">
+                <td>🟡</td>
+                <td>
+                    <div style="font-weight:600;font-size:12px;">Missing receipts — 3 expenses (₹6,800) unreceipted</div>
+                    <span style="font-size:9px;color:var(--text-muted);">(3x)</span>
+                </td>
+                <td><a href="#" onclick="event.stopPropagation();navigateTo('trip-detail')" style="font-family:'JetBrains Mono',monospace;font-weight:600;font-size:12px;">TRP-0136</a></td>
+                <td><span class="status-badge" style="background:#f5f3ff;color:#7c3aed;font-size:10px;">Driver</span></td>
+                <td><span class="status-badge" style="background:#fffbeb;color:#b45309;font-size:10px;">Medium</span></td>
+                <td>
+                    <div style="display:flex;align-items:center;gap:5px;">
+                        <div style="width:22px;height:22px;border-radius:50%;background:#fee2e2;color:#991b1b;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;">AC</div>
+                        <span style="font-size:11px;">Accounts</span>
+                    </div>
+                </td>
+                <td style="font-size:12px;">Today 11:15</td>
+                <td><span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--text-secondary);">6h 45m</span></td>
+                <td><span class="status-badge pending">Open</span></td>
+                <td><button class="btn-icon" onclick="event.stopPropagation();navigateTo('alert-detail')"><i class="fas fa-eye"></i></button></td>
+            </tr>
+            <!-- Idle vehicle (High, Investigating) -->
+            <tr style="cursor:pointer;" onclick="navigateTo('alert-detail')">
+                <td>🟠</td>
+                <td style="font-weight:600;font-size:12px;">Idle vehicle — Stationary 6+ hrs at Udaipur</td>
+                <td><a href="#" onclick="event.stopPropagation();navigateTo('trip-detail')" style="font-family:'JetBrains Mono',monospace;font-weight:600;font-size:12px;">TRP-0135</a></td>
+                <td><span class="status-badge" style="background:#fff7ed;color:#ea580c;font-size:10px;">Operational</span></td>
+                <td><span class="status-badge" style="background:#fff7ed;color:#ea580c;font-size:10px;">High</span></td>
+                <td>
+                    <div style="display:flex;align-items:center;gap:5px;">
+                        <div style="width:22px;height:22px;border-radius:50%;background:#fef3c7;color:#92400e;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;">DO</div>
+                        <span style="font-size:11px;">Dispatch Ops</span>
+                    </div>
+                </td>
+                <td style="font-size:12px;">Today 09:00</td>
+                <td><span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--text-secondary);">In progress</span></td>
+                <td><span class="status-badge" style="background:#f5f3ff;color:#7c3aed;">Investigating</span></td>
+                <td><button class="btn-icon" onclick="event.stopPropagation();navigateTo('alert-detail')"><i class="fas fa-eye"></i></button></td>
+            </tr>
+            <!-- Permit expiry (Medium) -->
+            <tr style="cursor:pointer;" onclick="navigateTo('alert-detail')">
+                <td>🟡</td>
+                <td style="font-weight:600;font-size:12px;">Permit expiry in 3 days — NP-8823</td>
+                <td><span style="font-size:12px;color:var(--text-muted);">—</span></td>
+                <td><span class="status-badge" style="background:#f0fdf4;color:#059669;font-size:10px;">Compliance</span></td>
+                <td><span class="status-badge" style="background:#fffbeb;color:#b45309;font-size:10px;">Medium</span></td>
+                <td>
+                    <div style="display:flex;align-items:center;gap:5px;">
+                        <div style="width:22px;height:22px;border-radius:50%;background:#e0f2fe;color:#0369a1;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;">CM</div>
+                        <span style="font-size:11px;">Compliance Mgr</span>
+                    </div>
+                </td>
+                <td style="font-size:12px;">Yesterday</td>
+                <td><span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--text-secondary);">7h</span></td>
+                <td><span class="status-badge pending">Open</span></td>
+                <td><button class="btn-icon" onclick="event.stopPropagation();navigateTo('alert-detail')"><i class="fas fa-eye"></i></button></td>
+            </tr>
+            <!-- Info: Fuel efficiency improving -->
+            <tr style="opacity:0.6;cursor:pointer;" onclick="navigateTo('alert-detail')">
+                <td>🔵</td>
+                <td style="font-size:12px;">Fuel efficiency improving — 4.8 kmpl vs 4.2 kmpl</td>
+                <td><a href="#" onclick="event.stopPropagation();navigateTo('trip-detail')" style="font-family:'JetBrains Mono',monospace;font-weight:600;font-size:12px;">TRP-0133</a></td>
+                <td><span class="status-badge" style="background:#ecfdf3;color:#027a48;font-size:10px;">Financial</span></td>
+                <td><span class="status-badge info" style="font-size:10px;">Info</span></td>
+                <td>
+                    <div style="display:flex;align-items:center;gap:5px;">
+                        <div style="width:22px;height:22px;border-radius:50%;background:#dbeafe;color:#1d4ed8;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;">FM</div>
+                        <span style="font-size:11px;">Fleet Mgr</span>
+                    </div>
+                </td>
+                <td style="font-size:12px;">Yesterday</td>
+                <td>—</td>
+                <td><span class="status-badge completed">Resolved</span></td>
+                <td><button class="btn-icon" onclick="event.stopPropagation();navigateTo('alert-detail')"><i class="fas fa-eye"></i></button></td>
+            </tr>
+            <!-- Info: Trip under budget -->
+            <tr style="opacity:0.6;cursor:pointer;" onclick="navigateTo('alert-detail')">
+                <td>🔵</td>
+                <td style="font-size:12px;">Trip completed under budget — saved ₹4,200</td>
+                <td><a href="#" onclick="event.stopPropagation();navigateTo('trip-detail')" style="font-family:'JetBrains Mono',monospace;font-weight:600;font-size:12px;">TRP-0131</a></td>
+                <td><span class="status-badge" style="background:#ecfdf3;color:#027a48;font-size:10px;">Financial</span></td>
+                <td><span class="status-badge info" style="font-size:10px;">Info</span></td>
+                <td>
+                    <div style="display:flex;align-items:center;gap:5px;">
+                        <div style="width:22px;height:22px;border-radius:50%;background:#f0e7fe;color:#7c3aed;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;">PS</div>
+                        <span style="font-size:11px;">Owner</span>
+                    </div>
+                </td>
+                <td style="font-size:12px;">May 12</td>
+                <td>—</td>
+                <td><span class="status-badge completed">Resolved</span></td>
+                <td><button class="btn-icon" onclick="event.stopPropagation();navigateTo('alert-detail')"><i class="fas fa-eye"></i></button></td>
+            </tr>
+        </tbody>
+    </table>
+</div>

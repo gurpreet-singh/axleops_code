@@ -1,0 +1,694 @@
+<!-- ═══════════════════════════════════════════════════════════════
+     📊 CUSTOMER SERVICE LEVELS — Owner View
+     Track on-time delivery, in-full delivery, transit visibility
+     and competitive pricing across all customers.
+     ═══════════════════════════════════════════════════════════════ -->
+
+<div class="page-header">
+    <div>
+        <div style="font-size:11px;color:#98a2b3;margin-bottom:2px;">Executive › Service Performance</div>
+        <h1><i class="fas fa-tachometer-alt" style="color:#7c3aed;margin-right:8px;"></i> Customer Service Levels</h1>
+    </div>
+    <div class="page-header-actions" style="display:flex;align-items:center;gap:10px;">
+        <!-- Period Toggle -->
+        <div style="display:flex;background:#f3f4f6;border-radius:8px;overflow:hidden;border:1px solid #e5e7eb;" id="csl-period-toggle">
+            <button class="csl-period-btn" data-period="monthly" onclick="cslSetPeriod('monthly')"
+                style="padding:6px 14px;font-size:11px;font-weight:600;border:none;cursor:pointer;background:#2563eb;color:#fff;transition:all 0.2s;">Monthly</button>
+            <button class="csl-period-btn" data-period="quarterly" onclick="cslSetPeriod('quarterly')"
+                style="padding:6px 14px;font-size:11px;font-weight:600;border:none;cursor:pointer;background:transparent;color:#6b7280;transition:all 0.2s;">Quarterly</button>
+            <button class="csl-period-btn" data-period="halfyearly" onclick="cslSetPeriod('halfyearly')"
+                style="padding:6px 14px;font-size:11px;font-weight:600;border:none;cursor:pointer;background:transparent;color:#6b7280;transition:all 0.2s;">Half-Yearly</button>
+            <button class="csl-period-btn" data-period="yearly" onclick="cslSetPeriod('yearly')"
+                style="padding:6px 14px;font-size:11px;font-weight:600;border:none;cursor:pointer;background:transparent;color:#6b7280;transition:all 0.2s;">Yearly</button>
+        </div>
+        <div class="filter-btn" style="cursor:pointer;">
+            <i class="fas fa-calendar-alt" style="margin-right:6px;"></i>
+            <span id="csl-period-label">Mar 2026</span> ▾
+        </div>
+        <button class="btn btn-secondary" style="font-size:12px;"><i class="fas fa-download" style="margin-right:4px;"></i> Export</button>
+    </div>
+</div>
+
+
+<!-- ╔════════════════════════════════════════════════════════════╗
+     ║  📊 PORTFOLIO-LEVEL KPI SUMMARY                         ║
+     ╚════════════════════════════════════════════════════════════╝ -->
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;">
+    <!-- On-Time Delivery -->
+    <div class="stat-card" style="border-top:3px solid #16a34a;">
+        <div class="stat-label">On-Time Delivery</div>
+        <div class="stat-value" style="font-size:26px;color:#16a34a;">91.4%</div>
+        <div class="stat-change positive"><i class="fas fa-arrow-up"></i> 2.1% <span style="font-size:10px;color:var(--text-muted);">vs last period</span></div>
+        <div style="margin-top:4px;font-size:10px;color:var(--text-muted);">Target: 95% · 186 of 204 shipments</div>
+    </div>
+    <!-- In-Full Delivery -->
+    <div class="stat-card" style="border-top:3px solid #2563eb;">
+        <div class="stat-label">In-Full Delivery</div>
+        <div class="stat-value" style="font-size:26px;color:#2563eb;">96.6%</div>
+        <div class="stat-change positive"><i class="fas fa-arrow-up"></i> 0.8% <span style="font-size:10px;color:var(--text-muted);">vs last period</span></div>
+        <div style="margin-top:4px;font-size:10px;color:var(--text-muted);">Target: 98% · 7 damage claims this period</div>
+    </div>
+    <!-- Transit Visibility -->
+    <div class="stat-card" style="border-top:3px solid #d97706;">
+        <div class="stat-label">Transit Visibility</div>
+        <div class="stat-value" style="font-size:26px;color:#d97706;">87.3%</div>
+        <div class="stat-change negative"><i class="fas fa-arrow-down"></i> 1.4% <span style="font-size:10px;color:var(--text-muted);">vs last period</span></div>
+        <div style="margin-top:4px;font-size:10px;color:var(--text-muted);">Target: 90% · GPS + milestone tracking</div>
+    </div>
+    <!-- Competitive Pricing -->
+    <div class="stat-card" style="border-top:3px solid #7c3aed;">
+        <div class="stat-label">Price Competitiveness</div>
+        <div class="stat-value" style="font-size:26px;color:#7c3aed;">8.2<span style="font-size:14px;color:#9ca3af;">/10</span></div>
+        <div class="stat-change positive"><i class="fas fa-arrow-up"></i> 0.3 <span style="font-size:10px;color:var(--text-muted);">vs last period</span></div>
+        <div style="margin-top:4px;font-size:10px;color:var(--text-muted);">Weighted avg across all clients</div>
+    </div>
+</div>
+
+
+<!-- ╔════════════════════════════════════════════════════════════╗
+     ║  📋 CUSTOMER-WISE SERVICE LEVEL COMPARISON TABLE         ║
+     ╚════════════════════════════════════════════════════════════╝ -->
+<div style="margin-bottom:20px;">
+    <div class="widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-users" style="color:#2563eb;margin-right:6px;"></i> Customer-Wise Service Level Comparison</h3>
+            <div style="display:flex;gap:6px;">
+                <span style="font-size:11px;padding:3px 10px;border-radius:12px;background:#eff6ff;color:#2563eb;cursor:pointer;font-weight:600;">All Clients</span>
+                <span style="font-size:11px;padding:3px 10px;border-radius:12px;background:#f3f4f6;color:#6b7280;cursor:pointer;">Below Target</span>
+            </div>
+        </div>
+        <div class="widget-body" style="padding:0;overflow-x:auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th style="text-align:center;">Shipments</th>
+                        <th>On-Time Delivery</th>
+                        <th>In-Full Delivery</th>
+                        <th>Transit Visibility</th>
+                        <th>Rate vs Market</th>
+                        <th style="text-align:center;">SLA Score</th>
+                        <th>Trend</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Reliance Industries -->
+                    <tr>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <div style="width:32px;height:32px;border-radius:50%;background:hsl(210,50%,92%);color:hsl(210,50%,35%);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">RI</div>
+                                <div>
+                                    <div style="font-weight:600;font-size:13px;">Reliance Industries</div>
+                                    <div style="font-size:10px;color:#98a2b3;">CLT-001 · Petrochemicals</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="text-align:center;font-weight:700;">42</td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <div style="width:60px;height:6px;background:#e5e7eb;border-radius:3px;"><div style="width:95.2%;height:6px;background:#16a34a;border-radius:3px;"></div></div>
+                                <span style="font-size:11px;font-weight:600;color:#16a34a;">95.2%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <div style="width:60px;height:6px;background:#e5e7eb;border-radius:3px;"><div style="width:97.6%;height:6px;background:#16a34a;border-radius:3px;"></div></div>
+                                <span style="font-size:11px;font-weight:600;color:#16a34a;">97.6%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <div style="width:60px;height:6px;background:#e5e7eb;border-radius:3px;"><div style="width:92%;height:6px;background:#16a34a;border-radius:3px;"></div></div>
+                                <span style="font-size:11px;font-weight:600;color:#16a34a;">92.0%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span style="font-size:11px;font-weight:600;color:#16a34a;">-3.2%</span>
+                            <span style="font-size:10px;color:#6b7280;margin-left:2px;">below mkt</span>
+                        </td>
+                        <td style="text-align:center;">
+                            <span style="background:#dcfce7;color:#166534;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;">9.1</span>
+                        </td>
+                        <td><span style="color:#16a34a;font-weight:600;font-size:12px;">▲ 0.4</span></td>
+                    </tr>
+                    <!-- Tata Steel -->
+                    <tr>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <div style="width:32px;height:32px;border-radius:50%;background:hsl(45,50%,92%);color:hsl(45,50%,35%);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">TS</div>
+                                <div>
+                                    <div style="font-weight:600;font-size:13px;">Tata Steel</div>
+                                    <div style="font-size:10px;color:#98a2b3;">CLT-002 · Steel &amp; Metals</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="text-align:center;font-weight:700;">28</td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <div style="width:60px;height:6px;background:#e5e7eb;border-radius:3px;"><div style="width:92.9%;height:6px;background:#16a34a;border-radius:3px;"></div></div>
+                                <span style="font-size:11px;font-weight:600;color:#16a34a;">92.9%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <div style="width:60px;height:6px;background:#e5e7eb;border-radius:3px;"><div style="width:100%;height:6px;background:#16a34a;border-radius:3px;"></div></div>
+                                <span style="font-size:11px;font-weight:600;color:#16a34a;">100%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <div style="width:60px;height:6px;background:#e5e7eb;border-radius:3px;"><div style="width:89%;height:6px;background:#f59e0b;border-radius:3px;"></div></div>
+                                <span style="font-size:11px;font-weight:600;color:#f59e0b;">89.3%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span style="font-size:11px;font-weight:600;color:#16a34a;">-1.8%</span>
+                            <span style="font-size:10px;color:#6b7280;margin-left:2px;">below mkt</span>
+                        </td>
+                        <td style="text-align:center;">
+                            <span style="background:#dcfce7;color:#166534;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;">8.8</span>
+                        </td>
+                        <td><span style="color:#16a34a;font-weight:600;font-size:12px;">▲ 0.2</span></td>
+                    </tr>
+                    <!-- Hindustan Unilever -->
+                    <tr>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <div style="width:32px;height:32px;border-radius:50%;background:hsl(180,50%,92%);color:hsl(180,50%,35%);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">HU</div>
+                                <div>
+                                    <div style="font-weight:600;font-size:13px;">Hindustan Unilever</div>
+                                    <div style="font-size:10px;color:#98a2b3;">CLT-003 · FMCG</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="text-align:center;font-weight:700;">56</td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <div style="width:60px;height:6px;background:#e5e7eb;border-radius:3px;"><div style="width:87.5%;height:6px;background:#f59e0b;border-radius:3px;"></div></div>
+                                <span style="font-size:11px;font-weight:600;color:#f59e0b;">87.5%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <div style="width:60px;height:6px;background:#e5e7eb;border-radius:3px;"><div style="width:94.6%;height:6px;background:#f59e0b;border-radius:3px;"></div></div>
+                                <span style="font-size:11px;font-weight:600;color:#f59e0b;">94.6%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <div style="width:60px;height:6px;background:#e5e7eb;border-radius:3px;"><div style="width:91%;height:6px;background:#16a34a;border-radius:3px;"></div></div>
+                                <span style="font-size:11px;font-weight:600;color:#16a34a;">91.1%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span style="font-size:11px;font-weight:600;color:#f59e0b;">+2.1%</span>
+                            <span style="font-size:10px;color:#6b7280;margin-left:2px;">above mkt</span>
+                        </td>
+                        <td style="text-align:center;">
+                            <span style="background:#fef9c3;color:#854d0e;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;">7.8</span>
+                        </td>
+                        <td><span style="color:#dc2626;font-weight:600;font-size:12px;">▼ 0.6</span></td>
+                    </tr>
+                    <!-- ITC Limited -->
+                    <tr>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <div style="width:32px;height:32px;border-radius:50%;background:hsl(120,50%,92%);color:hsl(120,50%,35%);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">IL</div>
+                                <div>
+                                    <div style="font-weight:600;font-size:13px;">ITC Limited</div>
+                                    <div style="font-size:10px;color:#98a2b3;">CLT-004 · FMCG</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="text-align:center;font-weight:700;">34</td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <div style="width:60px;height:6px;background:#e5e7eb;border-radius:3px;"><div style="width:94.1%;height:6px;background:#16a34a;border-radius:3px;"></div></div>
+                                <span style="font-size:11px;font-weight:600;color:#16a34a;">94.1%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <div style="width:60px;height:6px;background:#e5e7eb;border-radius:3px;"><div style="width:97.1%;height:6px;background:#16a34a;border-radius:3px;"></div></div>
+                                <span style="font-size:11px;font-weight:600;color:#16a34a;">97.1%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <div style="width:60px;height:6px;background:#e5e7eb;border-radius:3px;"><div style="width:85%;height:6px;background:#f59e0b;border-radius:3px;"></div></div>
+                                <span style="font-size:11px;font-weight:600;color:#f59e0b;">85.3%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span style="font-size:11px;font-weight:600;color:#16a34a;">-4.5%</span>
+                            <span style="font-size:10px;color:#6b7280;margin-left:2px;">below mkt</span>
+                        </td>
+                        <td style="text-align:center;">
+                            <span style="background:#dcfce7;color:#166534;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;">8.5</span>
+                        </td>
+                        <td><span style="color:#16a34a;font-weight:600;font-size:12px;">▲ 0.1</span></td>
+                    </tr>
+                    <!-- Adani Ports -->
+                    <tr>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <div style="width:32px;height:32px;border-radius:50%;background:hsl(280,50%,92%);color:hsl(280,50%,35%);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">AP</div>
+                                <div>
+                                    <div style="font-weight:600;font-size:13px;">Adani Ports</div>
+                                    <div style="font-size:10px;color:#98a2b3;">CLT-005 · Infrastructure</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="text-align:center;font-weight:700;">15</td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <div style="width:60px;height:6px;background:#e5e7eb;border-radius:3px;"><div style="width:93.3%;height:6px;background:#16a34a;border-radius:3px;"></div></div>
+                                <span style="font-size:11px;font-weight:600;color:#16a34a;">93.3%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <div style="width:60px;height:6px;background:#e5e7eb;border-radius:3px;"><div style="width:100%;height:6px;background:#16a34a;border-radius:3px;"></div></div>
+                                <span style="font-size:11px;font-weight:600;color:#16a34a;">100%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <div style="width:60px;height:6px;background:#e5e7eb;border-radius:3px;"><div style="width:80%;height:6px;background:#dc2626;border-radius:3px;"></div></div>
+                                <span style="font-size:11px;font-weight:600;color:#dc2626;">80.0%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span style="font-size:11px;font-weight:600;color:#dc2626;">+5.8%</span>
+                            <span style="font-size:10px;color:#6b7280;margin-left:2px;">above mkt</span>
+                        </td>
+                        <td style="text-align:center;">
+                            <span style="background:#fef9c3;color:#854d0e;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;">7.4</span>
+                        </td>
+                        <td><span style="color:#dc2626;font-weight:600;font-size:12px;">▼ 0.9</span></td>
+                    </tr>
+                    <!-- Mahindra Logistics -->
+                    <tr>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <div style="width:32px;height:32px;border-radius:50%;background:hsl(190,50%,92%);color:hsl(190,50%,35%);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">ML</div>
+                                <div>
+                                    <div style="font-weight:600;font-size:13px;">Mahindra Logistics</div>
+                                    <div style="font-size:10px;color:#98a2b3;">CLT-006 · 3PL</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="text-align:center;font-weight:700;">22</td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <div style="width:60px;height:6px;background:#e5e7eb;border-radius:3px;"><div style="width:90.9%;height:6px;background:#16a34a;border-radius:3px;"></div></div>
+                                <span style="font-size:11px;font-weight:600;color:#16a34a;">90.9%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <div style="width:60px;height:6px;background:#e5e7eb;border-radius:3px;"><div style="width:95.5%;height:6px;background:#16a34a;border-radius:3px;"></div></div>
+                                <span style="font-size:11px;font-weight:600;color:#16a34a;">95.5%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <div style="width:60px;height:6px;background:#e5e7eb;border-radius:3px;"><div style="width:86%;height:6px;background:#f59e0b;border-radius:3px;"></div></div>
+                                <span style="font-size:11px;font-weight:600;color:#f59e0b;">86.4%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span style="font-size:11px;font-weight:600;color:#16a34a;">-2.4%</span>
+                            <span style="font-size:10px;color:#6b7280;margin-left:2px;">below mkt</span>
+                        </td>
+                        <td style="text-align:center;">
+                            <span style="background:#dcfce7;color:#166534;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;">8.3</span>
+                        </td>
+                        <td><span style="color:#6b7280;font-weight:600;font-size:12px;">— 0.0</span></td>
+                    </tr>
+                    <!-- Asian Paints -->
+                    <tr>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <div style="width:32px;height:32px;border-radius:50%;background:hsl(60,50%,92%);color:hsl(60,50%,35%);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">AP</div>
+                                <div>
+                                    <div style="font-weight:600;font-size:13px;">Asian Paints</div>
+                                    <div style="font-size:10px;color:#98a2b3;">CLT-007 · Chemicals</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="text-align:center;font-weight:700;">7</td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <div style="width:60px;height:6px;background:#e5e7eb;border-radius:3px;"><div style="width:85.7%;height:6px;background:#f59e0b;border-radius:3px;"></div></div>
+                                <span style="font-size:11px;font-weight:600;color:#f59e0b;">85.7%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <div style="width:60px;height:6px;background:#e5e7eb;border-radius:3px;"><div style="width:100%;height:6px;background:#16a34a;border-radius:3px;"></div></div>
+                                <span style="font-size:11px;font-weight:600;color:#16a34a;">100%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <div style="width:60px;height:6px;background:#e5e7eb;border-radius:3px;"><div style="width:85.7%;height:6px;background:#f59e0b;border-radius:3px;"></div></div>
+                                <span style="font-size:11px;font-weight:600;color:#f59e0b;">85.7%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span style="font-size:11px;font-weight:600;color:#16a34a;">-1.2%</span>
+                            <span style="font-size:10px;color:#6b7280;margin-left:2px;">below mkt</span>
+                        </td>
+                        <td style="text-align:center;">
+                            <span style="background:#dcfce7;color:#166534;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;">8.1</span>
+                        </td>
+                        <td><span style="color:#16a34a;font-weight:600;font-size:12px;">▲ 0.3</span></td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr style="background:#f8fafc;font-weight:700;">
+                        <td>Portfolio Average (7 clients)</td>
+                        <td style="text-align:center;">204</td>
+                        <td><span style="font-size:12px;font-weight:700;color:#16a34a;">91.4%</span></td>
+                        <td><span style="font-size:12px;font-weight:700;color:#2563eb;">96.6%</span></td>
+                        <td><span style="font-size:12px;font-weight:700;color:#d97706;">87.3%</span></td>
+                        <td><span style="font-size:12px;font-weight:700;color:#7c3aed;">Avg -0.7%</span></td>
+                        <td style="text-align:center;"><span style="font-size:12px;font-weight:700;color:#2563eb;">8.3</span></td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<!-- ╔════════════════════════════════════════════════════════════╗
+     ║  📈 TREND CHARTS — On-Time & In-Full Delivery           ║
+     ╚════════════════════════════════════════════════════════════╝ -->
+<div class="dashboard-grid two-col" style="margin-bottom:16px;">
+    <!-- On-Time Delivery Trend -->
+    <div class="widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-clock" style="color:#16a34a;margin-right:6px;"></i> On-Time Delivery Trend</h3>
+            <span style="font-size:11px;padding:3px 10px;border-radius:12px;background:#dcfce7;color:#166534;font-weight:600;">Target: 95%</span>
+        </div>
+        <div class="widget-body" style="padding:16px;">
+            <svg viewBox="0 0 500 200" style="width:100%;height:auto;">
+                <line x1="45" y1="20" x2="480" y2="20" stroke="#f3f4f6" stroke-width="0.5" />
+                <line x1="45" y1="55" x2="480" y2="55" stroke="#f3f4f6" stroke-width="0.5" />
+                <line x1="45" y1="90" x2="480" y2="90" stroke="#f3f4f6" stroke-width="0.5" />
+                <line x1="45" y1="125" x2="480" y2="125" stroke="#f3f4f6" stroke-width="0.5" />
+                <line x1="45" y1="160" x2="480" y2="160" stroke="#e5e7eb" stroke-width="0.5" />
+                <text x="40" y="23" font-size="9" fill="#9ca3af" text-anchor="end">100%</text>
+                <text x="40" y="58" font-size="9" fill="#9ca3af" text-anchor="end">95%</text>
+                <text x="40" y="93" font-size="9" fill="#9ca3af" text-anchor="end">90%</text>
+                <text x="40" y="128" font-size="9" fill="#9ca3af" text-anchor="end">85%</text>
+                <text x="40" y="163" font-size="9" fill="#9ca3af" text-anchor="end">80%</text>
+                <!-- Target line at 95% -->
+                <line x1="45" y1="55" x2="480" y2="55" stroke="#dc2626" stroke-width="1" stroke-dasharray="6,4" opacity="0.5" />
+                <text x="485" y="58" font-size="8" fill="#dc2626" font-weight="600">Target</text>
+                <defs>
+                    <linearGradient id="cslOtdGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#16a34a" stop-opacity="0.2" />
+                        <stop offset="100%" stop-color="#16a34a" stop-opacity="0.02" />
+                    </linearGradient>
+                </defs>
+                <!-- OTD trend: Oct:88.2, Nov:89.5, Dec:86.1, Jan:90.8, Feb:89.3, Mar:91.4 -->
+                <path d="M80,76 L155,67 L230,90 L305,55 L380,65 L455,50" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M80,76 L155,67 L230,90 L305,55 L380,65 L455,50 L455,160 L80,160 Z" fill="url(#cslOtdGrad)" />
+                <circle cx="455" cy="50" r="4" fill="#16a34a" stroke="#fff" stroke-width="2" />
+                <text x="455" y="44" font-size="9" fill="#16a34a" font-weight="600" text-anchor="middle">91.4%</text>
+                <text x="80" y="178" font-size="8" fill="#9ca3af" text-anchor="middle">Oct</text>
+                <text x="155" y="178" font-size="8" fill="#9ca3af" text-anchor="middle">Nov</text>
+                <text x="230" y="178" font-size="8" fill="#9ca3af" text-anchor="middle">Dec</text>
+                <text x="305" y="178" font-size="8" fill="#9ca3af" text-anchor="middle">Jan</text>
+                <text x="380" y="178" font-size="8" fill="#9ca3af" text-anchor="middle">Feb</text>
+                <text x="455" y="178" font-size="8" fill="#16a34a" text-anchor="middle" font-weight="600">Mar</text>
+            </svg>
+        </div>
+    </div>
+
+    <!-- In-Full Delivery Breakdown -->
+    <div class="widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-box-open" style="color:#2563eb;margin-right:6px;"></i> Delivery Issue Breakdown</h3>
+            <span style="font-size:11px;padding:3px 10px;border-radius:12px;background:#fef2f2;color:#dc2626;font-weight:600;">7 incidents this period</span>
+        </div>
+        <div class="widget-body" style="padding:16px;">
+            <div style="display:flex;align-items:center;gap:24px;">
+                <svg viewBox="0 0 180 180" style="width:150px;height:150px;flex-shrink:0;">
+                    <circle cx="90" cy="90" r="65" fill="none" stroke="#dc2626" stroke-width="20" stroke-dasharray="163.4 408.4" stroke-dashoffset="0" transform="rotate(-90 90 90)" />
+                    <circle cx="90" cy="90" r="65" fill="none" stroke="#f59e0b" stroke-width="20" stroke-dasharray="122.5 408.4" stroke-dashoffset="-163.4" transform="rotate(-90 90 90)" />
+                    <circle cx="90" cy="90" r="65" fill="none" stroke="#2563eb" stroke-width="20" stroke-dasharray="81.7 408.4" stroke-dashoffset="-285.9" transform="rotate(-90 90 90)" />
+                    <circle cx="90" cy="90" r="65" fill="none" stroke="#6b7280" stroke-width="20" stroke-dasharray="40.8 408.4" stroke-dashoffset="-367.6" transform="rotate(-90 90 90)" />
+                    <text x="90" y="84" text-anchor="middle" font-size="11" fill="#6b7280">Issues</text>
+                    <text x="90" y="101" text-anchor="middle" font-size="18" fill="#111827" font-weight="700">7</text>
+                </svg>
+                <div style="flex:1;display:flex;flex-direction:column;gap:12px;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;">
+                        <div style="display:flex;align-items:center;gap:8px;"><div style="width:10px;height:10px;border-radius:3px;background:#dc2626;"></div><span style="font-size:12px;">Transit Damage</span></div>
+                        <div style="text-align:right;"><div style="font-size:12px;font-weight:600;">3 incidents</div><div style="font-size:10px;color:#dc2626;font-weight:500;">42.9%</div></div>
+                    </div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;">
+                        <div style="display:flex;align-items:center;gap:8px;"><div style="width:10px;height:10px;border-radius:3px;background:#f59e0b;"></div><span style="font-size:12px;">Quantity Shortage</span></div>
+                        <div style="text-align:right;"><div style="font-size:12px;font-weight:600;">2 incidents</div><div style="font-size:10px;color:#f59e0b;font-weight:500;">28.6%</div></div>
+                    </div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;">
+                        <div style="display:flex;align-items:center;gap:8px;"><div style="width:10px;height:10px;border-radius:3px;background:#2563eb;"></div><span style="font-size:12px;">Wrong Delivery</span></div>
+                        <div style="text-align:right;"><div style="font-size:12px;font-weight:600;">1 incident</div><div style="font-size:10px;color:#2563eb;font-weight:500;">14.3%</div></div>
+                    </div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;">
+                        <div style="display:flex;align-items:center;gap:8px;"><div style="width:10px;height:10px;border-radius:3px;background:#6b7280;"></div><span style="font-size:12px;">Packaging Issue</span></div>
+                        <div style="text-align:right;"><div style="font-size:12px;font-weight:600;">1 incident</div><div style="font-size:10px;color:#6b7280;font-weight:500;">14.3%</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ╔════════════════════════════════════════════════════════════╗
+     ║  📡 TRANSIT VISIBILITY SCORECARD                        ║
+     ╚════════════════════════════════════════════════════════════╝ -->
+<div style="margin-bottom:20px;">
+    <div class="widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-satellite-dish" style="color:#0891b2;margin-right:6px;"></i> Transit Visibility Scorecard</h3>
+        </div>
+        <div class="widget-body" style="padding:0;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th style="text-align:center;">GPS Coverage</th>
+                        <th style="text-align:center;">Milestone Updates</th>
+                        <th style="text-align:center;">ETA Accuracy</th>
+                        <th style="text-align:center;">Real-Time Alerts</th>
+                        <th style="text-align:center;">Overall Visibility</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-weight:600;">Reliance Industries</td>
+                        <td style="text-align:center;"><span style="color:#16a34a;font-weight:600;">96%</span></td>
+                        <td style="text-align:center;"><span style="color:#16a34a;font-weight:600;">94%</span></td>
+                        <td style="text-align:center;"><span style="color:#16a34a;font-weight:600;">88%</span></td>
+                        <td style="text-align:center;"><span style="color:#16a34a;font-weight:600;">90%</span></td>
+                        <td style="text-align:center;"><span style="background:#dcfce7;color:#166534;padding:2px 10px;border-radius:10px;font-size:11px;font-weight:700;">92.0%</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:600;">Tata Steel</td>
+                        <td style="text-align:center;"><span style="color:#16a34a;font-weight:600;">94%</span></td>
+                        <td style="text-align:center;"><span style="color:#f59e0b;font-weight:600;">86%</span></td>
+                        <td style="text-align:center;"><span style="color:#f59e0b;font-weight:600;">84%</span></td>
+                        <td style="text-align:center;"><span style="color:#16a34a;font-weight:600;">93%</span></td>
+                        <td style="text-align:center;"><span style="background:#fef9c3;color:#854d0e;padding:2px 10px;border-radius:10px;font-size:11px;font-weight:700;">89.3%</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:600;">Hindustan Unilever</td>
+                        <td style="text-align:center;"><span style="color:#16a34a;font-weight:600;">95%</span></td>
+                        <td style="text-align:center;"><span style="color:#16a34a;font-weight:600;">92%</span></td>
+                        <td style="text-align:center;"><span style="color:#f59e0b;font-weight:600;">85%</span></td>
+                        <td style="text-align:center;"><span style="color:#16a34a;font-weight:600;">92%</span></td>
+                        <td style="text-align:center;"><span style="background:#dcfce7;color:#166534;padding:2px 10px;border-radius:10px;font-size:11px;font-weight:700;">91.1%</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:600;">ITC Limited</td>
+                        <td style="text-align:center;"><span style="color:#f59e0b;font-weight:600;">88%</span></td>
+                        <td style="text-align:center;"><span style="color:#f59e0b;font-weight:600;">82%</span></td>
+                        <td style="text-align:center;"><span style="color:#f59e0b;font-weight:600;">80%</span></td>
+                        <td style="text-align:center;"><span style="color:#16a34a;font-weight:600;">91%</span></td>
+                        <td style="text-align:center;"><span style="background:#fef9c3;color:#854d0e;padding:2px 10px;border-radius:10px;font-size:11px;font-weight:700;">85.3%</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:600;">Adani Ports</td>
+                        <td style="text-align:center;"><span style="color:#dc2626;font-weight:600;">78%</span></td>
+                        <td style="text-align:center;"><span style="color:#dc2626;font-weight:600;">76%</span></td>
+                        <td style="text-align:center;"><span style="color:#f59e0b;font-weight:600;">82%</span></td>
+                        <td style="text-align:center;"><span style="color:#f59e0b;font-weight:600;">84%</span></td>
+                        <td style="text-align:center;"><span style="background:#fef2f2;color:#991b1b;padding:2px 10px;border-radius:10px;font-size:11px;font-weight:700;">80.0%</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:600;">Mahindra Logistics</td>
+                        <td style="text-align:center;"><span style="color:#16a34a;font-weight:600;">92%</span></td>
+                        <td style="text-align:center;"><span style="color:#f59e0b;font-weight:600;">84%</span></td>
+                        <td style="text-align:center;"><span style="color:#f59e0b;font-weight:600;">81%</span></td>
+                        <td style="text-align:center;"><span style="color:#f59e0b;font-weight:600;">88%</span></td>
+                        <td style="text-align:center;"><span style="background:#fef9c3;color:#854d0e;padding:2px 10px;border-radius:10px;font-size:11px;font-weight:700;">86.4%</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:600;">Asian Paints</td>
+                        <td style="text-align:center;"><span style="color:#f59e0b;font-weight:600;">88%</span></td>
+                        <td style="text-align:center;"><span style="color:#f59e0b;font-weight:600;">83%</span></td>
+                        <td style="text-align:center;"><span style="color:#f59e0b;font-weight:600;">82%</span></td>
+                        <td style="text-align:center;"><span style="color:#16a34a;font-weight:600;">90%</span></td>
+                        <td style="text-align:center;"><span style="background:#fef9c3;color:#854d0e;padding:2px 10px;border-radius:10px;font-size:11px;font-weight:700;">85.7%</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<!-- ╔════════════════════════════════════════════════════════════╗
+     ║  💰 PRICE COMPETITIVENESS ANALYSIS                      ║
+     ╚════════════════════════════════════════════════════════════╝ -->
+<div class="dashboard-grid two-col" style="margin-bottom:16px;">
+    <div class="widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-rupee-sign" style="color:#7c3aed;margin-right:6px;"></i> Rate vs Market Comparison</h3>
+        </div>
+        <div class="widget-body" style="padding:0;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th style="text-align:right;">Our Rate</th>
+                        <th style="text-align:right;">Market Rate</th>
+                        <th>Difference</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-weight:600;">Reliance Industries</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;">₹34.15/km</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;color:#6b7280;">₹35.28/km</td>
+                        <td><span style="color:#16a34a;font-weight:600;font-size:12px;">↓ 3.2% cheaper</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:600;">Tata Steel</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;">₹48,000/trip</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;color:#6b7280;">₹48,880/trip</td>
+                        <td><span style="color:#16a34a;font-weight:600;font-size:12px;">↓ 1.8% cheaper</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:600;">Hindustan Unilever</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;">₹28.50/km</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;color:#6b7280;">₹27.92/km</td>
+                        <td><span style="color:#f59e0b;font-weight:600;font-size:12px;">↑ 2.1% costlier</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:600;">ITC Limited</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;">₹1,200/MT</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;color:#6b7280;">₹1,256/MT</td>
+                        <td><span style="color:#16a34a;font-weight:600;font-size:12px;">↓ 4.5% cheaper</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:600;">Adani Ports</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;">₹72,000/trip</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;color:#6b7280;">₹68,050/trip</td>
+                        <td><span style="color:#dc2626;font-weight:600;font-size:12px;">↑ 5.8% costlier</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:600;">Mahindra Logistics</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;">₹32.00/km</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;color:#6b7280;">₹32.79/km</td>
+                        <td><span style="color:#16a34a;font-weight:600;font-size:12px;">↓ 2.4% cheaper</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:600;">Asian Paints</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;">₹35,000/trip</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;color:#6b7280;">₹35,425/trip</td>
+                        <td><span style="color:#16a34a;font-weight:600;font-size:12px;">↓ 1.2% cheaper</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Deviation Alerts -->
+    <div class="widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-exclamation-triangle" style="color:#dc2626;margin-right:6px;"></i> Service Level Deviation Alerts</h3>
+            <span style="background:#fef2f2;color:#dc2626;font-size:11px;font-weight:700;padding:2px 10px;border-radius:20px;">3 Alerts</span>
+        </div>
+        <div class="widget-body" style="padding:12px 16px;">
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                <!-- Alert 1 -->
+                <div style="font-size:10px;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;">
+                    <i class="fas fa-exclamation-circle" style="margin-right:4px;"></i> Critical — Below Threshold
+                </div>
+                <div style="background:#fef2f2;border-radius:8px;padding:10px 12px;display:flex;align-items:center;border-left:3px solid #dc2626;">
+                    <div style="flex:1;">
+                        <div style="font-size:12px;font-weight:600;color:#991b1b;">Adani Ports — Transit Visibility dropped to 80%</div>
+                        <div style="font-size:11px;color:#6b7280;">GPS coverage at 78% · Threshold: 90% · Down 9.2% from last period</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <span style="background:#fef2f2;color:#dc2626;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;border:1px solid #fca5a5;">Action Required</span>
+                    </div>
+                </div>
+
+                <!-- Alert 2 -->
+                <div style="font-size:10px;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:0.5px;margin-top:6px;margin-bottom:2px;">
+                    <i class="fas fa-exclamation-triangle" style="margin-right:4px;"></i> Warning — Declining Trend
+                </div>
+                <div style="background:#fffbeb;border-radius:8px;padding:10px 12px;display:flex;align-items:center;border-left:3px solid #f59e0b;">
+                    <div style="flex:1;">
+                        <div style="font-size:12px;font-weight:600;color:#92400e;">Hindustan Unilever — On-Time dropped to 87.5%</div>
+                        <div style="font-size:11px;color:#6b7280;">3 consecutive months of decline · Was 93.1% in Dec</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <span style="background:#fffbeb;color:#d97706;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;border:1px solid #fcd34d;">Review</span>
+                    </div>
+                </div>
+                <div style="background:#fffbeb;border-radius:8px;padding:10px 12px;display:flex;align-items:center;border-left:3px solid #f59e0b;">
+                    <div style="flex:1;">
+                        <div style="font-size:12px;font-weight:600;color:#92400e;">Adani Ports — Pricing 5.8% above market rate</div>
+                        <div style="font-size:11px;color:#6b7280;">Client may seek competitive quotes · Contract renewal in 45 days</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <span style="background:#fffbeb;color:#d97706;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;border:1px solid #fcd34d;">Review</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function cslSetPeriod(period) {
+        var btns = document.querySelectorAll('.csl-period-btn');
+        var label = document.getElementById('csl-period-label');
+        var labels = {
+            monthly: 'Mar 2026',
+            quarterly: 'Q4 FY 2025-26',
+            halfyearly: 'H2 FY 2025-26',
+            yearly: 'FY 2025-26'
+        };
+        btns.forEach(function(btn) {
+            if (btn.getAttribute('data-period') === period) {
+                btn.style.background = '#2563eb';
+                btn.style.color = '#fff';
+            } else {
+                btn.style.background = 'transparent';
+                btn.style.color = '#6b7280';
+            }
+        });
+        label.textContent = labels[period] || 'Mar 2026';
+    }
+</script>

@@ -1,0 +1,338 @@
+<!-- ═══════════════════════════════════════════════════════════════
+     📄 INVOICE DETAIL — Full Invoice View (INV-02)
+     Complete invoice with line items, GST, payments, timeline
+     ═══════════════════════════════════════════════════════════════ -->
+
+<!-- Header -->
+<div class="page-header" style="align-items:flex-start;">
+    <div style="display:flex;align-items:center;gap:14px;flex:1;">
+        <button class="btn btn-secondary" onclick="navigateTo('invoices')" style="padding:6px 10px;font-size:16px;">←</button>
+        <div style="flex:1;">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <h1 style="font-size:22px;font-weight:800;margin:0;font-family:'JetBrains Mono',monospace;">INV-2024-082</h1>
+                <span class="status-badge info" style="font-size:11px;">Sent</span>
+                <span style="display:inline-flex;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600;background:#f4f3ff;color:#5925dc;text-transform:uppercase;">IGST</span>
+            </div>
+            <div style="font-size:12px;color:#98a2b3;margin-top:3px;">Generated: May 15, 2024 · Period: May 1-15, 2024 · Due: Jun 14, 2024 · 8 trips</div>
+        </div>
+    </div>
+    <div class="page-header-actions">
+        <button class="btn btn-secondary"><i class="fas fa-file-pdf"></i> Download PDF</button>
+        <button class="btn btn-secondary"><i class="fas fa-envelope"></i> Email to Client</button>
+        <button class="btn btn-primary"><i class="fas fa-rupee-sign"></i> Record Payment</button>
+    </div>
+</div>
+
+<!-- Two-column layout -->
+<div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;">
+
+    <!-- Left: Invoice Body -->
+    <div>
+        <!-- Invoice Header Card -->
+        <div class="detail-section" style="margin-bottom:16px;">
+            <div class="section-body" style="padding:20px;">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
+                    <div>
+                        <div style="font-size:18px;font-weight:800;color:#101828;margin-bottom:2px;">Tax Invoice</div>
+                        <div style="font-size:12px;color:#98a2b3;">Original for Recipient</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div style="font-size:12px;color:#98a2b3;">Invoice No.</div>
+                        <div style="font-size:16px;font-weight:800;font-family:'JetBrains Mono',monospace;color:#1570ef;">INV-2024-082</div>
+                        <div style="font-size:11px;color:#98a2b3;margin-top:2px;">Date: May 15, 2024</div>
+                    </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
+                    <!-- From -->
+                    <div style="background:#f9fafb;border-radius:8px;padding:14px;">
+                        <div style="font-size:10px;font-weight:700;color:#98a2b3;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;">From (Supplier)</div>
+                        <div style="font-size:13px;font-weight:700;color:#101828;">Goodwill Transport Pvt Ltd</div>
+                        <div style="font-size:12px;color:#667085;margin-top:4px;line-height:1.6;">
+                            Plot 45, MIDC Industrial Area<br>
+                            Andheri East, Mumbai, Maharashtra — 400093<br>
+                            GSTIN: <span style="font-family:'JetBrains Mono',monospace;font-weight:600;">27AABCG1234M1ZP</span><br>
+                            PAN: AABCG1234M
+                        </div>
+                    </div>
+                    <!-- To -->
+                    <div style="background:#f9fafb;border-radius:8px;padding:14px;">
+                        <div style="font-size:10px;font-weight:700;color:#98a2b3;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;">Bill To (Recipient)</div>
+                        <div style="font-size:13px;font-weight:700;color:#101828;">Reliance Industries Limited</div>
+                        <div style="font-size:12px;color:#667085;margin-top:4px;line-height:1.6;">
+                            Maker Chambers IV, Nariman Point<br>
+                            Mumbai, Maharashtra — 400021<br>
+                            GSTIN: <span style="font-family:'JetBrains Mono',monospace;font-weight:600;">27AAACR5055K1ZK</span><br>
+                            PAN: AAACR5055K
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Line Items -->
+        <div class="detail-section" style="margin-bottom:16px;">
+            <div class="section-header"><h3>Line Items — 8 Trips</h3></div>
+            <div class="section-body" style="padding:0;">
+                <table style="font-size:12px;">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Trip ID</th>
+                            <th>Route</th>
+                            <th>Vehicle</th>
+                            <th>Date</th>
+                            <th style="text-align:right;">Qty</th>
+                            <th style="text-align:right;">Rate</th>
+                            <th style="text-align:right;">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><a href="#" onclick="navigateTo('trip-detail');event.preventDefault();" style="font-family:'JetBrains Mono',monospace;font-weight:600;color:#1570ef;">TRP-4810</a></td>
+                            <td>Mumbai → Delhi</td>
+                            <td>MH04AB1234</td>
+                            <td>May 2</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">1,380 km</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹34.15</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹47,127</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td><a href="#" onclick="navigateTo('trip-detail');event.preventDefault();" style="font-family:'JetBrains Mono',monospace;font-weight:600;color:#1570ef;">TRP-4812</a></td>
+                            <td>Mumbai → Ahmedabad</td>
+                            <td>MH04CD5678</td>
+                            <td>May 3</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">540 km</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹36.50</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹19,710</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td><a href="#" onclick="navigateTo('trip-detail');event.preventDefault();" style="font-family:'JetBrains Mono',monospace;font-weight:600;color:#1570ef;">TRP-4815</a></td>
+                            <td>Mumbai → Nagpur</td>
+                            <td>MH04EF9012</td>
+                            <td>May 5</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">820 km</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹33.00</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹27,060</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td><a href="#" onclick="navigateTo('trip-detail');event.preventDefault();" style="font-family:'JetBrains Mono',monospace;font-weight:600;color:#1570ef;">TRP-4817</a></td>
+                            <td>Mumbai → Hyderabad</td>
+                            <td>MH04GH3456</td>
+                            <td>May 6</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">780 km</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹32.00</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹24,960</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td><a href="#" onclick="navigateTo('trip-detail');event.preventDefault();" style="font-family:'JetBrains Mono',monospace;font-weight:600;color:#1570ef;">TRP-4819</a></td>
+                            <td>Mumbai → Delhi</td>
+                            <td>MH04AB1234</td>
+                            <td>May 8</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">1,380 km</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹34.15</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹47,127</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td><a href="#" onclick="navigateTo('trip-detail');event.preventDefault();" style="font-family:'JetBrains Mono',monospace;font-weight:600;color:#1570ef;">TRP-4821</a></td>
+                            <td>Mumbai → Pune</td>
+                            <td>MH04IJ7890</td>
+                            <td>May 10</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">160 km</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹38.00</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹6,080</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td><a href="#" onclick="navigateTo('trip-detail');event.preventDefault();" style="font-family:'JetBrains Mono',monospace;font-weight:600;color:#1570ef;">TRP-4824</a></td>
+                            <td>Mumbai → Ahmedabad</td>
+                            <td>MH04CD5678</td>
+                            <td>May 12</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">540 km</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹36.50</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹19,710</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td><a href="#" onclick="navigateTo('trip-detail');event.preventDefault();" style="font-family:'JetBrains Mono',monospace;font-weight:600;color:#1570ef;">TRP-4826</a></td>
+                            <td>Mumbai → Nagpur</td>
+                            <td>MH04EF9012</td>
+                            <td>May 14</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">820 km</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹33.00</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹27,060</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Totals & GST -->
+        <div class="detail-section" style="margin-bottom:16px;">
+            <div class="section-body" style="padding:0;">
+                <table style="font-size:13px;">
+                    <tbody>
+                        <tr>
+                            <td style="font-weight:500;width:70%;">Subtotal (Freight Charges)</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹2,18,834</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:500;">Loading Charges (8 × ₹1,350 avg)</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹10,800</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:500;">Unloading Charges (8 × ₹1,350 avg)</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹10,800</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:500;color:#f79009;"><i class="fas fa-gas-pump" style="margin-right:6px;"></i>Fuel Surcharge (+2.4%)</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;color:#f79009;">₹5,252</td>
+                        </tr>
+                        <tr style="background:#f9fafb;">
+                            <td style="font-weight:700;">Taxable Value</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-weight:700;">₹2,45,686</td>
+                        </tr>
+                        <tr><td colspan="2" style="height:1px;padding:0;border:none;"></td></tr>
+                        <tr>
+                            <td style="font-weight:500;">
+                                <span style="display:inline-flex;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600;background:#f4f3ff;color:#5925dc;margin-right:6px;">IGST</span>
+                                IGST @ 18% (Interstate: MH → MH supply, but registered Delhi branch)
+                            </td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹44,224</td>
+                        </tr>
+                        <tr><td colspan="2" style="height:1px;padding:0;border:none;"></td></tr>
+                        <tr style="background:#fffaeb;">
+                            <td style="font-weight:800;font-size:14px;">Grand Total (Rounded)</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-weight:800;font-size:16px;color:#f04438;">₹2,89,910</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="font-size:11px;color:#667085;font-style:italic;padding-top:4px;">
+                                Amount in words: Rupees Two Lakh Eighty-Nine Thousand Nine Hundred and Ten Only
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Bank Details -->
+        <div class="detail-section">
+            <div class="section-header"><h3>Bank Details for Payment</h3></div>
+            <div class="section-body">
+                <div class="info-list">
+                    <div class="info-item"><span class="info-label">Bank Name</span><span class="info-value">HDFC Bank</span></div>
+                    <div class="info-item"><span class="info-label">Branch</span><span class="info-value">Andheri East, Mumbai</span></div>
+                    <div class="info-item"><span class="info-label">Account No.</span><span class="info-value" style="font-family:'JetBrains Mono',monospace;font-weight:600;">50100123456789</span></div>
+                    <div class="info-item"><span class="info-label">IFSC Code</span><span class="info-value" style="font-family:'JetBrains Mono',monospace;font-weight:600;">HDFC0001234</span></div>
+                    <div class="info-item"><span class="info-label">Account Type</span><span class="info-value">Current Account</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right: Sidebar -->
+    <div>
+        <!-- Status Timeline -->
+        <div class="detail-section" style="margin-bottom:16px;">
+            <div class="section-header"><h3>Status Timeline</h3></div>
+            <div class="section-body">
+                <div style="display:flex;flex-direction:column;gap:12px;">
+                    <div style="display:flex;align-items:flex-start;gap:10px;">
+                        <div style="width:8px;height:8px;border-radius:50%;background:#12b76a;margin-top:5px;flex-shrink:0;"></div>
+                        <div>
+                            <div style="font-size:12px;font-weight:600;color:#101828;">Invoice Generated</div>
+                            <div style="font-size:11px;color:#98a2b3;">May 15, 2024 · 10:30 AM · by Meera Joshi</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:flex-start;gap:10px;">
+                        <div style="width:8px;height:8px;border-radius:50%;background:#12b76a;margin-top:5px;flex-shrink:0;"></div>
+                        <div>
+                            <div style="font-size:12px;font-weight:600;color:#101828;">Sent to Client</div>
+                            <div style="font-size:11px;color:#98a2b3;">May 15, 2024 · 11:00 AM · via Email</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:flex-start;gap:10px;">
+                        <div style="width:8px;height:8px;border-radius:50%;background:#e4e7ec;margin-top:5px;flex-shrink:0;"></div>
+                        <div>
+                            <div style="font-size:12px;font-weight:600;color:#98a2b3;">Payment Received</div>
+                            <div style="font-size:11px;color:#98a2b3;">Awaiting · Due Jun 14, 2024</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:flex-start;gap:10px;">
+                        <div style="width:8px;height:8px;border-radius:50%;background:#e4e7ec;margin-top:5px;flex-shrink:0;"></div>
+                        <div>
+                            <div style="font-size:12px;font-weight:600;color:#98a2b3;">Closed</div>
+                            <div style="font-size:11px;color:#98a2b3;">—</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Invoice Summary -->
+        <div class="detail-section" style="margin-bottom:16px;">
+            <div class="section-header"><h3>Summary</h3></div>
+            <div class="section-body">
+                <div class="info-list">
+                    <div class="info-item"><span class="info-label">Client</span><span class="info-value"><a href="#" onclick="navigateTo('client-detail');event.preventDefault();" style="color:#1570ef;font-weight:600;">Reliance Industries</a></span></div>
+                    <div class="info-item"><span class="info-label">Branch</span><span class="info-value">Mumbai HQ</span></div>
+                    <div class="info-item"><span class="info-label">Contract</span><span class="info-value" style="font-family:'JetBrains Mono',monospace;font-weight:600;">RC-2024-0017</span></div>
+                    <div class="info-item"><span class="info-label">Rate Type</span><span class="info-value">
+                        <span style="display:inline-flex;padding:1px 8px;border-radius:6px;font-size:10px;font-weight:600;background:#f4f3ff;color:#5925dc;text-transform:uppercase;">Per KM</span>
+                    </span></div>
+                    <div class="info-item"><span class="info-label">HSN Code</span><span class="info-value" style="font-family:'JetBrains Mono',monospace;">9965</span></div>
+                    <div class="info-item"><span class="info-label">SAC Code</span><span class="info-value" style="font-family:'JetBrains Mono',monospace;">996511</span></div>
+                    <div class="info-item"><span class="info-label">Place of Supply</span><span class="info-value">Maharashtra (27)</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment History -->
+        <div class="detail-section" style="margin-bottom:16px;">
+            <div class="section-header"><h3>Payments Against This Invoice</h3></div>
+            <div class="section-body">
+                <div style="padding:16px 0;text-align:center;color:#98a2b3;font-size:13px;">
+                    <i class="fas fa-clock" style="font-size:20px;margin-bottom:8px;display:block;color:#e4e7ec;"></i>
+                    No payments received yet.<br>
+                    <span style="font-size:11px;">Due in 30 days (Jun 14, 2024)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- E-Invoice -->
+        <div class="detail-section" style="margin-bottom:16px;">
+            <div class="section-header" style="background:#eff6ff;"><h3 style="color:#1570ef;"><i class="fas fa-qrcode" style="margin-right:6px;"></i>E-Invoice</h3></div>
+            <div class="section-body">
+                <div class="info-list">
+                    <div class="info-item"><span class="info-label">IRN</span><span class="info-value" style="font-family:'JetBrains Mono',monospace;font-size:10px;word-break:break-all;">a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0</span></div>
+                    <div class="info-item"><span class="info-label">Ack. No.</span><span class="info-value" style="font-family:'JetBrains Mono',monospace;">112024082000001</span></div>
+                    <div class="info-item"><span class="info-label">Ack. Date</span><span class="info-value">May 15, 2024</span></div>
+                    <div class="info-item"><span class="info-label">Status</span><span class="info-value"><span class="status-badge active" style="font-size:10px;">Generated</span></span></div>
+                </div>
+                <div style="margin-top:12px;padding:10px;background:#f9fafb;border-radius:8px;text-align:center;">
+                    <div style="width:80px;height:80px;margin:0 auto 8px;background:#e4e7ec;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#98a2b3;">
+                        <i class="fas fa-qrcode" style="font-size:40px;"></i>
+                    </div>
+                    <div style="font-size:10px;color:#98a2b3;">Scan QR for E-Invoice verification</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="detail-section">
+            <div class="section-header"><h3>Actions</h3></div>
+            <div class="section-body" style="display:flex;flex-direction:column;gap:8px;">
+                <button class="btn btn-secondary" style="width:100%;justify-content:flex-start;" onclick="showToast('Credit note draft created','success')"><i class="fas fa-minus-circle" style="margin-right:8px;color:#f04438;"></i> Issue Credit Note</button>
+                <button class="btn btn-secondary" style="width:100%;justify-content:flex-start;" onclick="showToast('Debit note draft created','success')"><i class="fas fa-plus-circle" style="margin-right:8px;color:#1570ef;"></i> Issue Debit Note</button>
+                <button class="btn btn-secondary" style="width:100%;justify-content:flex-start;" onclick="showToast('Reminder sent to Reliance Industries','success')"><i class="fas fa-bell" style="margin-right:8px;color:#f79009;"></i> Send Payment Reminder</button>
+                <button class="btn btn-secondary" style="width:100%;justify-content:flex-start;" onclick="showToast('Duplicate invoice created','success')"><i class="fas fa-copy" style="margin-right:8px;color:#667085;"></i> Duplicate Invoice</button>
+            </div>
+        </div>
+    </div>
+</div>

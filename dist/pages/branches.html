@@ -1,0 +1,806 @@
+<!-- ═══════════════════════════════════════════════════════════════
+     🏢 BRANCH & LOCATION MANAGEMENT — Complete View for Owner/Admin
+     Comprehensive branch overview with associated entities, transfers, P&L
+     ═══════════════════════════════════════════════════════════════ -->
+
+<div class="page-header">
+    <h1>Branch & Location Management</h1>
+    <div class="page-header-actions">
+        <div class="filter-btn" style="font-weight:600;border:2px solid var(--primary);color:var(--primary);"><i
+                class="fas fa-building" style="margin-right:4px;"></i> All Branches ▾</div>
+        <button class="btn btn-secondary"><i class="fas fa-download"></i> Export</button>
+        <button class="btn btn-primary" data-modal="new-branch-modal"><i class="fas fa-plus"></i> Add Branch</button>
+    </div>
+</div>
+
+<!-- ═══ Branch Detail Cards ═══ -->
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;">
+    <!-- Mumbai HQ -->
+    <div class="detail-section" style="border-left:4px solid #2563EB;cursor:pointer;"
+        onclick="navigateTo('dashboard-owner')">
+        <div class="section-header" style="background:#eff6ff;">
+            <h3 style="color:#2563eb;font-size:14px;"><i class="fas fa-building" style="margin-right:6px;"></i> Mumbai
+                HQ (Head Office)</h3>
+            <span class="status-badge active" style="font-size:10px;">Primary</span>
+        </div>
+        <div class="section-body" style="font-size:12px;">
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Branch Code</span><span style="font-weight:600;color:#2563eb;">GT-MUM</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>GSTIN</span><span style="font-weight:600;font-size:11px;">27AABCG1234M1ZP</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Manager</span><span style="font-weight:600;">Priya Sharma</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Vehicles</span><span style="font-weight:600;">18 <span style="font-size:10px;color:#16a34a;">↑82%
+                        util.</span></span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Drivers</span><span style="font-weight:600;">15</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Clients</span><span style="font-weight:600;">8 <span style="font-size:10px;color:#6b7280;">+ 5
+                        company-wide</span></span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Active Trips</span><span style="font-weight:600;color:#059669;">7</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Revenue (MTD)</span><span style="font-weight:600;color:var(--status-active);">₹18,45,200</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Profit (MTD)</span><span style="font-weight:600;color:var(--status-active);">₹2,84,100</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;">
+                <span>Margin</span><span style="font-weight:600;">15.4%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delhi NCR -->
+    <div class="detail-section" style="border-left:4px solid #059669;cursor:pointer;">
+        <div class="section-header" style="background:#ecfdf5;">
+            <h3 style="color:#059669;font-size:14px;"><i class="fas fa-building" style="margin-right:6px;"></i> Delhi
+                NCR</h3>
+            <span class="status-badge active" style="font-size:10px;">Active</span>
+        </div>
+        <div class="section-body" style="font-size:12px;">
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Branch Code</span><span style="font-weight:600;color:#059669;">GT-DEL</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>GSTIN</span><span style="font-weight:600;font-size:11px;">07AABCG1234M1ZG</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Manager</span><span style="font-weight:600;">Vikram Singh</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Vehicles</span><span style="font-weight:600;">12 <span style="font-size:10px;color:#16a34a;">↑75%
+                        util.</span></span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Drivers</span><span style="font-weight:600;">10</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Clients</span><span style="font-weight:600;">5 <span style="font-size:10px;color:#6b7280;">+ 5
+                        company-wide</span></span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Active Trips</span><span style="font-weight:600;color:#059669;">5</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Revenue (MTD)</span><span style="font-weight:600;color:var(--status-active);">₹14,28,000</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Profit (MTD)</span><span style="font-weight:600;color:var(--status-active);">₹2,12,400</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;">
+                <span>Margin</span><span style="font-weight:600;">14.9%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ahmedabad -->
+    <div class="detail-section" style="border-left:4px solid #D97706;cursor:pointer;">
+        <div class="section-header" style="background:#fffbeb;">
+            <h3 style="color:#d97706;font-size:14px;"><i class="fas fa-building" style="margin-right:6px;"></i>
+                Ahmedabad</h3>
+            <span class="status-badge active" style="font-size:10px;">Active</span>
+        </div>
+        <div class="section-body" style="font-size:12px;">
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Branch Code</span><span style="font-weight:600;color:#d97706;">GT-AMD</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>GSTIN</span><span style="font-weight:600;font-size:11px;">24AABCG1234M1ZB</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Manager</span><span style="font-weight:600;">Rajesh Kumar</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Vehicles</span><span style="font-weight:600;">8 <span style="font-size:10px;color:#f59e0b;">↑68%
+                        util.</span></span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Drivers</span><span style="font-weight:600;">6</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Clients</span><span style="font-weight:600;">3 <span style="font-size:10px;color:#6b7280;">+ 5
+                        company-wide</span></span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Active Trips</span><span style="font-weight:600;color:#059669;">3</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Revenue (MTD)</span><span style="font-weight:600;color:var(--status-active);">₹8,64,000</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Profit (MTD)</span><span style="font-weight:600;color:var(--status-active);">₹1,12,200</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;">
+                <span>Margin</span><span style="font-weight:600;">13.0%</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;">
+    <!-- Pune -->
+    <div class="detail-section" style="border-left:4px solid #0E7490;cursor:pointer;">
+        <div class="section-header" style="background:#ecfeff;">
+            <h3 style="color:#0e7490;font-size:14px;"><i class="fas fa-building" style="margin-right:6px;"></i> Pune
+            </h3>
+            <span class="status-badge active" style="font-size:10px;">Active</span>
+        </div>
+        <div class="section-body" style="font-size:12px;">
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Branch Code</span><span style="font-weight:600;color:#0e7490;">GT-PNE</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>GSTIN</span><span style="font-weight:600;font-size:11px;">27AABCG5678N2ZQ</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Manager</span><span style="font-weight:600;">Anand Kulkarni</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Vehicles</span><span style="font-weight:600;">5 <span style="font-size:10px;color:#f59e0b;">↑62%
+                        util.</span></span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Drivers</span><span style="font-weight:600;">6</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Clients</span><span style="font-weight:600;">2 <span style="font-size:10px;color:#6b7280;">+ 5
+                        company-wide</span></span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Active Trips</span><span style="font-weight:600;color:#059669;">3</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Revenue (MTD)</span><span style="font-weight:600;color:var(--status-active);">₹4,85,200</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Profit (MTD)</span><span style="font-weight:600;color:var(--status-active);">₹62,400</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;">
+                <span>Margin</span><span style="font-weight:600;">12.9%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chennai (New Branch) -->
+    <div class="detail-section" style="border-left:4px solid #DC2626;cursor:pointer;">
+        <div class="section-header" style="background:#fef2f2;">
+            <h3 style="color:#dc2626;font-size:14px;"><i class="fas fa-building" style="margin-right:6px;"></i> Chennai
+            </h3>
+            <span class="status-badge pending" style="font-size:10px;">New</span>
+        </div>
+        <div class="section-body" style="font-size:12px;">
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Branch Code</span><span style="font-weight:600;color:#dc2626;">GT-CHN</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>GSTIN</span><span style="font-weight:600;font-size:11px;">33AABCG1234M1ZC</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Manager</span><span style="font-weight:600;color:#dc2626;">Unassigned</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Vehicles</span><span style="font-weight:600;">4 <span style="font-size:10px;color:#dc2626;">↓45%
+                        util.</span></span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Drivers</span><span style="font-weight:600;">3</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Clients</span><span style="font-weight:600;">1 <span style="font-size:10px;color:#6b7280;">+ 5
+                        company-wide</span></span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Active Trips</span><span style="font-weight:600;color:#f59e0b;">0</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Revenue (MTD)</span><span style="font-weight:600;color:var(--status-pending);">₹2,40,000</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f5f5f5;">
+                <span>Profit (MTD)</span><span style="font-weight:600;color:var(--status-pending);">₹13,100</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;">
+                <span>Margin</span><span style="font-weight:600;color:#dc2626;">5.5%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transfer & Edge Cases Card -->
+    <div class="detail-section" style="border-left:4px solid #7c3aed;">
+        <div class="section-header" style="background:#faf5ff;">
+            <h3 style="color:#7c3aed;font-size:14px;"><i class="fas fa-exchange-alt" style="margin-right:6px;"></i>
+                Transfers & Actions</h3>
+        </div>
+        <div class="section-body" style="padding:12px;">
+            <div style="display:flex;flex-direction:column;gap:8px;">
+                <button class="btn btn-primary" data-modal="transfer-vehicle-modal"
+                    style="width:100%;text-align:left;padding:10px 12px;font-size:12px;display:flex;align-items:center;gap:8px;">
+                    <i class="fas fa-truck" style="font-size:14px;"></i>
+                    <div>
+                        <div style="font-weight:600;">Transfer Vehicle</div>
+                        <div style="font-size:10px;opacity:0.8;">Move a vehicle to another branch</div>
+                    </div>
+                </button>
+                <button class="btn btn-primary" data-modal="transfer-driver-modal"
+                    style="width:100%;text-align:left;padding:10px 12px;font-size:12px;display:flex;align-items:center;gap:8px;background:#059669;border-color:#059669;">
+                    <i class="fas fa-user-friends" style="font-size:14px;"></i>
+                    <div>
+                        <div style="font-weight:600;">Transfer Driver</div>
+                        <div style="font-size:10px;opacity:0.8;">Reassign driver to another branch</div>
+                    </div>
+                </button>
+                <button class="btn btn-secondary"
+                    style="width:100%;text-align:left;padding:10px 12px;font-size:12px;display:flex;align-items:center;gap:8px;">
+                    <i class="fas fa-chart-pie" style="font-size:14px;color:#7c3aed;"></i>
+                    <div>
+                        <div style="font-weight:600;">Branch P&L Report</div>
+                        <div style="font-size:10px;color:#6b7280;">Generate consolidated comparison</div>
+                    </div>
+                </button>
+                <div
+                    style="padding:10px;background:#fef3c7;border:1px solid #fde68a;border-radius:8px;font-size:11px;color:#92400e;">
+                    <i class="fas fa-info-circle" style="margin-right:4px;"></i>
+                    <strong>Tip:</strong> Indirectly allocated costs (rent, admin salaries) use formula: Branch Revenue
+                    ÷ Company Revenue × Indirect Expense.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ Branch-wise P&L Comparison Table ═══ -->
+<div class="table-container" style="margin-bottom:24px;">
+    <h2 style="font-size:16px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+        <i class="fas fa-chart-bar" style="color:#2563eb;"></i> Branch-wise P&L Comparison (March 2026)
+    </h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Branch</th>
+                <th>Code</th>
+                <th>Manager</th>
+                <th style="text-align:right;">Revenue</th>
+                <th style="text-align:right;">Direct Exp.</th>
+                <th style="text-align:right;">Indirect Alloc.</th>
+                <th style="text-align:right;">Net Profit</th>
+                <th style="text-align:right;">Margin</th>
+                <th>Vehicles</th>
+                <th>Drivers</th>
+                <th>Trips (MTD)</th>
+                <th>Utilization</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="font-weight:600;">Mumbai HQ</td>
+                <td><span
+                        style="font-size:11px;font-weight:600;color:#2563eb;background:#eff6ff;padding:2px 6px;border-radius:4px;">GT-MUM</span>
+                </td>
+                <td>Priya Sharma</td>
+                <td style="text-align:right;">₹18,45,200</td>
+                <td style="text-align:right;">₹14,48,600</td>
+                <td style="text-align:right;color:#6b7280;">₹1,12,500</td>
+                <td style="text-align:right;font-weight:600;color:var(--status-active);">₹2,84,100</td>
+                <td style="text-align:right;font-weight:600;">15.4%</td>
+                <td>18</td>
+                <td>15</td>
+                <td>32</td>
+                <td>
+                    <div class="progress-bar" style="width:60px;">
+                        <div class="progress-fill green" style="width:82%"></div>
+                    </div>
+                </td>
+                <td><span class="status-badge active">Active</span></td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">Delhi NCR</td>
+                <td><span
+                        style="font-size:11px;font-weight:600;color:#059669;background:#ecfdf5;padding:2px 6px;border-radius:4px;">GT-DEL</span>
+                </td>
+                <td>Vikram Singh</td>
+                <td style="text-align:right;">₹14,28,000</td>
+                <td style="text-align:right;">₹11,28,100</td>
+                <td style="text-align:right;color:#6b7280;">₹87,500</td>
+                <td style="text-align:right;font-weight:600;color:var(--status-active);">₹2,12,400</td>
+                <td style="text-align:right;font-weight:600;">14.9%</td>
+                <td>12</td>
+                <td>10</td>
+                <td>24</td>
+                <td>
+                    <div class="progress-bar" style="width:60px;">
+                        <div class="progress-fill green" style="width:75%"></div>
+                    </div>
+                </td>
+                <td><span class="status-badge active">Active</span></td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">Ahmedabad</td>
+                <td><span
+                        style="font-size:11px;font-weight:600;color:#d97706;background:#fffbeb;padding:2px 6px;border-radius:4px;">GT-AMD</span>
+                </td>
+                <td>Rajesh Kumar</td>
+                <td style="text-align:right;">₹8,64,000</td>
+                <td style="text-align:right;">₹6,85,300</td>
+                <td style="text-align:right;color:#6b7280;">₹66,500</td>
+                <td style="text-align:right;font-weight:600;color:var(--status-active);">₹1,12,200</td>
+                <td style="text-align:right;font-weight:600;">13.0%</td>
+                <td>8</td>
+                <td>6</td>
+                <td>16</td>
+                <td>
+                    <div class="progress-bar" style="width:60px;">
+                        <div class="progress-fill yellow" style="width:68%"></div>
+                    </div>
+                </td>
+                <td><span class="status-badge active">Active</span></td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">Pune</td>
+                <td><span
+                        style="font-size:11px;font-weight:600;color:#0e7490;background:#ecfeff;padding:2px 6px;border-radius:4px;">GT-PNE</span>
+                </td>
+                <td>Anand Kulkarni</td>
+                <td style="text-align:right;">₹4,85,200</td>
+                <td style="text-align:right;">₹3,82,400</td>
+                <td style="text-align:right;color:#6b7280;">₹40,400</td>
+                <td style="text-align:right;font-weight:600;color:var(--status-active);">₹62,400</td>
+                <td style="text-align:right;font-weight:600;">12.9%</td>
+                <td>5</td>
+                <td>6</td>
+                <td>14</td>
+                <td>
+                    <div class="progress-bar" style="width:60px;">
+                        <div class="progress-fill yellow" style="width:62%"></div>
+                    </div>
+                </td>
+                <td><span class="status-badge active">Active</span></td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">Chennai</td>
+                <td><span
+                        style="font-size:11px;font-weight:600;color:#dc2626;background:#fef2f2;padding:2px 6px;border-radius:4px;">GT-CHN</span>
+                </td>
+                <td style="color:#dc2626;">Unassigned</td>
+                <td style="text-align:right;">₹2,40,000</td>
+                <td style="text-align:right;">₹2,08,400</td>
+                <td style="text-align:right;color:#6b7280;">₹18,500</td>
+                <td style="text-align:right;font-weight:600;color:var(--status-pending);">₹13,100</td>
+                <td style="text-align:right;font-weight:600;color:var(--status-pending);">5.5%</td>
+                <td>4</td>
+                <td>3</td>
+                <td>6</td>
+                <td>
+                    <div class="progress-bar" style="width:60px;">
+                        <div class="progress-fill red" style="width:45%"></div>
+                    </div>
+                </td>
+                <td><span class="status-badge pending">New</span></td>
+            </tr>
+            <!-- Totals Row -->
+            <tr style="background:#f8fafc;font-weight:700;border-top:2px solid #e5e7eb;">
+                <td>TOTAL (Company)</td>
+                <td></td>
+                <td></td>
+                <td style="text-align:right;">₹48,62,400</td>
+                <td style="text-align:right;">₹38,52,800</td>
+                <td style="text-align:right;color:#6b7280;">₹3,25,400</td>
+                <td style="text-align:right;color:#16a34a;">₹6,84,200</td>
+                <td style="text-align:right;">14.1%</td>
+                <td>47</td>
+                <td>38</td>
+                <td>92</td>
+                <td>
+                    <div class="progress-bar" style="width:60px;">
+                        <div class="progress-fill green" style="width:72%"></div>
+                    </div>
+                </td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- ═══ Branch Entity Drill-Down ═══ -->
+<div class="dashboard-grid two-col" style="margin-bottom:20px;">
+    <!-- Vehicles by Branch -->
+    <div class="widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-truck" style="color:#2563eb;margin-right:6px;"></i> Vehicles by Branch</h3>
+            <a href="#" onclick="navigateTo('vehicle-list')" class="btn btn-link">All Vehicles →</a>
+        </div>
+        <div class="widget-body" style="padding:12px;">
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <span style="width:90px;font-size:12px;font-weight:600;color:#2563eb;">Mumbai HQ</span>
+                    <div style="flex:1;height:24px;background:#f3f4f6;border-radius:4px;position:relative;">
+                        <div
+                            style="width:82%;height:100%;background:linear-gradient(90deg,#3b82f6,#2563eb);border-radius:4px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;">
+                            <span style="font-size:10px;color:#fff;font-weight:700;">18 veh · 82%</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <span style="width:90px;font-size:12px;font-weight:600;color:#059669;">Delhi NCR</span>
+                    <div style="flex:1;height:24px;background:#f3f4f6;border-radius:4px;position:relative;">
+                        <div
+                            style="width:75%;height:100%;background:linear-gradient(90deg,#34d399,#059669);border-radius:4px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;">
+                            <span style="font-size:10px;color:#fff;font-weight:700;">12 veh · 75%</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <span style="width:90px;font-size:12px;font-weight:600;color:#d97706;">Ahmedabad</span>
+                    <div style="flex:1;height:24px;background:#f3f4f6;border-radius:4px;position:relative;">
+                        <div
+                            style="width:68%;height:100%;background:linear-gradient(90deg,#fbbf24,#d97706);border-radius:4px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;">
+                            <span style="font-size:10px;color:#fff;font-weight:700;">8 veh · 68%</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <span style="width:90px;font-size:12px;font-weight:600;color:#0e7490;">Pune</span>
+                    <div style="flex:1;height:24px;background:#f3f4f6;border-radius:4px;position:relative;">
+                        <div
+                            style="width:62%;height:100%;background:linear-gradient(90deg,#22d3ee,#0e7490);border-radius:4px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;">
+                            <span style="font-size:10px;color:#fff;font-weight:700;">5 veh · 62%</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <span style="width:90px;font-size:12px;font-weight:600;color:#dc2626;">Chennai</span>
+                    <div style="flex:1;height:24px;background:#f3f4f6;border-radius:4px;position:relative;">
+                        <div
+                            style="width:45%;height:100%;background:linear-gradient(90deg,#f87171,#dc2626);border-radius:4px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;">
+                            <span style="font-size:10px;color:#fff;font-weight:700;">4 veh · 45%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Revenue Distribution -->
+    <div class="widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-rupee-sign" style="color:#16a34a;margin-right:6px;"></i> Revenue Distribution (MTD)
+            </h3>
+        </div>
+        <div class="widget-body" style="padding:16px;">
+            <div style="display:flex;align-items:center;gap:20px;">
+                <!-- Donut -->
+                <svg viewBox="0 0 160 160" style="width:140px;height:140px;flex-shrink:0;">
+                    <!-- Mumbai 38% -->
+                    <circle cx="80" cy="80" r="60" fill="none" stroke="#2563EB" stroke-width="18"
+                        stroke-dasharray="143 377" stroke-dashoffset="0" transform="rotate(-90 80 80)" />
+                    <!-- Delhi 29% -->
+                    <circle cx="80" cy="80" r="60" fill="none" stroke="#059669" stroke-width="18"
+                        stroke-dasharray="109 377" stroke-dashoffset="-143" transform="rotate(-90 80 80)" />
+                    <!-- Ahmedabad 18% -->
+                    <circle cx="80" cy="80" r="60" fill="none" stroke="#D97706" stroke-width="18"
+                        stroke-dasharray="68 377" stroke-dashoffset="-252" transform="rotate(-90 80 80)" />
+                    <!-- Pune 10% -->
+                    <circle cx="80" cy="80" r="60" fill="none" stroke="#0E7490" stroke-width="18"
+                        stroke-dasharray="38 377" stroke-dashoffset="-320" transform="rotate(-90 80 80)" />
+                    <!-- Chennai 5% -->
+                    <circle cx="80" cy="80" r="60" fill="none" stroke="#DC2626" stroke-width="18"
+                        stroke-dasharray="19 377" stroke-dashoffset="-358" transform="rotate(-90 80 80)" />
+                    <text x="80" y="74" text-anchor="middle" font-size="10" fill="#6b7280">Total</text>
+                    <text x="80" y="91" text-anchor="middle" font-size="14" fill="#111827"
+                        font-weight="700">₹48.6L</text>
+                </svg>
+                <!-- Labels -->
+                <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;">
+                        <div style="display:flex;align-items:center;gap:6px;">
+                            <div style="width:10px;height:10px;border-radius:3px;background:#2563EB;"></div><span
+                                style="font-size:12px;">Mumbai HQ</span>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-size:12px;font-weight:600;">₹18.4L</div>
+                            <div style="font-size:10px;color:#2563eb;">38%</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;">
+                        <div style="display:flex;align-items:center;gap:6px;">
+                            <div style="width:10px;height:10px;border-radius:3px;background:#059669;"></div><span
+                                style="font-size:12px;">Delhi NCR</span>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-size:12px;font-weight:600;">₹14.3L</div>
+                            <div style="font-size:10px;color:#059669;">29%</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;">
+                        <div style="display:flex;align-items:center;gap:6px;">
+                            <div style="width:10px;height:10px;border-radius:3px;background:#D97706;"></div><span
+                                style="font-size:12px;">Ahmedabad</span>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-size:12px;font-weight:600;">₹8.6L</div>
+                            <div style="font-size:10px;color:#d97706;">18%</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;">
+                        <div style="display:flex;align-items:center;gap:6px;">
+                            <div style="width:10px;height:10px;border-radius:3px;background:#0E7490;"></div><span
+                                style="font-size:12px;">Pune</span>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-size:12px;font-weight:600;">₹4.8L</div>
+                            <div style="font-size:10px;color:#0e7490;">10%</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;">
+                        <div style="display:flex;align-items:center;gap:6px;">
+                            <div style="width:10px;height:10px;border-radius:3px;background:#DC2626;"></div><span
+                                style="font-size:12px;">Chennai</span>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-size:12px;font-weight:600;">₹2.4L</div>
+                            <div style="font-size:10px;color:#dc2626;">5%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ Modals ═══ -->
+
+<!-- New Branch Modal -->
+<div class="modal-overlay" id="new-branch-modal">
+    <div class="modal-content" style="max-width:560px;">
+        <div class="modal-header">
+            <h3>Add New Branch</h3><button class="close-btn" data-close-modal>×</button>
+        </div>
+        <div class="modal-body" style="padding:20px;">
+            <div style="display:grid;gap:14px;">
+                <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px;">
+                    <div><label
+                            style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">Branch
+                            Name *</label>
+                        <input type="text" placeholder="e.g. Hyderabad Depot"
+                            style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:13px;font-family:inherit;">
+                    </div>
+                    <div><label
+                            style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">Branch
+                            Code *</label>
+                        <input type="text" placeholder="e.g. GT-HYD"
+                            style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:13px;font-family:inherit;">
+                    </div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div><label
+                            style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">City
+                            *</label>
+                        <input type="text" placeholder="City"
+                            style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:13px;font-family:inherit;">
+                    </div>
+                    <div><label
+                            style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">State
+                            *</label>
+                        <select
+                            style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:13px;font-family:inherit;">
+                            <option>Select...</option>
+                            <option>Maharashtra</option>
+                            <option>Delhi NCR</option>
+                            <option>Gujarat</option>
+                            <option>Tamil Nadu</option>
+                            <option>Telangana</option>
+                            <option>Karnataka</option>
+                            <option>Rajasthan</option>
+                        </select>
+                    </div>
+                </div>
+                <div><label
+                        style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">GSTIN
+                        *</label>
+                    <input type="text" placeholder="e.g. 36AABCG1234M1ZX"
+                        style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:13px;font-family:inherit;">
+                </div>
+                <div><label
+                        style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">Branch
+                        Manager *</label>
+                    <select
+                        style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:13px;font-family:inherit;">
+                        <option>Select manager...</option>
+                        <option>Vikram Singh</option>
+                        <option>Rajesh Kumar</option>
+                        <option>Anita Verma</option>
+                        <option>New Hire (TBD)</option>
+                    </select>
+                </div>
+                <div><label
+                        style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">Phone</label>
+                    <input type="text" placeholder="e.g. +91 40 2345 6789"
+                        style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:13px;font-family:inherit;">
+                </div>
+                <div><label
+                        style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">Address</label>
+                    <textarea placeholder="Full branch address..."
+                        style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:13px;font-family:inherit;min-height:60px;"></textarea>
+                </div>
+                <div
+                    style="padding:8px 12px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:6px;font-size:11px;color:#0369a1;">
+                    <i class="fas fa-info-circle" style="margin-right:4px;"></i> New branch will be created with status
+                    <strong>Active</strong>. Assign vehicles and drivers after creation.
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer"
+            style="padding:12px 20px;border-top:1px solid var(--border-color);display:flex;justify-content:flex-end;gap:8px;">
+            <button class="btn btn-secondary" data-close-modal>Cancel</button>
+            <button class="btn btn-primary" data-close-modal>Add Branch</button>
+        </div>
+    </div>
+</div>
+
+<!-- Transfer Vehicle Modal -->
+<div class="modal-overlay" id="transfer-vehicle-modal">
+    <div class="modal-content" style="max-width:480px;">
+        <div class="modal-header">
+            <h3><i class="fas fa-truck" style="margin-right:8px;color:#2563eb;"></i> Transfer Vehicle</h3><button
+                class="close-btn" data-close-modal>×</button>
+        </div>
+        <div class="modal-body" style="padding:20px;">
+            <div style="display:grid;gap:14px;">
+                <div><label
+                        style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">Vehicle
+                        *</label>
+                    <select
+                        style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:13px;font-family:inherit;">
+                        <option>Select vehicle...</option>
+                        <option>MH04AB1234 (Mumbai HQ)</option>
+                        <option>MH12EF9012 (Pune)</option>
+                        <option>MH12GH3456 (Pune)</option>
+                        <option>DL01EF9012 (Delhi NCR)</option>
+                    </select>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:end;">
+                    <div><label
+                            style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">From
+                            Branch</label>
+                        <div
+                            style="padding:8px 12px;background:#f3f4f6;border-radius:6px;font-size:13px;font-weight:500;">
+                            Mumbai HQ</div>
+                    </div>
+                    <div style="padding-bottom:8px;"><i class="fas fa-arrow-right" style="color:#6b7280;"></i></div>
+                    <div><label
+                            style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">To
+                            Branch *</label>
+                        <select
+                            style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:13px;font-family:inherit;">
+                            <option>Select...</option>
+                            <option>Delhi NCR</option>
+                            <option>Ahmedabad</option>
+                            <option>Pune</option>
+                            <option>Chennai</option>
+                        </select>
+                    </div>
+                </div>
+                <div><label
+                        style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">Transfer
+                        Type</label>
+                    <select
+                        style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:13px;font-family:inherit;">
+                        <option>Permanent Transfer</option>
+                        <option>Temporary Loan (returns after trip)</option>
+                    </select>
+                </div>
+                <div><label
+                        style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">Reason</label>
+                    <textarea placeholder="Reason for transfer..."
+                        style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:13px;font-family:inherit;min-height:50px;"></textarea>
+                </div>
+                <div
+                    style="padding:8px 12px;background:#fef3c7;border:1px solid #fde68a;border-radius:6px;font-size:11px;color:#92400e;">
+                    <i class="fas fa-exclamation-triangle" style="margin-right:4px;"></i> Compliance documents
+                    (insurance, RC, permits) will be carried over. Verify state-level documents.
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer"
+            style="padding:12px 20px;border-top:1px solid var(--border-color);display:flex;justify-content:flex-end;gap:8px;">
+            <button class="btn btn-secondary" data-close-modal>Cancel</button>
+            <button class="btn btn-primary" data-close-modal>Transfer Vehicle</button>
+        </div>
+    </div>
+</div>
+
+<!-- Transfer Driver Modal -->
+<div class="modal-overlay" id="transfer-driver-modal">
+    <div class="modal-content" style="max-width:480px;">
+        <div class="modal-header">
+            <h3><i class="fas fa-user-friends" style="margin-right:8px;color:#059669;"></i> Transfer Driver</h3><button
+                class="close-btn" data-close-modal>×</button>
+        </div>
+        <div class="modal-body" style="padding:20px;">
+            <div style="display:grid;gap:14px;">
+                <div><label
+                        style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">Driver
+                        *</label>
+                    <select
+                        style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:13px;font-family:inherit;">
+                        <option>Select driver...</option>
+                        <option>Rajesh Kumar (Mumbai HQ)</option>
+                        <option>Ramesh Yadav (Pune)</option>
+                        <option>Sunil Jadhav (Pune)</option>
+                        <option>Anita Verma (Delhi NCR)</option>
+                    </select>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:end;">
+                    <div><label
+                            style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">From
+                            Branch</label>
+                        <div
+                            style="padding:8px 12px;background:#f3f4f6;border-radius:6px;font-size:13px;font-weight:500;">
+                            Pune</div>
+                    </div>
+                    <div style="padding-bottom:8px;"><i class="fas fa-arrow-right" style="color:#6b7280;"></i></div>
+                    <div><label
+                            style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">To
+                            Branch *</label>
+                        <select
+                            style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:13px;font-family:inherit;">
+                            <option>Select...</option>
+                            <option>Mumbai HQ</option>
+                            <option>Delhi NCR</option>
+                            <option>Ahmedabad</option>
+                            <option>Chennai</option>
+                        </select>
+                    </div>
+                </div>
+                <div><label
+                        style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">Transfer
+                        Type</label>
+                    <select
+                        style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:13px;font-family:inherit;">
+                        <option>Permanent Transfer</option>
+                        <option>Temporary Loan (returns after trip)</option>
+                    </select>
+                </div>
+                <div
+                    style="padding:8px 12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;font-size:11px;color:#166534;">
+                    <i class="fas fa-info-circle" style="margin-right:4px;"></i> Future trips, advances, and settlements
+                    will accrue to the destination branch after transfer.
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer"
+            style="padding:12px 20px;border-top:1px solid var(--border-color);display:flex;justify-content:flex-end;gap:8px;">
+            <button class="btn btn-secondary" data-close-modal>Cancel</button>
+            <button class="btn btn-primary" data-close-modal style="background:#059669;border-color:#059669;">Transfer
+                Driver</button>
+        </div>
+    </div>
+</div>

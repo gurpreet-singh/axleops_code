@@ -1,0 +1,669 @@
+<!-- ═══════════════════════════════════════════════════════════════
+     ✈️ CREATE TRIP — Single-Page Form (2-Column Layout)
+     Left: Trip Setup (Client, Route, Vehicle, Driver, Schedule, Notes)
+     Right: Consignment & E-Way Bill + Financial Summary
+     FK: Trip → Route Contract (nullable) → Route → Client
+     ═══════════════════════════════════════════════════════════════ -->
+
+<style>
+    /* Two-column form layout */
+    .trip-form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        align-items: start;
+    }
+
+    /* Full-width sections that span both columns */
+    .trip-form-full {
+        grid-column: 1 / -1;
+    }
+
+    /* Route meta grid — compact for inline display */
+    .route-meta-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .route-meta-item {
+        background: var(--bg-main);
+        border-radius: var(--border-radius);
+        padding: 8px 10px;
+    }
+
+    .route-meta-item .meta-label {
+        font-size: 10px;
+        color: var(--text-muted);
+        margin-bottom: 1px;
+    }
+
+    .route-meta-item .meta-val {
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    /* GSTIN display grid */
+    .gstin-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-top: 12px;
+        padding: 12px;
+        background: var(--bg-main);
+        border-radius: var(--border-radius);
+    }
+
+    .gstin-label {
+        font-size: 11px;
+        color: var(--text-muted);
+    }
+
+    .gstin-val {
+        font-size: 13px;
+        font-family: monospace;
+        margin-top: 2px;
+    }
+
+    .gstin-entity {
+        font-size: 11px;
+        color: var(--text-secondary);
+        margin-top: 1px;
+    }
+
+    /* Summary grid for the review section */
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+
+    .summary-grid .route-meta-item {
+        padding: 10px 12px;
+    }
+
+    @media (max-width: 900px) {
+        .trip-form-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="page-header">
+    <h1 style="font-size:18px;">Add New Trip</h1>
+    <div class="page-header-actions">
+        <button class="btn btn-secondary" onclick="navigateTo('trips')">Cancel</button>
+        <button class="btn btn-primary"
+            onclick="showToast('Trip TRP-2024-0143 created successfully!', 'success'); setTimeout(function(){ navigateTo('trip-detail'); }, 800);"><i
+                class="fas fa-check" style="margin-right:4px;"></i> Save Trip</button>
+    </div>
+</div>
+
+<!-- ════════════ TWO-COLUMN FORM LAYOUT ════════════ -->
+<div class="trip-form-grid">
+
+    <!-- ════════════════════════════════════════════════════
+         LEFT COLUMN — Trip Setup
+         ════════════════════════════════════════════════════ -->
+    <div>
+
+        <!-- Client & Branch -->
+        <div class="detail-section" style="margin-bottom:16px;">
+            <div class="section-header">
+                <h3><i class="fas fa-building" style="margin-right:6px;color:var(--primary);font-size:13px;"></i>
+                    Client & branch</h3>
+            </div>
+            <div class="section-body">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Client *</label>
+                        <select class="form-control">
+                            <option value="">Select client...</option>
+                            <option selected>Reliance Industries</option>
+                            <option>Tata Steel</option>
+                            <option>Hindustan Unilever</option>
+                            <option>ITC Limited</option>
+                            <option>Adani Ports</option>
+                            <option>Mahindra Logistics</option>
+                            <option>Asian Paints</option>
+                            <option>Larsen & Toubro</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label><i class="fas fa-building" style="font-size:10px;color:#0369a1;margin-right:3px;"></i>
+                            Branch *</label>
+                        <select class="form-control" style="border-color:#bae6fd;background:#f0f9ff;">
+                            <option value="mumbai" selected>Mumbai HQ (Primary)</option>
+                            <option value="delhi">Delhi NCR</option>
+                            <option value="ahmedabad">Ahmedabad</option>
+                            <option value="pune">Pune</option>
+                            <option value="chennai">Chennai</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Route, Vehicle, Driver & Schedule — Combined Section -->
+        <div class="detail-section" style="margin-bottom:16px;">
+            <div class="section-header">
+                <h3><i class="fas fa-route" style="margin-right:6px;color:var(--primary);font-size:13px;"></i>
+                    Route, vehicle & driver</h3>
+            </div>
+            <div class="section-body">
+                <!-- Filter banner -->
+                <div
+                    style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#e6f4ea;border-radius:var(--border-radius-sm);margin-bottom:14px;font-size:12px;color:#137333;">
+                    <i class="fas fa-filter" style="font-size:10px;"></i>
+                    Showing routes filtered to <strong style="margin:0 3px;">Reliance Industries</strong>
+                </div>
+
+                <!-- Route -->
+                <div class="form-group">
+                    <label>Route *</label>
+                    <select class="form-control">
+                        <option value="">Select route...</option>
+                        <optgroup label="📄 With Active Contract">
+                            <option selected>Mumbai → Delhi (JNPT) — Multi-Axle · 1,380 km · ₹34.15/km · 26hr SLA
+                            </option>
+                            <option>Mumbai → Delhi — 2-Axle · 1,380 km · ₹28.50/km · 24hr SLA</option>
+                            <option>Mumbai → Ahmedabad — Tanker · 530 km · ₹42.00/km · 10hr SLA</option>
+                        </optgroup>
+                        <optgroup label="🌐 No Active Contract (Manual Rate)">
+                            <option>Mumbai → Chennai — Multi-Axle · 1,340 km — Manual rate</option>
+                            <option>Delhi → Jaipur — Container 20ft · 280 km — Manual rate ⚠</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <!-- Contract badge row -->
+                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
+                    <span class="status-badge active">Contract #RC-2024-0017</span>
+                    <span class="status-badge pending">14/20 MTD</span>
+                </div>
+
+                <!-- Route meta cards -->
+                <div class="route-meta-grid">
+                    <div class="route-meta-item">
+                        <div class="meta-label">Distance</div>
+                        <div class="meta-val">1,380 km</div>
+                    </div>
+                    <div class="route-meta-item">
+                        <div class="meta-label">Highway</div>
+                        <div class="meta-val">NH48 → NH44</div>
+                    </div>
+                    <div class="route-meta-item">
+                        <div class="meta-label">Est. duration</div>
+                        <div class="meta-val">22–26 hrs</div>
+                    </div>
+                    <div class="route-meta-item">
+                        <div class="meta-label">SLA deadline</div>
+                        <div class="meta-val" style="color:var(--status-active);">26 hours</div>
+                    </div>
+                </div>
+
+                <!-- Separator -->
+                <div style="border-top:1px solid var(--border-color);margin:16px 0;"></div>
+
+                <!-- Vehicle type auto-determined banner -->
+                <div
+                    style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#e8f0fe;border-radius:var(--border-radius-sm);margin-bottom:14px;font-size:12px;color:#1a73e8;">
+                    <i class="fas fa-info-circle" style="font-size:10px;"></i>
+                    Vehicle type <strong style="margin:0 3px;">Multi-Axle Truck</strong> auto-determined from route.
+                </div>
+
+                <!-- Vehicle -->
+                <div class="form-group">
+                    <label>Vehicle * <span
+                            style="font-size:10px;color:#d97706;font-weight:400;margin-left:4px;">Filtered:
+                            Multi-Axle + Mumbai HQ</span></label>
+                    <select class="form-control">
+                        <option value="">Select Multi-Axle vehicle...</option>
+                        <optgroup label="🏠 Mumbai HQ — Multi-Axle Trucks">
+                            <option selected>MH04AB1234 — 2022 Tata Signa 4825.T (🟢 Available)</option>
+                            <option>MH04CD5678 — 2021 Ashok Leyland U-3718 (🟢 Available)</option>
+                            <option>MH04KL4567 — 2022 BharatBenz 4228R (🔵 On Trip — ETA 6 hrs)</option>
+                        </optgroup>
+                        <optgroup label="⬇ Other Branches — Multi-Axle">
+                            <option style="color:#d97706;">MH12EF9012 — Pune · Tata Signa 4825.T (⚠ Cross-branch)
+                            </option>
+                            <option style="color:#d97706;">DL01MN3456 — Delhi · Ashok Leyland (⚠ Cross-branch)
+                            </option>
+                        </optgroup>
+                        <optgroup label="🏗 Subcontractor — Multi-Axle">
+                            <option style="color:#7c3aed;">SC-MH-01-7788 — Agarwal Packers Multi-Axle (Subcon)
+                            </option>
+                        </optgroup>
+                        <option disabled style="color:#DC2626;">MH04ZZ9999 — 2019 Eicher Pro 6049 (🔴 BLOCKED —
+                            Expired Insurance)</option>
+                    </select>
+                </div>
+
+                <!-- Driver -->
+                <div class="form-group">
+                    <label>Driver * <span style="font-size:10px;color:var(--text-muted);font-weight:400;">Filtered by
+                            HMV
+                            license</span></label>
+                    <select class="form-control">
+                        <option value="">Select driver...</option>
+                        <optgroup label="🏠 Mumbai HQ (Home Branch)">
+                            <option selected>Rajesh Kumar — HMV · ⭐ 4.8 (🟢 Available)</option>
+                            <option>Vikram Singh — HMV · ⭐ 4.5 (🟢 Available)</option>
+                            <option>Deepak Patel — HMV · ⭐ 4.6 (🔵 On Trip)</option>
+                        </optgroup>
+                        <optgroup label="⬇ Other Branches">
+                            <option style="color:#d97706;">Anita Verma — Delhi NCR · HMV (⚠ Cross-branch)</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <!-- Separator -->
+                <div style="border-top:1px solid var(--border-color);margin:16px 0;"></div>
+
+                <!-- Schedule -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Scheduled Start *</label>
+                        <input type="datetime-local" class="form-control">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Expected Delivery <span class="status-badge active"
+                                style="font-size:10px;padding:2px 6px;margin-left:4px;">Auto from SLA: 26
+                                hrs</span></label>
+                        <input type="datetime-local" class="form-control" style="background:var(--bg-main);" readonly>
+                    </div>
+                </div>
+
+                <!-- SLA & Delivery Terms (NEW per workflow spec) -->
+                <div
+                    style="padding:14px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;margin-bottom:14px;">
+                    <div
+                        style="font-size:11px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:10px;">
+                        <i class="fas fa-hourglass-half" style="margin-right:4px;"></i> SLA & Delivery Terms
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                        <div>
+                            <div style="font-size:10px;color:#92400e;">SLA Deadline</div>
+                            <div style="font-size:14px;font-weight:700;color:#d97706;">26 hours</div>
+                            <div style="font-size:10px;color:#6b7280;">From route contract RC-2024-0017</div>
+                        </div>
+                        <div>
+                            <div style="font-size:10px;color:#92400e;">Penalty Clause</div>
+                            <div style="font-size:12px;font-weight:600;color:#1f2937;">₹500/hr after SLA breach</div>
+                            <div style="font-size:10px;color:#6b7280;">Max cap: ₹12,000</div>
+                        </div>
+                        <div>
+                            <div style="font-size:10px;color:#92400e;">Loading Window</div>
+                            <div style="font-size:12px;font-weight:600;color:#1f2937;">2 hours (free detention)</div>
+                        </div>
+                        <div>
+                            <div style="font-size:10px;color:#92400e;">Unloading Window</div>
+                            <div style="font-size:12px;font-weight:600;color:#1f2937;">3 hours (free detention)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Driver Advance and Notes removed per user request -->
+            </div>
+        </div>
+
+        <!-- Ad-Hoc Route -->
+        <div class="detail-section" style="margin-bottom:16px;border-style:dashed;border-color:#c084fc;cursor:pointer;"
+            data-modal="adhoc-route-modal">
+            <div class="section-body" style="padding:14px 20px;">
+                <div style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#7c3aed;">
+                    <i class="fas fa-plus-circle"></i> Add Ad-Hoc Route
+                </div>
+                <div style="font-size:11px;color:var(--text-secondary);margin-top:4px;">
+                    Need a route that doesn't exist yet? Add one inline. Client is already set to Reliance
+                    Industries.
+                    After 3 trips, the system will prompt you to promote it to Standard.
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ════════════════════════════════════════════════════
+         RIGHT COLUMN — Consignment, E-Way Bill & Financial Summary
+         ════════════════════════════════════════════════════ -->
+    <div>
+
+        <!-- Consignment Details -->
+        <div class="detail-section" style="margin-bottom:16px;">
+            <div class="section-header">
+                <h3><i class="fas fa-box" style="margin-right:6px;color:var(--primary);font-size:13px;"></i>
+                    Consignment details</h3>
+            </div>
+            <div class="section-body">
+                <div class="form-group">
+                    <label>LR Number * <span class="status-badge critical"
+                            style="font-size:10px;padding:2px 6px;">Mandatory</span></label>
+                    <input type="text" class="form-control" value="LR-GWT-2024-08142" style="font-weight:600;">
+                    <div style="font-size:10px;color:var(--text-muted);margin-top:3px;">
+                        <i class="fas fa-info-circle" style="margin-right:2px;"></i>
+                        Primary transport document identifier — auto-generated or enter manually
+                    </div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Cargo weight (MT)</label>
+                        <input type="number" class="form-control" value="28">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Cargo description</label>
+                        <input type="text" class="form-control" value="FMCG Goods — Reliance Retail">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Consignment value (₹)</label>
+                        <input type="number" class="form-control" value="850000" style="font-weight:700;">
+                    </div>
+                </div>
+                <!-- EWB threshold banner -->
+                <div
+                    style="margin-top:12px;display:flex;align-items:center;gap:8px;padding:8px 12px;background:#e6f4ea;border-radius:var(--border-radius-sm);font-size:12px;color:#137333;">
+                    <i class="fas fa-check-circle" style="font-size:10px;"></i>
+                    ₹8,50,000 exceeds ₹50,000 — E-Way Bill is mandatory. It will auto-generate on trip start.
+                </div>
+            </div>
+        </div>
+
+        <!-- E-Way Bill Details -->
+        <div class="detail-section" style="margin-bottom:16px;">
+            <div class="section-header">
+                <h3><i class="fas fa-file-alt" style="margin-right:6px;color:#d97706;font-size:13px;"></i> E-Way
+                    Bill details</h3>
+            </div>
+            <div class="section-body">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>HSN Code *</label>
+                        <select class="form-control">
+                            <option value="">Select HSN code...</option>
+                            <option value="9965" selected>9965 — Goods Transport Services (GTA)</option>
+                            <option value="1001">1001 — Wheat & Cereals</option>
+                            <option value="2710">2710 — Petroleum Products</option>
+                            <option value="7208">7208 — Flat-Rolled Steel</option>
+                            <option value="3304">3304 — Beauty / Makeup Products</option>
+                            <option value="3401">3401 — Soap / Detergents (FMCG)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Document Type *</label>
+                        <select class="form-control">
+                            <option selected>Tax Invoice</option>
+                            <option>Delivery Challan</option>
+                            <option>Bill of Supply</option>
+                            <option>Bill of Entry</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- GSTIN Grid -->
+                <div class="gstin-grid">
+                    <div>
+                        <div class="gstin-label">Supplier GSTIN (Company)</div>
+                        <div class="gstin-val">27AABCS1234N1ZN</div>
+                        <div class="gstin-entity">Goodwill Transport Pvt. Ltd.</div>
+                    </div>
+                    <div>
+                        <div class="gstin-label">Recipient GSTIN (Client)</div>
+                        <div class="gstin-val">27AAACR5055K1ZK</div>
+                        <div class="gstin-entity">Reliance Industries Limited <span class="status-badge active"
+                                style="font-size:9px;padding:1px 5px;margin-left:3px;">Verified</span></div>
+                    </div>
+                </div>
+
+                <!-- Pincodes -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Dispatch pincode (origin)</label>
+                        <input type="text" class="form-control" value="400707" readonly
+                            style="font-family:monospace;font-weight:600;background:var(--bg-main);letter-spacing:0.5px;">
+                        <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">JNPT Navi Mumbai,
+                            Maharashtra
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Delivery pincode (destination)</label>
+                        <input type="text" class="form-control" value="281006" readonly
+                            style="font-family:monospace;font-weight:600;background:var(--bg-main);letter-spacing:0.5px;">
+                        <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">Mathura Refinery, Uttar
+                            Pradesh
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EWB validity pills -->
+                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;">
+                    <span class="status-badge active">EWB validity: 7 days</span>
+                    <span class="status-badge pending">Auto-generated on trip start</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Financial Preview -->
+        <div class="detail-section" style="margin-bottom:16px;">
+            <div class="section-header" style="background:linear-gradient(135deg,#e6f4ea,#e6f4ea88);">
+                <h3 style="color:var(--status-active);"><i class="fas fa-chart-pie"
+                        style="margin-right:6px;font-size:13px;"></i> Financial preview</h3>
+            </div>
+            <div class="section-body">
+                <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px;">
+                    <i class="fas fa-info-circle" style="margin-right:3px;"></i>
+                    Cost data (toll, diesel) pulled from Route (operational). <span class="finance-only">Revenue data
+                        (rate,
+                        billing) pulled from Route Contract (financial).</span>
+                </div>
+                <div class="info-list">
+                    <div class="info-item">
+                        <span class="info-label">Diesel (Est.) <span
+                                style="font-size:10px;color:var(--text-muted);">from
+                                Route</span></span>
+                        <span class="info-value">300L</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Toll (Multi-Axle) <span
+                                style="font-size:10px;color:var(--text-muted);">from Route</span></span>
+                        <span class="info-value">₹8,400</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Driver Allowance</span>
+                        <span class="info-value">₹2,500</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Loading/Unloading</span>
+                        <span class="info-value">₹1,500</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Misc</span>
+                        <span class="info-value">₹1,200</span>
+                    </div>
+                    <div class="info-item"
+                        style="background:var(--bg-main);padding:8px 0;border-radius:var(--border-radius);margin-top:4px;">
+                        <span class="info-label" style="font-weight:600;">Total Expected Expenses</span>
+                        <span class="info-value" style="font-weight:700;">₹40,400</span>
+                    </div>
+                    <div class="info-item finance-only"
+                        style="background:#e8f0fe;padding:8px 0;border-radius:var(--border-radius);">
+                        <span class="info-label" style="font-weight:600;">Est. Revenue <span
+                                style="font-size:10px;color:var(--text-muted);font-weight:400;">(₹34.15 × 1,380 km)
+                                from
+                                Contract</span></span>
+                        <span class="info-value" style="font-weight:700;color:var(--primary);">₹47,127</span>
+                    </div>
+                    <div class="info-item finance-only"
+                        style="background:#e6f4ea;padding:8px 0;border-radius:var(--border-radius);">
+                        <span class="info-label" style="font-weight:700;font-size:13px;">Est. Profit</span>
+                        <span class="info-value"
+                            style="font-weight:700;color:var(--status-active);font-size:16px;">₹6,727
+                            (14.3%)</span>
+                    </div>
+                </div>
+                <!-- Margin Floor Check -->
+                <div class="finance-only"
+                    style="margin-top:12px;padding:8px 12px;background:#fef7e0;border:1px solid #fde68a;border-radius:var(--border-radius-sm);font-size:11px;color:#b06000;">
+                    <i class="fas fa-exclamation-triangle" style="margin-right:4px;"></i> <strong>Margin
+                        ⚠:</strong>
+                    14.3% is below Route Contract minimum floor of 18%. Consider optimizing costs or renegotiating
+                    rate.
+                </div>
+                <!-- Rate Source Audit Trail -->
+                <div class="finance-only"
+                    style="margin-top:8px;padding:8px 12px;background:var(--bg-main);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);">
+                    <div style="font-size:10px;font-weight:600;color:var(--text-secondary);margin-bottom:4px;">Rate
+                        Resolution Audit</div>
+                    <div style="display:flex;align-items:center;gap:6px;font-size:10px;">
+                        <span class="status-badge active" style="font-size:10px;padding:2px 6px;">✓ Priority
+                            1</span>
+                        <span>Route Contract RC-2024-0017: ₹34.15/km</span>
+                    </div>
+                    <div
+                        style="display:flex;align-items:center;gap:6px;font-size:10px;margin-top:2px;color:var(--text-muted);">
+                        <span class="status-badge inactive" style="font-size:10px;padding:2px 6px;">Priority
+                            2</span>
+                        <span style="text-decoration:line-through;">Client Master: ₹32.00/km</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ════════════════════════════════════════════════════
+         FULL-WIDTH — Trip Summary
+         ════════════════════════════════════════════════════ -->
+    <div class="trip-form-full">
+        <div class="detail-section" style="margin-bottom:16px;">
+            <div class="section-header">
+                <h3><i class="fas fa-clipboard-check" style="margin-right:6px;color:var(--primary);font-size:13px;"></i>
+                    Trip summary</h3>
+            </div>
+            <div class="section-body">
+                <div class="summary-grid">
+                    <div class="route-meta-item">
+                        <div class="meta-label">Client</div>
+                        <div class="meta-val">Reliance Industries</div>
+                    </div>
+                    <div class="route-meta-item">
+                        <div class="meta-label">Route</div>
+                        <div class="meta-val">Mumbai → Delhi</div>
+                    </div>
+                    <div class="route-meta-item">
+                        <div class="meta-label">Vehicle</div>
+                        <div class="meta-val">MH04AB1234</div>
+                    </div>
+                    <div class="route-meta-item">
+                        <div class="meta-label">Driver</div>
+                        <div class="meta-val">Rajesh Kumar</div>
+                    </div>
+                    <div class="route-meta-item">
+                        <div class="meta-label">Cargo</div>
+                        <div class="meta-val">28 MT FMCG</div>
+                    </div>
+                    <div class="route-meta-item">
+                        <div class="meta-label">LR number</div>
+                        <div class="meta-val">LR-GWT-2024-08142</div>
+                    </div>
+                </div>
+
+                <!-- FK Chain -->
+                <div
+                    style="padding:8px 12px;background:var(--bg-main);border:1px solid var(--border-color);border-radius:var(--border-radius-sm);font-size:10px;color:var(--text-secondary);margin-top:12px;">
+                    <strong>Trip Record will store:</strong>
+                    <code style="background:var(--bg-white);padding:1px 3px;border-radius:2px;">route_id</code>
+                    = RTE-0012 (always set) +
+                    <code style="background:var(--bg-white);padding:1px 3px;border-radius:2px;">route_contract_id</code>
+                    = RC-2024-0017 (nullable for spot trips)
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ═══ AD-HOC ROUTE CREATION MODAL ═══ -->
+<div class="modal-overlay" id="adhoc-route-modal">
+    <div class="modal-content" style="max-width:640px;">
+        <div class="modal-header">
+            <h3><i class="fas fa-plus-circle" style="margin-right:8px;color:#7c3aed;"></i> Add Ad-Hoc Route</h3>
+            <button class="close-btn" data-close-modal>×</button>
+        </div>
+        <div class="modal-body" style="padding:20px;">
+            <div
+                style="padding:8px 12px;background:#e6f4ea;border:1px solid #bbf7d0;border-radius:var(--border-radius-sm);margin-bottom:14px;font-size:11px;color:#137333;">
+                <i class="fas fa-check-circle" style="margin-right:4px;"></i>
+                <strong>Client:</strong> Reliance Industries (auto-set)
+            </div>
+            <div style="display:grid;gap:14px;">
+                <div class="form-group" style="margin-bottom:0;">
+                    <label>Vehicle Type *</label>
+                    <select class="form-control">
+                        <option value="">Select vehicle type...</option>
+                        <option>SCV — Mini Truck</option>
+                        <option>LCV — Light Truck</option>
+                        <option>ICV — Intermediate Truck</option>
+                        <option>HCV Rigid — 2-Axle</option>
+                        <option>HCV Rigid — 3-Axle</option>
+                        <option>Tipper / Dumper</option>
+                        <option selected>Tractor-Trailer</option>
+                        <option>Multi-Axle Vehicle (MAV)</option>
+                    </select>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Origin Location *</label>
+                        <input type="text" class="form-control" placeholder="e.g. Vasai Plant, Gate 2">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Destination Location *</label>
+                        <input type="text" class="form-control" placeholder="e.g. Noida Warehouse, Sector 62">
+                    </div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Distance (KM) *</label>
+                        <input type="number" class="form-control" placeholder="e.g. 1400">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Est. Duration (hrs)</label>
+                        <input type="text" class="form-control" placeholder="e.g. 22–26">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Toll Est. (₹)</label>
+                        <input type="number" class="form-control" placeholder="e.g. 8400">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Diesel Est. (Litres)</label>
+                        <input type="number" class="form-control" placeholder="e.g. 300">
+                    </div>
+                </div>
+                <div
+                    style="padding:10px 12px;background:var(--bg-main);border:1px solid var(--border-color);border-radius:var(--border-radius);">
+                    <label
+                        style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--text-primary);cursor:pointer;margin-bottom:0;">
+                        <input type="checkbox" style="accent-color:var(--primary);"> Also create a Route Contract
+                        (billing terms)
+                    </label>
+                    <div style="font-size:10px;color:var(--text-muted);margin-top:4px;">
+                        If skipped, no contract is created and you'll enter the rate manually on the trip.
+                        You can always add a contract later from the Route Detail page.
+                    </div>
+                </div>
+                <div
+                    style="padding:8px 12px;background:#faf5ff;border:1px solid #e9d5ff;border-radius:var(--border-radius-sm);font-size:11px;color:#7c3aed;">
+                    <i class="fas fa-magic" style="margin-right:4px;"></i>
+                    <strong>Auto-promotion:</strong> After 3 trips on this ad-hoc route, the system will prompt you
+                    to promote it to Standard.
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer"
+            style="padding:12px 20px;border-top:1px solid var(--border-color);display:flex;justify-content:flex-end;gap:8px;">
+            <button class="btn btn-secondary" data-close-modal>Cancel</button>
+            <button class="btn btn-primary" data-close-modal><i class="fas fa-plus" style="margin-right:4px;"></i>
+                Add Ad-Hoc Route & Continue</button>
+        </div>
+    </div>
+</div>

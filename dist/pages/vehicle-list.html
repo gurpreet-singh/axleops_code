@@ -1,0 +1,389 @@
+<!-- Vehicle List Page — Redesigned from fleet-management.jsx -->
+<div class="page-header">
+    <h1>Vehicles <span class="learn-badge"><i class="fas fa-graduation-cap"></i> Learn</span></h1>
+    <div class="page-header-actions">
+        <button class="btn btn-secondary" onclick="navigateTo('vehicle-import')"><i
+                class="fas fa-ellipsis-h"></i></button>
+        <button class="btn btn-primary" onclick="navigateTo('vehicle-new')"><i class="fas fa-plus"></i> Add
+            Vehicle</button>
+    </div>
+</div>
+
+<!-- List Tabs: All / Assigned / Unassigned / Archived -->
+<div class="tabs" id="vehicle-list-tabs">
+    <div class="tab active" data-vehicle-tab="all">All</div>
+    <div class="tab" data-vehicle-tab="assigned">Assigned</div>
+    <div class="tab" data-vehicle-tab="unassigned">Unassigned</div>
+    <div class="tab" data-vehicle-tab="archived">Archived</div>
+</div>
+
+<div class="table-container">
+    <div class="table-toolbar">
+        <div class="search-input"><i class="fas fa-search" style="color: var(--text-muted);"></i><input type="text"
+                placeholder="Search vehicles..." id="vehicle-search-input"></div>
+        <div class="filter-btn"><i class="fas fa-filter"></i> Vehicle Type</div>
+        <div class="filter-btn"><i class="fas fa-filter"></i> Vehicle Group</div>
+        <div class="filter-btn"><i class="fas fa-filter"></i> Vehicle Status</div>
+        <div class="filter-btn"><i class="fas fa-sliders-h"></i> Filters</div>
+        <div class="pagination-info">1 - 10 of 47 <button class="btn-icon" style="width:28px;height:28px;"><i
+                    class="fas fa-chevron-left"></i></button> <button class="btn-icon"
+                style="width:28px;height:28px;"><i class="fas fa-chevron-right"></i></button>
+            <button class="btn-icon" style="width:28px;height:28px;" title="Manage Columns"
+                data-modal="manage-columns-modal"><i class="fas fa-cog"></i></button>
+        </div>
+    </div>
+    <div class="table-scroll">
+        <table>
+            <thead>
+                <tr>
+                    <th><input type="checkbox"></th>
+                    <th></th>
+                    <th style="cursor:pointer;white-space:nowrap;">Name ▲</th>
+                    <th>Year</th>
+                    <th>Make</th>
+                    <th>Model</th>
+                    <th>VIN / Chassis No.</th>
+                    <th>Status</th>
+                    <th style="cursor:pointer" onclick="navigateTo('vehicle-types')">Type <i
+                            class="fas fa-external-link-alt" style="font-size:8px;margin-left:2px;"></i></th>
+                    <th>Group</th>
+                    <th>Current Meter</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Row 1 -->
+                <tr data-operator="Rajesh Kumar" style="cursor:pointer;" onclick="navigateTo('vehicle-detail')">
+                    <td onclick="event.stopPropagation()"><input type="checkbox"></td>
+                    <td><span class="vehicle-avatar">🚛</span></td>
+                    <td style="font-weight:600;color:var(--text-primary);white-space:nowrap;">MH04AB1234</td>
+                    <td>2022</td>
+                    <td>Tata</td>
+                    <td>Ace Gold</td>
+                    <td style="font-size:11px;font-family:monospace;color:var(--text-secondary);">MBLH111AXNMB4521</td>
+                    <td><span class="status-badge active"><span class="status-dot green"></span> Active</span></td>
+                    <td><a href="#" onclick="event.stopPropagation();navigateTo('vehicle-types')"
+                            style="text-decoration:none;"><span
+                                style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:12px;background:#fce7f3;color:#be185d;">32ft
+                                Multi-Axle</span></a>
+                    </td>
+                    <td>Mumbai <span style="font-size:10px;">↗</span></td>
+                    <td>1,39,998 km</td>
+                </tr>
+                <!-- Row 2 -->
+                <tr data-operator="Anita Verma" style="cursor:pointer;" onclick="navigateTo('vehicle-detail')">
+                    <td onclick="event.stopPropagation()"><input type="checkbox"></td>
+                    <td><span class="vehicle-avatar">🚐</span></td>
+                    <td style="font-weight:600;color:var(--text-primary);white-space:nowrap;">MH04CD5678</td>
+                    <td>2021</td>
+                    <td>Mahindra</td>
+                    <td>Bolero Pickup</td>
+                    <td style="font-size:11px;font-family:monospace;color:var(--text-secondary);">MA1TB2HSXP1B73921</td>
+                    <td><span class="status-badge active"><span class="status-dot green"></span> Active</span></td>
+                    <td><a href="#" onclick="event.stopPropagation();navigateTo('vehicle-types')"
+                            style="text-decoration:none;"><span
+                                style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:12px;background:#f0fdf4;color:#16a34a;">LCV</span></a>
+                    </td>
+                    <td>Mumbai <span style="font-size:10px;">↗</span></td>
+                    <td>72,770 km</td>
+                </tr>
+                <!-- Row 3 -->
+                <tr data-operator="Priya Sharma" style="cursor:pointer;" onclick="navigateTo('vehicle-detail')">
+                    <td onclick="event.stopPropagation()"><input type="checkbox"></td>
+                    <td><span class="vehicle-avatar">🚛</span></td>
+                    <td style="font-weight:600;color:var(--text-primary);white-space:nowrap;">MH12EF9012</td>
+                    <td>2020</td>
+                    <td>Ashok Leyland</td>
+                    <td>Dost</td>
+                    <td style="font-size:11px;font-family:monospace;color:var(--text-secondary);">MBLR522BXKMA09842</td>
+                    <td><span class="status-badge in-shop"><span class="status-dot yellow"></span> In Shop</span></td>
+                    <td><a href="#" onclick="event.stopPropagation();navigateTo('vehicle-types')"
+                            style="text-decoration:none;"><span
+                                style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:12px;background:#eff6ff;color:#2563eb;">14MT
+                                2-Axle</span></a>
+                    </td>
+                    <td>Pune <span style="font-size:10px;">↗</span></td>
+                    <td>1,57,907 km</td>
+                </tr>
+                <!-- Row 4 -->
+                <tr data-operator="Vikram Singh" style="cursor:pointer;" onclick="navigateTo('vehicle-detail')">
+                    <td onclick="event.stopPropagation()"><input type="checkbox"></td>
+                    <td><span class="vehicle-avatar">🚗</span></td>
+                    <td style="font-weight:600;color:var(--text-primary);white-space:nowrap;">MH12GH3456</td>
+                    <td>2023</td>
+                    <td>Mahindra</td>
+                    <td>Scorpio-N</td>
+                    <td style="font-size:11px;font-family:monospace;color:var(--text-secondary);">MA1NG2GSXP1D85732</td>
+                    <td><span class="status-badge active"><span class="status-dot green"></span> Active</span></td>
+                    <td><a href="#" onclick="event.stopPropagation();navigateTo('vehicle-types')"
+                            style="text-decoration:none;"><span
+                                style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:12px;background:#f0fdf4;color:#16a34a;">LCV</span></a>
+                    </td>
+                    <td>Pune <span style="font-size:10px;">↗</span></td>
+                    <td>52,407 km</td>
+                </tr>
+                <!-- Row 5 -->
+                <tr data-operator="Deepak Patel" style="cursor:pointer;" onclick="navigateTo('vehicle-detail')">
+                    <td onclick="event.stopPropagation()"><input type="checkbox"></td>
+                    <td><span class="vehicle-avatar">🚛</span></td>
+                    <td style="font-weight:600;color:var(--text-primary);white-space:nowrap;">DL01IJ7890</td>
+                    <td>2019</td>
+                    <td>Tata</td>
+                    <td>407</td>
+                    <td style="font-size:11px;font-family:monospace;color:var(--text-secondary);">MBLR511CXKMA12034</td>
+                    <td><span class="status-badge critical"><span class="status-dot red"></span> Out of Service</span>
+                    </td>
+                    <td><a href="#" onclick="event.stopPropagation();navigateTo('vehicle-types')"
+                            style="text-decoration:none;"><span
+                                style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:12px;background:#eff6ff;color:#2563eb;">14MT
+                                2-Axle</span></a>
+                    </td>
+                    <td>Delhi <span style="font-size:10px;">↗</span></td>
+                    <td>2,02,574 km</td>
+                </tr>
+                <!-- Row 6 -->
+                <tr data-operator="Meera Joshi" style="cursor:pointer;" onclick="navigateTo('vehicle-detail')">
+                    <td onclick="event.stopPropagation()"><input type="checkbox"></td>
+                    <td><span class="vehicle-avatar">🚐</span></td>
+                    <td style="font-weight:600;color:var(--text-primary);white-space:nowrap;">MH04KL4567</td>
+                    <td>2022</td>
+                    <td>Force</td>
+                    <td>Traveller</td>
+                    <td style="font-size:11px;font-family:monospace;color:var(--text-secondary);">MA1RT4HKXN1K35820</td>
+                    <td><span class="status-badge active"><span class="status-dot green"></span> Active</span></td>
+                    <td><a href="#" onclick="event.stopPropagation();navigateTo('vehicle-types')"
+                            style="text-decoration:none;"><span
+                                style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:12px;background:#f0fdf4;color:#16a34a;">LCV</span></a>
+                    </td>
+                    <td>Mumbai <span style="font-size:10px;">↗</span></td>
+                    <td>87,218 km</td>
+                </tr>
+                <!-- Row 7 -->
+                <tr data-operator="Tarun Mishra" style="cursor:pointer;" onclick="navigateTo('vehicle-detail')">
+                    <td onclick="event.stopPropagation()"><input type="checkbox"></td>
+                    <td><span class="vehicle-avatar">🚗</span></td>
+                    <td style="font-weight:600;color:var(--text-primary);white-space:nowrap;">MH04MN8901</td>
+                    <td>2023</td>
+                    <td>Eicher</td>
+                    <td>Pro 2049</td>
+                    <td style="font-size:11px;font-family:monospace;color:var(--text-secondary);">MBLR622DXPMA54619</td>
+                    <td><span class="status-badge active"><span class="status-dot green"></span> Active</span></td>
+                    <td><a href="#" onclick="event.stopPropagation();navigateTo('vehicle-types')"
+                            style="text-decoration:none;"><span
+                                style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:12px;background:#eff6ff;color:#2563eb;">14MT
+                                2-Axle</span></a>
+                    </td>
+                    <td>Maharashtra <span style="font-size:10px;">↗</span></td>
+                    <td>45,584 km</td>
+                </tr>
+                <!-- Row 8 - EV -->
+                <tr data-operator="Lakshmi Iyer" style="cursor:pointer;" onclick="navigateTo('vehicle-detail')">
+                    <td onclick="event.stopPropagation()"><input type="checkbox"></td>
+                    <td><span class="vehicle-avatar">⚡</span></td>
+                    <td style="font-weight:600;color:var(--text-primary);white-space:nowrap;">MH12PQ2345</td>
+                    <td>2024</td>
+                    <td>Tata</td>
+                    <td>Nexon EV Max</td>
+                    <td style="font-size:11px;font-family:monospace;color:var(--text-secondary);">MATNG5EVXR1P29814</td>
+                    <td><span class="status-badge active"><span class="status-dot green"></span> Active</span></td>
+                    <td><a href="#" onclick="event.stopPropagation();navigateTo('vehicle-types')"
+                            style="text-decoration:none;"><span
+                                style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:12px;background:#f0fdf4;color:#16a34a;">LCV</span></a>
+                    </td>
+                    <td>Pune <span style="font-size:10px;">↗</span></td>
+                    <td>19,472 km</td>
+                </tr>
+                <!-- Row 9 - EV -->
+                <tr data-operator="Rahul Banerjee" style="cursor:pointer;" onclick="navigateTo('vehicle-detail')">
+                    <td onclick="event.stopPropagation()"><input type="checkbox"></td>
+                    <td><span class="vehicle-avatar">⚡</span></td>
+                    <td style="font-weight:600;color:var(--text-primary);white-space:nowrap;">DL01RS6789</td>
+                    <td>2023</td>
+                    <td>Mahindra</td>
+                    <td>eVerito</td>
+                    <td style="font-size:11px;font-family:monospace;color:var(--text-secondary);">MA1EV3HKXN1R67412</td>
+                    <td><span class="status-badge active"><span class="status-dot green"></span> Active</span></td>
+                    <td><a href="#" onclick="event.stopPropagation();navigateTo('vehicle-types')"
+                            style="text-decoration:none;"><span
+                                style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:12px;background:#f0fdf4;color:#16a34a;">LCV</span></a>
+                    </td>
+                    <td>Delhi <span style="font-size:10px;">↗</span></td>
+                    <td>1,23,723 km</td>
+                </tr>
+                <!-- Row 10 -->
+                <tr data-operator="Kiran Nair" style="cursor:pointer;" onclick="navigateTo('vehicle-detail')">
+                    <td onclick="event.stopPropagation()"><input type="checkbox"></td>
+                    <td><span class="vehicle-avatar">🚛</span></td>
+                    <td style="font-weight:600;color:var(--text-primary);white-space:nowrap;">MH04TU3344</td>
+                    <td>2021</td>
+                    <td>Tata</td>
+                    <td>LPT 1109</td>
+                    <td style="font-size:11px;font-family:monospace;color:var(--text-secondary);">MBLR711AXKMA33491</td>
+                    <td><span class="status-badge in-shop"><span class="status-dot yellow"></span> In Shop</span></td>
+                    <td><a href="#" onclick="event.stopPropagation();navigateTo('vehicle-types')"
+                            style="text-decoration:none;"><span
+                                style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:12px;background:#eff6ff;color:#2563eb;">14MT
+                                2-Axle</span></a>
+                    </td>
+                    <td>Mumbai <span style="font-size:10px;">↗</span></td>
+                    <td>1,09,241 km</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Manage Columns Modal -->
+<div class="modal-overlay" id="manage-columns-modal">
+    <div class="modal-content" style="max-width:720px;">
+        <div class="modal-header">
+            <h3>Manage Columns</h3>
+            <button class="close-btn" data-close-modal>×</button>
+        </div>
+        <div class="modal-body" style="padding:20px;">
+            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">Select which columns are visible
+                for you. To change the column order, drag and drop the visible fields.</p>
+            <div style="display:flex;gap:24px;">
+                <!-- Available Columns -->
+                <div style="flex:1;">
+                    <h4 style="font-size:13px;font-weight:600;color:var(--text-primary);margin:0 0 8px;">Available
+                        Columns <span style="color:var(--text-muted);font-weight:400;">34</span></h4>
+                    <input placeholder="Filter columns"
+                        style="width:100%;padding:7px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:13px;margin-bottom:8px;box-sizing:border-box;">
+                    <div
+                        style="max-height:300px;overflow:auto;border:1px solid var(--border-color);border-radius:6px;padding:4px;">
+                        <label
+                            style="display:flex;align-items:center;gap:8px;padding:6px 8px;font-size:13px;cursor:pointer;"><input
+                                type="checkbox" checked style="accent-color:var(--primary);">Name</label>
+                        <label
+                            style="display:flex;align-items:center;gap:8px;padding:6px 8px;font-size:13px;cursor:pointer;"><input
+                                type="checkbox" checked style="accent-color:var(--primary);">Year</label>
+                        <label
+                            style="display:flex;align-items:center;gap:8px;padding:6px 8px;font-size:13px;cursor:pointer;"><input
+                                type="checkbox" checked style="accent-color:var(--primary);">Make</label>
+                        <label
+                            style="display:flex;align-items:center;gap:8px;padding:6px 8px;font-size:13px;cursor:pointer;"><input
+                                type="checkbox" checked style="accent-color:var(--primary);">Model</label>
+                        <label
+                            style="display:flex;align-items:center;gap:8px;padding:6px 8px;font-size:13px;cursor:pointer;"><input
+                                type="checkbox" checked style="accent-color:var(--primary);">VIN</label>
+                        <label
+                            style="display:flex;align-items:center;gap:8px;padding:6px 8px;font-size:13px;cursor:pointer;"><input
+                                type="checkbox" checked style="accent-color:var(--primary);">Status</label>
+                        <label
+                            style="display:flex;align-items:center;gap:8px;padding:6px 8px;font-size:13px;cursor:pointer;"><input
+                                type="checkbox" checked style="accent-color:var(--primary);">Type</label>
+                        <label
+                            style="display:flex;align-items:center;gap:8px;padding:6px 8px;font-size:13px;cursor:pointer;"><input
+                                type="checkbox" checked style="accent-color:var(--primary);">Group</label>
+                        <label
+                            style="display:flex;align-items:center;gap:8px;padding:6px 8px;font-size:13px;cursor:pointer;"><input
+                                type="checkbox" checked style="accent-color:var(--primary);">Current Meter</label>
+                        <label
+                            style="display:flex;align-items:center;gap:8px;padding:6px 8px;font-size:13px;cursor:pointer;"><input
+                                type="checkbox" style="accent-color:var(--primary);">License Plate</label>
+                        <label
+                            style="display:flex;align-items:center;gap:8px;padding:6px 8px;font-size:13px;cursor:pointer;"><input
+                                type="checkbox" style="accent-color:var(--primary);">Operator</label>
+                        <label
+                            style="display:flex;align-items:center;gap:8px;padding:6px 8px;font-size:13px;cursor:pointer;"><input
+                                type="checkbox" style="accent-color:var(--primary);">Fuel Type</label>
+                        <label
+                            style="display:flex;align-items:center;gap:8px;padding:6px 8px;font-size:13px;cursor:pointer;"><input
+                                type="checkbox" style="accent-color:var(--primary);">Color</label>
+                        <label
+                            style="display:flex;align-items:center;gap:8px;padding:6px 8px;font-size:13px;cursor:pointer;"><input
+                                type="checkbox" style="accent-color:var(--primary);">Ownership</label>
+                        <label
+                            style="display:flex;align-items:center;gap:8px;padding:6px 8px;font-size:13px;cursor:pointer;"><input
+                                type="checkbox" style="accent-color:var(--primary);">Registration State</label>
+                        <label
+                            style="display:flex;align-items:center;gap:8px;padding:6px 8px;font-size:13px;cursor:pointer;"><input
+                                type="checkbox" style="accent-color:var(--primary);">Body Type</label>
+                        <label
+                            style="display:flex;align-items:center;gap:8px;padding:6px 8px;font-size:13px;cursor:pointer;"><input
+                                type="checkbox" style="accent-color:var(--primary);">Axle Configuration</label>
+                        <label
+                            style="display:flex;align-items:center;gap:8px;padding:6px 8px;font-size:13px;cursor:pointer;"><input
+                                type="checkbox" style="accent-color:var(--primary);">Created On</label>
+                        <label
+                            style="display:flex;align-items:center;gap:8px;padding:6px 8px;font-size:13px;cursor:pointer;"><input
+                                type="checkbox" style="accent-color:var(--primary);">MSRP</label>
+                    </div>
+                </div>
+                <!-- Visible Columns -->
+                <div style="flex:1;">
+                    <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                        <h4 style="font-size:13px;font-weight:600;color:var(--text-primary);margin:0;">Visible Columns
+                            <span style="color:var(--text-muted);font-weight:400;">9</span>
+                        </h4>
+                        <button
+                            style="font-size:12px;color:var(--primary);background:none;border:none;cursor:pointer;">Restore
+                            defaults</button>
+                    </div>
+                    <div style="border:1px solid var(--border-color);border-radius:6px;padding:4px;min-height:200px;">
+                        <div
+                            style="display:flex;align-items:center;gap:8px;padding:7px 8px;font-size:13px;color:var(--text-primary);border-bottom:1px solid #f2f4f7;">
+                            <span style="cursor:grab;color:#d0d5dd;">⠿</span>Name<button
+                                style="margin-left:auto;background:none;border:none;cursor:pointer;padding:2px;"><i
+                                    class="fas fa-times" style="font-size:10px;color:var(--text-muted);"></i></button>
+                        </div>
+                        <div
+                            style="display:flex;align-items:center;gap:8px;padding:7px 8px;font-size:13px;color:var(--text-primary);border-bottom:1px solid #f2f4f7;">
+                            <span style="cursor:grab;color:#d0d5dd;">⠿</span>Year<button
+                                style="margin-left:auto;background:none;border:none;cursor:pointer;padding:2px;"><i
+                                    class="fas fa-times" style="font-size:10px;color:var(--text-muted);"></i></button>
+                        </div>
+                        <div
+                            style="display:flex;align-items:center;gap:8px;padding:7px 8px;font-size:13px;color:var(--text-primary);border-bottom:1px solid #f2f4f7;">
+                            <span style="cursor:grab;color:#d0d5dd;">⠿</span>Make<button
+                                style="margin-left:auto;background:none;border:none;cursor:pointer;padding:2px;"><i
+                                    class="fas fa-times" style="font-size:10px;color:var(--text-muted);"></i></button>
+                        </div>
+                        <div
+                            style="display:flex;align-items:center;gap:8px;padding:7px 8px;font-size:13px;color:var(--text-primary);border-bottom:1px solid #f2f4f7;">
+                            <span style="cursor:grab;color:#d0d5dd;">⠿</span>Model<button
+                                style="margin-left:auto;background:none;border:none;cursor:pointer;padding:2px;"><i
+                                    class="fas fa-times" style="font-size:10px;color:var(--text-muted);"></i></button>
+                        </div>
+                        <div
+                            style="display:flex;align-items:center;gap:8px;padding:7px 8px;font-size:13px;color:var(--text-primary);border-bottom:1px solid #f2f4f7;">
+                            <span style="cursor:grab;color:#d0d5dd;">⠿</span>VIN<button
+                                style="margin-left:auto;background:none;border:none;cursor:pointer;padding:2px;"><i
+                                    class="fas fa-times" style="font-size:10px;color:var(--text-muted);"></i></button>
+                        </div>
+                        <div
+                            style="display:flex;align-items:center;gap:8px;padding:7px 8px;font-size:13px;color:var(--text-primary);border-bottom:1px solid #f2f4f7;">
+                            <span style="cursor:grab;color:#d0d5dd;">⠿</span>Status<button
+                                style="margin-left:auto;background:none;border:none;cursor:pointer;padding:2px;"><i
+                                    class="fas fa-times" style="font-size:10px;color:var(--text-muted);"></i></button>
+                        </div>
+                        <div
+                            style="display:flex;align-items:center;gap:8px;padding:7px 8px;font-size:13px;color:var(--text-primary);border-bottom:1px solid #f2f4f7;">
+                            <span style="cursor:grab;color:#d0d5dd;">⠿</span>Type<button
+                                style="margin-left:auto;background:none;border:none;cursor:pointer;padding:2px;"><i
+                                    class="fas fa-times" style="font-size:10px;color:var(--text-muted);"></i></button>
+                        </div>
+                        <div
+                            style="display:flex;align-items:center;gap:8px;padding:7px 8px;font-size:13px;color:var(--text-primary);border-bottom:1px solid #f2f4f7;">
+                            <span style="cursor:grab;color:#d0d5dd;">⠿</span>Group<button
+                                style="margin-left:auto;background:none;border:none;cursor:pointer;padding:2px;"><i
+                                    class="fas fa-times" style="font-size:10px;color:var(--text-muted);"></i></button>
+                        </div>
+                        <div
+                            style="display:flex;align-items:center;gap:8px;padding:7px 8px;font-size:13px;color:var(--text-primary);border-bottom:1px solid #f2f4f7;">
+                            <span style="cursor:grab;color:#d0d5dd;">⠿</span>Current Meter<button
+                                style="margin-left:auto;background:none;border:none;cursor:pointer;padding:2px;"><i
+                                    class="fas fa-times" style="font-size:10px;color:var(--text-muted);"></i></button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer"
+            style="padding:12px 20px;border-top:1px solid var(--border-color);display:flex;justify-content:flex-end;gap:8px;">
+            <button class="btn btn-secondary" data-close-modal>Cancel</button>
+            <button class="btn btn-primary" data-close-modal>Apply Changes</button>
+        </div>
+    </div>
+</div>

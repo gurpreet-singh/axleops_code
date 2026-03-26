@@ -1,0 +1,475 @@
+<!-- ═══════════════════════════════════════════════════════════════
+     🏢 BRANCH MANAGER DASHBOARD — Pune Branch
+     Scoped view: Operations, P&L, Fleet & Drivers for a single branch
+     ═══════════════════════════════════════════════════════════════ -->
+
+<div class="page-header">
+    <h1>Branch Operations Center <span class="learn-badge" style="background:#ecfeff;color:#0e7490;"><i
+                class="fas fa-building" style="color:#0e7490;"></i> Pune Branch</span></h1>
+    <div class="page-header-actions">
+        <span style="font-size: 12px; color: var(--text-muted); margin-right: 8px;"><i class="fas fa-sync-alt"
+                style="margin-right:4px;"></i> Updated 3 min ago</span>
+        <div class="filter-btn" style="position:relative;cursor:pointer;">
+            <i class="fas fa-calendar-alt" style="margin-right:6px;"></i> This Month ▾
+        </div>
+    </div>
+</div>
+
+<!-- ═══ Branch Context Badge ═══ -->
+<div style="margin-bottom:16px;display:flex;align-items:center;gap:12px;">
+    <div
+        style="display:flex;align-items:center;gap:10px;padding:10px 16px;background:linear-gradient(135deg,#ecfeff,#cffafe);border:1px solid #a5f3fc;border-radius:10px;">
+        <div
+            style="width:36px;height:36px;background:#0e7490;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+            <i class="fas fa-map-marker-alt" style="color:#fff;font-size:14px;"></i>
+        </div>
+        <div>
+            <div style="font-size:14px;font-weight:700;color:#164e63;">Pune Branch</div>
+            <div style="font-size:11px;color:#0e7490;">Branch Code: GT-PNE · GSTIN: 27AABCG1234M1ZP · Manager: Anand
+                Kulkarni</div>
+        </div>
+    </div>
+    <div style="display:flex;gap:6px;margin-left:auto;">
+        <span
+            style="font-size:11px;padding:4px 10px;border-radius:6px;background:#dcfce7;color:#166534;font-weight:600;"><i
+                class="fas fa-circle" style="font-size:6px;margin-right:4px;vertical-align:middle;"></i>Active</span>
+        <span
+            style="font-size:11px;padding:4px 10px;border-radius:6px;background:#f5f5f5;color:#6b7280;font-weight:500;">Since:
+            Jan 2024</span>
+    </div>
+</div>
+
+
+<!-- ═══ SIX KPI CARDS (per spec 3.3) ═══ -->
+<div class="stats-row" style="grid-template-columns: repeat(6,1fr); gap:12px; margin-bottom:20px;">
+    <!-- 1. Branch Revenue MTD -->
+    <div class="stat-card" style="cursor:pointer;border-top:3px solid #0e7490;transition:box-shadow 0.2s;"
+        onclick="navigateTo('invoices')">
+        <div class="stat-label">Branch Revenue <span style="font-size:10px;color:var(--text-muted);">(MTD)</span></div>
+        <div class="stat-value" style="font-size:22px;color:#0e7490;">₹4,85,200</div>
+        <div class="stat-change positive"><i class="fas fa-arrow-up"></i> 9.2% <span
+                style="font-size:10px;color:var(--text-muted);">vs last month</span></div>
+        <div style="margin-top:4px;font-size:10px;color:var(--text-muted);">QTD: ₹13,42,600</div>
+    </div>
+    <!-- 2. Branch Net Profit MTD -->
+    <div class="stat-card" style="cursor:pointer;border-top:3px solid #16a34a;transition:box-shadow 0.2s;"
+        onclick="navigateTo('profit-loss')">
+        <div class="stat-label">Net Profit <span style="font-size:10px;color:var(--text-muted);">(MTD)</span></div>
+        <div class="stat-value text-green" style="font-size:22px;">₹62,400</div>
+        <div class="stat-change positive"><i class="fas fa-arrow-up"></i> 5.4% <span
+                style="font-size:10px;color:var(--text-muted);">MoM</span></div>
+        <div style="margin-top:4px;font-size:10px;color:var(--text-muted);">Margin: 12.9%</div>
+    </div>
+    <!-- 3. Branch Vehicles -->
+    <div class="stat-card" style="cursor:pointer;border-top:3px solid #2563eb;transition:box-shadow 0.2s;"
+        onclick="navigateTo('vehicle-list')">
+        <div class="stat-label">Branch Vehicles</div>
+        <div class="stat-value text-blue" style="font-size:22px;">5</div>
+        <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">
+            <span style="color:#16a34a;font-weight:600;">3</span> active ·
+            <span style="color:#2563eb;font-weight:600;">1</span> available ·
+            <span style="color:#dc2626;font-weight:600;">1</span> in-service
+        </div>
+        <div style="margin-top:4px;">
+            <div style="width:100%;height:4px;background:#e5e7eb;border-radius:4px;">
+                <div style="width:62%;height:4px;background:linear-gradient(90deg,#2563eb,#3b82f6);border-radius:4px;">
+                </div>
+            </div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">Utilization: 62%</div>
+        </div>
+    </div>
+    <!-- 4. Branch Drivers -->
+    <div class="stat-card" style="cursor:pointer;border-top:3px solid #7c3aed;transition:box-shadow 0.2s;"
+        onclick="navigateTo('contacts')">
+        <div class="stat-label">Branch Drivers</div>
+        <div class="stat-value" style="font-size:22px;color:#7c3aed;">6</div>
+        <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">
+            <span style="color:#16a34a;font-weight:600;">4</span> on-trip ·
+            <span style="color:#2563eb;font-weight:600;">2</span> available
+        </div>
+        <div style="margin-top:4px;">
+            <div style="width:100%;height:4px;background:#e5e7eb;border-radius:4px;">
+                <div style="width:67%;height:4px;background:linear-gradient(90deg,#7c3aed,#a78bfa);border-radius:4px;">
+                </div>
+            </div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">Availability: 33%</div>
+        </div>
+    </div>
+    <!-- 5. Outstanding Receivables -->
+    <div class="stat-card" style="cursor:pointer;border-top:3px solid #f59e0b;transition:box-shadow 0.2s;"
+        onclick="navigateTo('invoices')">
+        <div class="stat-label">Outstanding Receivables</div>
+        <div class="stat-value text-yellow" style="font-size:22px;">₹1,24,800</div>
+        <div class="stat-change negative"><i class="fas fa-arrow-up"></i> 1 overdue</div>
+        <div style="margin-top:4px;font-size:10px;">
+            <span style="color:#dc2626;font-weight:600;">₹48K</span> &gt;30d ·
+            <span style="color:#f59e0b;font-weight:600;">₹76.8K</span> pending
+        </div>
+    </div>
+    <!-- 6. Active Trips -->
+    <div class="stat-card" style="cursor:pointer;border-top:3px solid #059669;transition:box-shadow 0.2s;"
+        onclick="navigateTo('trips')">
+        <div class="stat-label">Active Trips</div>
+        <div class="stat-value" style="font-size:22px;color:#059669;">3</div>
+        <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">
+            <span style="color:#059669;font-weight:600;">2</span> in-transit ·
+            <span style="color:#f59e0b;font-weight:600;">1</span> loading
+        </div>
+        <div style="margin-top:4px;font-size:10px;color:var(--text-muted);">Completed (MTD): 14</div>
+    </div>
+</div>
+
+<!-- ═══ ALERTS + BRANCH P&L ═══ -->
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px;">
+    <!-- Branch Alerts -->
+    <div
+        style="background:linear-gradient(135deg,#fef2f2,#fff1f2); border:1px solid #fecaca; border-radius:12px; padding:16px;">
+        <div style="display:flex;align-items:center;margin-bottom:12px;">
+            <div
+                style="width:32px;height:32px;background:#dc2626;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-right:10px;">
+                <i class="fas fa-exclamation-triangle" style="color:#fff;font-size:14px;"></i>
+            </div>
+            <div>
+                <div style="font-weight:700;font-size:14px;color:#991b1b;">Branch Alerts</div>
+                <div style="font-size:11px;color:#b91c1c;">Issues within your branch</div>
+            </div>
+            <span
+                style="margin-left:auto;background:#dc2626;color:#fff;font-size:11px;font-weight:700;padding:2px 10px;border-radius:20px;">3</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+            <div onclick="navigateTo('vehicle-list')"
+                style="background:#fff;border-radius:8px;padding:10px 12px;display:flex;align-items:center;cursor:pointer;border-left:3px solid #dc2626;">
+                <div style="flex:1;">
+                    <div style="font-size:12px;font-weight:600;color:#991b1b;">Vehicle MH12EF9012 idle 4 days</div>
+                    <div style="font-size:11px;color:#6b7280;">Revenue loss: ~₹6,000/day — consider reassignment</div>
+                </div>
+                <i class="fas fa-chevron-right" style="color:#d1d5db;font-size:10px;"></i>
+            </div>
+            <div onclick="navigateTo('invoices')"
+                style="background:#fff;border-radius:8px;padding:10px 12px;display:flex;align-items:center;cursor:pointer;border-left:3px solid #f59e0b;">
+                <div style="flex:1;">
+                    <div style="font-size:12px;font-weight:600;color:#92400e;">₹48,000 invoice overdue — Pune Steel
+                        Traders</div>
+                    <div style="font-size:11px;color:#6b7280;">32 days past due. Finance follow-up needed.</div>
+                </div>
+                <i class="fas fa-chevron-right" style="color:#d1d5db;font-size:10px;"></i>
+            </div>
+            <div onclick="navigateTo('contacts')"
+                style="background:#fff;border-radius:8px;padding:10px 12px;display:flex;align-items:center;cursor:pointer;border-left:3px solid #f59e0b;">
+                <div style="flex:1;">
+                    <div style="font-size:12px;font-weight:600;color:#92400e;">Driver license expiring in 12 days</div>
+                    <div style="font-size:11px;color:#6b7280;">Sunil Jadhav — HMV license expires 31-Mar-2026</div>
+                </div>
+                <i class="fas fa-chevron-right" style="color:#d1d5db;font-size:10px;"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Branch P&L Snapshot -->
+    <div
+        style="background:linear-gradient(135deg,#f0fdf4,#ecfdf5); border:1px solid #bbf7d0; border-radius:12px; padding:16px;">
+        <div style="display:flex;align-items:center;margin-bottom:12px;">
+            <div
+                style="width:32px;height:32px;background:#16a34a;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-right:10px;">
+                <i class="fas fa-chart-pie" style="color:#fff;font-size:14px;"></i>
+            </div>
+            <div>
+                <div style="font-weight:700;font-size:14px;color:#166534;">Branch P&L Snapshot</div>
+                <div style="font-size:11px;color:#15803d;">March 2026 — Pune Branch</div>
+            </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+            <div
+                style="background:#fff;border-radius:8px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-size:12px;color:#374151;font-weight:500;">Total Revenue</span>
+                <span style="font-size:14px;font-weight:700;color:#166534;">₹4,85,200</span>
+            </div>
+            <div style="background:#fff;border-radius:8px;padding:10px 12px;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                    <span style="font-size:12px;color:#374151;font-weight:500;">Direct Expenses</span>
+                    <span style="font-size:13px;font-weight:600;color:#dc2626;">₹3,82,400</span>
+                </div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <span
+                        style="font-size:10px;padding:2px 6px;background:#fef9c3;color:#854d0e;border-radius:4px;">Diesel:
+                        2,660L (₹2,38,000)</span>
+                    <span
+                        style="font-size:10px;padding:2px 6px;background:#dbeafe;color:#1e40af;border-radius:4px;">Toll:
+                        ₹62,400</span>
+                    <span
+                        style="font-size:10px;padding:2px 6px;background:#fae8ff;color:#86198f;border-radius:4px;">Driver:
+                        ₹48,000</span>
+                    <span
+                        style="font-size:10px;padding:2px 6px;background:#fef2f2;color:#991b1b;border-radius:4px;">Maint:
+                        ₹34,000</span>
+                </div>
+            </div>
+            <div
+                style="background:#fff;border-radius:8px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-size:12px;color:#374151;font-weight:500;">Indirect Allocation</span>
+                <span style="font-size:13px;font-weight:600;color:#6b7280;">₹40,400</span>
+            </div>
+            <div
+                style="background:#0e7490;border-radius:8px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-size:13px;color:#fff;font-weight:600;">Net Profit</span>
+                <div style="text-align:right;">
+                    <span style="font-size:18px;font-weight:700;color:#fff;">₹62,400</span>
+                    <span style="font-size:11px;color:#a5f3fc;margin-left:6px;">12.9%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ ACTIVE TRIPS TABLE ═══ -->
+<div class="dashboard-grid two-col" style="margin-bottom:16px;">
+    <div class="widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-route" style="color:#0e7490;margin-right:6px;"></i> Active Trips — Pune Branch</h3>
+            <a href="#" onclick="navigateTo('trips')" class="btn btn-link">View All →</a>
+        </div>
+        <div class="widget-body" style="padding:0;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Trip ID</th>
+                        <th>Route</th>
+                        <th>Vehicle</th>
+                        <th>Driver</th>
+                        <th>Status</th>
+                        <th style="text-align:right;">Revenue</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="cursor:pointer;" onclick="navigateTo('trip-detail')">
+                        <td style="font-weight:600;color:#0e7490;">TRP-PNE-0086</td>
+                        <td>Pune → Bangalore<div style="font-size:10px;color:#6b7280;">840 km</div>
+                        </td>
+                        <td>MH12EF9012</td>
+                        <td>Ramesh Yadav</td>
+                        <td><span
+                                style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;">In
+                                Transit</span></td>
+                        <td style="text-align:right;font-weight:600;">₹28,700</td>
+                    </tr>
+                    <tr style="cursor:pointer;">
+                        <td style="font-weight:600;color:#0e7490;">TRP-PNE-0087</td>
+                        <td>Pune → Mumbai<div style="font-size:10px;color:#6b7280;">150 km</div>
+                        </td>
+                        <td>MH12GH3456</td>
+                        <td>Sunil Jadhav</td>
+                        <td><span
+                                style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;">In
+                                Transit</span></td>
+                        <td style="text-align:right;font-weight:600;">₹5,100</td>
+                    </tr>
+                    <tr style="cursor:pointer;">
+                        <td style="font-weight:600;color:#0e7490;">TRP-PNE-0088</td>
+                        <td>Pune → Hyderabad<div style="font-size:10px;color:#6b7280;">560 km</div>
+                        </td>
+                        <td>MH14AB7890</td>
+                        <td>Ganesh More</td>
+                        <td><span
+                                style="background:#fef9c3;color:#854d0e;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;">Loading</span>
+                        </td>
+                        <td style="text-align:right;font-weight:600;">₹19,100</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Branch Fleet & Driver Overview -->
+    <div class="widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-truck" style="color:#059669;margin-right:6px;"></i> Branch Fleet</h3>
+            <a href="#" onclick="navigateTo('vehicle-list')" class="btn btn-link">All Vehicles →</a>
+        </div>
+        <div class="widget-body" style="padding:0;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Vehicle</th>
+                        <th>Driver</th>
+                        <th>Status</th>
+                        <th>Trips (MTD)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr onclick="navigateTo('vehicle-detail')" style="cursor:pointer;">
+                        <td><span style="font-weight:500;">🚛 MH12EF9012</span>
+                            <div style="font-size:10px;color:#6b7280;">Mahindra Bolero Pickup</div>
+                        </td>
+                        <td>Ramesh Yadav</td>
+                        <td><span
+                                style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;">On
+                                Trip</span></td>
+                        <td>4</td>
+                    </tr>
+                    <tr style="cursor:pointer;">
+                        <td><span style="font-weight:500;">🚛 MH12GH3456</span>
+                            <div style="font-size:10px;color:#6b7280;">BharatBenz 1617</div>
+                        </td>
+                        <td>Sunil Jadhav</td>
+                        <td><span
+                                style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;">On
+                                Trip</span></td>
+                        <td>3</td>
+                    </tr>
+                    <tr style="cursor:pointer;">
+                        <td><span style="font-weight:500;">🚛 MH14AB7890</span>
+                            <div style="font-size:10px;color:#6b7280;">Tata Prima 4028</div>
+                        </td>
+                        <td>Ganesh More</td>
+                        <td><span
+                                style="background:#fef9c3;color:#854d0e;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;">Loading</span>
+                        </td>
+                        <td>3</td>
+                    </tr>
+                    <tr style="cursor:pointer;">
+                        <td><span style="font-weight:500;">🚛 MH14CD4321</span>
+                            <div style="font-size:10px;color:#6b7280;">Eicher Pro 3019</div>
+                        </td>
+                        <td>Ajay Patil</td>
+                        <td><span
+                                style="background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;">Available</span>
+                        </td>
+                        <td>2</td>
+                    </tr>
+                    <tr style="cursor:pointer;">
+                        <td><span style="font-weight:500;">🚛 MH12XY5678</span>
+                            <div style="font-size:10px;color:#6b7280;">Ashok Leyland 2820</div>
+                        </td>
+                        <td>—</td>
+                        <td><span
+                                style="background:#fef2f2;color:#991b1b;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;">In
+                                Service</span></td>
+                        <td>2</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ QUICK ACTIONS ═══ -->
+<div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:16px;">
+    <!-- Recent Branch Activity -->
+    <div class="widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-history" style="color:#7c3aed;margin-right:6px;"></i> Recent Branch Activity</h3>
+        </div>
+        <div class="widget-body" style="padding:12px 16px;">
+            <div style="display:flex;flex-direction:column;gap:12px;">
+                <div style="display:flex;align-items:flex-start;gap:10px;">
+                    <div
+                        style="width:8px;height:8px;background:#16a34a;border-radius:50%;margin-top:5px;flex-shrink:0;">
+                    </div>
+                    <div>
+                        <div style="font-size:12px;font-weight:500;">Trip TRP-PNE-0085 completed — Pune → Chennai</div>
+                        <div style="font-size:11px;color:#6b7280;">Revenue ₹42,800 · Profit ₹8,200 (19.2%) — <span
+                                style="color:#6b7280;">2 hours ago</span></div>
+                    </div>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:10px;">
+                    <div
+                        style="width:8px;height:8px;background:#2563eb;border-radius:50%;margin-top:5px;flex-shrink:0;">
+                    </div>
+                    <div>
+                        <div style="font-size:12px;font-weight:500;">Driver advance ₹2,000 paid to Ganesh More</div>
+                        <div style="font-size:11px;color:#6b7280;">Trip TRP-PNE-0088 · Approved by you — <span
+                                style="color:#6b7280;">4 hours ago</span></div>
+                    </div>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:10px;">
+                    <div
+                        style="width:8px;height:8px;background:#f59e0b;border-radius:50%;margin-top:5px;flex-shrink:0;">
+                    </div>
+                    <div>
+                        <div style="font-size:12px;font-weight:500;">Vehicle MH12XY5678 sent for brake pad
+                            replacement</div>
+                        <div style="font-size:11px;color:#6b7280;">Workshop ETA: 2 days · WO #WO-0412 — <span
+                                style="color:#6b7280;">Yesterday</span></div>
+                    </div>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:10px;">
+                    <div
+                        style="width:8px;height:8px;background:#7c3aed;border-radius:50%;margin-top:5px;flex-shrink:0;">
+                    </div>
+                    <div>
+                        <div style="font-size:12px;font-weight:500;">Invoice INV-PNE-0034 created for Pune Steel Traders
+                        </div>
+                        <div style="font-size:11px;color:#6b7280;">₹28,700 · Due: 30-Mar-2026 — <span
+                                style="color:#6b7280;">Yesterday</span></div>
+                    </div>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:10px;">
+                    <div
+                        style="width:8px;height:8px;background:#059669;border-radius:50%;margin-top:5px;flex-shrink:0;">
+                    </div>
+                    <div>
+                        <div style="font-size:12px;font-weight:500;">New client "Bajaj Auto — Chakan" added to Pune
+                            branch</div>
+                        <div style="font-size:11px;color:#6b7280;">Branch-local client · Added by Sales — <span
+                                style="color:#6b7280;">2 days ago</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-bolt" style="color:#f59e0b;margin-right:6px;"></i> Quick Actions</h3>
+        </div>
+        <div class="widget-body" style="padding:12px 16px;">
+            <div style="display:flex;flex-direction:column;gap:8px;">
+                <button onclick="navigateTo('trip-create')"
+                    style="width:100%;text-align:left;padding:10px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fff;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:13px;">
+                    <div
+                        style="width:32px;height:32px;background:#ecfeff;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                        <i class="fas fa-plus" style="color:#0e7490;font-size:13px;"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight:600;">Add Trip</div>
+                        <div style="font-size:11px;color:#6b7280;">Pune branch trip</div>
+                    </div>
+                </button>
+                <button onclick="navigateTo('profit-loss')"
+                    style="width:100%;text-align:left;padding:10px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fff;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:13px;">
+                    <div
+                        style="width:32px;height:32px;background:#f0fdf4;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                        <i class="fas fa-file-invoice" style="color:#16a34a;font-size:13px;"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight:600;">Branch P&L</div>
+                        <div style="font-size:11px;color:#6b7280;">Monthly profit & loss</div>
+                    </div>
+                </button>
+                <button onclick="navigateTo('driver-ledger')"
+                    style="width:100%;text-align:left;padding:10px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fff;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:13px;">
+                    <div
+                        style="width:32px;height:32px;background:#faf5ff;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                        <i class="fas fa-hand-holding-usd" style="color:#7c3aed;font-size:13px;"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight:600;">Driver Ledger</div>
+                        <div style="font-size:11px;color:#6b7280;">Advances & settlements</div>
+                    </div>
+                </button>
+                <button onclick="navigateTo('trip-profitability')"
+                    style="width:100%;text-align:left;padding:10px 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fff;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:13px;">
+                    <div
+                        style="width:32px;height:32px;background:#fef3c7;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                        <i class="fas fa-chart-bar" style="color:#d97706;font-size:13px;"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight:600;">Trip Profitability</div>
+                        <div style="font-size:11px;color:#6b7280;">Analyze route economics</div>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

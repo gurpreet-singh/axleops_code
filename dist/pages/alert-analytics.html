@@ -1,0 +1,123 @@
+<!-- ALR-04: Alert Analytics Dashboard -->
+<div class="page-header">
+    <h1>Alert Analytics</h1>
+    <div class="page-header-actions">
+        <div class="filter-btn">Last 30 days ▾</div>
+        <button class="btn btn-secondary"><i class="fas fa-file-pdf"></i> Export PDF</button>
+    </div>
+</div>
+
+<!-- Metrics -->
+<div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
+    <div style="background:var(--bg-primary);border-radius:10px;border:1px solid var(--border-color);padding:14px 18px;flex:1;min-width:130px;">
+        <div style="font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">Total (30 days)</div>
+        <div style="font-size:24px;font-weight:800;color:#1570ef;line-height:1.1;">142</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">↓ 8% from last month</div>
+    </div>
+    <div style="background:var(--bg-primary);border-radius:10px;border:1px solid var(--border-color);padding:14px 18px;flex:1;min-width:130px;">
+        <div style="font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">Critical</div>
+        <div style="font-size:24px;font-weight:800;color:#DC2626;line-height:1.1;">12</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">8.4% of total</div>
+    </div>
+    <div style="background:var(--bg-primary);border-radius:10px;border:1px solid var(--border-color);padding:14px 18px;flex:1;min-width:130px;">
+        <div style="font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">Avg MTTA</div>
+        <div style="font-size:24px;font-weight:800;color:#22C55E;line-height:1.1;">4.2 min</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Target: 5 min ✓</div>
+    </div>
+    <div style="background:var(--bg-primary);border-radius:10px;border:1px solid var(--border-color);padding:14px 18px;flex:1;min-width:130px;">
+        <div style="font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">Avg MTTR</div>
+        <div style="font-size:24px;font-weight:800;color:#22C55E;line-height:1.1;">22 min</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Target: 30 min ✓</div>
+    </div>
+    <div style="background:var(--bg-primary);border-radius:10px;border:1px solid var(--border-color);padding:14px 18px;flex:1;min-width:130px;">
+        <div style="font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">SLA Compliance</div>
+        <div style="font-size:24px;font-weight:800;color:#F59E0B;line-height:1.1;">94%</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Target: 95%</div>
+    </div>
+    <div style="background:var(--bg-primary);border-radius:10px;border:1px solid var(--border-color);padding:14px 18px;flex:1;min-width:130px;">
+        <div style="font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">False Positive</div>
+        <div style="font-size:24px;font-weight:800;color:#F59E0B;line-height:1.1;">11%</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Target: &lt;10%</div>
+    </div>
+</div>
+
+<!-- Charts Grid -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <!-- Alert Volume Chart -->
+    <div class="detail-section">
+        <div class="section-header"><h3>Alert Volume — Last 7 Days</h3></div>
+        <div class="section-body">
+            <div style="display:flex;gap:6px;height:110px;align-items:flex-end;padding:0 8px;">
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><span style="font-size:9px;font-weight:600;color:var(--text-secondary);margin-bottom:3px;">18</span><div style="width:65%;height:54px;background:rgba(21,112,239,0.4);border-radius:3px 3px 0 0;"></div><span style="font-size:8px;color:var(--text-muted);margin-top:3px;">Mon</span></div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><span style="font-size:9px;font-weight:600;color:var(--text-secondary);margin-bottom:3px;">22</span><div style="width:65%;height:66px;background:rgba(21,112,239,0.4);border-radius:3px 3px 0 0;"></div><span style="font-size:8px;color:var(--text-muted);margin-top:3px;">Tue</span></div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><span style="font-size:9px;font-weight:600;color:var(--text-secondary);margin-bottom:3px;">14</span><div style="width:65%;height:42px;background:rgba(21,112,239,0.4);border-radius:3px 3px 0 0;"></div><span style="font-size:8px;color:var(--text-muted);margin-top:3px;">Wed</span></div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><span style="font-size:9px;font-weight:600;color:var(--text-secondary);margin-bottom:3px;">26</span><div style="width:65%;height:78px;background:rgba(21,112,239,0.4);border-radius:3px 3px 0 0;"></div><span style="font-size:8px;color:var(--text-muted);margin-top:3px;">Thu</span></div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><span style="font-size:9px;font-weight:600;color:var(--text-secondary);margin-bottom:3px;">20</span><div style="width:65%;height:60px;background:rgba(21,112,239,0.4);border-radius:3px 3px 0 0;"></div><span style="font-size:8px;color:var(--text-muted);margin-top:3px;">Fri</span></div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><span style="font-size:9px;font-weight:600;color:var(--text-secondary);margin-bottom:3px;">31</span><div style="width:65%;height:93px;background:rgba(21,112,239,0.4);border-radius:3px 3px 0 0;"></div><span style="font-size:8px;color:var(--text-muted);margin-top:3px;">Sat</span></div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;"><span style="font-size:9px;font-weight:600;color:var(--text-secondary);margin-bottom:3px;">11</span><div style="width:65%;height:33px;background:#1570ef;border-radius:3px 3px 0 0;"></div><span style="font-size:8px;color:var(--text-muted);margin-top:3px;">Sun</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Distribution -->
+    <div class="detail-section">
+        <div class="section-header"><h3>Category Distribution</h3></div>
+        <div class="section-body">
+            <div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;"><span style="font-weight:600;">Financial</span><span style="color:var(--text-secondary);">38</span></div><div style="height:5px;background:var(--bg-secondary);border-radius:3px;overflow:hidden;"><div style="height:100%;width:76%;background:#22c55e;border-radius:3px;"></div></div></div>
+            <div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;"><span style="font-weight:600;">Operational</span><span style="color:var(--text-secondary);">42</span></div><div style="height:5px;background:var(--bg-secondary);border-radius:3px;overflow:hidden;"><div style="height:100%;width:84%;background:#f59e0b;border-radius:3px;"></div></div></div>
+            <div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;"><span style="font-weight:600;">Driver</span><span style="color:var(--text-secondary);">34</span></div><div style="height:5px;background:var(--bg-secondary);border-radius:3px;overflow:hidden;"><div style="height:100%;width:68%;background:#7a5af8;border-radius:3px;"></div></div></div>
+            <div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;"><span style="font-weight:600;">Compliance</span><span style="color:var(--text-secondary);">28</span></div><div style="height:5px;background:var(--bg-secondary);border-radius:3px;overflow:hidden;"><div style="height:100%;width:56%;background:#0e9384;border-radius:3px;"></div></div></div>
+        </div>
+    </div>
+
+    <!-- Top Offending Drivers -->
+    <div class="detail-section">
+        <div class="section-header"><h3>Top Offending Drivers (30 days)</h3></div>
+        <div class="section-body">
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-color);"><span style="font-size:12px;font-weight:700;color:var(--text-muted);width:20px;">1.</span><div style="width:26px;height:26px;border-radius:50%;background:#dbeafe;color:#1d4ed8;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;">VS</div><div style="flex:1;"><div style="font-size:12px;font-weight:600;">Vikram S.</div><div style="font-size:10px;color:var(--text-muted);">3 trips with alerts</div></div><div style="display:flex;align-items:center;gap:6px;width:100px;"><div style="height:5px;background:var(--bg-secondary);border-radius:3px;overflow:hidden;flex:1;"><div style="height:100%;width:80%;background:#DC2626;border-radius:3px;"></div></div><span style="font-size:12px;font-weight:700;color:#DC2626;min-width:20px;">8</span></div></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-color);"><span style="font-size:12px;font-weight:700;color:var(--text-muted);width:20px;">2.</span><div style="width:26px;height:26px;border-radius:50%;background:#dbeafe;color:#1d4ed8;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;">MK</div><div style="flex:1;"><div style="font-size:12px;font-weight:600;">Manoj K.</div><div style="font-size:10px;color:var(--text-muted);">2 trips with alerts</div></div><div style="display:flex;align-items:center;gap:6px;width:100px;"><div style="height:5px;background:var(--bg-secondary);border-radius:3px;overflow:hidden;flex:1;"><div style="height:100%;width:50%;background:#F59E0B;border-radius:3px;"></div></div><span style="font-size:12px;font-weight:700;min-width:20px;">5</span></div></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-color);"><span style="font-size:12px;font-weight:700;color:var(--text-muted);width:20px;">3.</span><div style="width:26px;height:26px;border-radius:50%;background:#dbeafe;color:#1d4ed8;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;">KD</div><div style="flex:1;"><div style="font-size:12px;font-weight:600;">Kiran D.</div><div style="font-size:10px;color:var(--text-muted);">3 trips with alerts</div></div><div style="display:flex;align-items:center;gap:6px;width:100px;"><div style="height:5px;background:var(--bg-secondary);border-radius:3px;overflow:hidden;flex:1;"><div style="height:100%;width:40%;background:#F59E0B;border-radius:3px;"></div></div><span style="font-size:12px;font-weight:700;min-width:20px;">4</span></div></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-color);"><span style="font-size:12px;font-weight:700;color:var(--text-muted);width:20px;">4.</span><div style="width:26px;height:26px;border-radius:50%;background:#dbeafe;color:#1d4ed8;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;">AS</div><div style="flex:1;"><div style="font-size:12px;font-weight:600;">Amit S.</div><div style="font-size:10px;color:var(--text-muted);">2 trips with alerts</div></div><div style="display:flex;align-items:center;gap:6px;width:100px;"><div style="height:5px;background:var(--bg-secondary);border-radius:3px;overflow:hidden;flex:1;"><div style="height:100%;width:30%;background:#F59E0B;border-radius:3px;"></div></div><span style="font-size:12px;font-weight:700;min-width:20px;">3</span></div></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 0;"><span style="font-size:12px;font-weight:700;color:var(--text-muted);width:20px;">5.</span><div style="width:26px;height:26px;border-radius:50%;background:#dbeafe;color:#1d4ed8;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;">AV</div><div style="flex:1;"><div style="font-size:12px;font-weight:600;">Anita V.</div><div style="font-size:10px;color:var(--text-muted);">1 trip with alerts</div></div><div style="display:flex;align-items:center;gap:6px;width:100px;"><div style="height:5px;background:var(--bg-secondary);border-radius:3px;overflow:hidden;flex:1;"><div style="height:100%;width:20%;background:#F59E0B;border-radius:3px;"></div></div><span style="font-size:12px;font-weight:700;min-width:20px;">2</span></div></div>
+        </div>
+    </div>
+
+    <!-- Root Causes -->
+    <div class="detail-section">
+        <div class="section-header"><h3>Resolution Root Causes (30 days)</h3></div>
+        <div class="section-body">
+            <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border-color);"><div style="width:8px;height:8px;border-radius:50%;background:#DC2626;flex-shrink:0;"></div><span style="flex:1;font-size:12px;">Driver error</span><span style="font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace;">28</span><span style="font-size:10px;color:var(--text-muted);width:36px;">29%</span></div>
+            <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border-color);"><div style="width:8px;height:8px;border-radius:50%;background:#F59E0B;flex-shrink:0;"></div><span style="flex:1;font-size:12px;">Vehicle issue</span><span style="font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace;">18</span><span style="font-size:10px;color:var(--text-muted);width:36px;">19%</span></div>
+            <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border-color);"><div style="width:8px;height:8px;border-radius:50%;background:#1570ef;flex-shrink:0;"></div><span style="flex:1;font-size:12px;">External factor</span><span style="font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace;">15</span><span style="font-size:10px;color:var(--text-muted);width:36px;">16%</span></div>
+            <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border-color);"><div style="width:8px;height:8px;border-radius:50%;background:#0e9384;flex-shrink:0;"></div><span style="flex:1;font-size:12px;">Route issue</span><span style="font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace;">12</span><span style="font-size:10px;color:var(--text-muted);width:36px;">13%</span></div>
+            <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border-color);"><div style="width:8px;height:8px;border-radius:50%;background:#98a2b3;flex-shrink:0;"></div><span style="flex:1;font-size:12px;">False alarm</span><span style="font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace;">11</span><span style="font-size:10px;color:var(--text-muted);width:36px;">11%</span></div>
+            <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border-color);"><div style="width:8px;height:8px;border-radius:50%;background:#DC2626;flex-shrink:0;"></div><span style="flex:1;font-size:12px;">Fraud suspected</span><span style="font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace;">4</span><span style="font-size:10px;color:var(--text-muted);width:36px;">4%</span></div>
+            <div style="display:flex;align-items:center;gap:8px;padding:6px 0;"><div style="width:8px;height:8px;border-radius:50%;background:#667085;flex-shrink:0;"></div><span style="flex:1;font-size:12px;">Other</span><span style="font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace;">8</span><span style="font-size:10px;color:var(--text-muted);width:36px;">8%</span></div>
+        </div>
+    </div>
+
+    <!-- Financial Impact (full width) -->
+    <div class="detail-section" style="grid-column:1/-1;">
+        <div class="section-header"><h3>Financial Impact of Detected Issues (30 days)</h3></div>
+        <div class="section-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;">
+                <div style="background:#fef2f2;border-radius:8px;padding:12px 14px;">
+                    <div style="font-size:10px;color:#B42318;text-transform:uppercase;font-weight:600;">Total Losses Detected</div>
+                    <div style="font-size:22px;font-weight:800;color:#DC2626;margin-top:4px;">₹2,84,600</div>
+                </div>
+                <div style="background:#fffaeb;border-radius:8px;padding:12px 14px;">
+                    <div style="font-size:10px;color:#b54708;text-transform:uppercase;font-weight:600;">Expense Overruns Caught</div>
+                    <div style="font-size:22px;font-weight:800;color:#F59E0B;margin-top:4px;">₹1,42,800</div>
+                </div>
+                <div style="background:#ecfdf3;border-radius:8px;padding:12px 14px;">
+                    <div style="font-size:10px;color:#027a48;text-transform:uppercase;font-weight:600;">Recovered / Prevented</div>
+                    <div style="font-size:22px;font-weight:800;color:#22C55E;margin-top:4px;">₹86,400</div>
+                </div>
+                <div style="background:#f4f3ff;border-radius:8px;padding:12px 14px;">
+                    <div style="font-size:10px;color:#5925dc;text-transform:uppercase;font-weight:600;">Fraud Investigations</div>
+                    <div style="font-size:22px;font-weight:800;color:#7a5af8;margin-top:4px;">2 active</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

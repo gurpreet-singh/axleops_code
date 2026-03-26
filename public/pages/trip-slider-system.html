@@ -1,0 +1,2028 @@
+<!-- ═══════════════════════════════════════════════════════════════
+     Trip Slider System — All-in-one HTML
+     Consolidates: trip-slider.js, trip-slider-list.js, 
+                   trip-slider-addtrip.js, trip-slider-detail.js
+     Edit this file directly for UX iteration.
+     ═══════════════════════════════════════════════════════════════ -->
+
+<!-- ═══ SECTION 1: DATA, HELPERS & SLIDER SHELL ═══ -->
+<script>
+/* ===================================================
+   TMS Trip Lifecycle — Right-Side Slider System v2
+   Complete rebuild: list, detail, inline action forms, add-trip
+   =================================================== */
+
+// ─── DATA ─────────────────────────────────────────────────────────────────────
+var TRIP_ROUTES = [
+  { id:"RT-001", origin:"Mumbai", destination:"Pune", client:"Reliance Retail", rateType:"Flat", rate:8500, distKm:148, transitDays:1, team:"West Team", freightTerms:"To Pay", defaultConsignor:"Reliance Jamnagar DC", defaultConsignee:"Reliance Pune WH-3",
+    vehicleType:"LCV — Light Truck", estDuration:"4–5 hrs", viaHighway:"NH48 (Mumbai–Pune Expressway)", tollEstimate:350, dieselEstimateL:15, avgKmpl:10, billingType:"Per Trip", sla:8, minMargin:15, demurrage:300, freeHours:2, paymentTerms:"30 days",
+    loadingInstructions:"Report to Jamnagar DC Gate 2. Slot: 7–9 AM. Max loading 3 hrs.", unloadingInstructions:"Pune WH-3, Bay 4. Weigh-bridge at exit mandatory." },
+  { id:"RT-002", origin:"Mumbai", destination:"Nashik", client:"ITC Limited", rateType:"Per Km", rate:42, distKm:165, transitDays:1, team:"West Team", freightTerms:"Paid", defaultConsignor:"ITC Mumbai Factory", defaultConsignee:"ITC Nashik Depot",
+    vehicleType:"ICV — Intermediate", estDuration:"5–6 hrs", viaHighway:"NH3 (Mumbai–Agra Highway)", tollEstimate:480, dieselEstimateL:28, avgKmpl:6, billingType:"Per KM", sla:10, minMargin:12, demurrage:400, freeHours:3, paymentTerms:"15 days",
+    loadingInstructions:"ITC Mumbai Factory, Loading Bay 1. Night loading permitted.", unloadingInstructions:"ITC Nashik Depot. POD must be signed by Depot Manager." },
+  { id:"RT-003", origin:"Delhi", destination:"Agra", client:"Tata Chemicals", rateType:"Flat", rate:7200, distKm:210, transitDays:1, team:"North Team", freightTerms:"To Be Billed (TBB)", defaultConsignor:"Tata Chem Delhi Plant", defaultConsignee:"Tata Agra Warehouse",
+    vehicleType:"HCV Rigid 2-Axle", estDuration:"5–6 hrs", viaHighway:"NH2 (Delhi–Agra Expressway)", tollEstimate:620, dieselEstimateL:42, avgKmpl:5, billingType:"Per Trip", sla:10, minMargin:18, demurrage:500, freeHours:4, paymentTerms:"30 days",
+    loadingInstructions:"Tata Chem Delhi Plant. Hazmat sealed containers only. Driver must carry permit + PAN card.", unloadingInstructions:"Tata Agra Warehouse. Weigh-bridge mandatory before entry. Safety induction required." },
+  { id:"RT-005", origin:"Bengaluru", destination:"Chennai", client:"Nestlé India", rateType:"Flat", rate:14000, distKm:346, transitDays:2, team:"South Team", freightTerms:"To Pay", defaultConsignor:"Nestlé Bengaluru Plant", defaultConsignee:"Nestlé Chennai DC",
+    vehicleType:"Tractor-Trailer", estDuration:"8–10 hrs", viaHighway:"NH44 (Bengaluru–Chennai)", tollEstimate:1200, dieselEstimateL:96, avgKmpl:3.6, billingType:"Per Trip", sla:16, minMargin:20, demurrage:600, freeHours:4, paymentTerms:"30 days",
+    loadingInstructions:"Nestlé Bengaluru Plant. Cold chain — temperature check mandatory before loading.", unloadingInstructions:"Nestlé Chennai DC. Night unloading not permitted (gates close 9 PM)." },
+  { id:"RT-009", origin:"Pune", destination:"Ahmedabad", client:"Marico", rateType:"Flat", rate:16500, distKm:462, transitDays:2, team:"West Team", freightTerms:"To Pay", defaultConsignor:"Marico Pune Factory", defaultConsignee:"Marico Ahmedabad DC",
+    vehicleType:"Tractor-Trailer", estDuration:"12–14 hrs", viaHighway:"NH48 → NH8", tollEstimate:1800, dieselEstimateL:128, avgKmpl:3.6, billingType:"Per Trip", sla:20, minMargin:18, demurrage:500, freeHours:4, paymentTerms:"30 days",
+    loadingInstructions:"Marico Pune Factory, Bay 2. Slot: 4–6 AM. Crane loading for pallets.", unloadingInstructions:"Marico Ahmedabad DC. Weigh-bridge mandatory." },
+];
+
+var TRIP_VEHICLES = {
+  "MH12 AB 1234": { driver:"Raju Singh", type:"Own", routeId:"RT-001" },
+  "MH12 CD 5678": { driver:"Mohan Lal", type:"Own", routeId:"RT-001" },
+  "MH15 EF 2341": { driver:"Suresh Kumar", type:"Attached", routeId:"RT-002" },
+  "DL10 GH 9012": { driver:"Arjun Nair", type:"Own", routeId:"RT-003" },
+  "KA05 MN 4567": { driver:"Sanjay Gupta", type:"Own", routeId:"RT-005" },
+  "MH14 WX 3456": { driver:"Rahul Desai", type:"Own", routeId:"RT-009" },
+};
+
+var TRIP_EXPENSE_CATS = ["Fuel","Toll / Tax","Loading Labour","Unloading Labour","Mechanical","Driver Allowance","Other"];
+var TRIP_PAYMENT_MODES = ["Cash","Bank Transfer / NEFT","Cheque","UPI","Fuel Card"];
+
+// ─── CLIENT MASTER (with Branches) ───────────────────────────────────────────
+var TRIP_CLIENTS = [
+  { id:'CLT-001', name:'Reliance Industries', industry:'Petrochemicals', gstin:'27AAACR5055K1ZK', pan:'AAACR5055K',
+    branches: [
+      { id:'BR-001-1', name:'Mumbai HQ (Primary)', city:'Mumbai', state:'Maharashtra', gstin:'27AAACR5055K1ZK', address:'Maker Chambers IV, Nariman Point, Mumbai 400021', contact:'Arun Sharma', phone:'+91 98765 43210' },
+      { id:'BR-001-2', name:'Delhi Warehouse', city:'New Delhi', state:'Delhi', gstin:'07AAACR5055K1ZD', address:'Plot 12, Sector 18, Noida 201301', contact:'Kavita Reddy', phone:'+91 98765 43211' },
+      { id:'BR-001-3', name:'Jamnagar Refinery', city:'Jamnagar', state:'Gujarat', gstin:'24AAACR5055K1ZJ', address:'Refinery Complex, Moti Khavdi, Jamnagar 361140', contact:'Sanjay Patel', phone:'+91 98765 43212' },
+      { id:'BR-001-4', name:'Chennai Office', city:'Chennai', state:'Tamil Nadu', gstin:'33AAACR5055K1ZC', address:'Tidel Park, Rajiv Gandhi Salai, Chennai 600113', contact:'Rajesh Iyer', phone:'+91 98765 43213' }
+    ]},
+  { id:'CLT-002', name:'Tata Steel', industry:'Steel & Metals', gstin:'27AADCT0397C1ZN', pan:'AADCT0397C',
+    branches: [
+      { id:'BR-002-1', name:'Mumbai Office', city:'Mumbai', state:'Maharashtra', gstin:'27AADCT0397C1ZN', address:'Bombay House, Homi Mody St, Fort, Mumbai 400001', contact:'Vikram Das', phone:'+91 98123 45001' },
+      { id:'BR-002-2', name:'Jamshedpur Works', city:'Jamshedpur', state:'Jharkhand', gstin:'20AADCT0397C1ZJ', address:'Burma Mines, Jamshedpur 831001', contact:'Aman Tripathi', phone:'+91 98123 45002' }
+    ]},
+  { id:'CLT-003', name:'Hindustan Unilever', industry:'FMCG', gstin:'27AAACH1395E1ZI', pan:'AAACH1395E',
+    branches: [
+      { id:'BR-003-1', name:'Mumbai HQ', city:'Mumbai', state:'Maharashtra', gstin:'27AAACH1395E1ZI', address:'Unilever House, B.D. Sawant Marg, Andheri East, Mumbai 400099', contact:'Priya Kapoor', phone:'+91 98234 56001' },
+      { id:'BR-003-2', name:'Bengaluru Factory', city:'Bengaluru', state:'Karnataka', gstin:'29AAACH1395E1ZK', address:'Plot 48, Whitefield Industrial Area, Bengaluru 560066', contact:'Sunil Hegde', phone:'+91 98234 56002' }
+    ]},
+  { id:'CLT-004', name:'ITC Limited', industry:'FMCG', gstin:'36AABCI5765H1Z0', pan:'AABCI5765H',
+    branches: [
+      { id:'BR-004-1', name:'Mumbai Factory', city:'Mumbai', state:'Maharashtra', gstin:'27AABCI5765H1ZM', address:'ITC Centre, Parel, Mumbai 400012', contact:'Ramesh Verma', phone:'+91 98345 67001' },
+      { id:'BR-004-2', name:'Nashik Depot', city:'Nashik', state:'Maharashtra', gstin:'27AABCI5765H1ZN', address:'MIDC Ambad, Plot G-45, Nashik 422010', contact:'Dipak More', phone:'+91 98345 67002' },
+      { id:'BR-004-3', name:'Kolkata HQ', city:'Kolkata', state:'West Bengal', gstin:'19AABCI5765H1ZK', address:'Virginia House, 37 J.L. Nehru Road, Kolkata 700071', contact:'Arjun Sen', phone:'+91 98345 67003' }
+    ]},
+  { id:'CLT-005', name:'Adani Ports', industry:'Infrastructure', gstin:'24AAGCA7471N1ZB', pan:'AAGCA7471N',
+    branches: [
+      { id:'BR-005-1', name:'Mundra Port', city:'Mundra', state:'Gujarat', gstin:'24AAGCA7471N1ZB', address:'Adani House, Mundra Port SEZ, Mundra 370421', contact:'Nilesh Shah', phone:'+91 98456 78001' },
+      { id:'BR-005-2', name:'Dhamra Port', city:'Dhamra', state:'Odisha', gstin:'21AAGCA7471N1ZD', address:'Dhamra Port Company Ltd, Bhadrak 756171', contact:'B.K. Mohanty', phone:'+91 98456 78002' }
+    ]},
+  { id:'CLT-006', name:'Mahindra Logistics', industry:'3PL', gstin:'27AAHCM6986F1ZB', pan:'AAHCM6986F',
+    branches: [
+      { id:'BR-006-1', name:'Chakan Plant', city:'Chakan', state:'Maharashtra', gstin:'27AAHCM6986F1ZB', address:'Mahindra World City, Plot A1, Chakan 410501', contact:'Suresh Naik', phone:'+91 98567 89001' },
+      { id:'BR-006-2', name:'Nashik Hub', city:'Nashik', state:'Maharashtra', gstin:'27AAHCM6986F1ZN', address:'MIDC Sinnar, Plot K-12, Nashik 422103', contact:'Anand Kulkarni', phone:'+91 98567 89002' },
+      { id:'BR-006-3', name:'Haridwar Plant', city:'Haridwar', state:'Uttarakhand', gstin:'05AAHCM6986F1ZH', address:'SIDCUL Industrial Area, Haridwar 249403', contact:'R.K. Mehra', phone:'+91 98567 89003' }
+    ]},
+  { id:'CLT-007', name:'Nestlé India', industry:'FMCG', gstin:'27AAACN0359E1Z3', pan:'AAACN0359E',
+    branches: [
+      { id:'BR-007-1', name:'Bengaluru Plant', city:'Bengaluru', state:'Karnataka', gstin:'29AAACN0359E1ZK', address:'Nestlé India Ltd, Nanjangud Industrial Area, Bengaluru 560058', contact:'Kiran Rao', phone:'+91 98678 90001' },
+      { id:'BR-007-2', name:'Chennai DC', city:'Chennai', state:'Tamil Nadu', gstin:'33AAACN0359E1ZC', address:'Nestlé Distribution Centre, Ambattur Industrial Estate, Chennai 600058', contact:'Venkat Raman', phone:'+91 98678 90002' }
+    ]},
+  { id:'CLT-008', name:'Tata Chemicals', industry:'Chemicals', gstin:'27AAACT2727Q1ZV', pan:'AAACT2727Q',
+    branches: [
+      { id:'BR-008-1', name:'Delhi Plant', city:'Delhi', state:'Delhi', gstin:'07AAACT2727Q1ZD', address:'Tata Chemicals Ltd, Badarpur, New Delhi 110044', contact:'P.K. Gupta', phone:'+91 98789 01001' },
+      { id:'BR-008-2', name:'Agra Warehouse', city:'Agra', state:'Uttar Pradesh', gstin:'09AAACT2727Q1ZA', address:'Transport Nagar, NH-2, Agra 282007', contact:'Manoj Kumar', phone:'+91 98789 01002' }
+    ]},
+  { id:'CLT-009', name:'Marico', industry:'FMCG', gstin:'27AABCM9006P1Z5', pan:'AABCM9006P',
+    branches: [
+      { id:'BR-009-1', name:'Pune Factory', city:'Pune', state:'Maharashtra', gstin:'27AABCM9006P1ZP', address:'Marico Ltd, Ranjangaon MIDC, Pune 412220', contact:'Ashish Desai', phone:'+91 98890 12001' },
+      { id:'BR-009-2', name:'Ahmedabad DC', city:'Ahmedabad', state:'Gujarat', gstin:'24AABCM9006P1ZA', address:'Marico Distribution Centre, Sanand GIDC, Ahmedabad 382110', contact:'Jayesh Patel', phone:'+91 98890 12002' }
+    ]}
+];
+
+// ─── TRANSPORTER / BA MASTER ─────────────────────────────────────────────────
+var TRIP_TRANSPORTERS = [
+  { id:'BA-001', baCode:'100001748', name:'Goodwill Transport', region:'Maharashtra', gstin:'27AABCG1234A1Z5', contact:'Vikram Singh', phone:'+91 98012 34001' },
+  { id:'BA-002', baCode:'100002356', name:'Patel Roadways', region:'Maharashtra', gstin:'27AADCP5678B1Z8', contact:'Ramesh Patel', phone:'+91 98012 34002' },
+  { id:'BA-003', baCode:'100003891', name:'Singh Transport', region:'Delhi NCR', gstin:'07AADCS9012C1Z2', contact:'Harpreet Singh', phone:'+91 98012 34003' },
+  { id:'BA-004', baCode:'100004567', name:'Reddy Logistics', region:'South India', gstin:'36AADCR3456D1Z5', contact:'Venkat Reddy', phone:'+91 98012 34004' },
+  { id:'BA-005', baCode:'100005234', name:'Sharma Carriers', region:'North India', gstin:'09AADCS7890E1Z9', contact:'Anil Sharma', phone:'+91 98012 34005' }
+];
+
+var TRIP_STATE_COLORS = {
+  "Created":    { dot:"#7C3AED", light:"#F5F3FF", mid:"#EDE9FE", text:"#5B21B6", border:"#C4B5FD" },
+  "In Transit": { dot:"#0EA5E9", light:"#F0F9FF", mid:"#E0F2FE", text:"#0369A1", border:"#7DD3FC" },
+  "Completed":  { dot:"#10B981", light:"#F0FDF4", mid:"#D1FAE5", text:"#065F46", border:"#6EE7B7" },
+  "Settled":    { dot:"#D97706", light:"#FFFBEB", mid:"#FEF3C7", text:"#92400E", border:"#FCD34D" },
+};
+
+function _tmoney(n){ return n ? '₹'+Number(n).toLocaleString() : '—'; }
+function _tfmtD(iso){ if(!iso) return '—'; var p=iso.split('-'); return p[2]+'/'+p[1]+'/'+p[0].slice(2); }
+function _ttoday(){ return new Date().toISOString().slice(0,10); }
+var _tuid = 4630;
+
+var TRIPS_DATA = [
+  { id:"T-04600",lr:"LR-08000",routeId:"RT-009",status:"Created",lrDate:"2026-03-23",tripDate:"2026-03-24",tripType:"FTL",client:"Marico",origin:"Pune",destination:"Ahmedabad",team:"West Team",vehicle:null,driver:null,vtype:null,consignor:"Marico Pune Factory",consignee:"Marico Ahmedabad DC",goods:"Coconut oil cartons",weightKg:10200,packages:300,declaredValue:380000,freight:16500,hire:null,freightTerms:"To Pay",trollyQty:12,documentNo:"DOC-9801",permitNo:"",materialType:"FMCG — edible oils",billNo:"",tripSheetNo:"",tripSheetDate:null,vehicleSourceTs:null,vehicleDestTs:null,vehicleUnloadDate:null,billSubmitDate:null,billReceiveDate:null,invoiceNo:"INV-MAR-4800",jobEntry:null,advances:[],expenses:[],pod:null,tripSheet:null,deliveryDate:null,invoiceAmt:null,paymentDate:null,paymentRef:null,delayed:false },
+  { id:"T-04601",lr:"LR-08001",routeId:"RT-001",status:"In Transit",lrDate:"2026-03-22",tripDate:"2026-03-22",tripType:"FTL",client:"Reliance Retail",origin:"Mumbai",destination:"Pune",team:"West Team",vehicle:"MH12 AB 1234",driver:"Raju Singh",vtype:"Own",consignor:"Reliance Jamnagar DC",consignee:"Reliance Pune WH-3",goods:"Packaged food items",weightKg:14200,packages:320,declaredValue:420000,freight:8500,hire:null,freightTerms:"To Pay",trollyQty:16,documentNo:"DOC-9802",permitNo:"",materialType:"FMCG — packaged food",billNo:"",tripSheetNo:"",tripSheetDate:null,vehicleSourceTs:"2026-03-22 09:00",vehicleDestTs:null,vehicleUnloadDate:null,billSubmitDate:null,billReceiveDate:null,invoiceNo:"INV-REL-3201",jobEntry:{date:"2026-03-22",time:"09:00",odoStart:12340,dispatchNote:"Standard load"},advances:[{id:"adv1",type:"Driver",amount:3500,mode:"Cash",date:"2026-03-22",note:"Fuel + toll"}],expenses:[],pod:null,tripSheet:null,deliveryDate:null,invoiceAmt:null,paymentDate:null,paymentRef:null,delayed:false },
+  { id:"T-04602",lr:"LR-08002",routeId:"RT-002",status:"In Transit",lrDate:"2026-03-22",tripDate:"2026-03-22",tripType:"FTL",client:"ITC Limited",origin:"Mumbai",destination:"Nashik",team:"West Team",vehicle:"MH15 EF 2341",driver:"Suresh Kumar",vtype:"Attached",consignor:"ITC Mumbai Factory",consignee:"ITC Nashik Depot",goods:"Cigarettes & FMCG",weightKg:8400,packages:210,declaredValue:680000,freight:6930,hire:5500,freightTerms:"Paid",trollyQty:8,documentNo:"DOC-9803",permitNo:"",materialType:"FMCG — tobacco & personal care",billNo:"",tripSheetNo:"",tripSheetDate:null,vehicleSourceTs:"2026-03-22 08:30",vehicleDestTs:null,vehicleUnloadDate:null,billSubmitDate:null,billReceiveDate:null,invoiceNo:"INV-ITC-1102",jobEntry:{date:"2026-03-22",time:"08:30",odoStart:45230,dispatchNote:"Loaded and sealed"},advances:[{id:"adv2",type:"Driver",amount:2000,mode:"Cash",date:"2026-03-22",note:"Trip advance"},{id:"adv3",type:"Hire Slip",amount:2000,mode:"Bank Transfer",date:"2026-03-22",note:"Owner advance"}],expenses:[],pod:null,tripSheet:null,deliveryDate:null,invoiceAmt:null,paymentDate:null,paymentRef:null,delayed:false },
+  { id:"T-04603",lr:"LR-08003",routeId:"RT-003",status:"In Transit",lrDate:"2026-03-20",tripDate:"2026-03-20",tripType:"FTL",client:"Tata Chemicals",origin:"Delhi",destination:"Agra",team:"North Team",vehicle:"DL10 GH 9012",driver:"Arjun Nair",vtype:"Own",consignor:"Tata Chem Delhi Plant",consignee:"Tata Agra Warehouse",goods:"Industrial chemicals",weightKg:18000,packages:90,declaredValue:890000,freight:7200,hire:null,freightTerms:"To Be Billed (TBB)",trollyQty:0,documentNo:"DOC-9804",permitNo:"HAZ-2026-0041",materialType:"Chemicals — industrial grade",billNo:"",tripSheetNo:"",tripSheetDate:null,vehicleSourceTs:"2026-03-20 06:00",vehicleDestTs:null,vehicleUnloadDate:null,billSubmitDate:null,billReceiveDate:null,invoiceNo:"INV-TAT-0890",jobEntry:{date:"2026-03-20",time:"06:00",odoStart:89100,dispatchNote:"Hazmat sealed"},advances:[{id:"adv4",type:"Driver",amount:4000,mode:"Cash",date:"2026-03-20",note:"Long trip"}],expenses:[],pod:null,tripSheet:null,deliveryDate:null,invoiceAmt:null,paymentDate:null,paymentRef:null,delayed:true },
+  { id:"T-04604",lr:"LR-08004",routeId:"RT-005",status:"Completed",lrDate:"2026-03-18",tripDate:"2026-03-18",tripType:"FTL",client:"Nestlé India",origin:"Bengaluru",destination:"Chennai",team:"South Team",vehicle:"KA05 MN 4567",driver:"Sanjay Gupta",vtype:"Own",consignor:"Nestlé Bengaluru Plant",consignee:"Nestlé Chennai DC",goods:"Dairy & packaged food",weightKg:11200,packages:480,declaredValue:560000,freight:14000,hire:null,freightTerms:"To Pay",trollyQty:20,documentNo:"DOC-9805",permitNo:"",materialType:"FMCG — dairy & food",billNo:"",tripSheetNo:"",tripSheetDate:null,vehicleSourceTs:"2026-03-18 05:00",vehicleDestTs:"2026-03-19 14:30",vehicleUnloadDate:"2026-03-19",billSubmitDate:null,billReceiveDate:null,invoiceNo:"INV-NES-5601",jobEntry:{date:"2026-03-18",time:"05:00",odoStart:32400,dispatchNote:"Cold chain"},advances:[{id:"adv5",type:"Driver",amount:6000,mode:"Cash",date:"2026-03-18",note:"2-day trip"}],expenses:[{id:"exp3",category:"Fuel",amount:3800,date:"2026-03-19",note:"NH44 fuel"},{id:"exp4",category:"Toll",amount:620,date:"2026-03-19",note:"NHAI"},{id:"exp5",category:"Labour",amount:800,date:"2026-03-19",note:"Unloading"}],pod:{receiver:"Ramesh Kumar",date:"2026-03-19",files:2,note:"Signed + photo"},tripSheet:null,deliveryDate:"2026-03-19",invoiceAmt:null,paymentDate:null,paymentRef:null,delayed:false },
+  { id:"T-04605",lr:"LR-08005",routeId:"RT-009",status:"Settled",lrDate:"2026-03-15",tripDate:"2026-03-15",tripType:"FTL",client:"Marico",origin:"Pune",destination:"Ahmedabad",team:"West Team",vehicle:"MH14 WX 3456",driver:"Rahul Desai",vtype:"Own",consignor:"Marico Pune Factory",consignee:"Marico Ahmedabad DC",goods:"Hair oils & cosmetics",weightKg:9800,packages:280,declaredValue:340000,freight:16500,hire:null,freightTerms:"To Pay",trollyQty:10,documentNo:"DOC-9806",permitNo:"",materialType:"FMCG — cosmetics",billNo:"BILL-4605",tripSheetNo:"TS-4605",tripSheetDate:"2026-03-17",vehicleSourceTs:"2026-03-15 04:00",vehicleDestTs:"2026-03-16 16:20",vehicleUnloadDate:"2026-03-16",billSubmitDate:"2026-03-18",billReceiveDate:null,invoiceNo:"INV-MAR-3401",jobEntry:{date:"2026-03-15",time:"04:00",odoStart:61800,dispatchNote:"Standard"},advances:[{id:"adv6",type:"Driver",amount:5000,mode:"Cash",date:"2026-03-15",note:"Advance"}],expenses:[{id:"exp6",category:"Fuel",amount:4200,date:"2026-03-16",note:"Fuel"},{id:"exp7",category:"Toll",amount:890,date:"2026-03-16",note:"Tolls"},{id:"exp8",category:"Other",amount:300,date:"2026-03-16",note:"Misc"}],pod:{receiver:"Nitin Patel",date:"2026-03-16",files:1,note:"POD scan"},tripSheet:{settledDate:"2026-03-17",totalAdv:5000,totalExp:5390,balance:-390,note:"Driver owes ₹390"},deliveryDate:"2026-03-16",invoiceAmt:16800,paymentDate:null,paymentRef:null,delayed:false },
+  { id:"T-04606",lr:"LR-08006",routeId:"RT-001",status:"Settled",lrDate:"2026-03-10",tripDate:"2026-03-10",tripType:"FTL",client:"Reliance Retail",origin:"Mumbai",destination:"Pune",team:"West Team",vehicle:"MH12 CD 5678",driver:"Mohan Lal",vtype:"Own",consignor:"Reliance Dharavi WH",consignee:"Reliance Pune WH-1",goods:"Electronics & appliances",weightKg:6200,packages:140,declaredValue:920000,freight:8500,hire:null,freightTerms:"To Be Billed (TBB)",trollyQty:6,documentNo:"DOC-9807",permitNo:"",materialType:"Electronics — fragile",billNo:"BILL-4606",tripSheetNo:"TS-4606",tripSheetDate:"2026-03-12",vehicleSourceTs:"2026-03-10 07:00",vehicleDestTs:"2026-03-11 11:40",vehicleUnloadDate:"2026-03-11",billSubmitDate:"2026-03-12",billReceiveDate:"2026-03-14",invoiceNo:"INV-REL-9201",jobEntry:{date:"2026-03-10",time:"07:00",odoStart:78200,dispatchNote:"Fragile goods"},advances:[{id:"adv7",type:"Driver",amount:3000,mode:"Cash",date:"2026-03-10",note:"Advance"}],expenses:[{id:"exp9",category:"Fuel",amount:1800,date:"2026-03-11",note:"Fuel"},{id:"exp10",category:"Toll",amount:240,date:"2026-03-11",note:"Toll"}],pod:{receiver:"Vijay Sharma",date:"2026-03-11",files:1,note:"Scanned POD"},tripSheet:{settledDate:"2026-03-12",totalAdv:3000,totalExp:2040,balance:960,note:"₹960 refund from driver"},deliveryDate:"2026-03-11",invoiceAmt:8500,paymentDate:"2026-03-15",paymentRef:"UTR20260315001",delayed:false },
+  { id:"T-04607",lr:"LR-08007",routeId:"RT-003",status:"Settled",lrDate:"2026-03-16",tripDate:"2026-03-16",tripType:"FTL",client:"Tata Chemicals",origin:"Delhi",destination:"Agra",team:"North Team",vehicle:"DL10 GH 9012",driver:"Arjun Nair",vtype:"Own",consignor:"Tata Chem Delhi Plant",consignee:"Tata Agra Warehouse",goods:"Soda ash bags",weightKg:20000,packages:400,declaredValue:720000,freight:7200,hire:null,freightTerms:"To Be Billed (TBB)",trollyQty:0,documentNo:"DOC-9808",permitNo:"",materialType:"Chemicals — soda ash",billNo:"",tripSheetNo:"TS-4607",tripSheetDate:"2026-03-18",vehicleSourceTs:"2026-03-16 05:30",vehicleDestTs:"2026-03-17 11:00",vehicleUnloadDate:"2026-03-17",billSubmitDate:null,billReceiveDate:null,invoiceNo:"INV-TAT-7201",jobEntry:{date:"2026-03-16",time:"05:30",odoStart:89600,dispatchNote:"Heavy load"},advances:[{id:"adv8",type:"Driver",amount:3500,mode:"Cash",date:"2026-03-16",note:"Fuel advance"}],expenses:[{id:"exp11",category:"Fuel",amount:2400,date:"2026-03-17",note:"Diesel"},{id:"exp12",category:"Toll",amount:380,date:"2026-03-17",note:"NH2 toll"}],pod:{receiver:"Warehouse Mgr",date:"2026-03-17",files:1,note:"Signed LR"},tripSheet:{settledDate:"2026-03-18",totalAdv:3500,totalExp:2780,balance:720,note:"₹720 refund from driver"},deliveryDate:"2026-03-17",invoiceAmt:null,paymentDate:null,paymentRef:null,delayed:false },
+  { id:"T-04608",lr:"LR-08008",routeId:"RT-005",status:"Settled",lrDate:"2026-03-14",tripDate:"2026-03-14",tripType:"FTL",client:"Nestlé India",origin:"Bengaluru",destination:"Chennai",team:"South Team",vehicle:"KA05 MN 4567",driver:"Sanjay Gupta",vtype:"Own",consignor:"Nestlé Bengaluru Plant",consignee:"Nestlé Chennai DC",goods:"Maggi noodles & sauces",weightKg:12800,packages:520,declaredValue:480000,freight:14000,hire:null,freightTerms:"To Pay",trollyQty:22,documentNo:"DOC-9809",permitNo:"",materialType:"FMCG — noodles & sauces",billNo:"",tripSheetNo:"TS-4608",tripSheetDate:"2026-03-16",vehicleSourceTs:"2026-03-14 04:30",vehicleDestTs:"2026-03-15 13:00",vehicleUnloadDate:"2026-03-15",billSubmitDate:null,billReceiveDate:null,invoiceNo:"INV-NES-4801",jobEntry:{date:"2026-03-14",time:"04:30",odoStart:33100,dispatchNote:"Standard FMCG"},advances:[{id:"adv9",type:"Driver",amount:5500,mode:"Cash",date:"2026-03-14",note:"Trip advance"}],expenses:[{id:"exp13",category:"Fuel",amount:3600,date:"2026-03-15",note:"NH44"},{id:"exp14",category:"Toll",amount:580,date:"2026-03-15",note:"NHAI"},{id:"exp15",category:"Labour",amount:600,date:"2026-03-15",note:"Unloading"}],pod:{receiver:"DC Manager",date:"2026-03-15",files:2,note:"POD + photo"},tripSheet:{settledDate:"2026-03-16",totalAdv:5500,totalExp:4780,balance:720,note:"Balance settled"},deliveryDate:"2026-03-15",invoiceAmt:null,paymentDate:null,paymentRef:null,delayed:false },
+  { id:"T-04609",lr:"LR-08009",routeId:"RT-001",status:"Settled",lrDate:"2026-03-12",tripDate:"2026-03-12",tripType:"FTL",client:"Reliance Retail",origin:"Mumbai",destination:"Pune",team:"West Team",vehicle:"MH12 AB 1234",driver:"Raju Singh",vtype:"Own",consignor:"Reliance Jamnagar DC",consignee:"Reliance Pune WH-3",goods:"Beverages & snacks",weightKg:13500,packages:350,declaredValue:310000,freight:8500,hire:null,freightTerms:"To Pay",trollyQty:14,documentNo:"DOC-9810",permitNo:"",materialType:"FMCG — beverages",billNo:"BILL-4609",tripSheetNo:"TS-4609",tripSheetDate:"2026-03-14",vehicleSourceTs:"2026-03-12 06:00",vehicleDestTs:"2026-03-13 10:30",vehicleUnloadDate:"2026-03-13",billSubmitDate:"2026-03-15",billReceiveDate:null,invoiceNo:"INV-REL-3101",jobEntry:{date:"2026-03-12",time:"06:00",odoStart:12800,dispatchNote:"Standard"},advances:[{id:"adv10",type:"Driver",amount:3200,mode:"Cash",date:"2026-03-12",note:"Advance"}],expenses:[{id:"exp16",category:"Fuel",amount:1900,date:"2026-03-13",note:"Fuel"},{id:"exp17",category:"Toll",amount:250,date:"2026-03-13",note:"Toll"}],pod:{receiver:"Store Incharge",date:"2026-03-13",files:1,note:"Signed copy"},tripSheet:{settledDate:"2026-03-14",totalAdv:3200,totalExp:2150,balance:1050,note:"₹1,050 refund"},deliveryDate:"2026-03-13",invoiceAmt:8925,paymentDate:null,paymentRef:null,delayed:false },
+  { id:"T-04610",lr:"LR-08010",routeId:"RT-002",status:"Settled",lrDate:"2026-03-11",tripDate:"2026-03-11",tripType:"FTL",client:"ITC Limited",origin:"Mumbai",destination:"Nashik",team:"West Team",vehicle:"MH15 EF 2341",driver:"Suresh Kumar",vtype:"Attached",consignor:"ITC Mumbai Factory",consignee:"ITC Nashik Depot",goods:"Biscuits & personal care",weightKg:7600,packages:190,declaredValue:520000,freight:6930,hire:5200,freightTerms:"Paid",trollyQty:8,documentNo:"DOC-9811",permitNo:"",materialType:"FMCG — biscuits & care",billNo:"BILL-4610",tripSheetNo:"TS-4610",tripSheetDate:"2026-03-13",vehicleSourceTs:"2026-03-11 07:30",vehicleDestTs:"2026-03-12 13:00",vehicleUnloadDate:"2026-03-12",billSubmitDate:"2026-03-14",billReceiveDate:null,invoiceNo:"INV-ITC-5201",jobEntry:{date:"2026-03-11",time:"07:30",odoStart:45800,dispatchNote:"Sealed truck"},advances:[{id:"adv11",type:"Driver",amount:1800,mode:"Cash",date:"2026-03-11",note:"Advance"},{id:"adv12",type:"Hire Slip",amount:2500,mode:"Bank Transfer",date:"2026-03-11",note:"Owner payment"}],expenses:[{id:"exp18",category:"Fuel",amount:1700,date:"2026-03-12",note:"Diesel"},{id:"exp19",category:"Toll",amount:280,date:"2026-03-12",note:"Toll"}],pod:{receiver:"Depot Mgr",date:"2026-03-12",files:1,note:"ePOD"},tripSheet:{settledDate:"2026-03-13",totalAdv:4300,totalExp:1980,balance:2320,note:"Hire adjusted"},deliveryDate:"2026-03-12",invoiceAmt:7277,paymentDate:null,paymentRef:null,delayed:false },
+  { id:"T-04611",lr:"LR-08011",routeId:"RT-005",status:"Settled",lrDate:"2026-03-05",tripDate:"2026-03-05",tripType:"FTL",client:"Nestlé India",origin:"Bengaluru",destination:"Chennai",team:"South Team",vehicle:"KA05 MN 4567",driver:"Sanjay Gupta",vtype:"Own",consignor:"Nestlé Bengaluru Plant",consignee:"Nestlé Chennai DC",goods:"Baby food & cereals",weightKg:9800,packages:410,declaredValue:620000,freight:14000,hire:null,freightTerms:"To Pay",trollyQty:18,documentNo:"DOC-9812",permitNo:"",materialType:"FMCG — baby food",billNo:"BILL-4611",tripSheetNo:"TS-4611",tripSheetDate:"2026-03-07",vehicleSourceTs:"2026-03-05 05:00",vehicleDestTs:"2026-03-06 14:00",vehicleUnloadDate:"2026-03-06",billSubmitDate:"2026-03-08",billReceiveDate:"2026-03-11",invoiceNo:"INV-NES-6201",jobEntry:{date:"2026-03-05",time:"05:00",odoStart:31800,dispatchNote:"Temperature sensitive"},advances:[{id:"adv13",type:"Driver",amount:5800,mode:"Cash",date:"2026-03-05",note:"2-day advance"}],expenses:[{id:"exp20",category:"Fuel",amount:3500,date:"2026-03-06",note:"NH44"},{id:"exp21",category:"Toll",amount:600,date:"2026-03-06",note:"NHAI"},{id:"exp22",category:"Labour",amount:700,date:"2026-03-06",note:"Unloading"}],pod:{receiver:"DC Supervisor",date:"2026-03-06",files:1,note:"Signed"},tripSheet:{settledDate:"2026-03-07",totalAdv:5800,totalExp:4800,balance:1000,note:"₹1,000 refund"},deliveryDate:"2026-03-06",invoiceAmt:14700,paymentDate:"2026-03-12",paymentRef:"UTR20260312004",delayed:false },
+  { id:"T-04612",lr:"LR-08012",routeId:"RT-009",status:"Settled",lrDate:"2026-03-02",tripDate:"2026-03-02",tripType:"FTL",client:"Marico",origin:"Pune",destination:"Ahmedabad",team:"West Team",vehicle:"MH14 WX 3456",driver:"Rahul Desai",vtype:"Own",consignor:"Marico Pune Factory",consignee:"Marico Ahmedabad DC",goods:"Saffola oils & oats",weightKg:11000,packages:310,declaredValue:420000,freight:16500,hire:null,freightTerms:"To Pay",trollyQty:14,documentNo:"DOC-9813",permitNo:"",materialType:"FMCG — oils & oats",billNo:"BILL-4612",tripSheetNo:"TS-4612",tripSheetDate:"2026-03-04",vehicleSourceTs:"2026-03-02 03:30",vehicleDestTs:"2026-03-03 16:00",vehicleUnloadDate:"2026-03-03",billSubmitDate:"2026-03-05",billReceiveDate:"2026-03-08",invoiceNo:"INV-MAR-4201",jobEntry:{date:"2026-03-02",time:"03:30",odoStart:62400,dispatchNote:"Night dispatch"},advances:[{id:"adv14",type:"Driver",amount:5500,mode:"Cash",date:"2026-03-02",note:"Advance"}],expenses:[{id:"exp23",category:"Fuel",amount:4400,date:"2026-03-03",note:"Fuel"},{id:"exp24",category:"Toll",amount:920,date:"2026-03-03",note:"NH48 tolls"},{id:"exp25",category:"Other",amount:250,date:"2026-03-03",note:"Parking"}],pod:{receiver:"Godown Keeper",date:"2026-03-03",files:2,note:"POD + weighment slip"},tripSheet:{settledDate:"2026-03-04",totalAdv:5500,totalExp:5570,balance:-70,note:"₹70 due to driver"},deliveryDate:"2026-03-03",invoiceAmt:17325,paymentDate:"2026-03-09",paymentRef:"CHQ-884721",delayed:false },
+];
+
+// ─── HELPERS ──────────────────────────────────────────────────────────────────
+function _tGetRole() {
+  if (typeof window.getCurrentRole === 'function') {
+    var r = window.getCurrentRole();
+    if (r === 'fleet_manager' || r === 'operator' || r === 'driver') return 'ops';
+    return 'accts';
+  }
+  return 'ops';
+}
+
+function _tStatusBadge(status) {
+  var c = TRIP_STATE_COLORS[status] || { dot:'#94A3B8', light:'#F8FAFC', text:'#475569', border:'#E5E7EB' };
+  return '<span style="display:inline-flex;align-items:center;gap:5px;background:'+c.mid+';color:'+c.text+';border:1px solid '+c.border+';font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;"><span style="width:6px;height:6px;border-radius:50%;background:'+c.dot+';display:inline-block;"></span>'+status+'</span>';
+}
+
+function _tSection(icon,title,borderColor,bg,content) {
+  return '<div class="sl-section-card" style="border:1.5px solid '+borderColor+';">'
+    + '<div class="sl-section-card-header" style="background:'+(bg||'#F8FAFC')+';border-bottom:1px solid '+borderColor+';">'
+    + '<span class="sl-section-card-icon">'+icon+'</span>'
+    + '<span class="sl-section-card-title">'+title+'</span></div>'
+    + '<div class="sl-section-card-body">'+content+'</div></div>';
+}
+
+function _tInfoRow(label,value,extra) {
+  return '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #F8FAFC;">'
+    + '<span style="font-size:12px;color:#64748B;">'+label+'</span>'
+    + '<span style="font-size:12px;font-weight:700;color:#1E293B;display:flex;align-items:center;gap:6px;">'+value+(extra||'')+'</span></div>';
+}
+
+function _tRow2(l1,v1,l2,v2) {
+  return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px;">'
+    + '<div><div style="font-size:9px;color:#94A3B8;font-weight:700;text-transform:uppercase;">'+l1+'</div><div style="font-size:12px;font-weight:700;color:#1E293B;">'+v1+'</div></div>'
+    + (l2?'<div><div style="font-size:9px;color:#94A3B8;font-weight:700;text-transform:uppercase;">'+l2+'</div><div style="font-size:12px;font-weight:700;color:#1E293B;">'+v2+'</div></div>':'<div></div>')
+    + '</div>';
+}
+
+function _tTag(label,bg,col) {
+  return '<span style="background:'+bg+';color:'+col+';font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;">'+label+'</span>';
+}
+
+function _tLbl(t,required) {
+  return '<div style="font-size:11px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:5px;">'+t+(required?'<span style="color:#EF4444;margin-left:2px;">*</span>':'')+'</div>';
+}
+
+function _tField(id,type,placeholder,value,disabled) {
+  return '<input id="'+id+'" type="'+(type||'text')+'" '+(value?'value="'+value+'" ':'')+' placeholder="'+(placeholder||'')+'" '+(disabled?'disabled ':'')+' style="width:100%;border:1.5px solid '+(disabled?'#F1F5F9':'#E2E8F0')+';border-radius:10px;padding:10px 12px;font-size:13px;color:'+(disabled?'#94A3B8':'#1E293B')+';background:'+(disabled?'#F8FAFC':'#fff')+';outline:none;box-sizing:border-box;font-family:inherit;" />';
+}
+
+function _tReadField(value) {
+  return '<div style="width:100%;border:1.5px solid #F1F5F9;border-radius:10px;padding:10px 12px;font-size:13px;color:#1E293B;background:#F8FAFC;box-sizing:border-box;font-family:inherit;font-weight:600;min-height:42px;display:flex;align-items:center;">' + (value || '<span style="color:#CBD5E1;">—</span>') + '</div>';
+}
+
+// ─── REUSABLE: Two standard detail sections for all trip states ──────────────
+function _tTripDetailSections(trip) {
+  var html = '';
+  var route = TRIP_ROUTES.find(function(r){ return r.id === trip.routeId; });
+  var _rd = function(v){ return _tReadField(v); };
+  var _dt = function(v){ return _tReadField(_tfmtD(v)); };
+  var _mn = function(v){ return _tReadField(v > 0 ? _tmoney(v) : null); };
+
+  html += '<div style="padding:4px 0;">';
+
+  // ═══ SECTION 1: CORE SELECTION ═══════════════════════════════
+  var s1 = '';
+  // Compact Route Card
+  if (route) {
+    s1 += '<div style="background:#F8F7F4;border-radius:8px;padding:10px 14px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin-bottom:6px;">';
+    s1 += '<div><div style="font-size:14px;font-weight:600;color:#1E293B;">' + trip.origin + '</div><div style="font-size:11px;color:#6B7280;margin-top:2px;">' + (trip.consignor || '') + '</div></div>';
+    s1 += '<div style="color:#94A3B8;font-size:13px;">\u2192</div>';
+    s1 += '<div><div style="font-size:14px;font-weight:600;color:#1E293B;">' + trip.destination + '</div><div style="font-size:11px;color:#6B7280;margin-top:2px;">' + (trip.consignee || '') + '</div></div>';
+    s1 += '</div>';
+    // Compact meta strip
+    s1 += '<div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:4px;padding:0 2px;">';
+    s1 += '<span style="font-size:11px;color:#6B7280;">Client: <strong style="font-weight:600;color:#1E293B;">' + trip.client + '</strong></span>';
+    s1 += '<span style="font-size:11px;color:#6B7280;">Distance: <strong style="font-weight:600;color:#1E293B;">' + route.distKm + ' km</strong></span>';
+    s1 += '<span style="font-size:11px;color:#6B7280;">Duration: <strong style="font-weight:600;color:#1E293B;">' + (route.estDuration||route.transitDays+'d') + '</strong></span>';
+    s1 += '<span style="font-size:11px;color:#6B7280;">Highway: <strong style="font-weight:600;color:#1E293B;">' + (route.viaHighway||'\u2014') + '</strong></span>';
+    if (trip.driver) s1 += '<span style="font-size:11px;color:#6B7280;">Driver: <strong style="font-weight:600;color:#1E293B;">' + trip.driver + '</strong></span>';
+    s1 += '</div>';
+    s1 += '<div style="padding:0 2px;margin-bottom:8px;">';
+    s1 += '<span style="font-size:11px;color:#6B7280;">Vehicle: <strong style="font-weight:600;color:#1E293B;">' + (trip.vehicle || '\u2014') + '</strong></span>';
+    s1 += '<span style="font-size:11px;color:#6B7280;margin-left:14px;">Type: <strong style="font-weight:600;color:#1E293B;">' + (trip.vtype || 'Own') + '</strong></span>';
+    if (trip.tripType) s1 += '<span style="font-size:11px;color:#6B7280;margin-left:14px;">Trip type: <strong style="font-weight:600;color:#1E293B;">' + trip.tripType + '</strong></span>';
+    s1 += '</div>';
+  } else {
+    // Fallback: no route match
+    s1 += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;">';
+    s1 += '<div>' + _tLbl('Vehicle') + _rd(trip.vehicle) + '</div>';
+    s1 += '<div>' + _tLbl('Route') + _rd(trip.origin + ' \u2192 ' + trip.destination) + '</div>';
+    s1 += '<div>' + _tLbl('Trip Type') + _rd(trip.tripType) + '</div>';
+    s1 += '</div>';
+  }
+  // Job Entry (if dispatched)
+  if (trip.jobEntry) {
+    s1 += '<div style="background:#F0FDF4;border-radius:8px;padding:8px 12px;margin-bottom:6px;display:flex;gap:14px;flex-wrap:wrap;">';
+    s1 += '<span style="font-size:11px;color:#065F46;">Dispatched: <strong style="font-weight:600;">' + _tfmtD(trip.jobEntry.date) + (trip.jobEntry.time ? ' at ' + trip.jobEntry.time : '') + '</strong></span>';
+    if (trip.jobEntry.odoStart) s1 += '<span style="font-size:11px;color:#065F46;">Odometer: <strong style="font-weight:600;">' + trip.jobEntry.odoStart.toLocaleString() + ' km</strong></span>';
+    if (trip.jobEntry.dispatchNote) s1 += '<span style="font-size:11px;color:#065F46;">Note: <strong style="font-weight:600;">' + trip.jobEntry.dispatchNote + '</strong></span>';
+    s1 += '</div>';
+  }
+  html += _tSection('\ud83d\udccb', 'Core Selection', '#BAE6FD', '#F0F9FF', s1);
+
+  // ═══ SECTION 2: LR / CONSIGNMENT NOTE ═══════════════════════
+  var s2 = '';
+  s2 += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;">';
+  s2 += '<div>' + _tLbl('LR / GCN no.') + _rd(trip.lr) + '</div>';
+  s2 += '<div>' + _tLbl('LR date') + _dt(trip.lrDate) + '</div>';
+  s2 += '<div>' + _tLbl('Invoice no.') + _rd(trip.invoiceNo) + '</div>';
+  s2 += '</div>';
+  s2 += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">';
+  s2 += '<div>' + _tLbl('Trip date') + _dt(trip.tripDate) + '</div>';
+  s2 += '<div>' + _tLbl('Dispatch time') + _rd(trip.dispatchTime || (trip.jobEntry ? trip.jobEntry.time : null)) + '</div>';
+  s2 += '</div>';
+  html += _tSection('\ud83d\udcc4', 'LR / Consignment Note', '#A5B4FC', '#EEF2FF', s2);
+
+  // ═══ SECTION 3: PARTIES ═══════════════════════════════════════
+  var s3 = '';
+  s3 += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">';
+  s3 += '<div>' + _tLbl('Consignor (pickup)') + _rd(trip.consignor) + '</div>';
+  s3 += '<div>' + _tLbl('Consignee (delivery)') + _rd(trip.consignee) + '</div>';
+  s3 += '</div>';
+  s3 += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">';
+  s3 += '<div>' + _tLbl('Billing party') + _rd(trip.billingParty || null) + '</div>';
+  s3 += '<div>' + _tLbl('Transporter / BA name') + _rd(trip.baName || null) + '</div>';
+  s3 += '</div>';
+  html += _tSection('\ud83e\uddd1\u200d\ud83e\udd1d\u200d\ud83e\uddd1', 'Parties', '#E2E8F0', '#F8FAFC', s3);
+
+  // ═══ SECTION 4: CARGO DETAILS ═══════════════════════════════
+  var s4 = '';
+  s4 += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">';
+  s4 += '<div>' + _tLbl('Cargo description') + _rd(trip.goods) + '</div>';
+  s4 += '<div>' + _tLbl('Material type') + _rd(trip.materialType) + '</div>';
+  s4 += '</div>';
+  s4 += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;">';
+  s4 += '<div>' + _tLbl('Weight (kg)') + _rd(trip.weightKg > 0 ? (trip.weightKg/1000).toFixed(1) + 'T' : null) + '</div>';
+  s4 += '<div>' + _tLbl('Packages / qty') + _rd(trip.packages > 0 ? trip.packages + ' pkgs' : null) + '</div>';
+  s4 += '<div>' + _tLbl('E-way bill no.') + _rd(trip.ewayBillNo) + '</div>';
+  s4 += '</div>';
+  html += _tSection('\ud83d\udce6', 'Cargo Details', '#E2E8F0', '', s4);
+
+  // ═══ SECTION 5: FINANCIAL ════════════════════════════════════
+  var s5 = '';
+  s5 += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;">';
+  s5 += '<div>' + _tLbl('Freight amount') + _rd(_tmoney(trip.freight)) + '</div>';
+  s5 += '<div>' + _tLbl('Payment terms') + _rd(trip.payTerms || trip.freightTerms) + '</div>';
+  s5 += '<div>' + _tLbl('Loading note') + _rd(trip.loadingNote) + '</div>';
+  s5 += '</div>';
+  // Read-only contract reference strip
+  if (route) {
+    s5 += '<div style="background:#F8F7F4;border-radius:8px;padding:10px 14px;display:flex;gap:20px;flex-wrap:wrap;margin-bottom:8px;">';
+    s5 += '<div style="font-size:11px;color:#6B7280;">Contract rate<div style="font-size:13px;font-weight:600;color:#1E293B;margin-top:2px;">\u20b9' + (route.rateType === 'Flat' ? route.rate.toLocaleString() : route.rate + '/km') + '</div></div>';
+    s5 += '<div style="font-size:11px;color:#6B7280;">SLA<div style="font-size:13px;font-weight:600;color:#1E293B;margin-top:2px;">' + (route.sla ? route.sla + ' hrs' : '\u2014') + '</div></div>';
+    s5 += '<div style="font-size:11px;color:#6B7280;">Min margin<div style="font-size:13px;font-weight:600;color:#1E293B;margin-top:2px;">' + (route.minMargin ? route.minMargin + '%' : '15%') + '</div></div>';
+    s5 += '<div style="font-size:11px;color:#6B7280;">Payment<div style="font-size:13px;font-weight:600;color:#1E293B;margin-top:2px;">' + (route.paymentDays ? route.paymentDays + ' days' : '30 days') + '</div></div>';
+    s5 += '<div style="font-size:11px;color:#6B7280;">Demurrage<div style="font-size:13px;font-weight:600;color:#1E293B;margin-top:2px;">' + (route.demurrage ? '\u20b9' + route.demurrage + '/hr after ' + (route.freeDetention||2) + ' free hrs' : '\u2014') + '</div></div>';
+    s5 += '</div>';
+  }
+  html += _tSection('\ud83d\udcb0', 'Financial', '#FCD34D', '#FFFBEB', s5);
+
+  // ═══ LIFECYCLE & BILLING ═══════════════════════════════════
+  var s6 = '';
+  s6 += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;">';
+  s6 += '<div>' + _tLbl('Source departure') + _rd(trip.vehicleSourceTs) + '</div>';
+  s6 += '<div>' + _tLbl('Destination arrival') + _rd(trip.vehicleDestTs) + '</div>';
+  s6 += '<div>' + _tLbl('Unload date') + _dt(trip.vehicleUnloadDate) + '</div>';
+  s6 += '</div>';
+  s6 += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;">';
+  s6 += '<div>' + _tLbl('Trip sheet no.') + _rd(trip.tripSheetNo) + '</div>';
+  s6 += '<div>' + _tLbl('Trip sheet date') + _dt(trip.tripSheetDate) + '</div>';
+  s6 += '<div>' + _tLbl('Bill no.') + _rd(trip.billNo) + '</div>';
+  s6 += '</div>';
+  s6 += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;">';
+  s6 += '<div>' + _tLbl('Bill submit date') + _dt(trip.billSubmitDate) + '</div>';
+  s6 += '<div>' + _tLbl('Bill receive date') + _dt(trip.billReceiveDate) + '</div>';
+  s6 += '<div>' + _tLbl('Payment date') + _dt(trip.paymentDate) + '</div>';
+  s6 += '</div>';
+  html += _tSection('\ud83d\udcc5', 'Lifecycle & Billing', '#86EFAC', '#F0FDF4', s6);
+
+  // ═══ ADDITIONAL DETAILS (COLLAPSIBLE) ═══════
+  var s7 = '';
+  s7 += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;">';
+  s7 += '<div>' + _tLbl('Consignment value (\u20b9)') + _mn(trip.declaredValue) + '</div>';
+  s7 += '<div>' + _tLbl('Permit number') + _rd(trip.permitNo) + '</div>';
+  s7 += '<div>' + _tLbl('Document no.') + _rd(trip.documentNo) + '</div>';
+  s7 += '</div>';
+  s7 += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;">';
+  s7 += '<div>' + _tLbl('Risk type') + _rd(trip.riskType) + '</div>';
+  s7 += '<div>' + _tLbl('Remarks') + _rd(trip.remarks) + '</div>';
+  s7 += '<div></div>';
+  s7 += '</div>';
+  s7 += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">';
+  s7 += '<div>' + _tLbl('Consignor address') + _rd(trip.consignorAddr) + '</div>';
+  s7 += '<div>' + _tLbl('Consignee address') + _rd(trip.consigneeAddr) + '</div>';
+  s7 += '</div>';
+  s7 += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">';
+  s7 += '<div>' + _tLbl('Trolly / pallet qty') + _rd(trip.trollyQty > 0 ? trip.trollyQty : null) + '</div>';
+  s7 += '<div>' + _tLbl('BA code') + _rd(trip.baCode) + '</div>';
+  s7 += '</div>';
+  html += _tSection('\u2699\ufe0f', 'Additional Details', '#E2E8F0', '#F8FAFC', s7);
+
+  html += '</div>';
+  return html;
+}
+
+function _tBtn(id,label,color,disabled,small) {
+  return '<button id="'+id+'" '+(disabled?'disabled ':'')+' style="background:'+(disabled?'#F1F5F9':color)+';color:'+(disabled?'#CBD5E1':'#fff')+';border:none;border-radius:10px;padding:'+(small?'8px 14px':'10px 20px')+';font-size:'+(small?'12':'13')+'px;font-weight:700;cursor:'+(disabled?'default':'pointer')+';white-space:nowrap;">'+label+'</button>';
+}
+
+function _tSelect(id,options,placeholder) {
+  var html = '<select id="'+id+'" style="width:100%;border:1.5px solid #E2E8F0;border-radius:10px;padding:10px 12px;font-size:13px;color:#1E293B;background:#fff;outline:none;box-sizing:border-box;font-family:inherit;cursor:pointer;">';
+  html += '<option value="">'+(placeholder||'Select...')+'</option>';
+  options.forEach(function(o){ html += '<option value="'+o+'">'+o+'</option>'; });
+  html += '</select>';
+  return html;
+}
+
+// ─── SLIDER SHELL ─────────────────────────────────────────────────────────────
+function _tCloseSlider() {
+  var bd = document.getElementById('trip-slider-backdrop');
+  var sl = document.getElementById('trip-slider-panel');
+  if (bd) bd.remove();
+  if (sl) sl.remove();
+}
+
+function _tBuildSliderShell(headerTitle, headerSub, onBack) {
+  _tCloseSlider();
+  var bd = document.createElement('div');
+  bd.id = 'trip-slider-backdrop';
+  bd.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,0.3);z-index:99997;animation:sliderBackdropIn 0.2s ease-out forwards;';
+  bd.addEventListener('click', function(e){ if(e.target===bd) _tCloseSlider(); });
+
+  var sl = document.createElement('div');
+  sl.id = 'trip-slider-panel';
+  sl.style.cssText = 'position:fixed;top:0;right:0;bottom:0;width:50vw;max-width:92vw;background:#fff;z-index:99998;display:flex;flex-direction:column;box-shadow:-6px 0 32px rgba(0,0,0,0.1);animation:sliderPanelIn 0.2s ease-out;font-family:"DM Sans",system-ui,sans-serif;';
+
+  var hdr = document.createElement('div');
+  hdr.style.cssText = 'background:#1e2a3a;padding:18px 22px;flex-shrink:0;';
+  hdr.innerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;">'
+    + '<div>'
+    + '<div style="color:rgba(255,255,255,.65);font-size:10px;font-weight:700;letter-spacing:1.5px;margin-bottom:3px;">'+headerTitle.toUpperCase()+'</div>'
+    + '<div style="color:#fff;font-size:16px;font-weight:800;" id="trip-slider-sub">'+headerSub+'</div>'
+    + '</div>'
+    + '<button id="trip-slider-close" style="background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:8px;width:32px;height:32px;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;">'+(onBack?'←':'✕')+'</button>'
+    + '</div>';
+
+  sl.appendChild(hdr);
+  var body = document.createElement('div');
+  body.id = 'trip-slider-body';
+  body.style.cssText = 'flex:1;overflow-y:auto;';
+  sl.appendChild(body);
+
+  document.body.appendChild(bd);
+  document.body.appendChild(sl);
+
+  document.getElementById('trip-slider-close').addEventListener('click', function(){
+    if (onBack) onBack(); else _tCloseSlider();
+  });
+  document.addEventListener('keydown', function handler(e){
+    if(e.key==='Escape'){ _tCloseSlider(); document.removeEventListener('keydown',handler); }
+  });
+  return body;
+}
+
+// ─── SEARCHABLE DROPDOWN (inline search, fixed-position list) ─────────────────
+var _sdCounter = 0;
+function _tSearchDropdownHtml(sdId, options, placeholder) {
+  return '<div id="'+sdId+'" class="t-searchdd" style="position:relative;">'
+    + '<input type="text" class="t-sd-input" autocomplete="off" placeholder="'+(placeholder||'Select...')+'" style="width:100%;border:1.5px solid #E2E8F0;border-radius:10px;padding:10px 34px 10px 12px;font-size:13px;color:#1E293B;background:#fff;box-sizing:border-box;font-family:inherit;outline:none;" />'
+    + '<span class="t-sd-arrow" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:10px;color:#94A3B8;pointer-events:none;">▼</span>'
+    + '<input type="hidden" class="t-sd-value" value="" />'
+    + '</div>';
+}
+
+function _tInitSearchDropdown(sdId, options, onChange) {
+  var wrap = document.getElementById(sdId);
+  if (!wrap) return;
+  var input = wrap.querySelector('.t-sd-input');
+  var hiddenInput = wrap.querySelector('.t-sd-value');
+  var arrow = wrap.querySelector('.t-sd-arrow');
+  var isOpen = false;
+  var dropdown = null;
+  var selectedLabel = '';
+
+  function close() {
+    if (dropdown) { dropdown.remove(); dropdown = null; }
+    isOpen = false;
+    input.style.borderColor = '#E2E8F0';
+    // Restore selected label if user didn't pick anything new
+    if (hiddenInput.value && selectedLabel) {
+      input.value = selectedLabel;
+      input.style.color = '#1E293B';
+    }
+    if (arrow) arrow.textContent = '▼';
+  }
+
+  function positionDropdown() {
+    if (!dropdown) return;
+    var rect = input.getBoundingClientRect();
+    dropdown.style.position = 'fixed';
+    dropdown.style.top = (rect.bottom + 4) + 'px';
+    dropdown.style.left = rect.left + 'px';
+    dropdown.style.width = rect.width + 'px';
+  }
+
+  function open() {
+    if (isOpen) return;
+    isOpen = true;
+    input.style.borderColor = '#0EA5E9';
+    if (arrow) arrow.textContent = '▲';
+
+    dropdown = document.createElement('div');
+    dropdown.style.cssText = 'position:fixed;background:#fff;border:1.5px solid #E2E8F0;border-radius:10px;z-index:999999;box-shadow:0 8px 24px rgba(0,0,0,0.14);overflow:hidden;max-height:260px;overflow-y:auto;';
+    document.body.appendChild(dropdown);
+    positionDropdown();
+
+    renderOptions(input.value === selectedLabel ? '' : input.value);
+
+    // Close on outside click
+    setTimeout(function(){
+      document.addEventListener('click', function handler(e){
+        if (!wrap.contains(e.target) && (!dropdown || !dropdown.contains(e.target))) {
+          close();
+          document.removeEventListener('click', handler);
+        }
+      });
+    }, 10);
+  }
+
+  function renderOptions(q) {
+    if (!dropdown) return;
+    var filtered = q ? options.filter(function(o){ return o.label.toLowerCase().indexOf(q.toLowerCase()) >= 0 || (o.sub && o.sub.toLowerCase().indexOf(q.toLowerCase()) >= 0); }) : options;
+    if (filtered.length === 0) {
+      dropdown.innerHTML = '<div style="padding:14px;font-size:12px;color:#94A3B8;text-align:center;">No results found</div>';
+      return;
+    }
+    var html = '';
+    filtered.forEach(function(o){
+      var selected = o.value === hiddenInput.value;
+      html += '<div class="t-sd-opt" data-value="'+o.value+'" style="padding:10px 14px;cursor:pointer;border-bottom:1px solid #F8FAFC;font-size:12px;color:#1E293B;background:'+(selected?'#F0F7FF':'#fff')+';transition:background .1s;">'
+        + '<div style="font-weight:'+(selected?'700':'500')+';">'+o.label+'</div>'
+        + (o.sub ? '<div style="font-size:11px;color:#94A3B8;margin-top:1px;">'+o.sub+'</div>' : '')
+        + '</div>';
+    });
+    dropdown.innerHTML = html;
+    dropdown.querySelectorAll('.t-sd-opt').forEach(function(el){
+      el.addEventListener('mouseenter', function(){ if(this.getAttribute('data-value')!==hiddenInput.value) this.style.background='#F8FAFC'; });
+      el.addEventListener('mouseleave', function(){ this.style.background = this.getAttribute('data-value')===hiddenInput.value ? '#F0F7FF' : '#fff'; });
+      el.addEventListener('click', function(e){
+        e.stopPropagation();
+        var v = this.getAttribute('data-value');
+        var opt = options.find(function(o){return o.value===v;});
+        hiddenInput.value = v;
+        selectedLabel = opt ? opt.label : v;
+        input.value = selectedLabel;
+        input.style.color = '#1E293B';
+        close();
+        if (onChange) onChange(v);
+      });
+    });
+  }
+
+  // Open on click or focus
+  input.addEventListener('focus', function(){ open(); });
+  input.addEventListener('click', function(e){ e.stopPropagation(); if (!isOpen) open(); });
+
+  // Filter as user types
+  input.addEventListener('input', function(){
+    if (!isOpen) open();
+    renderOptions(this.value);
+  });
+
+  // Handle Escape
+  input.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') { close(); input.blur(); }
+  });
+
+  // Reposition on scroll within slider
+  var slider = document.getElementById('trip-slider-body');
+  if (slider) {
+    slider.addEventListener('scroll', function(){ if (isOpen) positionDropdown(); });
+  }
+}
+
+// ─── VEHICLE TYPE-AHEAD ───────────────────────────────────────────────────────
+function _tVehicleTypeahead(inputId, infoId, onResolve) {
+  var input = document.getElementById(inputId);
+  if (!input) return;
+  var allNums = Object.keys(TRIP_VEHICLES);
+  var sugBox = null;
+
+  function closeSuggestions() { if (sugBox) { sugBox.remove(); sugBox = null; } }
+
+  function resolve(num) {
+    closeSuggestions();
+    input.value = num;
+    var key = allNums.find(function(k){ return k.replace(/\s/g,'') === num.replace(/\s/g,'').toUpperCase(); });
+    var info = document.getElementById(infoId);
+    if (key) {
+      var v = TRIP_VEHICLES[key];
+      input.style.borderColor = '#86EFAC'; input.style.background = '#F0FDF4';
+      if (info) info.innerHTML = '<div style="background:#D1FAE5;border-radius:8px;padding:10px 12px;margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">'
+        + '<div><div style="font-size:9px;color:#065F46;font-weight:700;text-transform:uppercase;">Driver</div><div style="font-size:12px;font-weight:700;color:#065F46;">'+v.driver+'</div></div>'
+        + '<div><div style="font-size:9px;color:#065F46;font-weight:700;text-transform:uppercase;">Vehicle Type</div><div style="font-size:12px;font-weight:700;color:#065F46;">'+v.type+'</div></div></div>';
+      if (onResolve) onResolve(key, v);
+    } else {
+      input.style.borderColor = '#E2E8F0'; input.style.background = '#fff';
+      if (info) info.innerHTML = '';
+      if (onResolve) onResolve(null, null);
+    }
+  }
+
+  input.addEventListener('input', function(){
+    closeSuggestions();
+    var q = this.value.trim();
+    if (q.length < 2) return;
+    var matches = allNums.filter(function(n){ return n.toLowerCase().indexOf(q.toLowerCase()) >= 0; }).slice(0,5);
+    if (matches.length === 0) return;
+    sugBox = document.createElement('div');
+    sugBox.style.cssText = 'position:absolute;top:100%;left:0;right:0;background:#fff;border:1.5px solid #E2E8F0;border-radius:10px;z-index:50;box-shadow:0 4px 16px rgba(0,0,0,0.1);overflow:hidden;margin-top:4px;';
+    matches.forEach(function(num){
+      var v = TRIP_VEHICLES[num];
+      var route = TRIP_ROUTES.find(function(r){return r.id===v.routeId;});
+      var btn = document.createElement('button');
+      btn.style.cssText = 'width:100%;background:none;border:none;padding:10px 14px;text-align:left;cursor:pointer;border-bottom:1px solid #F8FAFC;display:flex;gap:10px;align-items:center;font-family:inherit;';
+      btn.innerHTML = '<span>🚛</span><div><div style="font-size:13px;font-weight:700;font-family:monospace;color:#1E293B;">'+num+'</div>'
+        + '<div style="font-size:11px;color:#64748B;">'+v.driver+' · '+v.type+(route?' · '+route.origin+'→'+route.destination:'')+'</div></div>';
+      btn.addEventListener('mouseenter', function(){ this.style.background='#F0F7FF'; });
+      btn.addEventListener('mouseleave', function(){ this.style.background='none'; });
+      btn.addEventListener('mousedown', function(e){ e.preventDefault(); resolve(num); });
+      sugBox.appendChild(btn);
+    });
+    input.parentElement.appendChild(sugBox);
+  });
+
+  input.addEventListener('blur', function(){ setTimeout(closeSuggestions, 150); });
+  return resolve;
+}
+
+// placeholder for part 2
+</script>
+
+<!-- ═══ SECTION 2: TRIP LIST VIEW ═══ -->
+<script>
+/* ===================================================
+   TMS Trip Slider — Trip List View
+   Implements openTripSlider() + trip list rendering
+   =================================================== */
+
+// ─── REFRESH DASHBOARD COUNTS ─────────────────────────────────────────────────
+function _tRefreshDashboardCounts() {
+  if (typeof TRIPS_DATA === 'undefined') return;
+  var counts = { 'Created':0, 'In Transit':0, 'Completed':0, 'Settled':0, 'Delayed':0 };
+  TRIPS_DATA.forEach(function(t) {
+    if (counts[t.status] !== undefined) counts[t.status]++;
+    if (t.delayed) counts['Delayed']++;
+  });
+  document.querySelectorAll('[data-trip-count]').forEach(function(el) {
+    var key = el.getAttribute('data-trip-count');
+    if (counts[key] !== undefined) el.textContent = counts[key];
+  });
+  // Update delayed box styling
+  var delBtn = document.getElementById('op-delayed-btn');
+  if (delBtn) {
+    if (counts['Delayed'] === 0) {
+      delBtn.style.opacity = '0.5'; delBtn.style.cursor = 'default';
+      delBtn.style.background = '#F8FAFC'; delBtn.style.borderColor = '#E8EDF2';
+    } else {
+      delBtn.style.opacity = '1'; delBtn.style.cursor = 'pointer';
+      delBtn.style.background = '#FEF2F2'; delBtn.style.borderColor = '#FECACA';
+    }
+  }
+}
+
+// ─── STATUS SUBTITLE MAP ──────────────────────────────────────────────────────
+var _tSubtitles = {
+  'ops': {
+    'Created': 'Assign vehicle & dispatch',
+    'In Transit': 'Mark delivered + ePOD',
+    'Completed': 'Settle expenses & close trip',
+    'Settled': 'Revenue locked — trip done',
+    'Delayed': 'Overdue — follow up'
+  },
+  'accts': {
+    'Created': 'Awaiting dispatch',
+    'In Transit': 'Add advances',
+    'Completed': 'Settle trip sheet',
+    'Settled': 'Revenue locked — billable',
+    'Delayed': 'Overdue — follow up'
+  }
+};
+
+// ─── OPEN TRIP SLIDER (TRIP LIST VIEW) ────────────────────────────────────────
+function openDashTripSlider(statusOrType, role) {
+  role = role || 'ops';
+  var title = statusOrType;
+  var subtitle = (_tSubtitles[role] && _tSubtitles[role][statusOrType]) || '';
+
+  // Filter trips
+  var filterFn;
+  if (statusOrType === 'Delayed') {
+    filterFn = function(t) { return t.delayed; };
+  } else {
+    filterFn = function(t) { return t.status === statusOrType; };
+  }
+
+  var filtered = TRIPS_DATA.filter(filterFn);
+
+  var body = _tBuildSliderShell(title, filtered.length + ' trip' + (filtered.length !== 1 ? 's' : '') + (subtitle ? ' · ' + subtitle : ''));
+
+  _tRenderTripList(body, filtered, role, statusOrType, filterFn);
+}
+
+// Expose globally
+window.openDashTripSlider = openDashTripSlider;
+
+// ─── OPEN TRIP DETAIL DIRECTLY (skip list) ────────────────────────────────────
+function openTripDetailById(tripId) {
+  var trip = TRIPS_DATA.find(function(t){ return t.id === tripId; });
+  if (!trip) return;
+  var role = 'ops';
+  if (typeof _tGetRole === 'function') role = _tGetRole();
+
+  var body = _tBuildSliderShell(trip.status, trip.id + ' — ' + trip.origin + ' → ' + trip.destination);
+  _tShowTripDetail(trip, role, function(){ _tCloseSlider(); });
+}
+window.openTripDetailById = openTripDetailById;
+
+// ─── RENDER TRIP LIST ─────────────────────────────────────────────────────────
+function _tRenderTripList(body, initialTrips, role, statusOrType, filterFn) {
+  var searchVal = '';
+
+  function render() {
+    // Re-filter from master data to get updates
+    var trips = TRIPS_DATA.filter(filterFn);
+    if (searchVal) {
+      var q = searchVal.toLowerCase();
+      trips = trips.filter(function(t) {
+        return t.id.toLowerCase().indexOf(q) >= 0
+          || t.lr.toLowerCase().indexOf(q) >= 0
+          || t.client.toLowerCase().indexOf(q) >= 0
+          || (t.vehicle || '').toLowerCase().indexOf(q) >= 0;
+      });
+    }
+
+    // Update count in header
+    var sub = document.getElementById('trip-slider-sub');
+    if (sub) {
+      var subtitle = (_tSubtitles[role] && _tSubtitles[role][statusOrType]) || '';
+      sub.textContent = trips.length + ' trip' + (trips.length !== 1 ? 's' : '') + (subtitle ? ' · ' + subtitle : '');
+    }
+
+    // Build HTML
+    var html = '';
+    // Search bar
+    html += '<div style="padding:12px 22px;border-bottom:1px solid #F1F5F9;flex-shrink:0;">';
+    html += '<input id="t-list-search" placeholder="🔍 Filter trips..." value="' + searchVal + '" style="width:100%;border:1.5px solid #E2E8F0;border-radius:10px;padding:8px 12px;font-size:13px;color:#1E293B;outline:none;box-sizing:border-box;font-family:inherit;" />';
+    html += '</div>';
+
+    html += '<div style="padding:8px 22px;">';
+    if (trips.length === 0) {
+      html += '<div style="text-align:center;padding:40px 20px;color:#94A3B8;">';
+      html += '<div style="font-size:28px;margin-bottom:8px;">📭</div>';
+      html += '<div style="font-size:13px;font-weight:600;">No trips found</div></div>';
+    } else {
+      trips.forEach(function(t) {
+        var totalAdv = t.advances.reduce(function(s,a){ return s+a.amount; }, 0);
+        html += '<div class="t-trip-card" data-trip-id="' + t.id + '" style="background:#fff;border:1.5px solid #F1F5F9;border-radius:14px;padding:14px;margin-bottom:10px;cursor:pointer;transition:all .12s;">';
+        // Row 1: ID/LR + Badge
+        html += '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;">';
+        html += '<div>';
+        html += '<div style="font-size:11px;color:#94A3B8;font-family:monospace;margin-bottom:1px;">' + t.id + ' · ' + t.lr + '</div>';
+        html += '<div style="font-size:14px;font-weight:800;color:#1E293B;">' + t.origin + ' → ' + t.destination + '</div>';
+        html += '<div style="font-size:12px;color:#64748B;margin-top:1px;">' + t.client + '</div>';
+        html += '</div>';
+        html += _tStatusBadge(t.status);
+        html += '</div>';
+        // Row 2: Tags
+        html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">';
+        if (t.vehicle) {
+          html += '<span style="font-size:11px;background:#F1F5F9;color:#475569;padding:2px 8px;border-radius:6px;font-family:monospace;">' + t.vehicle + '</span>';
+        } else {
+          html += '<span style="font-size:11px;background:#EDE9FE;color:#5B21B6;padding:2px 8px;border-radius:6px;font-weight:700;">No vehicle</span>';
+        }
+        if (t.driver) html += '<span style="font-size:11px;background:#F1F5F9;color:#475569;padding:2px 8px;border-radius:6px;">👤 ' + t.driver + '</span>';
+        if (t.delayed) html += '<span style="font-size:11px;background:#FEE2E2;color:#991B1B;padding:2px 8px;border-radius:6px;font-weight:700;">🚨 Delayed</span>';
+        if (t.pod) html += '<span style="font-size:11px;background:#FEF3C7;color:#92400E;padding:2px 8px;border-radius:6px;font-weight:700;">📋 ePOD</span>';
+        if (t.tripSheet) html += '<span style="font-size:11px;background:#D1FAE5;color:#065F46;padding:2px 8px;border-radius:6px;font-weight:700;">🧾 Settled</span>';
+        html += '</div>';
+        // Row 3: Freight + arrow
+        html += '<div style="display:flex;justify-content:space-between;align-items:center;">';
+        html += '<div style="display:flex;gap:12px;font-size:11px;">';
+        html += '<span style="color:#64748B;">Freight: <strong style="color:#1E293B;">' + _tmoney(t.freight) + '</strong></span>';
+        if (totalAdv > 0) html += '<span style="color:#64748B;">Adv: <strong style="color:#7C3AED;">' + _tmoney(totalAdv) + '</strong></span>';
+        html += '</div>';
+        html += '<span style="font-size:11px;color:#94A3B8;font-weight:700;">Open →</span>';
+        html += '</div></div>';
+      });
+    }
+    html += '</div>';
+
+    body.innerHTML = html;
+
+    // Wire search
+    var searchInput = document.getElementById('t-list-search');
+    if (searchInput) {
+      searchInput.addEventListener('input', function() {
+        searchVal = this.value;
+        render();
+      });
+      // Keep focus after re-render
+      if (searchVal) {
+        searchInput.focus();
+        searchInput.setSelectionRange(searchVal.length, searchVal.length);
+      }
+    }
+
+    // Wire card clicks
+    body.querySelectorAll('.t-trip-card').forEach(function(card) {
+      card.addEventListener('mouseenter', function() {
+        this.style.background = '#F8FAFC'; this.style.borderColor = '#E2E8F0';
+        this.style.boxShadow = '0 2px 12px rgba(0,0,0,0.06)';
+      });
+      card.addEventListener('mouseleave', function() {
+        this.style.background = '#fff'; this.style.borderColor = '#F1F5F9';
+        this.style.boxShadow = 'none';
+      });
+      card.addEventListener('click', function() {
+        var tripId = this.getAttribute('data-trip-id');
+        var trip = TRIPS_DATA.find(function(t) { return t.id === tripId; });
+        if (trip) {
+          _tShowTripDetail(trip, role, function() {
+            // Back to list — re-render with fresh data
+            // Reset header
+            var sub = document.getElementById('trip-slider-sub');
+            var closeBtn = document.getElementById('trip-slider-close');
+            if (closeBtn) { closeBtn.textContent = '✕'; closeBtn.onclick = _tCloseSlider; }
+            render();
+          });
+        }
+      });
+    });
+  }
+  render();
+}
+</script>
+
+<!-- ═══ SECTION 3: ADD TRIP FORM ═══ -->
+<script>
+/* ===================================================
+   TMS Trip Slider — Add Trip Form
+   Implements openAddTripSlider() + full trip creation
+   =================================================== */
+
+// _tuid already declared in Section 1
+
+function openDashAddTrip() {
+  var body = _tBuildSliderShell('New Trip', 'Create a new trip');
+  _tRenderAddTripForm(body);
+}
+
+// Expose globally
+window.openDashAddTrip = openDashAddTrip;
+
+// ─── ADD TRIP FORM ────────────────────────────────────────────────────────────
+function _tRenderAddTripForm(body) {
+  var state = {
+    lrNum: '', lrDate: _ttoday(), tripDate: _ttoday(), dispatchTime: '',
+    tripType: 'FTL',
+    vehId: '', resolved: null,
+    routeId: '',
+    // Party master-linked fields
+    consignorBranchId: '', consignor: '', consignorAddr: '',
+    consigneeBranchId: '', consignee: '', consigneeAddr: '',
+    billingClientId: '', billingBranchId: '', billingParty: '', billingPartyAddr: '',
+    transporterId: '', baCode: '', baName: '',
+    // Consignment fields
+    goods: '', weightKg: '', packages: '', declaredVal: '',
+    invoiceNos: '', materialType: '',
+    trollyQty: '', documentNo: '', permitNo: '',
+    ewayBillNo: '', riskType: 'Carrier Risk', remarks: '',
+    // Financial fields
+    freightAmt: '', payTerms: 'To Pay', loadingNote: ''
+  };
+
+  // Build vehicle options from TRIP_VEHICLES
+  var vehOptions = Object.keys(TRIP_VEHICLES).map(function(num) {
+    var v = TRIP_VEHICLES[num];
+    return {
+      value: num,
+      label: num + ' — ' + v.driver,
+      sub: v.type
+    };
+  });
+
+  // Build ALL branches (flat list across all clients) for consignor/consignee dropdowns
+  var allBranchOptions = [];
+  TRIP_CLIENTS.forEach(function(c) {
+    c.branches.forEach(function(b) {
+      allBranchOptions.push({
+        value: b.id,
+        label: b.name + ' — ' + c.name,
+        sub: b.city + ', ' + b.state + ' · ' + b.gstin,
+        _clientId: c.id, _clientName: c.name,
+        _addr: b.address, _city: b.city, _state: b.state
+      });
+    });
+  });
+
+  // Build billing party options (client level)
+  var billingClientOptions = TRIP_CLIENTS.map(function(c) {
+    return {
+      value: c.id,
+      label: c.name,
+      sub: c.industry + ' · GSTIN: ' + c.gstin
+    };
+  });
+
+  // Build transporter options
+  var transporterOptions = TRIP_TRANSPORTERS.map(function(t) {
+    return {
+      value: t.id,
+      label: t.name + ' (BA: ' + t.baCode + ')',
+      sub: t.region + ' · ' + t.contact
+    };
+  });
+
+  // Helper: get branch options for a specific client
+  function getBranchOptionsForClient(clientId) {
+    var client = TRIP_CLIENTS.find(function(c) { return c.id === clientId; });
+    if (!client) return [];
+    return client.branches.map(function(b) {
+      return {
+        value: b.id,
+        label: b.name,
+        sub: b.city + ', ' + b.state + ' · ' + b.address
+      };
+    });
+  }
+
+  // Helper: find branch object by ID
+  function findBranch(branchId) {
+    for (var ci = 0; ci < TRIP_CLIENTS.length; ci++) {
+      for (var bi = 0; bi < TRIP_CLIENTS[ci].branches.length; bi++) {
+        if (TRIP_CLIENTS[ci].branches[bi].id === branchId) {
+          return { client: TRIP_CLIENTS[ci], branch: TRIP_CLIENTS[ci].branches[bi] };
+        }
+      }
+    }
+    return null;
+  }
+
+  function render() {
+    var route = state.routeId ? TRIP_ROUTES.find(function(r){ return r.id === state.routeId; }) : null;
+    var canSave = state.lrNum && state.routeId && state.resolved;
+
+    // Compute freight from route
+    var routeFreight = route ? (route.rateType === 'Flat' ? route.rate : route.rate * route.distKm) : 0;
+    if (!state.freightAmt && routeFreight) state.freightAmt = routeFreight;
+
+    var html = '<div style="padding:20px 22px;">';
+
+    // ═══ SECTION 1: CORE SELECTION ═══════════════════════════════
+    var cs1 = '';
+    cs1 += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px;">';
+    cs1 += '<div>' + _tLbl('Vehicle', true) + _tSearchDropdownHtml('t-at-veh-sd', vehOptions, 'Search vehicle...') + '</div>';
+    cs1 += '<div>' + _tLbl('Route', true) + _tSearchDropdownHtml('t-at-route-sd', TRIP_ROUTES, 'Search routes...') + '</div>';
+    cs1 += '<div>' + _tLbl('Trip type') + '<select id="t-at-triptype" style="width:100%;border:1px solid #E2E8F0;border-radius:8px;padding:8px 10px;font-size:13px;color:#1E293B;background:#fff;outline:none;box-sizing:border-box;font-family:inherit;cursor:pointer;height:38px;"><option value="FTL"' + (state.tripType==='FTL'?' selected':'') + '>FTL — Full truck load</option><option value="PTL"' + (state.tripType==='PTL'?' selected':'') + '>PTL — Part truck load</option><option value="Container"' + (state.tripType==='Container'?' selected':'') + '>Container</option><option value="Express"' + (state.tripType==='Express'?' selected':'') + '>Express</option><option value="Spot"' + (state.tripType==='Spot'?' selected':'') + '>Spot</option></select></div>';
+    cs1 += '</div>';
+
+    // Compact Route Card (only when route selected)
+    if (route) {
+      cs1 += '<div style="background:#F8F7F4;border-radius:8px;padding:10px 14px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin-bottom:6px;">';
+      cs1 += '<div><div style="font-size:14px;font-weight:600;color:#1E293B;">' + route.origin + '</div><div style="font-size:11px;color:#6B7280;margin-top:2px;">' + (state.consignor || route.defaultConsignor || '') + '</div></div>';
+      cs1 += '<div style="color:#94A3B8;font-size:13px;">→</div>';
+      cs1 += '<div><div style="font-size:14px;font-weight:600;color:#1E293B;">' + route.destination + '</div><div style="font-size:11px;color:#6B7280;margin-top:2px;">' + (state.consignee || route.defaultConsignee || '') + '</div></div>';
+      cs1 += '</div>';
+      // Compact meta strip
+      cs1 += '<div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:4px;padding:0 2px;">';
+      cs1 += '<span style="font-size:11px;color:#6B7280;">Client: <strong style="font-weight:600;color:#1E293B;">' + route.client + '</strong></span>';
+      cs1 += '<span style="font-size:11px;color:#6B7280;">Distance: <strong style="font-weight:600;color:#1E293B;">' + route.distKm + ' km</strong></span>';
+      cs1 += '<span style="font-size:11px;color:#6B7280;">Duration: <strong style="font-weight:600;color:#1E293B;">' + (route.estDuration||route.transitDays+'d') + '</strong></span>';
+      cs1 += '<span style="font-size:11px;color:#6B7280;">Highway: <strong style="font-weight:600;color:#1E293B;">' + (route.viaHighway||'—') + '</strong></span>';
+      if (state.resolved) cs1 += '<span style="font-size:11px;color:#6B7280;">Driver: <strong style="font-weight:600;color:#1E293B;">' + state.resolved.driver + '</strong></span>';
+      cs1 += '</div>';
+      cs1 += '<div style="padding:0 2px;margin-bottom:8px;">';
+      cs1 += '<span style="font-size:11px;color:#6B7280;">Vehicle type: <strong style="font-weight:600;color:#1E293B;">' + (route.vehicleType||'Own') + '</strong></span>';
+      cs1 += '</div>';
+    }
+    html += _tSection('\ud83d\udccb', 'Core Selection', '#BAE6FD', '#F0F9FF', cs1);
+
+    // ═══ SECTION 2: LR / CONSIGNMENT NOTE ═══════════════════════
+    var cs2 = '';
+    cs2 += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;">';
+    cs2 += '<div>' + _tLbl('LR / GCN no.', true) + _tField('t-at-lr', 'text', 'Consignment note number', state.lrNum) + '</div>';
+    cs2 += '<div>' + _tLbl('LR date') + _tField('t-at-lrdate', 'date', '', state.lrDate) + '</div>';
+    cs2 += '<div>' + _tLbl('Invoice numbers') + _tField('t-at-inv', 'text', 'INV-001, INV-002', state.invoiceNos) + '</div>';
+    cs2 += '</div>';
+    cs2 += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">';
+    cs2 += '<div>' + _tLbl('Dispatch date') + _tField('t-at-tripdate', 'date', '', state.tripDate) + '</div>';
+    cs2 += '<div>' + _tLbl('Dispatch time') + _tField('t-at-disptime', 'time', '', state.dispatchTime) + '</div>';
+    cs2 += '</div>';
+    html += _tSection('\ud83d\udcc4', 'LR / Consignment Note', '#A5B4FC', '#EEF2FF', cs2);
+
+    // ═══ SECTION 3: PARTIES ═══════════════════════════════════════
+    var cs3 = '';
+    cs3 += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">';
+    cs3 += '<div>' + _tLbl('Consignor (pickup)', true) + _tSearchDropdownHtml('t-at-consignor-sd', allBranchOptions, 'Search consignor...') + '</div>';
+    cs3 += '<div>' + _tLbl('Consignee (delivery)', true) + _tSearchDropdownHtml('t-at-consignee-sd', allBranchOptions, 'Search consignee...') + '</div>';
+    cs3 += '</div>';
+    cs3 += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">';
+    var billingBrOpts = state.billingClientId ? getBranchOptionsForClient(state.billingClientId) : [];
+    cs3 += '<div>' + _tLbl('Billing party') + _tSearchDropdownHtml('t-at-billclient-sd', billingClientOptions, 'If different from consignor') + '</div>';
+    cs3 += '<div>' + _tLbl('Transporter / BA name') + _tSearchDropdownHtml('t-at-transporter-sd', transporterOptions, 'Fleet owner name') + '</div>';
+    cs3 += '</div>';
+    html += _tSection('\ud83e\uddd1\u200d\ud83e\udd1d\u200d\ud83e\uddd1', 'Parties', '#E2E8F0', '#F8FAFC', cs3);
+
+    // ═══ SECTION 4: CARGO DETAILS ═══════════════════════════════
+    var cs4 = '';
+    cs4 += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">';
+    cs4 += '<div>' + _tLbl('Cargo description') + _tField('t-at-goods', 'text', 'e.g. FMCG goods, chemicals', state.goods) + '</div>';
+    cs4 += '<div>' + _tLbl('Material type') + '<select id="t-at-mattype" style="width:100%;border:1px solid #E2E8F0;border-radius:8px;padding:8px 10px;font-size:13px;color:#1E293B;background:#fff;outline:none;box-sizing:border-box;font-family:inherit;cursor:pointer;height:38px;"><option value="">Select type</option><option value="Palletized"' + (state.materialType==='Palletized'?' selected':'') + '>Palletized</option><option value="Loose"' + (state.materialType==='Loose'?' selected':'') + '>Loose</option><option value="Liquid"' + (state.materialType==='Liquid'?' selected':'') + '>Liquid</option><option value="Containerized"' + (state.materialType==='Containerized'?' selected':'') + '>Containerized</option><option value="Hazardous"' + (state.materialType==='Hazardous'?' selected':'') + '>Hazardous</option></select></div>';
+    cs4 += '</div>';
+    cs4 += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;">';
+    cs4 += '<div>' + _tLbl('Weight (kg)') + _tField('t-at-wt', 'number', '0', state.weightKg) + '</div>';
+    cs4 += '<div>' + _tLbl('Packages / qty') + _tField('t-at-pkg', 'number', '0', state.packages) + '</div>';
+    cs4 += '<div>' + _tLbl('E-way bill no.') + _tField('t-at-eway', 'text', 'EWB number', state.ewayBillNo) + '</div>';
+    cs4 += '</div>';
+    html += _tSection('\ud83d\udce6', 'Cargo Details', '#E2E8F0', '', cs4);
+
+    // ═══ SECTION 5: FINANCIAL ════════════════════════════════════
+    var cs5 = '';
+    cs5 += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;">';
+    cs5 += '<div>' + _tLbl('Freight amount', true) + _tField('t-at-freight', 'number', '0', state.freightAmt || routeFreight || '') + '</div>';
+    cs5 += '<div>' + _tLbl('Payment terms') + '<select id="t-at-payterms" style="width:100%;border:1px solid #E2E8F0;border-radius:8px;padding:8px 10px;font-size:13px;color:#1E293B;background:#fff;outline:none;box-sizing:border-box;font-family:inherit;cursor:pointer;height:38px;"><option value="To Pay"' + ((state.payTerms||'To Pay')==='To Pay'?' selected':'') + '>To pay</option><option value="Paid"' + (state.payTerms==='Paid'?' selected':'') + '>Paid</option><option value="To Be Billed"' + (state.payTerms==='To Be Billed'?' selected':'') + '>To be billed</option></select></div>';
+    cs5 += '<div>' + _tLbl('Loading note') + _tField('t-at-loadnote', 'text', 'Special instructions', state.loadingNote || '') + '</div>';
+    cs5 += '</div>';
+
+    // Read-only contract reference strip (from route master)
+    if (route) {
+      cs5 += '<div style="background:#F8F7F4;border-radius:8px;padding:10px 14px;display:flex;gap:20px;flex-wrap:wrap;margin-bottom:8px;">';
+      cs5 += '<div style="font-size:11px;color:#6B7280;">Contract rate<div style="font-size:13px;font-weight:600;color:#1E293B;margin-top:2px;">₹' + (route.rateType === 'Flat' ? route.rate.toLocaleString() : route.rate + '/km') + '</div></div>';
+      cs5 += '<div style="font-size:11px;color:#6B7280;">SLA<div style="font-size:13px;font-weight:600;color:#1E293B;margin-top:2px;">' + (route.sla ? route.sla + ' hrs' : '—') + '</div></div>';
+      cs5 += '<div style="font-size:11px;color:#6B7280;">Min margin<div style="font-size:13px;font-weight:600;color:#1E293B;margin-top:2px;">' + (route.minMargin ? route.minMargin + '%' : '15%') + '</div></div>';
+      cs5 += '<div style="font-size:11px;color:#6B7280;">Payment<div style="font-size:13px;font-weight:600;color:#1E293B;margin-top:2px;">' + (route.paymentDays ? route.paymentDays + ' days' : '30 days') + '</div></div>';
+      cs5 += '<div style="font-size:11px;color:#6B7280;">Demurrage<div style="font-size:13px;font-weight:600;color:#1E293B;margin-top:2px;">' + (route.demurrage ? '₹' + route.demurrage + '/hr after ' + (route.freeDetention||2) + ' free hrs' : '—') + '</div></div>';
+      cs5 += '</div>';
+    }
+    html += _tSection('\ud83d\udcb0', 'Financial', '#FCD34D', '#FFFBEB', cs5);
+
+    // ═══ ADDITIONAL FIELDS ═════════════════════════
+    var cs6 = '';
+    cs6 += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;">';
+    cs6 += '<div>' + _tLbl('Consignment value (₹)') + _tField('t-at-val', 'number', '0', state.declaredVal) + '</div>';
+    cs6 += '<div>' + _tLbl('Permit number') + _tField('t-at-permit', 'text', 'If required', state.permitNo) + '</div>';
+    cs6 += '<div>' + _tLbl('Document no.') + _tField('t-at-docno', 'text', 'Reference doc', state.documentNo) + '</div>';
+    cs6 += '</div>';
+    cs6 += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;">';
+    cs6 += '<div>' + _tLbl('Risk type') + '<select id="t-at-risktype" style="width:100%;border:1px solid #E2E8F0;border-radius:8px;padding:8px 10px;font-size:13px;color:#1E293B;background:#fff;outline:none;box-sizing:border-box;font-family:inherit;cursor:pointer;height:38px;"><option value="Carrier Risk"' + (state.riskType==="Carrier Risk"?' selected':'') + '>Carrier risk</option><option value="Owner Risk"' + (state.riskType==="Owner Risk"?' selected':'') + '>Owner risk</option></select></div>';
+    cs6 += '<div>' + _tLbl('Remarks') + _tField('t-at-remarks', 'text', 'Any notes', state.remarks || '') + '</div>';
+    cs6 += '<div></div>';
+    cs6 += '</div>';
+    cs6 += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">';
+    cs6 += '<div>' + _tLbl('Consignor address') + _tField('t-at-consignor-addr', 'text', 'Pickup address / PIN', state.consignorAddr) + '</div>';
+    cs6 += '<div>' + _tLbl('Consignee address') + _tField('t-at-consignee-addr', 'text', 'Delivery address / PIN', state.consigneeAddr) + '</div>';
+    cs6 += '</div>';
+    cs6 += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">';
+    cs6 += '<div>' + _tLbl('Trolly / pallet qty') + _tField('t-at-trolly', 'number', '0', state.trollyQty) + '</div>';
+    cs6 += '<div></div>';
+    cs6 += '</div>';
+    html += _tSection('\u2699\ufe0f', 'Additional Fields (Optional)', '#E2E8F0', '#F8FAFC', cs6);
+
+    // ═══ BOTTOM BUTTON BAR ═══════════════════════════════════════
+    html += '<div style="display:flex;gap:8px;justify-content:flex-end;padding:20px 0 8px;border-top:1px solid #E5E7EB;margin-top:12px;">';
+    html += '<button id="t-at-cancel" style="padding:8px 20px;font-size:13px;border-radius:8px;cursor:pointer;font-weight:500;border:1px solid #D1D5DB;background:transparent;color:#1E293B;font-family:inherit;">Cancel</button>';
+    html += '<button id="t-at-save" style="padding:8px 20px;font-size:13px;border-radius:8px;cursor:pointer;font-weight:500;border:1px solid #D1D5DB;background:transparent;color:#1E293B;font-family:inherit;' + (!canSave ? 'opacity:0.4;cursor:default;' : '') + '"' + (!canSave ? ' disabled' : '') + '>Save as draft</button>';
+    html += '<button id="t-at-dispatch" style="padding:8px 20px;font-size:13px;border-radius:8px;cursor:pointer;font-weight:600;border:none;background:#1a1a18;color:#fff;font-family:inherit;' + (!canSave ? 'opacity:0.4;cursor:default;' : '') + '"' + (!canSave ? ' disabled' : '') + '>Create and dispatch</button>';
+    html += '</div>';
+
+    html += '</div>';
+    body.innerHTML = html;
+
+    // Initialize vehicle search dropdown
+    _tInitSearchDropdown('t-at-veh-sd',
+      vehOptions,
+      function(vehNum) {
+        saveState();
+        if (vehNum && TRIP_VEHICLES[vehNum]) {
+          var v = TRIP_VEHICLES[vehNum];
+          state.resolved = { num:vehNum, driver:v.driver, type:v.type };
+          state.vehId = vehNum;
+          // Auto-fill route from vehicle if not set
+          if (!state.routeId && v.routeId) {
+            var r = TRIP_ROUTES.find(function(x){ return x.id === v.routeId; });
+            if (r) {
+              state.routeId = v.routeId;
+              // Try to auto-resolve consignor/consignee from branch master
+              var consBr = allBranchOptions.find(function(b){ return b.label.indexOf(r.defaultConsignor) >= 0; });
+              if (consBr) { state.consignorBranchId = consBr.value; state.consignor = consBr.label; state.consignorAddr = consBr._addr; }
+              else { state.consignor = r.defaultConsignor; }
+              var delBr = allBranchOptions.find(function(b){ return b.label.indexOf(r.defaultConsignee) >= 0; });
+              if (delBr) { state.consigneeBranchId = delBr.value; state.consignee = delBr.label; state.consigneeAddr = delBr._addr; }
+              else { state.consignee = r.defaultConsignee; }
+            }
+          }
+        } else {
+          state.resolved = null;
+          state.vehId = '';
+        }
+        render();
+      }
+    );
+
+    // Pre-select vehicle if already chosen
+    if (state.vehId && state.resolved) {
+      var vehSdVal = document.querySelector('#t-at-veh-sd .t-sd-value');
+      var vehSdInput = document.querySelector('#t-at-veh-sd .t-sd-input');
+      if (vehSdVal) vehSdVal.value = state.vehId;
+      if (vehSdInput) {
+        vehSdInput.value = state.vehId + ' — ' + state.resolved.driver;
+        vehSdInput.style.color = '#1E293B';
+      }
+    }
+
+    // Initialize route search dropdown
+    _tInitSearchDropdown('t-at-route-sd',
+      TRIP_ROUTES.map(function(r) {
+        return {
+          value: r.id,
+          label: r.origin + ' → ' + r.destination + ' — ' + r.client,
+          sub: r.distKm + 'km · ' + (r.rateType === 'Flat' ? '₹' + r.rate.toLocaleString() : '₹' + r.rate + '/km') + ' · ' + r.freightTerms
+        };
+      }),
+      function(routeId) {
+        saveState();
+        state.routeId = routeId;
+        var r = TRIP_ROUTES.find(function(x){ return x.id === routeId; });
+        if (r) {
+          // Auto-resolve consignor/consignee from branch master
+          var consBr = allBranchOptions.find(function(b){ return b.label.indexOf(r.defaultConsignor) >= 0; });
+          if (consBr) { state.consignorBranchId = consBr.value; state.consignor = consBr.label; state.consignorAddr = consBr._addr; }
+          else { state.consignor = r.defaultConsignor; state.consignorAddr = ''; }
+          var delBr = allBranchOptions.find(function(b){ return b.label.indexOf(r.defaultConsignee) >= 0; });
+          if (delBr) { state.consigneeBranchId = delBr.value; state.consignee = delBr.label; state.consigneeAddr = delBr._addr; }
+          else { state.consignee = r.defaultConsignee; state.consigneeAddr = ''; }
+        }
+        render();
+      }
+    );
+
+    // Pre-select route if already chosen
+    if (state.routeId) {
+      var routeSdVal = document.querySelector('#t-at-route-sd .t-sd-value');
+      var routeSdInput = document.querySelector('#t-at-route-sd .t-sd-input');
+      if (routeSdVal) routeSdVal.value = state.routeId;
+      if (routeSdInput && route) {
+        routeSdInput.value = route.origin + ' → ' + route.destination + ' — ' + route.client;
+        routeSdInput.style.color = '#1E293B';
+      }
+    }
+
+    // ─── Initialize Party & Stakeholder dropdowns ───────────────────────
+
+    // Consignor dropdown
+    _tInitSearchDropdown('t-at-consignor-sd', allBranchOptions, function(brId) {
+      saveState();
+      var br = findBranch(brId);
+      if (br) {
+        state.consignorBranchId = brId;
+        state.consignor = br.branch.name + ' — ' + br.client.name;
+        state.consignorAddr = br.branch.address;
+      }
+      render();
+    });
+    // Pre-select consignor if set
+    if (state.consignorBranchId) {
+      var csdVal = document.querySelector('#t-at-consignor-sd .t-sd-value');
+      var csdInput = document.querySelector('#t-at-consignor-sd .t-sd-input');
+      if (csdVal) csdVal.value = state.consignorBranchId;
+      if (csdInput) { csdInput.value = state.consignor; csdInput.style.color = '#1E293B'; }
+    }
+
+    // Consignee dropdown
+    _tInitSearchDropdown('t-at-consignee-sd', allBranchOptions, function(brId) {
+      saveState();
+      var br = findBranch(brId);
+      if (br) {
+        state.consigneeBranchId = brId;
+        state.consignee = br.branch.name + ' — ' + br.client.name;
+        state.consigneeAddr = br.branch.address;
+      }
+      render();
+    });
+    // Pre-select consignee if set
+    if (state.consigneeBranchId) {
+      var dsdVal = document.querySelector('#t-at-consignee-sd .t-sd-value');
+      var dsdInput = document.querySelector('#t-at-consignee-sd .t-sd-input');
+      if (dsdVal) dsdVal.value = state.consigneeBranchId;
+      if (dsdInput) { dsdInput.value = state.consignee; dsdInput.style.color = '#1E293B'; }
+    }
+
+    // Billing Client dropdown
+    _tInitSearchDropdown('t-at-billclient-sd', billingClientOptions, function(clientId) {
+      saveState();
+      state.billingClientId = clientId;
+      state.billingBranchId = '';
+      state.billingPartyAddr = '';
+      var client = TRIP_CLIENTS.find(function(c){ return c.id === clientId; });
+      if (client) { state.billingParty = client.name; }
+      render();
+    });
+    // Pre-select billing client if set
+    if (state.billingClientId) {
+      var bclVal = document.querySelector('#t-at-billclient-sd .t-sd-value');
+      var bclInput = document.querySelector('#t-at-billclient-sd .t-sd-input');
+      if (bclVal) bclVal.value = state.billingClientId;
+      if (bclInput) { bclInput.value = state.billingParty; bclInput.style.color = '#1E293B'; }
+    }
+
+
+    // Transporter dropdown
+    _tInitSearchDropdown('t-at-transporter-sd', transporterOptions, function(transId) {
+      saveState();
+      state.transporterId = transId;
+      var t = TRIP_TRANSPORTERS.find(function(x){ return x.id === transId; });
+      if (t) { state.baCode = t.baCode; state.baName = t.name; }
+      render();
+    });
+    // Pre-select transporter if set
+    if (state.transporterId) {
+      var tsdVal = document.querySelector('#t-at-transporter-sd .t-sd-value');
+      var tsdInput = document.querySelector('#t-at-transporter-sd .t-sd-input');
+      if (tsdVal) tsdVal.value = state.transporterId;
+      var selT = TRIP_TRANSPORTERS.find(function(x){ return x.id === state.transporterId; });
+      if (tsdInput && selT) { tsdInput.value = selT.name + ' (BA: ' + selT.baCode + ')'; tsdInput.style.color = '#1E293B'; }
+    }
+
+    // Cancel button
+    var cancelBtn = document.getElementById('t-at-cancel');
+    if (cancelBtn) cancelBtn.addEventListener('click', _tCloseSlider);
+
+    // Save and Start Trip
+    var saveBtn = document.getElementById('t-at-save');
+    if (saveBtn) saveBtn.addEventListener('click', function() { doSave(false); });
+
+    // Save and Dispatch
+    var dispBtn = document.getElementById('t-at-dispatch');
+    if (dispBtn) dispBtn.addEventListener('click', function() { doSave(true); });
+  }
+
+  function saveState() {
+    var el;
+    el = document.getElementById('t-at-lr'); if (el) state.lrNum = el.value;
+    el = document.getElementById('t-at-lrdate'); if (el) state.lrDate = el.value;
+    el = document.getElementById('t-at-tripdate'); if (el) state.tripDate = el.value;
+    el = document.getElementById('t-at-disptime'); if (el) state.dispatchTime = el.value;
+    el = document.getElementById('t-at-triptype'); if (el) state.tripType = el.value;
+    // Party dropdowns — state is managed via onChange handlers, just sync dropdown hidden values
+    var consignorHidden = document.querySelector('#t-at-consignor-sd .t-sd-value');
+    if (consignorHidden && consignorHidden.value) state.consignorBranchId = consignorHidden.value;
+    var consigneeHidden = document.querySelector('#t-at-consignee-sd .t-sd-value');
+    if (consigneeHidden && consigneeHidden.value) state.consigneeBranchId = consigneeHidden.value;
+    var billClientHidden = document.querySelector('#t-at-billclient-sd .t-sd-value');
+    if (billClientHidden && billClientHidden.value) state.billingClientId = billClientHidden.value;
+    var billBranchHidden = document.querySelector('#t-at-billbranch-sd .t-sd-value');
+    if (billBranchHidden && billBranchHidden.value) state.billingBranchId = billBranchHidden.value;
+    var transporterHidden = document.querySelector('#t-at-transporter-sd .t-sd-value');
+    if (transporterHidden && transporterHidden.value) state.transporterId = transporterHidden.value;
+    // Consignment fields
+    el = document.getElementById('t-at-goods'); if (el) state.goods = el.value;
+    el = document.getElementById('t-at-mattype'); if (el) state.materialType = el.value;
+    el = document.getElementById('t-at-wt'); if (el) state.weightKg = el.value;
+    el = document.getElementById('t-at-pkg'); if (el) state.packages = el.value;
+    el = document.getElementById('t-at-val'); if (el) state.declaredVal = el.value;
+    el = document.getElementById('t-at-inv'); if (el) state.invoiceNos = el.value;
+    el = document.getElementById('t-at-trolly'); if (el) state.trollyQty = el.value;
+    el = document.getElementById('t-at-docno'); if (el) state.documentNo = el.value;
+    el = document.getElementById('t-at-permit'); if (el) state.permitNo = el.value;
+    el = document.getElementById('t-at-eway'); if (el) state.ewayBillNo = el.value;
+    el = document.getElementById('t-at-risktype'); if (el) state.riskType = el.value;
+    el = document.getElementById('t-at-remarks'); if (el) state.remarks = el.value;
+    el = document.getElementById('t-at-consignor-addr'); if (el) state.consignorAddr = el.value;
+    el = document.getElementById('t-at-consignee-addr'); if (el) state.consigneeAddr = el.value;
+    // Financial fields
+    el = document.getElementById('t-at-freight'); if (el) state.freightAmt = el.value;
+    el = document.getElementById('t-at-payterms'); if (el) state.payTerms = el.value;
+    el = document.getElementById('t-at-loadnote'); if (el) state.loadingNote = el.value;
+    // Vehicle from search dropdown
+    var vehHidden = document.querySelector('#t-at-veh-sd .t-sd-value');
+    if (vehHidden && vehHidden.value) state.vehId = vehHidden.value;
+    // Route from search dropdown
+    var routeHidden = document.querySelector('#t-at-route-sd .t-sd-value');
+    if (routeHidden && routeHidden.value) state.routeId = routeHidden.value;
+  }
+
+  function doSave(startTrip) {
+    saveState();
+    if (!state.lrNum || !state.routeId) return;
+    var route = TRIP_ROUTES.find(function(r){ return r.id === state.routeId; });
+    if (!route) return;
+    var freight = route.rateType === 'Flat' ? route.rate : route.rate * route.distKm;
+    // Driver advance calculation removed, initialize empty array
+    var adv = [];
+
+    // Parse multi-invoice field
+    var parsedInvoices = (state.invoiceNos || '').split(',').map(function(s){ return s.trim(); }).filter(function(s){ return s.length > 0; });
+
+    var newTrip = {
+      id: 'T-0' + (_tuid++),
+      lr: state.lrNum,
+      lrDate: state.lrDate,
+      tripDate: state.tripDate,
+      dispatchTime: state.dispatchTime || null,
+      tripType: state.tripType || 'FTL',
+      routeId: route.id,
+      status: startTrip ? 'In Transit' : 'Created',
+      client: route.client,
+      origin: route.origin,
+      destination: route.destination,
+      team: route.team,
+      vehicle: state.resolved ? state.resolved.num : null,
+      driver: state.resolved ? state.resolved.driver : null,
+      vtype: state.resolved ? state.resolved.type : null,
+      consignor: state.consignor,
+      consignorAddr: state.consignorAddr || '',
+      consignee: state.consignee,
+      consigneeAddr: state.consigneeAddr || '',
+      billingParty: state.billingParty || '',
+      billingPartyAddr: state.billingPartyAddr || '',
+      baCode: state.baCode || '',
+      baName: state.baName || '',
+      goods: state.goods,
+      weightKg: Number(state.weightKg) || 0,
+      packages: Number(state.packages) || 0,
+      declaredValue: Number(state.declaredVal) || 0,
+      freight: Number(state.freightAmt) || freight,
+      hire: null,
+      freightTerms: route.freightTerms,
+      payTerms: state.payTerms || 'To Pay',
+      loadingNote: state.loadingNote || '',
+      trollyQty: Number(state.trollyQty) || 0,
+      documentNo: state.documentNo || '',
+      permitNo: state.permitNo || '',
+      ewayBillNo: state.ewayBillNo || '',
+      riskType: state.riskType || 'Carrier Risk',
+      remarks: state.remarks || '',
+      materialType: state.materialType || '',
+      billNo: '',
+      tripSheetNo: '',
+      tripSheetDate: null,
+      vehicleSourceTs: null,
+      vehicleDestTs: null,
+      vehicleUnloadDate: null,
+      billSubmitDate: null,
+      billReceiveDate: null,
+      invoiceNo: parsedInvoices.length === 1 ? parsedInvoices[0] : '',
+      invoiceNos: parsedInvoices,
+      jobEntry: null,
+      advances: adv,
+      expenses: [],
+      pod: null,
+      tripSheet: null,
+      deliveryDate: null,
+      invoiceAmt: null,
+      paymentDate: null,
+      paymentRef: null,
+      delayed: false
+    };
+
+    TRIPS_DATA.unshift(newTrip);
+    _tRefreshDashboardCounts();
+    _tCloseSlider();
+  }
+
+  render();
+}
+</script>
+
+<!-- ═══ SECTION 4: DETAIL VIEW & ALL ACTIONS ═══ -->
+<script>
+/* ===================================================
+   TMS Trip Slider — Detail View + Action Forms
+   Converts OperatorDashboard_v7.jsx TripDetail + all Actions
+   =================================================== */
+
+// ─── TRIP DETAIL VIEW ─────────────────────────────────────────────────────────
+function _tShowTripDetail(trip, role, onBack) {
+  var body = document.getElementById('trip-slider-body');
+  if (!body) return;
+
+  var sc = TRIP_STATE_COLORS[trip.status] || { dot:'#1E3A5F' };
+  var totalAdv = trip.advances.reduce(function(s,a){ return s+a.amount; }, 0);
+
+  // Determine available actions
+  var opsActions = {
+    'Created':['dispatch'],
+    'In Transit':['deliver'],
+    'Completed':['tripsheet'],
+    'Settled':[]
+  };
+  var acctActions = {
+    'Created':[],
+    'In Transit':['advance'],
+    'Completed':['tripsheet'],
+    'Settled':[]
+  };
+  var availableActions = role === 'ops' ? (opsActions[trip.status]||[]) : (acctActions[trip.status]||[]);
+
+  var ACTION_META = {
+    dispatch:  { label:'Dispatch', icon:'🚛', color:'#0EA5E9' },
+    deliver:   { label:'Mark Delivered',             icon:'✅', color:'#10B981' },
+    advance:   { label:'Add Advance',               icon:'💵', color:'#7C3AED' },
+    tripsheet: { label:'Trip Sheet / Settle',       icon:'🧾', color:'#D97706' },
+    bill:      { label:'Raise Freight Bill',        icon:'📄', color:'#6366F1' },
+    payment:   { label:'Payment Receipt',           icon:'💳', color:'#16A34A' }
+  };
+
+  // Update header tightly to save space
+  var sub = document.getElementById('trip-slider-sub');
+  if (sub) {
+    var subHtml = '<div style="display:flex; align-items:baseline; gap:12px;">';
+    subHtml += '<span>' + trip.id + ' — ' + trip.origin + ' → ' + trip.destination + '</span>';
+    subHtml += '<span style="font-size:13px; font-weight:600; color:rgba(255,255,255,0.85);">' + trip.client + (trip.team ? ' · ' + trip.team : '') + '</span>';
+    subHtml += '</div>';
+    subHtml += '<div style="display:flex; gap:10px; margin-top:5px; font-size:11px; font-weight:600; color:rgba(255,255,255,0.85);">';
+    if (trip.vehicle) {
+      subHtml += '<span style="background:rgba(255,255,255,0.15); padding:2px 8px; border-radius:6px; font-family:monospace;">' + trip.vtype + ' · ' + trip.vehicle + '</span>';
+    } else {
+      subHtml += '<span style="background:rgba(255,255,255,0.15); padding:2px 8px; border-radius:6px;">No vehicle assigned</span>';
+    }
+    subHtml += '<span style="background:rgba(255,255,255,0.15); padding:2px 8px; border-radius:6px;">LR: ' + _tfmtD(trip.lrDate) + '</span>';
+    if (trip.pod) subHtml += '<span style="background:rgba(16,185,129,0.25); color:#A7F3D0; padding:2px 8px; border-radius:6px;">📋 ePOD</span>';
+    if (trip.delayed) subHtml += '<span style="background:rgba(220,38,38,0.3); color:#FECACA; padding:2px 8px; border-radius:6px;">🚨 Delayed</span>';
+    subHtml += '</div>';
+    sub.innerHTML = subHtml;
+  }
+
+  // Update close button to show ← (back)
+  var closeBtn = document.getElementById('trip-slider-close');
+  if (closeBtn) {
+    closeBtn.textContent = '←';
+    closeBtn.onclick = function(){ onBack(); };
+  }
+
+  // --- Determine all available actions ---
+  var detailActions = [];
+  var settlementActions = [];
+  var financialActions = ['tripsheet', 'bill', 'payment', 'advance'];
+  availableActions.forEach(function(a) {
+    if (role === 'accts' && financialActions.indexOf(a) >= 0) {
+      settlementActions.push(a);
+    } else {
+      detailActions.push(a);
+    }
+  });
+  var allTopActions = detailActions.concat(settlementActions);
+
+  // --- Top action bar: ALL actions + edit — ABOVE tabs, always visible ---
+  var actionBarHtml = '<div class="sl-action-bar" style="padding:12px 22px;border-bottom:1px solid #F1F5F9;background:#FAFBFC;">';
+  actionBarHtml += '<div class="sl-action-bar-left">';
+  allTopActions.forEach(function(a) {
+    var m = ACTION_META[a];
+    actionBarHtml += '<button class="sl-action-btn t-action-btn" data-action="' + a + '" style="color:' + m.color + ';border-color:' + m.color + '40;">' + m.icon + ' ' + m.label + '</button>';
+  });
+  actionBarHtml += '</div>';
+  actionBarHtml += '<div class="sl-action-bar-right">';
+  actionBarHtml += '<button class="sl-edit-toggle-btn" id="t-edit-toggle">✏️ Edit Details</button>';
+  actionBarHtml += '</div>';
+  actionBarHtml += '</div>';
+  actionBarHtml += '<div id="t-action-area-details" class="sl-action-area"></div>';
+
+  // --- Build Tabs UI ---
+  var tabs = role === 'accts' ? ['Settlement', 'Details', 'Documents'] : ['Details', 'Documents'];
+  var activeTab = tabs[0];
+  
+  var tabsHtml = '<div style="display:flex; border-bottom:1px solid #E2E8F0; margin-bottom:16px;">';
+  tabs.forEach(function(t) {
+    tabsHtml += '<div class="t-detail-tab" data-tab="'+t+'" style="padding:10px 18px; font-size:13px; font-weight:600; color:#64748B; border-bottom:2px solid transparent; cursor:pointer; transition:all .2s;">'+t+'</div>';
+  });
+  tabsHtml += '</div>';
+
+  var detailsHtml = '';
+  var settlementHtml = '';
+  var docsHtml = '';
+
+  // --- DETAILS TAB CONTENT ---
+  // Paid banner
+  if (trip.status === 'Settled') {
+    detailsHtml += '<div style="background:#DCFCE7;border:1.5px solid #86EFAC;border-radius:12px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px;">';
+    detailsHtml += '<span style="font-size:20px;">🎉</span>';
+    detailsHtml += '<div><div style="font-size:13px;font-weight:800;color:#14532D;">Trip Settled — Revenue Locked</div>';
+    detailsHtml += '<div style="font-size:12px;color:#166534;">Expenses settled' + (trip.tripSheet ? ' on ' + _tfmtD(trip.tripSheet.settledDate) : '') + ' — this trip is now a billable line item</div></div></div>';
+  }
+  detailsHtml += '<div id="t-readonly-sections">';
+  detailsHtml += _tTripDetailSections(trip);
+  detailsHtml += '</div>';
+  detailsHtml += '<div id="t-edit-sections" style="display:none;"></div>';
+
+  // --- SETTLEMENT TAB CONTENT (Accounts Only) ---
+  if (role === 'accts') {
+
+    var ledgerEntries = [];
+    trip.advances.forEach(function(a) {
+      ledgerEntries.push({ date:a.date, type:'Advance', desc:a.type + ' — ' + (a.note||'Advance'), debit:a.amount, credit:0 });
+    });
+    if (trip.tripSheet) {
+      trip.expenses.forEach(function(e) {
+        ledgerEntries.push({ date:e.date, type:'Expense', desc:e.category + ' — ' + (e.note||''), debit:e.amount, credit:0 });
+      });
+      ledgerEntries.push({ date:trip.tripSheet.settledDate, type:'Settlement', desc:'Trip Sheet settled (' + (trip.tripSheet.note||'') + ')', debit:0, credit:0, isSettlement:true });
+    }
+    if (trip.invoiceAmt) ledgerEntries.push({ date:trip.deliveryDate||_ttoday(), type:'Freight Bill', desc:'Invoice ₹' + trip.invoiceAmt.toLocaleString() + ' to ' + trip.client, debit:0, credit:trip.invoiceAmt });
+    if (trip.paymentDate) ledgerEntries.push({ date:trip.paymentDate, type:'Payment', desc:'Received ' + (trip.paymentRef||'—'), debit:0, credit:trip.invoiceAmt||trip.freight });
+
+    if (ledgerEntries.length > 0) {
+      var ledgerHtml = '<div style="background:#fff;border-radius:8px;overflow:hidden;">';
+      ledgerHtml += '<div style="display:grid;grid-template-columns:70px 90px 1fr 80px 80px;padding:8px 12px;background:#F8FAFC;font-size:10px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:.5px;">';
+      ledgerHtml += '<span>Date</span><span>Type</span><span>Description</span><span style="text-align:right;">Debit</span><span style="text-align:right;">Credit</span></div>';
+      ledgerEntries.forEach(function(e) {
+        var typeBg = e.type==='Advance'?'#EDE9FE':e.type==='Expense'?'#FEF3C7':e.type==='Freight Bill'?'#E0E7FF':e.type==='Payment'?'#D1FAE5':'#F1F5F9';
+        var typeCol = e.type==='Advance'?'#5B21B6':e.type==='Expense'?'#92400E':e.type==='Freight Bill'?'#3730A3':e.type==='Payment'?'#065F46':'#64748B';
+        ledgerHtml += '<div style="display:grid;grid-template-columns:70px 90px 1fr 80px 80px;padding:7px 12px;border-top:1px solid #F1F5F9;font-size:12px;background:' + (e.isSettlement?'#FEF3C7':'transparent') + ';">';
+        ledgerHtml += '<span style="color:#94A3B8;font-family:monospace;font-size:11px;">' + _tfmtD(e.date) + '</span>';
+        ledgerHtml += '<span>' + _tTag(e.type, typeBg, typeCol) + '</span>';
+        ledgerHtml += '<span style="color:#1E293B;font-size:11px;">' + e.desc + '</span>';
+        ledgerHtml += '<span style="text-align:right;font-weight:700;color:' + (e.debit?'#DC2626':'#CBD5E1') + ';">' + (e.debit?_tmoney(e.debit):'—') + '</span>';
+        ledgerHtml += '<span style="text-align:right;font-weight:700;color:' + (e.credit?'#16A34A':'#CBD5E1') + ';">' + (e.credit?_tmoney(e.credit):'—') + '</span>';
+        ledgerHtml += '</div>';
+      });
+      ledgerHtml += '</div>';
+      settlementHtml += _tSection('📊', 'Accounts Ledger', '#A5B4FC', '#EEF2FF', ledgerHtml);
+    }
+
+    // Section: Trip Sheet Settlement
+    if (trip.tripSheet) {
+      var tsContent = '<div style="background:#1E293B;border-radius:10px;padding:10px 14px;">';
+      tsContent += '<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span style="color:#94A3B8;">Advances Given</span><span style="color:#F0F2FF;font-weight:700;">' + _tmoney(trip.tripSheet.totalAdv) + '</span></div>';
+      tsContent += '<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span style="color:#94A3B8;">Expenses Incurred</span><span style="color:#F0F2FF;font-weight:700;">' + _tmoney(trip.tripSheet.totalExp) + '</span></div>';
+      tsContent += '<div style="border-top:1px solid #334155;padding-top:6px;display:flex;justify-content:space-between;font-size:13px;">';
+      tsContent += '<span style="color:#fff;font-weight:800;">Balance</span>';
+      var bal = trip.tripSheet.balance;
+      tsContent += '<span style="color:' + (bal >= 0 ? '#22C55E' : '#EF4444') + ';font-weight:800;">' + (bal >= 0 ? '₹' + bal.toLocaleString() + ' refund' : '₹' + Math.abs(bal).toLocaleString() + ' due') + '</span>';
+      tsContent += '</div>';
+      if (trip.tripSheet.note) tsContent += '<div style="font-size:11px;color:#94A3B8;margin-top:6px;">' + trip.tripSheet.note + '</div>';
+      tsContent += '</div>';
+      settlementHtml += _tSection('🧾', 'Trip Sheet Settlement', '#FCD34D', '#FFFBEB', tsContent);
+    }
+  }
+
+  // --- DOCUMENTS TAB CONTENT ---
+  docsHtml += '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">';
+  docsHtml += '<h3 style="font-size:16px; font-weight:800; color:#1E293B; margin:0;">Trip Documents</h3>';
+  docsHtml += '<button style="background:#F1F5F9; border:1px solid #E2E8F0; padding:6px 14px; border-radius:8px; font-size:12px; font-weight:700; color:#1E293B; cursor:pointer;" onclick="openEntityModal(\'document\')"><i class="fas fa-upload"></i> Upload</button>';
+  docsHtml += '</div>';
+
+  docsHtml += '<div style="background:#fff; border:1px solid #E2E8F0; border-radius:12px; overflow:hidden;">';
+  docsHtml += '<div style="display:grid; grid-template-columns:2fr 1.5fr 1fr 1.5fr 60px; padding:12px 16px; background:#F8FAFC; border-bottom:1px solid #E2E8F0; font-size:11px; font-weight:700; color:#64748B; text-transform:uppercase; letter-spacing:.5px;">';
+  docsHtml += '<span>Document</span><span>Type / ID</span><span>Status</span><span>Uploaded</span><span style="text-align:center;">Action</span>';
+  docsHtml += '</div>';
+
+  var docList = [
+    { name: 'Lorry Receipt (LR)', docId: trip.lr || 'LR-GWT-'+trip.id, date: trip.lrDate || _ttoday(), icon: 'fa-file-alt', color: '#D97706', status: 'Verified', statusColor: '#D1FAE5', statusText: '#065F46' },
+  ];
+  if (trip.pod) {
+      docList.push({ name: 'POD — Proof of Delivery', docId: 'POD-'+trip.id, date: trip.pod.date, icon: 'fa-signature', color: '#16A34A', status: 'Verified', statusColor: '#D1FAE5', statusText: '#065F46' });
+  } else {
+      docList.push({ name: 'POD — Proof of Delivery', docId: '—', date: null, icon: 'fa-signature', color: '#94A3B8', status: 'Pending', statusColor: '#F1F5F9', statusText: '#94A3B8' });
+  }
+
+  docList.forEach(function(d) {
+    docsHtml += '<div style="display:grid; grid-template-columns:2fr 1.5fr 1fr 1.5fr 60px; padding:14px 16px; border-bottom:1px solid #F1F5F9; align-items:center; font-size:13px;">';
+    docsHtml += '<div style="display:flex; align-items:center; gap:8px; font-weight:700; color:#1E293B;">';
+    docsHtml += '<i class="fas ' + d.icon + '" style="color:' + d.color + '; width:16px; text-align:center;"></i> ' + d.name;
+    docsHtml += '</div>';
+    docsHtml += '<div style="color:#475569; font-family:monospace; font-size:12px;">' + d.docId + '</div>';
+    docsHtml += '<div><span style="background:' + d.statusColor + '; color:' + d.statusText + '; padding:2px 8px; border-radius:12px; font-size:11px; font-weight:600;">' + d.status + '</span></div>';
+    docsHtml += '<div style="color:#64748B; font-size:12px;">' + (d.date ? _tfmtD(d.date) : '—') + '</div>';
+    docsHtml += '<div style="text-align:center;">';
+    if (d.date) {
+      docsHtml += '<button style="background:none; border:none; color:#3B82F6; cursor:pointer;" onclick="showToast(\'Downloading...\',\'info\')"><i class="fas fa-download"></i></button>';
+    } else {
+      docsHtml += '<span style="color:#CBD5E1; font-size:11px;">—</span>';
+    }
+    docsHtml += '</div></div>';
+  });
+  docsHtml += '</div>';
+
+  // --- FINAL ASSEMBLY ---
+  var html = actionBarHtml + tabsHtml;
+  html += '<div id="t-tab-layer-Details" style="display:'+(activeTab==='Details'?'block':'none')+';">' + detailsHtml + '</div>';
+  html += '<div id="t-tab-layer-Settlement" style="display:'+(activeTab==='Settlement'?'block':'none')+';">' + settlementHtml + '</div>';
+  html += '<div id="t-tab-layer-Documents" style="display:'+(activeTab==='Documents'?'block':'none')+';">' + docsHtml + '</div>';
+
+  body.innerHTML = '<div style="padding:14px 22px;">' + html + '</div>';
+
+  // Javascript to handle tab switching
+  body.querySelectorAll('.t-detail-tab').forEach(function(tabEl) {
+    tabEl.addEventListener('click', function() {
+      // Deactivate all
+      body.querySelectorAll('.t-detail-tab').forEach(function(el) {
+        el.style.color = '#64748B';
+        el.style.fontWeight = '600';
+        el.style.borderBottomColor = 'transparent';
+      });
+      // Hide all layers
+      if(document.getElementById('t-tab-layer-Details')) document.getElementById('t-tab-layer-Details').style.display = 'none';
+      if(document.getElementById('t-tab-layer-Settlement')) document.getElementById('t-tab-layer-Settlement').style.display = 'none';
+      if(document.getElementById('t-tab-layer-Documents')) document.getElementById('t-tab-layer-Documents').style.display = 'none';
+      
+      // Activate clicked
+      var dest = this.getAttribute('data-tab');
+      this.style.color = '#0EA5E9';
+      this.style.fontWeight = '700';
+      this.style.borderBottomColor = '#0EA5E9';
+      var tgtLayer = document.getElementById('t-tab-layer-' + dest);
+      if (tgtLayer) tgtLayer.style.display = 'block';
+    });
+    // Set initial active state correctly
+    if(tabEl.getAttribute('data-tab') === activeTab) {
+      tabEl.style.color = '#0EA5E9';
+      tabEl.style.fontWeight = '700';
+      tabEl.style.borderBottomColor = '#0EA5E9';
+    }
+  });
+
+  // Wire action buttons
+  body.querySelectorAll('.t-action-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var action = this.getAttribute('data-action');
+      var m = ACTION_META[action];
+      var areaId = 't-action-area-details';
+      // Toggle active state
+      body.querySelectorAll('.t-action-btn').forEach(function(b) {
+        if (b.getAttribute('data-action') === action) {
+          var isActive = b.style.background !== 'rgb(248, 250, 252)' && b.style.background !== '#F8FAFC';
+          if (isActive) {
+            b.style.background = '#F8FAFC'; b.style.color = m.color;
+            var area = document.getElementById(areaId);
+            if (area) area.innerHTML = '';
+            return;
+          }
+        }
+        var am = ACTION_META[b.getAttribute('data-action')];
+        b.style.background = '#F8FAFC'; b.style.color = am.color;
+      });
+      this.style.background = m.color; this.style.color = '#fff';
+      _tRenderAction(action, trip, role, onBack, areaId);
+    });
+  });
+
+  // Wire Edit / Save toggle button
+  var editToggle = document.getElementById('t-edit-toggle');
+  if (editToggle) {
+    var isEditing = false;
+    editToggle.addEventListener('click', function() {
+      var readonlySections = document.getElementById('t-readonly-sections');
+      var editSections = document.getElementById('t-edit-sections');
+      if (!isEditing) {
+        // Switch to edit mode
+        isEditing = true;
+        editToggle.innerHTML = '✓ Save Details';
+        editToggle.classList.add('editing');
+        if (readonlySections) readonlySections.style.display = 'none';
+        // Render editable sections
+        var route = TRIP_ROUTES.find(function(r){ return r.id === trip.routeId; });
+        var html = '';
+        // Section 1: LR, Vehicle & Route (LR editable, rest read-only)
+        var lvrEdit = '';
+        lvrEdit += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">';
+        lvrEdit += '<div>' + _tLbl('LR / Waybill / Bilty No.') + _tField('t-edit-lr', 'text', 'LR number', trip.lr||'') + '</div>';
+        lvrEdit += '<div>' + _tLbl('LR Date') + _tField('t-edit-lrdate', 'date', '', trip.lrDate||'') + '</div>';
+        lvrEdit += '</div>';
+        lvrEdit += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">';
+        lvrEdit += '<div>' + _tLbl('Vehicle') + _tReadField(trip.vehicle ? '<code style="font-family:monospace;">' + trip.vehicle + '</code>' : null) + '</div>';
+        lvrEdit += '<div>' + _tLbl('Route') + _tReadField(trip.origin + ' \u2192 ' + trip.destination) + '</div>';
+        lvrEdit += '</div>';
+        if (trip.vehicle) {
+          lvrEdit += '<div style="background:#D1FAE5;border-radius:8px;padding:10px 12px;margin-bottom:12px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">';
+          lvrEdit += '<div><div style="font-size:9px;color:#065F46;font-weight:700;text-transform:uppercase;">Vehicle</div><div style="font-size:12px;font-weight:700;color:#065F46;">' + trip.vehicle + '</div></div>';
+          lvrEdit += '<div><div style="font-size:9px;color:#065F46;font-weight:700;text-transform:uppercase;">Driver</div><div style="font-size:12px;font-weight:700;color:#065F46;">' + (trip.driver || '\u2014') + '</div></div>';
+          lvrEdit += '<div><div style="font-size:9px;color:#065F46;font-weight:700;text-transform:uppercase;">Type</div><div style="font-size:12px;font-weight:700;color:#065F46;">' + (trip.vtype || '\u2014') + '</div></div>';
+          lvrEdit += '</div>';
+        }
+        if (route) {
+          lvrEdit += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">';
+          lvrEdit += '<div style="background:#F0F9FF;border-radius:7px;padding:7px 10px;border:1px solid #E0F2FE;"><div style="font-size:9px;color:#0369A1;font-weight:700;text-transform:uppercase;">Client</div><div style="font-size:12px;font-weight:700;color:#1E293B;">' + trip.client + '</div></div>';
+          lvrEdit += '<div style="background:#F0F9FF;border-radius:7px;padding:7px 10px;border:1px solid #E0F2FE;"><div style="font-size:9px;color:#0369A1;font-weight:700;text-transform:uppercase;">Origin \u2192 Destination</div><div style="font-size:12px;font-weight:700;color:#1E293B;">' + trip.origin + ' \u2192 ' + trip.destination + '</div></div>';
+          lvrEdit += '</div>';
+          lvrEdit += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">';
+          lvrEdit += '<div style="background:#F8FAFC;border-radius:7px;padding:6px 10px;"><div style="font-size:9px;color:#94A3B8;font-weight:700;text-transform:uppercase;">Distance</div><div style="font-size:12px;font-weight:700;color:#1E293B;">' + route.distKm + ' km \u00b7 ' + route.transitDays + 'd</div></div>';
+          lvrEdit += '<div style="background:#F8FAFC;border-radius:7px;padding:6px 10px;"><div style="font-size:9px;color:#94A3B8;font-weight:700;text-transform:uppercase;">Rate</div><div style="font-size:12px;font-weight:700;color:#1E293B;">' + (route.rateType === 'Flat' ? '\u20b9' + route.rate.toLocaleString() : '\u20b9' + route.rate + '/km') + '</div></div>';
+          lvrEdit += '<div style="background:#F8FAFC;border-radius:7px;padding:6px 10px;"><div style="font-size:9px;color:#94A3B8;font-weight:700;text-transform:uppercase;">Terms</div><div style="font-size:12px;font-weight:700;color:#1E293B;">' + trip.freightTerms + '</div></div>';
+          lvrEdit += '</div>';
+        } else {
+          lvrEdit += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">';
+          lvrEdit += '<div style="background:#F0F9FF;border-radius:7px;padding:7px 10px;border:1px solid #E0F2FE;"><div style="font-size:9px;color:#0369A1;font-weight:700;text-transform:uppercase;">Client</div><div style="font-size:12px;font-weight:700;color:#1E293B;">' + trip.client + '</div></div>';
+          lvrEdit += '<div style="background:#F8FAFC;border-radius:7px;padding:6px 10px;"><div style="font-size:9px;color:#94A3B8;font-weight:700;text-transform:uppercase;">Freight</div><div style="font-size:12px;font-weight:700;color:#1E293B;">' + _tmoney(trip.freight) + '</div></div>';
+          lvrEdit += '<div style="background:#F8FAFC;border-radius:7px;padding:6px 10px;"><div style="font-size:9px;color:#94A3B8;font-weight:700;text-transform:uppercase;">Terms</div><div style="font-size:12px;font-weight:700;color:#1E293B;">' + trip.freightTerms + '</div></div>';
+          lvrEdit += '</div>';
+        }
+        html += _tSection('\ud83d\udccb', 'Trip Identity', '#BAE6FD', '#F0F9FF', lvrEdit);
+        // Section 2: Consignment & Material (editable)
+        var cdEdit = '';
+        cdEdit += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">';
+        cdEdit += '<div>' + _tLbl('Consignor (Sender)') + _tField('t-edit-consignor', 'text', 'Sender name / company', trip.consignor||'') + '</div>';
+        cdEdit += '<div>' + _tLbl('Consignee (Receiver)') + _tField('t-edit-consignee', 'text', 'Receiver name / company', trip.consignee||'') + '</div>';
+        cdEdit += '</div>';
+        cdEdit += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">';
+        cdEdit += '<div>' + _tLbl('Cargo Description') + _tField('t-edit-goods', 'text', 'e.g. FMCG Goods, Chemicals', trip.goods||'') + '</div>';
+        cdEdit += '<div>' + _tLbl('Cargo Weight (kg)') + _tField('t-edit-wt', 'number', '0', trip.weightKg||'') + '</div>';
+        cdEdit += '</div>';
+        cdEdit += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">';
+        cdEdit += '<div>' + _tLbl('Packages / Units') + _tField('t-edit-pkg', 'number', '0', trip.packages||'') + '</div>';
+        cdEdit += '<div>' + _tLbl('Consignment Value (\u20b9)') + _tField('t-edit-val', 'number', '0', trip.declaredValue||'') + '</div>';
+        cdEdit += '</div>';
+        html += _tSection('\ud83d\udce6', 'Consignment & Material', '#E2E8F0', '', cdEdit);
+        if (editSections) { editSections.innerHTML = html; editSections.style.display = 'block'; }
+      } else {
+        // Save and switch back to read-only
+        isEditing = false;
+        // Gather values
+        var updates = {
+          lr: document.getElementById('t-edit-lr').value || trip.lr,
+          lrDate: document.getElementById('t-edit-lrdate').value || trip.lrDate,
+          consignor: document.getElementById('t-edit-consignor').value,
+          consignee: document.getElementById('t-edit-consignee').value,
+          goods: document.getElementById('t-edit-goods').value,
+          weightKg: Number(document.getElementById('t-edit-wt').value) || 0,
+          packages: Number(document.getElementById('t-edit-pkg').value) || 0,
+          declaredValue: Number(document.getElementById('t-edit-val').value) || 0
+        };
+        // Apply to trip data
+        for (var i = 0; i < TRIPS_DATA.length; i++) {
+          if (TRIPS_DATA[i].id === trip.id) {
+            for (var k in updates) { TRIPS_DATA[i][k] = updates[k]; }
+            trip = TRIPS_DATA[i];
+            break;
+          }
+        }
+        _tRefreshDashboardCounts();
+        _tShowTripDetail(trip, role, onBack);
+      }
+    });
+  }
+}
+
+// ─── RENDER ACTION FORM ──────────────────────────────────────────────────────
+function _tRenderAction(action, trip, role, onListBack, areaId) {
+  var area = document.getElementById(areaId || 't-action-area-details');
+  if (!area) return;
+
+  function applyUpdate(updates) {
+    // Find trip in TRIPS_DATA and update it
+    for (var i = 0; i < TRIPS_DATA.length; i++) {
+      if (TRIPS_DATA[i].id === trip.id) {
+        for (var k in updates) { TRIPS_DATA[i][k] = updates[k]; }
+        trip = TRIPS_DATA[i];
+        break;
+      }
+    }
+    _tRefreshDashboardCounts();
+    // Re-render detail
+    _tShowTripDetail(trip, role, onListBack);
+  }
+
+  if (action === 'dispatch') _tActionDispatch(area, trip, applyUpdate);
+  else if (action === 'deliver') _tActionDeliver(area, trip, applyUpdate);
+  else if (action === 'advance') _tActionAdvance(area, trip, applyUpdate);
+  else if (action === 'tripsheet') _tActionTripSheet(area, trip, applyUpdate);
+  else if (action === 'bill') _tActionBill(area, trip, applyUpdate);
+  else if (action === 'payment') _tActionPayment(area, trip, applyUpdate);
+}
+
+// ─── ACTION: ASSIGN VEHICLE & DISPATCH ───────────────────────────────────────
+function _tActionDispatch(area, trip, applyUpdate) {
+  var html = '<div style="background:#F0F9FF;border:1.5px solid #BAE6FD;border-radius:12px;padding:16px;margin-bottom:16px;">';
+  html += '<div style="font-size:13px;font-weight:800;color:#0369A1;margin-bottom:12px;">🚛 Dispatch</div>';
+  html += '<div style="position:relative;margin-bottom:12px;">';
+  html += _tLbl('Vehicle Number', true);
+  html += '<div style="display:flex;gap:8px;">';
+  html += '<input id="t-disp-veh" placeholder="Type vehicle number..." style="flex:1;border:1.5px solid #E2E8F0;border-radius:10px;padding:10px 12px;font-size:13px;color:#1E293B;background:#fff;outline:none;font-family:inherit;" />';
+  html += _tBtn('t-disp-lookup', 'Look up', '#1E3A5F', false, false);
+  html += '</div><div id="t-disp-veh-info"></div></div>';
+  html += '<div id="t-disp-extra" style="display:none;">';
+  // Job Entry
+  html += '<div style="display:flex;align-items:center;gap:8px;margin:16px 0 12px;"><span style="font-size:10px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:.7px;white-space:nowrap;">Job Entry (optional)</span><div style="flex:1;height:1px;background:#F1F5F9;"></div></div>';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">';
+  html += '<div>' + _tLbl('Dispatch Time') + _tField('t-disp-time', 'time', '') + '</div>';
+  html += '<div>' + _tLbl('Odometer (km)') + _tField('t-disp-odo', 'number', 'Starting reading') + '</div>';
+  html += '<div style="grid-column:1/-1;">' + _tLbl('Note') + _tField('t-disp-note', 'text', 'e.g. Sealed, fragile, cold chain') + '</div>';
+  html += '</div>';
+  // Driver Advance
+  html += '<div style="display:flex;align-items:center;gap:8px;margin:16px 0 12px;"><span style="font-size:10px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:.7px;white-space:nowrap;">Driver Advance (optional)</span><div style="flex:1;height:1px;background:#F1F5F9;"></div></div>';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">';
+  html += '<div>' + _tLbl('Advance (₹)') + _tField('t-disp-adv', 'number', '0') + '</div>';
+  html += '<div>' + _tLbl('Mode') + _tSearchDropdownHtml('t-disp-mode-sd', TRIP_PAYMENT_MODES, 'Select mode...') + '</div>';
+  html += '</div>';
+  html += _tBtn('t-disp-go', '✓ Dispatch — Move to In Transit', '#0EA5E9', false, false);
+  html += '</div></div>';
+
+  area.innerHTML = html;
+
+  var resolvedVeh = null;
+  var resolve = _tVehicleTypeahead('t-disp-veh', 't-disp-veh-info', function(key, v) {
+    resolvedVeh = key ? { num:key, driver:v.driver, type:v.type } : null;
+    document.getElementById('t-disp-extra').style.display = key ? 'block' : 'none';
+  });
+  _tInitSearchDropdown('t-disp-mode-sd', TRIP_PAYMENT_MODES.map(function(m){ return {value:m,label:m}; }));
+
+  document.getElementById('t-disp-lookup').addEventListener('click', function() {
+    resolve(document.getElementById('t-disp-veh').value);
+  });
+  document.getElementById('t-disp-go').addEventListener('click', function() {
+    if (!resolvedVeh) return;
+    var advAmt = document.getElementById('t-disp-adv').value;
+    var advModeHidden = document.querySelector('#t-disp-mode-sd .t-sd-value');
+    var advMode = advModeHidden ? advModeHidden.value : '';
+    var adv = advAmt ? [{ id:'adv'+Date.now(), type:'Driver', amount:Number(advAmt), mode:advMode, date:_ttoday(), note:'Dispatch advance' }] : [];
+    var jobTime = document.getElementById('t-disp-time').value;
+    var odo = document.getElementById('t-disp-odo').value;
+    var note = document.getElementById('t-disp-note').value;
+    var je = (jobTime||odo||note) ? { date:_ttoday(), time:jobTime, odoStart:Number(odo)||null, dispatchNote:note } : null;
+    applyUpdate({
+      status: 'In Transit',
+      vehicle: resolvedVeh.num,
+      driver: resolvedVeh.driver,
+      vtype: resolvedVeh.type,
+      jobEntry: je,
+      advances: trip.advances.concat(adv)
+    });
+  });
+}
+
+// ─── ACTION: MARK DELIVERED ──────────────────────────────────────────────────
+function _tActionDeliver(area, trip, applyUpdate) {
+  var html = '<div style="background:#F0FDF4;border:1.5px solid #A7F3D0;border-radius:12px;padding:16px;margin-bottom:16px;">';
+  html += '<div style="font-size:13px;font-weight:800;color:#065F46;margin-bottom:12px;">✅ Mark Delivered & Upload ePOD</div>';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">';
+  html += '<div>' + _tLbl('Delivery Date', true) + _tField('t-del-date', 'date', '', _ttoday()) + '</div>';
+  html += '<div>' + _tLbl('Goods Condition', true) + _tSelect('t-del-condition', ['Good — No issues','Damaged — Partial','Short — Quantity less'], 'Select...') + '</div>';
+  html += '</div>';
+  // ePOD
+  html += '<div style="display:flex;align-items:center;gap:8px;margin:16px 0 12px;"><span style="font-size:10px;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:.7px;white-space:nowrap;">ePOD — Proof of Delivery</span><div style="flex:1;height:1px;background:#F1F5F9;"></div></div>';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">';
+  html += '<div>' + _tLbl('Received By') + _tField('t-del-receiver', 'text', 'Name at destination') + '</div>';
+  html += '<div>' + _tLbl('Note') + _tField('t-del-note', 'text', 'e.g. Signed LR copy') + '</div>';
+  html += '</div>';
+  html += '<div style="margin-bottom:14px;"><button id="t-del-upload" style="width:100%;background:#F8FAFC;border:1.5px dashed #E2E8F0;border-radius:10px;padding:12px;cursor:pointer;text-align:center;font-family:inherit;"><span style="color:#94A3B8;font-size:13px;">📎 Upload signed LR / delivery photo / ePOD</span></button></div>';
+  html += _tBtn('t-del-go', '✓ Confirm Delivery', '#10B981', false, false);
+  html += '</div>';
+
+  area.innerHTML = html;
+
+  var uploaded = false;
+  document.getElementById('t-del-upload').addEventListener('click', function() {
+    uploaded = true;
+    this.innerHTML = '<span style="color:#065F46;font-weight:700;font-size:13px;">✓ ePOD Uploaded</span>';
+    this.style.background = '#F0FDF4'; this.style.borderStyle = 'solid'; this.style.borderColor = '#6EE7B7';
+  });
+  document.getElementById('t-del-go').addEventListener('click', function() {
+    var condition = document.getElementById('t-del-condition').value;
+    if (!condition) return;
+    var date = document.getElementById('t-del-date').value || _ttoday();
+    var receiver = document.getElementById('t-del-receiver').value;
+    var note = document.getElementById('t-del-note').value;
+    var pod = (receiver || uploaded) ? { receiver:receiver||'—', date:date, files:uploaded?1:0, note:note||'ePOD at delivery' } : null;
+    applyUpdate({ status:'Completed', deliveryDate:date, pod:pod });
+  });
+}
+
+
+// ─── ACTION: ADD ADVANCE ─────────────────────────────────────────────────────
+function _tActionAdvance(area, trip, applyUpdate) {
+  var isHire = trip.vtype === 'Attached' || trip.vtype === 'Market';
+  var html = '<div style="background:#F5F3FF;border:1.5px solid #C4B5FD;border-radius:12px;padding:16px;margin-bottom:16px;">';
+  html += '<div style="font-size:13px;font-weight:800;color:#5B21B6;margin-bottom:12px;">💵 Add Advance</div>';
+  if (isHire) {
+    html += '<div style="margin-bottom:10px;">' + _tLbl('Advance Type');
+    html += '<div style="display:flex;gap:8px;">';
+    html += '<button id="t-adv-type-driver" class="t-adv-type" data-type="Driver" style="flex:1;padding:8px;border-radius:8px;border:1.5px solid #7C3AED;background:#EDE9FE;color:#5B21B6;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;">Driver</button>';
+    html += '<button id="t-adv-type-hire" class="t-adv-type" data-type="Hire Slip" style="flex:1;padding:8px;border-radius:8px;border:1.5px solid #E2E8F0;background:#fff;color:#64748B;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;">Hire Slip</button>';
+    html += '</div></div>';
+  }
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">';
+  html += '<div>' + _tLbl('Amount (₹)', true) + _tField('t-adv-amt', 'number', '0') + '</div>';
+  html += '<div>' + _tLbl('Payment Mode') + _tSearchDropdownHtml('t-adv-mode-sd', TRIP_PAYMENT_MODES, 'Select mode...') + '</div>';
+  html += '</div>';
+  html += '<div style="margin-bottom:12px;">' + _tLbl('Note') + _tField('t-adv-note', 'text', 'Purpose of advance') + '</div>';
+  html += _tBtn('t-adv-save', 'Save Advance', '#7C3AED', false, false);
+  html += '</div>';
+
+  area.innerHTML = html;
+
+  var advType = 'Driver';
+  _tInitSearchDropdown('t-adv-mode-sd', TRIP_PAYMENT_MODES.map(function(m){ return {value:m,label:m}; }));
+
+  if (isHire) {
+    area.querySelectorAll('.t-adv-type').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        advType = this.getAttribute('data-type');
+        area.querySelectorAll('.t-adv-type').forEach(function(b) {
+          if (b.getAttribute('data-type') === advType) {
+            b.style.borderColor = '#7C3AED'; b.style.background = '#EDE9FE'; b.style.color = '#5B21B6';
+          } else {
+            b.style.borderColor = '#E2E8F0'; b.style.background = '#fff'; b.style.color = '#64748B';
+          }
+        });
+      });
+    });
+  }
+
+  document.getElementById('t-adv-save').addEventListener('click', function() {
+    var amt = document.getElementById('t-adv-amt').value;
+    if (!amt) return;
+    var modeHidden = document.querySelector('#t-adv-mode-sd .t-sd-value');
+    var mode = modeHidden ? modeHidden.value : '';
+    var note = document.getElementById('t-adv-note').value;
+    var newAdv = { id:'adv'+Date.now(), type:advType, amount:Number(amt), mode:mode, date:_ttoday(), note:note };
+    applyUpdate({ advances: trip.advances.concat([newAdv]) });
+  });
+}
+
+// ─── ACTION: TRIP SHEET / SETTLE ─────────────────────────────────────────────
+function _tActionTripSheet(area, trip, applyUpdate) {
+  var totalAdv = trip.advances.reduce(function(s,a){ return s+a.amount; }, 0);
+  var prevTotalExp = trip.expenses.reduce(function(s,e){ return s+e.amount; }, 0);
+  var newExpenses = [];
+
+  function render() {
+    var allExp = prevTotalExp + newExpenses.reduce(function(s,e){ return s+e.amount; }, 0);
+    var balance = totalAdv - allExp;
+
+    var html = '<div style="background:#FFFBEB;border:1.5px solid #FCD34D;border-radius:12px;padding:16px;margin-bottom:16px;">';
+    html += '<div style="font-size:13px;font-weight:800;color:#92400E;margin-bottom:4px;">🧾 Trip Sheet — Expense Settlement</div>';
+    html += '<div style="font-size:11px;color:#64748B;margin-bottom:14px;">Log all trip expenses and settle against advances given to the driver.</div>';
+
+    // Previously logged
+    if (trip.expenses.length > 0) {
+      html += '<div style="margin-bottom:12px;"><div style="font-size:10px;font-weight:700;color:#94A3B8;margin-bottom:6px;">PREVIOUSLY LOGGED</div>';
+      trip.expenses.forEach(function(e) {
+        html += '<div style="background:#fff;border-radius:6px;padding:6px 10px;margin-bottom:4px;font-size:12px;display:flex;justify-content:space-between;">';
+        html += '<span style="color:#64748B;">' + e.category + ' — ' + (e.note||'') + '</span><strong style="color:#D97706;">' + _tmoney(e.amount) + '</strong></div>';
+      });
+      html += '</div>';
+    }
+
+    // Add expense form
+    html += '<div style="font-size:10px;font-weight:700;color:#94A3B8;margin-bottom:6px;">ADD EXPENSE</div>';
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;">';
+    html += '<div>' + _tLbl('Category') + _tSearchDropdownHtml('t-ts-cat-sd', TRIP_EXPENSE_CATS, 'Select category...') + '</div>';
+    html += '<div>' + _tLbl('Amount (₹)') + _tField('t-ts-amt', 'number', '0') + '</div>';
+    html += '<div>' + _tLbl('Date') + _tField('t-ts-date', 'date', '', _ttoday()) + '</div>';
+    html += '<div>' + _tLbl('Note') + _tField('t-ts-enote', 'text', 'Details') + '</div>';
+    html += '</div>';
+    html += '<div style="margin-bottom:12px;">' + _tBtn('t-ts-add', '+ Add Expense Line', '#475569', false, true) + '</div>';
+
+    // New expenses
+    if (newExpenses.length > 0) {
+      html += '<div style="margin-bottom:12px;"><div style="font-size:10px;font-weight:700;color:#94A3B8;margin-bottom:6px;">NEW EXPENSES</div>';
+      newExpenses.forEach(function(e) {
+        html += '<div style="background:#FEF3C7;border-radius:6px;padding:6px 10px;margin-bottom:4px;font-size:12px;display:flex;justify-content:space-between;">';
+        html += '<span style="color:#92400E;">' + e.category + ' — ' + (e.note||'—') + '</span><strong style="color:#D97706;">' + _tmoney(e.amount) + '</strong></div>';
+      });
+      html += '</div>';
+    }
+
+    // Settlement summary
+    html += '<div style="background:#1E293B;border-radius:10px;padding:12px 14px;margin-bottom:12px;">';
+    html += '<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span style="color:#94A3B8;">Total Advances</span><span style="color:#F0F2FF;font-weight:700;">' + _tmoney(totalAdv) + '</span></div>';
+    html += '<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span style="color:#94A3B8;">Total Expenses</span><span style="color:#F0F2FF;font-weight:700;">' + _tmoney(allExp) + '</span></div>';
+    html += '<div style="border-top:1px solid #334155;padding-top:8px;display:flex;justify-content:space-between;font-size:14px;">';
+    html += '<span style="color:#fff;font-weight:800;">Balance</span>';
+    html += '<span style="color:' + (balance >= 0 ? '#22C55E' : '#EF4444') + ';font-weight:800;">' + (balance >= 0 ? '₹' + balance.toLocaleString() + ' refund from driver' : '₹' + Math.abs(balance).toLocaleString() + ' due to driver') + '</span>';
+    html += '</div></div>';
+    html += '<div style="margin-bottom:12px;">' + _tLbl('Settlement Note') + _tField('t-ts-settle-note', 'text', 'e.g. Cash settled, balance adjusted next trip') + '</div>';
+    html += _tBtn('t-ts-go', '✓ Settle Trip Sheet', '#D97706', false, false);
+    html += '</div>';
+
+    area.innerHTML = html;
+
+    _tInitSearchDropdown('t-ts-cat-sd', TRIP_EXPENSE_CATS.map(function(c){ return {value:c,label:c}; }));
+
+    document.getElementById('t-ts-add').addEventListener('click', function() {
+      var catHidden = document.querySelector('#t-ts-cat-sd .t-sd-value');
+      var cat = catHidden ? catHidden.value : '';
+      var amt = document.getElementById('t-ts-amt').value;
+      if (!cat || !amt) return;
+      newExpenses.push({ id:'exp'+Date.now(), category:cat, amount:Number(amt), date:document.getElementById('t-ts-date').value, note:document.getElementById('t-ts-enote').value });
+      render();
+    });
+
+    document.getElementById('t-ts-go').addEventListener('click', function() {
+      var allExpTotal = prevTotalExp + newExpenses.reduce(function(s,e){ return s+e.amount; }, 0);
+      var bal = totalAdv - allExpTotal;
+      var settleNote = document.getElementById('t-ts-settle-note').value;
+      applyUpdate({
+        status: 'Settled',
+        expenses: trip.expenses.concat(newExpenses),
+        tripSheet: { settledDate:_ttoday(), totalAdv:totalAdv, totalExp:allExpTotal, balance:bal, note:settleNote }
+      });
+    });
+  }
+  render();
+}
+
+// ─── ACTION: RAISE FREIGHT BILL ──────────────────────────────────────────────
+function _tActionBill(area, trip, applyUpdate) {
+  var base = trip.freight;
+  var html = '<div style="background:#EEF2FF;border:1.5px solid #A5B4FC;border-radius:12px;padding:16px;margin-bottom:16px;">';
+  html += '<div style="font-size:13px;font-weight:800;color:#3730A3;margin-bottom:8px;">📄 Raise Freight Bill</div>';
+  // Auto-populated
+  html += '<div style="background:#fff;border-radius:8px;padding:10px 12px;margin-bottom:12px;">';
+  html += _tInfoRow('Base Freight', _tmoney(base), ' ' + _tTag('AUTO', '#D1FAE5', '#065F46'));
+  html += _tInfoRow('Client', trip.client, ' ' + _tTag('AUTO', '#D1FAE5', '#065F46'));
+  html += _tInfoRow('Freight Terms', trip.freightTerms, ' ' + _tTag('AUTO', '#D1FAE5', '#065F46'));
+  html += '</div>';
+  // Input fields
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">';
+  html += '<div>' + _tLbl('Detention (₹)') + _tField('t-bill-det', 'number', '0') + '</div>';
+  html += '<div>' + _tLbl('Loading Charges (₹)') + _tField('t-bill-load', 'number', '0') + '</div>';
+  html += '<div>' + _tLbl('Other Charges (₹)') + _tField('t-bill-other', 'number', '0') + '</div>';
+  html += '<div>' + _tLbl('GST %') + _tSelect('t-bill-gst', ['0% — Exempt','5%','12%','18%'], '') + '</div>';
+  html += '<div>' + _tLbl('Bill Date') + _tField('t-bill-date', 'date', '', _ttoday()) + '</div>';
+  html += '</div>';
+  // Calculation
+  html += '<div id="t-bill-calc" style="background:#1E293B;border-radius:10px;padding:12px 14px;margin-bottom:12px;"></div>';
+  html += _tBtn('t-bill-go', 'Generate Invoice', '#6366F1', false, false);
+  html += '</div>';
+
+  area.innerHTML = html;
+
+  // Set default GST to 5%
+  document.getElementById('t-bill-gst').value = '5%';
+
+  function calc() {
+    var det = Number(document.getElementById('t-bill-det').value) || 0;
+    var load = Number(document.getElementById('t-bill-load').value) || 0;
+    var other = Number(document.getElementById('t-bill-other').value) || 0;
+    var gstStr = document.getElementById('t-bill-gst').value;
+    var gstPct = parseInt(gstStr) || 0;
+    var sub = base + det + load + other;
+    var gstAmt = Math.round(sub * gstPct / 100);
+    var total = sub + gstAmt;
+    var calcDiv = document.getElementById('t-bill-calc');
+    calcDiv.innerHTML = '<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span style="color:#94A3B8;">Sub-total</span><span style="color:#F0F2FF;font-weight:700;">₹' + sub.toLocaleString() + '</span></div>'
+      + '<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span style="color:#94A3B8;">GST (' + gstPct + '%)</span><span style="color:#F0F2FF;font-weight:700;">₹' + gstAmt.toLocaleString() + '</span></div>'
+      + '<div style="border-top:1px solid #334155;padding-top:8px;display:flex;justify-content:space-between;font-size:15px;">'
+      + '<span style="color:#fff;font-weight:800;">Invoice Total</span>'
+      + '<span style="color:#22C55E;font-weight:800;">₹' + total.toLocaleString() + '</span></div>';
+    return total;
+  }
+  calc();
+  ['t-bill-det','t-bill-load','t-bill-other'].forEach(function(id) {
+    document.getElementById(id).addEventListener('input', calc);
+  });
+  document.getElementById('t-bill-gst').addEventListener('change', calc);
+
+  document.getElementById('t-bill-go').addEventListener('click', function() {
+    var total = calc();
+    applyUpdate({ status:'Settled', invoiceAmt:total });
+  });
+}
+
+// ─── ACTION: PAYMENT RECEIPT ─────────────────────────────────────────────────
+function _tActionPayment(area, trip, applyUpdate) {
+  var invAmt = trip.invoiceAmt || trip.freight;
+  var html = '<div style="background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:12px;padding:16px;margin-bottom:16px;">';
+  html += '<div style="font-size:13px;font-weight:800;color:#14532D;margin-bottom:8px;">💳 Payment Receipt</div>';
+  html += '<div style="background:#fff;border-radius:8px;padding:10px 12px;margin-bottom:12px;">';
+  html += _tInfoRow('Invoice Amount', _tmoney(invAmt), ' ' + _tTag('AUTO', '#D1FAE5', '#065F46'));
+  html += _tInfoRow('Client', trip.client);
+  html += '</div>';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">';
+  html += '<div>' + _tLbl('Amount Received (₹)', true) + _tField('t-pay-amt', 'number', '', invAmt) + '</div>';
+  html += '<div>' + _tLbl('Payment Mode', true) + _tSearchDropdownHtml('t-pay-mode-sd', TRIP_PAYMENT_MODES, 'Select mode...') + '</div>';
+  html += '<div>' + _tLbl('UTR / Reference No.') + _tField('t-pay-ref', 'text', 'Transaction reference') + '</div>';
+  html += '<div>' + _tLbl('Payment Date') + _tField('t-pay-date', 'date', '', _ttoday()) + '</div>';
+  html += '</div>';
+  html += _tBtn('t-pay-go', '✓ Record Payment', '#16A34A', false, false);
+  html += '</div>';
+
+  area.innerHTML = html;
+  _tInitSearchDropdown('t-pay-mode-sd', TRIP_PAYMENT_MODES.map(function(m){ return {value:m,label:m}; }));
+
+  document.getElementById('t-pay-go').addEventListener('click', function() {
+    var modeHidden = document.querySelector('#t-pay-mode-sd .t-sd-value');
+    var mode = modeHidden ? modeHidden.value : '';
+    if (!mode) return;
+    var ref = document.getElementById('t-pay-ref').value;
+    var date = document.getElementById('t-pay-date').value || _ttoday();
+    applyUpdate({ status:'Settled', paymentDate:date, paymentRef:ref });
+  });
+}
+</script>

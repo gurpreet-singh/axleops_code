@@ -1,0 +1,377 @@
+<!-- ═══════════════════════════════════════════════════════════════
+     💰 BILLING & ACCOUNTS DASHBOARD
+     Goal: Cash flow, receivables, financial control
+     Hierarchy: 🚨 Urgent → 📊 KPIs → 📈 Trends → 🔍 Insights → ⚡ Actions
+     ═══════════════════════════════════════════════════════════════ -->
+
+<div class="page-header">
+    <h1>Accounts & Billing <span class="learn-badge"><i class="fas fa-file-invoice-dollar" style="color:#DC2626;"></i>
+            Finance</span></h1>
+    <div class="page-header-actions">
+        <div class="filter-btn"><i class="fas fa-calendar-alt" style="margin-right:6px;"></i>Mar 2026 ▾</div>
+        <button class="btn btn-primary" onclick="navigateTo('invoices')"><i class="fas fa-file-invoice"></i> Add
+            Invoice</button>
+    </div>
+</div>
+
+<!-- ╔════════════════════════════════════════════════════════════════╗
+     ║  🚨 URGENT SECTION                                            ║
+     ╚════════════════════════════════════════════════════════════════╝ -->
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:20px;">
+    <!-- Overdue Invoices -->
+    <div onclick="navigateTo('invoices')"
+        style="cursor:pointer;background:linear-gradient(135deg,#fef2f2,#fff);border:1px solid #fecaca;border-radius:12px;padding:14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <div
+                style="width:28px;height:28px;background:#dc2626;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-file-invoice" style="color:#fff;font-size:12px;"></i>
+            </div>
+            <span
+                style="font-size:11px;font-weight:700;color:#991b1b;text-transform:uppercase;letter-spacing:0.5px;">OVERDUE
+                INVOICES</span>
+        </div>
+        <div style="font-size:28px;font-weight:800;color:#dc2626;">3</div>
+        <div style="font-size:11px;color:#6b7280;margin-top:2px;">Total: ₹1,45,000</div>
+        <div style="font-size:10px;color:#dc2626;margin-top:4px;">Oldest: 45 days past due</div>
+    </div>
+
+    <!-- High Outstanding Clients -->
+    <div onclick="navigateTo('clients')"
+        style="cursor:pointer;background:linear-gradient(135deg,#fef2f2,#fff);border:1px solid #fecaca;border-radius:12px;padding:14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <div
+                style="width:28px;height:28px;background:#dc2626;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-building" style="color:#fff;font-size:12px;"></i>
+            </div>
+            <span
+                style="font-size:11px;font-weight:700;color:#991b1b;text-transform:uppercase;letter-spacing:0.5px;">HIGH
+                OUTSTANDING</span>
+        </div>
+        <div style="font-size:28px;font-weight:800;color:#dc2626;">₹4.3L</div>
+        <div style="font-size:11px;color:#6b7280;margin-top:2px;">Adani Ports — ₹2L (45d)</div>
+        <div style="font-size:10px;color:#dc2626;margin-top:4px;">Escalate to owner ⚠</div>
+    </div>
+
+    <!-- Unsettled Driver Balances -->
+    <div onclick="navigateTo('driver-ledger')"
+        style="cursor:pointer;background:linear-gradient(135deg,#fffbeb,#fff);border:1px solid #fed7aa;border-radius:12px;padding:14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <div
+                style="width:28px;height:28px;background:#f59e0b;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-user-clock" style="color:#fff;font-size:12px;"></i>
+            </div>
+            <span
+                style="font-size:11px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:0.5px;">DRIVER
+                SETTLEMENTS</span>
+        </div>
+        <div style="font-size:28px;font-weight:800;color:#f59e0b;">₹43K</div>
+        <div style="font-size:11px;color:#6b7280;margin-top:2px;">3 drivers pending</div>
+        <div style="font-size:10px;color:#92400e;margin-top:4px;">Oldest: TRP-0140 (3 days)</div>
+    </div>
+
+    <!-- Pending Approvals -->
+    <div onclick="navigateTo('expense-history')"
+        style="cursor:pointer;background:linear-gradient(135deg,#eff6ff,#fff);border:1px solid #bfdbfe;border-radius:12px;padding:14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <div
+                style="width:28px;height:28px;background:#2563eb;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-check-double" style="color:#fff;font-size:12px;"></i>
+            </div>
+            <span
+                style="font-size:11px;font-weight:700;color:#1e40af;text-transform:uppercase;letter-spacing:0.5px;">PENDING
+                APPROVALS</span>
+        </div>
+        <div style="font-size:28px;font-weight:800;color:#2563eb;">5</div>
+        <div style="font-size:11px;color:#6b7280;margin-top:2px;">3 expenses · 2 invoices</div>
+        <div style="font-size:10px;color:#2563eb;margin-top:4px;">Total: ₹1,24,600</div>
+    </div>
+</div>
+
+<!-- ╔════════════════════════════════════════════════════════════════╗
+     ║  📊 KPI CARDS                                                  ║
+     ╚════════════════════════════════════════════════════════════════╝ -->
+<div class="stats-row" style="grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px;">
+    <div class="stat-card" style="cursor:pointer;border-top:3px solid #f59e0b;" onclick="navigateTo('invoices')">
+        <div class="stat-label">Total Outstanding</div>
+        <div class="stat-value text-yellow" style="font-size:22px;">₹4,32,800</div>
+        <div class="stat-change negative"><i class="fas fa-arrow-up"></i> 8.2% MoM</div>
+    </div>
+    <div class="stat-card" style="cursor:pointer;border-top:3px solid #16a34a;" onclick="navigateTo('invoices')">
+        <div class="stat-label">Collections (MTD)</div>
+        <div class="stat-value text-green" style="font-size:22px;">₹14,12,400</div>
+        <div class="stat-change positive"><i class="fas fa-arrow-up"></i> 15.3% MoM</div>
+    </div>
+    <div class="stat-card" style="cursor:pointer;border-top:3px solid #2563eb;" onclick="navigateTo('invoices')">
+        <div class="stat-label">Invoices Pending</div>
+        <div class="stat-value text-blue" style="font-size:22px;">7</div>
+        <div style="font-size:10px;color:var(--text-muted);">Worth ₹2,87,800</div>
+    </div>
+    <div class="stat-card" style="cursor:pointer;border-top:3px solid #7c3aed;" onclick="navigateTo('driver-ledger')">
+        <div class="stat-label">Driver Settlements</div>
+        <div class="stat-value" style="font-size:22px;color:#7c3aed;">₹43,000</div>
+        <div style="font-size:10px;color:#dc2626;">3 unsettled advances</div>
+    </div>
+    <div class="stat-card" style="cursor:pointer;border-top:3px solid #059669;" onclick="navigateTo('cash-flow')">
+        <div class="stat-label">Net Cash Flow</div>
+        <div class="stat-value text-green" style="font-size:22px;">₹3,28,400</div>
+        <div class="stat-change positive"><i class="fas fa-arrow-up"></i> Positive</div>
+    </div>
+</div>
+
+<!-- ╔════════════════════════════════════════════════════════════════╗
+     ║  📈 TRENDS & TABLES                                           ║
+     ╚════════════════════════════════════════════════════════════════╝ -->
+<div class="dashboard-grid two-col" style="margin-bottom:16px;">
+    <!-- Recent Invoices -->
+    <div class="widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-file-invoice" style="color:#2563eb;margin-right:6px;"></i> Recent Invoices</h3>
+            <a href="#" onclick="navigateTo('invoices')" class="btn btn-link">View All →</a>
+        </div>
+        <div class="widget-body" style="padding:0;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Invoice #</th>
+                        <th>Client</th>
+                        <th style="text-align:right;">Amount</th>
+                        <th>Due</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="cursor:pointer;">
+                        <td><a href="#">INV-2026-082</a></td>
+                        <td style="font-weight:500;">Reliance Industries</td>
+                        <td style="text-align:right;font-weight:600;">₹4,57,840</td>
+                        <td style="font-size:12px;">Apr 14</td>
+                        <td><span class="status-badge info">Sent</span></td>
+                    </tr>
+                    <tr style="cursor:pointer;">
+                        <td><a href="#">INV-2026-081</a></td>
+                        <td style="font-weight:500;">Hindustan Unilever</td>
+                        <td style="text-align:right;font-weight:600;">₹2,54,880</td>
+                        <td style="font-size:12px;">Apr 14</td>
+                        <td><span class="status-badge pending">Pending</span></td>
+                    </tr>
+                    <tr style="cursor:pointer;background:#fef2f2;">
+                        <td><a href="#" style="color:#dc2626;">INV-2026-078</a></td>
+                        <td style="font-weight:500;">Reliance Industries</td>
+                        <td style="text-align:right;font-weight:600;">₹3,35,710</td>
+                        <td style="font-size:12px;color:#dc2626;">Mar 8 ⚠</td>
+                        <td><span class="status-badge overdue">Overdue</span></td>
+                    </tr>
+                    <tr style="cursor:pointer;">
+                        <td><a href="#">INV-2026-075</a></td>
+                        <td style="font-weight:500;">Tata Steel</td>
+                        <td style="text-align:right;font-weight:600;">₹3,39,840</td>
+                        <td style="font-size:12px;color:#16a34a;">Paid ✓</td>
+                        <td><span class="status-badge completed">Paid ✓</span></td>
+                    </tr>
+                    <tr style="cursor:pointer;background:#fef2f2;">
+                        <td><a href="#" style="color:#dc2626;">INV-2026-072</a></td>
+                        <td style="font-weight:500;">Adani Ports</td>
+                        <td style="text-align:right;font-weight:600;">₹2,00,000</td>
+                        <td style="font-size:12px;color:#dc2626;">Feb 1 ⚠⚠</td>
+                        <td><span class="status-badge overdue">45 days</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pending Driver Settlements -->
+    <div class="widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-users" style="color:#7c3aed;margin-right:6px;"></i> Driver Settlements</h3>
+            <a href="#" onclick="navigateTo('driver-ledger')" class="btn btn-link">Ledger →</a>
+        </div>
+        <div class="widget-body" style="padding:0;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Driver</th>
+                        <th>Trip</th>
+                        <th style="text-align:right;">Advance</th>
+                        <th style="text-align:right;">Balance</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <span
+                                    style="width:24px;height:24px;background:linear-gradient(135deg,#4285f4,#34a853);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:700;">RK</span>
+                                <div>
+                                    <div style="font-weight:500;font-size:12px;">Rajesh Kumar</div>
+                                    <div style="font-size:10px;color:#6b7280;">On trip</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="font-size:12px;">TRP-0142</td>
+                        <td style="text-align:right;font-size:12px;">₹8,500</td>
+                        <td style="text-align:right;color:#dc2626;font-weight:600;font-size:12px;">₹8,500</td>
+                        <td><button class="btn btn-link" style="font-size:11px;">Settle</button></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <span
+                                    style="width:24px;height:24px;background:linear-gradient(135deg,#ff5722,#ff9800);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:700;">VS</span>
+                                <div>
+                                    <div style="font-weight:500;font-size:12px;">Vikram Singh</div>
+                                    <div style="font-size:10px;color:#6b7280;">Trip delayed</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="font-size:12px;">TRP-0140</td>
+                        <td style="text-align:right;font-size:12px;">₹5,000</td>
+                        <td style="text-align:right;color:#dc2626;font-weight:600;font-size:12px;">₹5,000</td>
+                        <td><button class="btn btn-link" style="font-size:11px;">Settle</button></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <span
+                                    style="width:24px;height:24px;background:linear-gradient(135deg,#e91e63,#9c27b0);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:700;">AV</span>
+                                <div>
+                                    <div style="font-weight:500;font-size:12px;">Anita Verma</div>
+                                    <div style="font-size:10px;color:#6b7280;">On trip</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="font-size:12px;">TRP-0141</td>
+                        <td style="text-align:right;font-size:12px;">₹3,500</td>
+                        <td style="text-align:right;color:#dc2626;font-weight:600;font-size:12px;">₹3,500</td>
+                        <td><button class="btn btn-link" style="font-size:11px;">Settle</button></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div
+                style="padding:8px 16px;font-size:12px;font-weight:600;border-top:1px solid var(--border-color);display:flex;justify-content:space-between;">
+                <span>Total Pending</span>
+                <span style="color:#dc2626;">₹17,000</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bottom: Aging + Collections Trend + GST + Quick Actions -->
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;">
+    <!-- Aging Buckets -->
+    <div class="widget">
+        <div class="widget-header">
+            <h3 style="font-size:13px;"><i class="fas fa-layer-group" style="color:#f59e0b;margin-right:6px;"></i> Aging
+            </h3>
+        </div>
+        <div class="widget-body" style="padding:12px 16px;">
+            <div style="display:flex;flex-direction:column;gap:8px;">
+                <div
+                    style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:#f0fdf4;border-radius:6px;">
+                    <span style="font-size:11px;font-weight:600;">0–30 days</span>
+                    <span style="font-size:12px;font-weight:700;color:#16a34a;">₹87,800</span>
+                </div>
+                <div
+                    style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:#fffbeb;border-radius:6px;">
+                    <span style="font-size:11px;font-weight:600;">30–60 days</span>
+                    <span style="font-size:12px;font-weight:700;color:#f59e0b;">₹1,45,000</span>
+                </div>
+                <div
+                    style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:#fef2f2;border-radius:6px;">
+                    <span style="font-size:11px;font-weight:600;">60+ days</span>
+                    <span style="font-size:12px;font-weight:700;color:#dc2626;">₹2,00,000</span>
+                </div>
+            </div>
+            <!-- Visual bar -->
+            <div style="margin-top:12px;display:flex;height:8px;border-radius:4px;overflow:hidden;">
+                <div style="width:20%;background:#22c55e;" title="0-30 days"></div>
+                <div style="width:34%;background:#f59e0b;" title="30-60 days"></div>
+                <div style="width:46%;background:#dc2626;" title="60+ days"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:9px;color:#6b7280;margin-top:2px;">
+                <span>20%</span><span>34%</span><span>46%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Collections Trend -->
+    <div class="widget">
+        <div class="widget-header">
+            <h3 style="font-size:13px;"><i class="fas fa-chart-bar" style="color:#16a34a;margin-right:6px;"></i>
+                Collections</h3>
+        </div>
+        <div class="widget-body" style="padding:12px 16px;">
+            <svg viewBox="0 0 180 80" style="width:100%;height:auto;">
+                <rect x="8" y="50" width="20" height="22" rx="3" fill="#bbf7d0" />
+                <rect x="38" y="35" width="20" height="37" rx="3" fill="#bbf7d0" />
+                <rect x="68" y="28" width="20" height="44" rx="3" fill="#bbf7d0" />
+                <rect x="98" y="40" width="20" height="32" rx="3" fill="#bbf7d0" />
+                <rect x="128" y="18" width="20" height="54" rx="3" fill="#22c55e" />
+                <rect x="158" y="12" width="20" height="60" rx="3" fill="#16a34a" />
+                <text x="168" y="8" font-size="7" fill="#16a34a" text-anchor="middle" font-weight="600">₹14.1L</text>
+                <text x="18" y="78" font-size="6" fill="#9ca3af" text-anchor="middle">Oct</text>
+                <text x="48" y="78" font-size="6" fill="#9ca3af" text-anchor="middle">Nov</text>
+                <text x="78" y="78" font-size="6" fill="#9ca3af" text-anchor="middle">Dec</text>
+                <text x="108" y="78" font-size="6" fill="#9ca3af" text-anchor="middle">Jan</text>
+                <text x="138" y="78" font-size="6" fill="#9ca3af" text-anchor="middle">Feb</text>
+                <text x="168" y="78" font-size="6" fill="#16a34a" text-anchor="middle" font-weight="600">Mar</text>
+            </svg>
+            <div style="font-size:11px;color:#16a34a;text-align:center;margin-top:6px;font-weight:600;">↑ 15.3% vs last
+                month</div>
+        </div>
+    </div>
+
+    <!-- GST Summary -->
+    <div class="widget">
+        <div class="widget-header">
+            <h3 style="font-size:13px;"><i class="fas fa-percentage" style="color:#7c3aed;margin-right:6px;"></i> GST
+                (MTD)</h3>
+        </div>
+        <div class="widget-body" style="padding:12px 16px;">
+            <div style="display:flex;flex-direction:column;gap:8px;">
+                <div style="display:flex;justify-content:space-between;">
+                    <span style="font-size:11px;color:#6b7280;">Output GST</span>
+                    <span style="font-size:12px;font-weight:600;">₹3,32,136</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;">
+                    <span style="font-size:11px;color:#6b7280;">Input GST</span>
+                    <span style="font-size:12px;font-weight:600;">₹1,86,400</span>
+                </div>
+                <div
+                    style="border-top:1px solid #e5e7eb;padding-top:8px;display:flex;justify-content:space-between;background:#f0fdf4;padding:8px;border-radius:6px;">
+                    <span style="font-size:11px;font-weight:700;">Net Payable</span>
+                    <span style="font-size:13px;font-weight:700;color:#16a34a;">₹1,45,736</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="widget">
+        <div class="widget-header">
+            <h3 style="font-size:13px;"><i class="fas fa-bolt" style="color:#f59e0b;margin-right:6px;"></i> Actions</h3>
+        </div>
+        <div class="widget-body" style="padding:12px 16px;">
+            <div style="display:flex;flex-direction:column;gap:6px;">
+                <button onclick="navigateTo('invoices')"
+                    style="width:100%;text-align:left;padding:8px 10px;border:1px solid #e5e7eb;border-radius:6px;background:#fff;cursor:pointer;font-size:11px;display:flex;align-items:center;gap:6px;">
+                    <i class="fas fa-file-invoice" style="color:#2563eb;width:14px;"></i> Add Invoice
+                </button>
+                <button onclick="navigateTo('voucher-entry')"
+                    style="width:100%;text-align:left;padding:8px 10px;border:1px solid #e5e7eb;border-radius:6px;background:#fff;cursor:pointer;font-size:11px;display:flex;align-items:center;gap:6px;">
+                    <i class="fas fa-hand-holding-usd" style="color:#16a34a;width:14px;"></i> Record Payment
+                </button>
+                <button onclick="navigateTo('expense-history')"
+                    style="width:100%;text-align:left;padding:8px 10px;border:1px solid #e5e7eb;border-radius:6px;background:#fff;cursor:pointer;font-size:11px;display:flex;align-items:center;gap:6px;">
+                    <i class="fas fa-check-circle" style="color:#f59e0b;width:14px;"></i> Approve Expense <span
+                        style="background:#fef2f2;color:#dc2626;font-size:9px;padding:1px 6px;border-radius:8px;margin-left:auto;">3</span>
+                </button>
+                <button onclick="navigateTo('day-book')"
+                    style="width:100%;text-align:left;padding:8px 10px;border:1px solid #e5e7eb;border-radius:6px;background:#fff;cursor:pointer;font-size:11px;display:flex;align-items:center;gap:6px;">
+                    <i class="fas fa-book" style="color:#7c3aed;width:14px;"></i> View Day Book
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

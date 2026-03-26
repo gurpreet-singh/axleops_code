@@ -1,0 +1,487 @@
+<!-- ═══════════════════════════════════════════════════════════════
+     👑 OWNER / DIRECTOR DASHBOARD — Decision Engine
+     Hierarchy: 📊 KPIs (3) → 🚨 Alerts + Signals → 🏢 Branches → 📈 Routes
+     ═══════════════════════════════════════════════════════════════ -->
+
+<div class="page-header">
+    <h1>Business Command Center <span class="learn-badge"><i class="fas fa-crown" style="color:#8B5CF6;"></i> Owner
+            View</span></h1>
+    <div class="page-header-actions">
+        <span style="font-size: 12px; color: var(--text-muted); margin-right: 8px;"><i class="fas fa-sync-alt"
+                style="margin-right:4px;"></i> Updated 2 min ago</span>
+        <div class="filter-btn" id="owner-time-filter" style="position:relative;cursor:pointer;">
+            <i class="fas fa-calendar-alt" style="margin-right:6px;"></i> This Month ▾
+        </div>
+    </div>
+</div>
+
+
+<!-- ╔════════════════════════════════════════════════════════════╗
+     ║  📊 KPI STRIP — 3 Cards with Sparklines                 ║
+     ╚════════════════════════════════════════════════════════════╝ -->
+<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:20px;">
+    <!-- Revenue (MTD) -->
+    <div onclick="navigateTo('invoices')"
+        style="background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:18px 20px; cursor:pointer; border-left:4px solid #2563eb; transition:box-shadow 0.2s; position:relative;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div>
+                <div style="font-size:11px; font-weight:600; color:#6b7280; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">
+                    Total Revenue <span style="font-size:10px; font-weight:400; color:#9ca3af;">(MTD)</span>
+                </div>
+                <div style="font-size:26px; font-weight:800; color:#1f2937; letter-spacing:-0.5px;">₹18,45,200</div>
+                <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
+                    <span style="background:#dcfce7; color:#166534; font-size:11px; font-weight:600; padding:2px 8px; border-radius:10px;">
+                        <i class="fas fa-arrow-up" style="font-size:9px; margin-right:2px;"></i> 12.4%
+                    </span>
+                    <span style="font-size:10px; color:#9ca3af;">vs last month</span>
+                </div>
+            </div>
+            <!-- Sparkline: 6 months -->
+            <svg viewBox="0 0 80 32" style="width:80px; height:32px; flex-shrink:0; margin-top:4px;">
+                <defs>
+                    <linearGradient id="sparkRevGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.25"/>
+                        <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.02"/>
+                    </linearGradient>
+                </defs>
+                <path d="M2,24 L16,20 L30,22 L44,16 L58,10 L72,4 L72,30 L2,30 Z" fill="url(#sparkRevGrad)"/>
+                <polyline points="2,24 16,20 30,22 44,16 58,10 72,4" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="72" cy="4" r="2.5" fill="#3b82f6"/>
+            </svg>
+        </div>
+        <div style="font-size:10px; color:#9ca3af; margin-top:8px;">QTD: ₹52,80,400</div>
+    </div>
+
+    <!-- Net Profit (MTD) -->
+    <div onclick="navigateTo('profit-loss')"
+        style="background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:18px 20px; cursor:pointer; border-left:4px solid #16a34a; transition:box-shadow 0.2s; position:relative;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div>
+                <div style="font-size:11px; font-weight:600; color:#6b7280; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">
+                    Net Profit <span style="font-size:10px; font-weight:400; color:#9ca3af;">(MTD)</span>
+                </div>
+                <div style="font-size:26px; font-weight:800; color:#1f2937; letter-spacing:-0.5px;">₹4,82,600</div>
+                <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
+                    <span style="background:#dcfce7; color:#166534; font-size:11px; font-weight:600; padding:2px 8px; border-radius:10px;">
+                        <i class="fas fa-arrow-up" style="font-size:9px; margin-right:2px;"></i> 8.1%
+                    </span>
+                    <span style="font-size:10px; color:#9ca3af;">MoM</span>
+                </div>
+            </div>
+            <!-- Sparkline: 6 months -->
+            <svg viewBox="0 0 80 32" style="width:80px; height:32px; flex-shrink:0; margin-top:4px;">
+                <defs>
+                    <linearGradient id="sparkProfGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#22c55e" stop-opacity="0.25"/>
+                        <stop offset="100%" stop-color="#22c55e" stop-opacity="0.02"/>
+                    </linearGradient>
+                </defs>
+                <path d="M2,22 L16,20 L30,21 L44,15 L58,10 L72,6 L72,30 L2,30 Z" fill="url(#sparkProfGrad)"/>
+                <polyline points="2,22 16,20 30,21 44,15 58,10 72,6" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="72" cy="6" r="2.5" fill="#22c55e"/>
+            </svg>
+        </div>
+        <div style="font-size:10px; color:#9ca3af; margin-top:8px;">QTD: ₹13,48,200 · Margin: 26.2%</div>
+    </div>
+
+    <!-- Receivables Overdue -->
+    <div onclick="navigateTo('invoices')"
+        style="background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:18px 20px; cursor:pointer; border-left:4px solid #dc2626; transition:box-shadow 0.2s; position:relative;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div>
+                <div style="font-size:11px; font-weight:600; color:#6b7280; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">
+                    Receivables Overdue
+                </div>
+                <div style="font-size:26px; font-weight:800; color:#dc2626; letter-spacing:-0.5px;">₹4,32,800</div>
+                <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
+                    <span style="background:#fef2f2; color:#991b1b; font-size:11px; font-weight:600; padding:2px 8px; border-radius:10px;">
+                        3 overdue invoices
+                    </span>
+                </div>
+            </div>
+            <!-- Aging breakdown mini-bars -->
+            <div style="display:flex; flex-direction:column; gap:4px; margin-top:4px; text-align:right;">
+                <div style="font-size:10px; color:#dc2626; font-weight:600;">
+                    ₹2.00L <span style="color:#9ca3af; font-weight:400;">>45d</span>
+                </div>
+                <div style="font-size:10px; color:#f59e0b; font-weight:600;">
+                    ₹1.45L <span style="color:#9ca3af; font-weight:400;">>30d</span>
+                </div>
+                <div style="font-size:10px; color:#6b7280; font-weight:500;">
+                    ₹0.88L <span style="color:#9ca3af; font-weight:400;">>15d</span>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top:10px;">
+            <div style="width:100%; height:5px; background:#fee2e2; border-radius:3px;">
+                <div style="width:46%; height:5px; background:linear-gradient(90deg,#dc2626,#f87171); border-radius:3px;"></div>
+            </div>
+            <div style="font-size:9px; color:#9ca3af; margin-top:3px;">46% of total receivables overdue</div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ╔════════════════════════════════════════════════════════════╗
+     ║  🚨 CRITICAL ALERTS + 🌱 GROWTH SIGNALS (Side-by-Side) ║
+     ╚════════════════════════════════════════════════════════════╝ -->
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px;">
+    <!-- Critical Alerts -->
+    <div
+        style="background:linear-gradient(135deg,#fef2f2,#fff1f2); border:1px solid #fecaca; border-radius:12px; padding:16px;">
+        <div style="display:flex;align-items:center;margin-bottom:12px;">
+            <div
+                style="width:32px;height:32px;background:#dc2626;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-right:10px;">
+                <i class="fas fa-exclamation-triangle" style="color:#fff;font-size:14px;"></i>
+            </div>
+            <div>
+                <div style="font-weight:700;font-size:14px;color:#991b1b;">Critical Alerts</div>
+                <div style="font-size:11px;color:#b91c1c;">Requires immediate attention</div>
+            </div>
+            <span
+                style="margin-left:auto;background:#dc2626;color:#fff;font-size:11px;font-weight:700;padding:2px 10px;border-radius:20px;">4</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+            <div onclick="navigateTo('invoices')"
+                style="background:#fff;border-radius:8px;padding:10px 12px;display:flex;align-items:center;cursor:pointer;border-left:3px solid #dc2626;transition:all 0.15s;"
+                onmouseover="this.style.transform='translateX(4px)';this.style.boxShadow='0 2px 8px rgba(220,38,38,0.12)'"
+                onmouseout="this.style.transform='none';this.style.boxShadow='none'">
+                <div style="flex:1;">
+                    <div style="font-size:12px;font-weight:600;color:#991b1b;">₹2,00,000 overdue payment</div>
+                    <div style="font-size:11px;color:#6b7280;">Adani Ports — 45 days past due</div>
+                </div>
+                <i class="fas fa-chevron-right" style="color:#d1d5db;font-size:10px;"></i>
+            </div>
+            <div onclick="navigateTo('vehicle-list')"
+                style="background:#fff;border-radius:8px;padding:10px 12px;display:flex;align-items:center;cursor:pointer;border-left:3px solid #dc2626;transition:all 0.15s;"
+                onmouseover="this.style.transform='translateX(4px)';this.style.boxShadow='0 2px 8px rgba(220,38,38,0.12)'"
+                onmouseout="this.style.transform='none';this.style.boxShadow='none'">
+                <div style="flex:1;">
+                    <div style="font-size:12px;font-weight:600;color:#991b1b;">3 vehicles idle >3 days</div>
+                    <div style="font-size:11px;color:#6b7280;">Revenue leakage: ~₹18,000/day</div>
+                </div>
+                <i class="fas fa-chevron-right" style="color:#d1d5db;font-size:10px;"></i>
+            </div>
+            <div onclick="navigateTo('trips')"
+                style="background:#fff;border-radius:8px;padding:10px 12px;display:flex;align-items:center;cursor:pointer;border-left:3px solid #f59e0b;transition:all 0.15s;"
+                onmouseover="this.style.transform='translateX(4px)';this.style.boxShadow='0 2px 8px rgba(245,158,11,0.12)'"
+                onmouseout="this.style.transform='none';this.style.boxShadow='none'">
+                <div style="flex:1;">
+                    <div style="font-size:12px;font-weight:600;color:#92400e;">2 loss-making trips this week</div>
+                    <div style="font-size:11px;color:#6b7280;">Total loss: ₹8,400 — Mumbai→Kolkata route</div>
+                </div>
+                <i class="fas fa-chevron-right" style="color:#d1d5db;font-size:10px;"></i>
+            </div>
+            <div onclick="navigateTo('fuel-history')"
+                style="background:#fff;border-radius:8px;padding:10px 12px;display:flex;align-items:center;cursor:pointer;border-left:3px solid #f59e0b;transition:all 0.15s;"
+                onmouseover="this.style.transform='translateX(4px)';this.style.boxShadow='0 2px 8px rgba(245,158,11,0.12)'"
+                onmouseout="this.style.transform='none';this.style.boxShadow='none'">
+                <div style="flex:1;">
+                    <div style="font-size:12px;font-weight:600;color:#92400e;">Fuel consumption spike: +480L</div>
+                    <div style="font-size:11px;color:#6b7280;">22% above monthly average — investigate</div>
+                </div>
+                <i class="fas fa-chevron-right" style="color:#d1d5db;font-size:10px;"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Growth Signals -->
+    <div
+        style="background:linear-gradient(135deg,#f0fdf4,#ecfdf5); border:1px solid #bbf7d0; border-radius:12px; padding:16px;">
+        <div style="display:flex;align-items:center;margin-bottom:12px;">
+            <div
+                style="width:32px;height:32px;background:#16a34a;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-right:10px;">
+                <i class="fas fa-chart-line" style="color:#fff;font-size:14px;"></i>
+            </div>
+            <div>
+                <div style="font-weight:700;font-size:14px;color:#166534;">Growth Signals</div>
+                <div style="font-size:11px;color:#15803d;">Opportunities & wins</div>
+            </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+            <div onclick="navigateTo('routes')"
+                style="background:#fff;border-radius:8px;padding:10px 12px;display:flex;align-items:center;border-left:3px solid #16a34a;cursor:pointer;transition:all 0.15s;"
+                onmouseover="this.style.transform='translateX(4px)';this.style.boxShadow='0 2px 8px rgba(22,163,74,0.12)'"
+                onmouseout="this.style.transform='none';this.style.boxShadow='none'">
+                <div style="flex:1;">
+                    <div style="font-size:12px;font-weight:600;color:#166534;">Mumbai→Chennai margin ↑12%</div>
+                    <div style="font-size:11px;color:#6b7280;">Best performing route this month</div>
+                </div>
+                <span
+                    style="background:#dcfce7;color:#166534;font-size:11px;font-weight:600;padding:2px 8px;border-radius:12px;">↑
+                    12%</span>
+            </div>
+            <div onclick="navigateTo('clients')"
+                style="background:#fff;border-radius:8px;padding:10px 12px;display:flex;align-items:center;border-left:3px solid #16a34a;cursor:pointer;transition:all 0.15s;"
+                onmouseover="this.style.transform='translateX(4px)';this.style.boxShadow='0 2px 8px rgba(22,163,74,0.12)'"
+                onmouseout="this.style.transform='none';this.style.boxShadow='none'">
+                <div style="flex:1;">
+                    <div style="font-size:12px;font-weight:600;color:#166534;">2 new clients onboarded</div>
+                    <div style="font-size:11px;color:#6b7280;">Potential revenue: ₹3.2L/month</div>
+                </div>
+                <span
+                    style="background:#dcfce7;color:#166534;font-size:11px;font-weight:600;padding:2px 8px;border-radius:12px;">New</span>
+            </div>
+            <div onclick="navigateTo('behavioral-losses')"
+                style="background:#fff;border-radius:8px;padding:10px 12px;display:flex;align-items:center;border-left:3px solid #16a34a;cursor:pointer;transition:all 0.15s;"
+                onmouseover="this.style.transform='translateX(4px)';this.style.boxShadow='0 2px 8px rgba(22,163,74,0.12)'"
+                onmouseout="this.style.transform='none';this.style.boxShadow='none'">
+                <div style="flex:1;">
+                    <div style="font-size:12px;font-weight:600;color:#166534;">Delhi NCR behavioral losses ↓18%</div>
+                    <div style="font-size:11px;color:#6b7280;">₹42,000 saved vs last month — harsh braking down 31%</div>
+                </div>
+                <span
+                    style="background:#dcfce7;color:#166534;font-size:11px;font-weight:600;padding:2px 8px;border-radius:12px;">↓ 18%</span>
+            </div>
+            <div onclick="navigateTo('vehicle-list')"
+                style="background:#fff;border-radius:8px;padding:10px 12px;display:flex;align-items:center;border-left:3px solid #2563eb;cursor:pointer;transition:all 0.15s;"
+                onmouseover="this.style.transform='translateX(4px)';this.style.boxShadow='0 2px 8px rgba(37,99,235,0.12)'"
+                onmouseout="this.style.transform='none';this.style.boxShadow='none'">
+                <div style="flex:1;">
+                    <div style="font-size:12px;font-weight:600;color:#1e40af;">Fleet efficiency ↑ 0.3 kmpl</div>
+                    <div style="font-size:11px;color:#6b7280;">MoM improvement across 42 vehicles</div>
+                </div>
+                <span
+                    style="background:#dbeafe;color:#1e40af;font-size:11px;font-weight:600;padding:2px 8px;border-radius:12px;">↑</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ╔════════════════════════════════════════════════════════════╗
+     ║  🏢 BRANCH PERFORMANCE + Insight Strip                  ║
+     ╚════════════════════════════════════════════════════════════╝ -->
+<div style="margin-bottom:20px;">
+    <div style="background:#fff; border:1px solid #e5e7eb; border-radius:12px; overflow:hidden;">
+        <div
+            style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid #f3f4f6;">
+            <div style="display:flex;align-items:center;gap:8px;">
+                <div
+                    style="width:28px;height:28px;background:linear-gradient(135deg,#2563eb,#7c3aed);border-radius:7px;display:flex;align-items:center;justify-content:center;">
+                    <i class="fas fa-building" style="color:#fff;font-size:11px;"></i>
+                </div>
+                <div>
+                    <div style="font-weight:700;font-size:13px;color:#1f2937;">Branch Performance</div>
+                    <div style="font-size:10px;color:#6b7280;">MTD — All Branches</div>
+                </div>
+            </div>
+            <a href="#" onclick="navigateTo('branches')"
+                style="font-size:11px;font-weight:600;color:#2563eb;text-decoration:none;">All Branches →</a>
+        </div>
+        <table style="width:100%;font-size:12px;">
+            <thead>
+                <tr style="background:#f8fafc;">
+                    <th style="padding:8px 14px;text-align:left;font-size:11px;">Branch</th>
+                    <th style="padding:8px 10px;text-align:right;font-size:11px;">Revenue</th>
+                    <th style="padding:8px 10px;text-align:right;font-size:11px;">Profit</th>
+                    <th style="padding:8px 10px;text-align:right;font-size:11px;">Margin</th>
+                    <th style="padding:8px 14px;font-size:11px;">Utilization</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-bottom:1px solid #f3f4f6;">
+                    <td style="padding:8px 14px;"><span
+                            style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#2563eb;margin-right:6px;"></span><span
+                            style="font-weight:600;">Mumbai HQ</span></td>
+                    <td style="padding:8px 10px;text-align:right;font-weight:500;">₹18.4L</td>
+                    <td style="padding:8px 10px;text-align:right;font-weight:600;color:#16a34a;">₹2.84L</td>
+                    <td style="padding:8px 10px;text-align:right;">15.4%</td>
+                    <td style="padding:8px 14px;">
+                        <div style="width:80px;height:6px;background:#e5e7eb;border-radius:3px;">
+                            <div style="width:82%;height:6px;background:#2563eb;border-radius:3px;"></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr style="border-bottom:1px solid #f3f4f6;">
+                    <td style="padding:8px 14px;"><span
+                            style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#059669;margin-right:6px;"></span><span
+                            style="font-weight:600;">Delhi NCR</span></td>
+                    <td style="padding:8px 10px;text-align:right;font-weight:500;">₹14.3L</td>
+                    <td style="padding:8px 10px;text-align:right;font-weight:600;color:#16a34a;">₹2.12L</td>
+                    <td style="padding:8px 10px;text-align:right;">14.9%</td>
+                    <td style="padding:8px 14px;">
+                        <div style="width:80px;height:6px;background:#e5e7eb;border-radius:3px;">
+                            <div style="width:75%;height:6px;background:#059669;border-radius:3px;"></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr style="border-bottom:1px solid #f3f4f6;">
+                    <td style="padding:8px 14px;"><span
+                            style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#d97706;margin-right:6px;"></span><span
+                            style="font-weight:600;">Ahmedabad</span></td>
+                    <td style="padding:8px 10px;text-align:right;font-weight:500;">₹8.6L</td>
+                    <td style="padding:8px 10px;text-align:right;font-weight:600;color:#16a34a;">₹1.12L</td>
+                    <td style="padding:8px 10px;text-align:right;">13.0%</td>
+                    <td style="padding:8px 14px;">
+                        <div style="width:80px;height:6px;background:#e5e7eb;border-radius:3px;">
+                            <div style="width:68%;height:6px;background:#d97706;border-radius:3px;"></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr style="border-bottom:1px solid #f3f4f6;">
+                    <td style="padding:8px 14px;"><span
+                            style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#0e7490;margin-right:6px;"></span><span
+                            style="font-weight:600;">Pune</span></td>
+                    <td style="padding:8px 10px;text-align:right;font-weight:500;">₹4.8L</td>
+                    <td style="padding:8px 10px;text-align:right;font-weight:600;color:#16a34a;">₹62.4K</td>
+                    <td style="padding:8px 10px;text-align:right;">12.9%</td>
+                    <td style="padding:8px 14px;">
+                        <div style="width:80px;height:6px;background:#e5e7eb;border-radius:3px;">
+                            <div style="width:62%;height:6px;background:#0e7490;border-radius:3px;"></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:8px 14px;"><span
+                            style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#dc2626;margin-right:6px;"></span><span
+                            style="font-weight:600;">Chennai</span> <span
+                            style="font-size:9px;background:#fef3c7;color:#f59e0b;padding:1px 4px;border-radius:3px;font-weight:600;">NEW</span>
+                    </td>
+                    <td style="padding:8px 10px;text-align:right;font-weight:500;">₹2.4L</td>
+                    <td style="padding:8px 10px;text-align:right;font-weight:600;color:#f59e0b;">₹13.1K</td>
+                    <td style="padding:8px 10px;text-align:right;color:#dc2626;">5.5%</td>
+                    <td style="padding:8px 14px;">
+                        <div style="width:80px;height:6px;background:#e5e7eb;border-radius:3px;">
+                            <div style="width:45%;height:6px;background:#dc2626;border-radius:3px;"></div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- 💡 Insight Strip -->
+        <div style="background:linear-gradient(135deg,#fef3c7,#fffbeb); border-top:1px solid #fde68a; padding:12px 16px; display:flex; align-items:center; gap:10px;">
+            <div style="width:24px;height:24px;background:#f59e0b;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i class="fas fa-lightbulb" style="color:#fff;font-size:11px;"></i>
+            </div>
+            <div style="font-size:12px; color:#92400e; line-height:1.5;">
+                <strong>Chennai margin is 5.5%</strong> vs company avg 13.8% — <strong>no branch manager assigned</strong>. Consider prioritizing the hire before the next review cycle.
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ╔════════════════════════════════════════════════════════════╗
+     ║  📈 ROUTE PROFITABILITY (Top 5) + Insight Strip          ║
+     ╚════════════════════════════════════════════════════════════╝ -->
+<div style="margin-bottom:20px;">
+    <div style="background:#fff; border:1px solid #e5e7eb; border-radius:12px; overflow:hidden;">
+        <div
+            style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid #f3f4f6;">
+            <div style="display:flex;align-items:center;gap:8px;">
+                <div
+                    style="width:28px;height:28px;background:linear-gradient(135deg,#0891b2,#06b6d4);border-radius:7px;display:flex;align-items:center;justify-content:center;">
+                    <i class="fas fa-route" style="color:#fff;font-size:11px;"></i>
+                </div>
+                <div>
+                    <div style="font-weight:700;font-size:13px;color:#1f2937;">Route Profitability</div>
+                    <div style="font-size:10px;color:#6b7280;">Top 5 routes by average profit per trip</div>
+                </div>
+            </div>
+            <a href="#" onclick="navigateTo('routes')"
+                style="font-size:11px;font-weight:600;color:#0891b2;text-decoration:none;">All Routes →</a>
+        </div>
+        <table style="width:100%;font-size:12px;">
+            <thead>
+                <tr style="background:#f8fafc;">
+                    <th style="padding:8px 14px;text-align:left;font-size:11px;">Route</th>
+                    <th style="padding:8px 10px;text-align:center;font-size:11px;">Trips</th>
+                    <th style="padding:8px 10px;text-align:right;font-size:11px;">Avg Profit</th>
+                    <th style="padding:8px 14px;font-size:11px;">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-bottom:1px solid #f3f4f6;cursor:pointer;" onclick="navigateTo('route-detail')">
+                    <td style="padding:8px 14px;">
+                        <span style="font-weight:600;">Mumbai → Chennai</span>
+                        <div style="font-size:10px;color:#6b7280;">1,330 km · Avg 38h</div>
+                    </td>
+                    <td style="padding:8px 10px;text-align:center;">6</td>
+                    <td style="padding:8px 10px;text-align:right;color:#16a34a;font-weight:700;">₹18,200</td>
+                    <td style="padding:8px 14px;">
+                        <div style="width:60px;height:6px;background:#e5e7eb;border-radius:4px;">
+                            <div
+                                style="width:88%;height:6px;background:linear-gradient(90deg,#22c55e,#16a34a);border-radius:4px;">
+                            </div>
+                        </div>
+                        <span style="font-size:10px;color:#16a34a;">Excellent</span>
+                    </td>
+                </tr>
+                <tr style="border-bottom:1px solid #f3f4f6;cursor:pointer;">
+                    <td style="padding:8px 14px;">
+                        <span style="font-weight:600;">Pune → Bangalore</span>
+                        <div style="font-size:10px;color:#6b7280;">840 km · Avg 22h</div>
+                    </td>
+                    <td style="padding:8px 10px;text-align:center;">8</td>
+                    <td style="padding:8px 10px;text-align:right;color:#16a34a;font-weight:700;">₹11,800</td>
+                    <td style="padding:8px 14px;">
+                        <div style="width:60px;height:6px;background:#e5e7eb;border-radius:4px;">
+                            <div
+                                style="width:76%;height:6px;background:linear-gradient(90deg,#22c55e,#16a34a);border-radius:4px;">
+                            </div>
+                        </div>
+                        <span style="font-size:10px;color:#16a34a;">Good</span>
+                    </td>
+                </tr>
+                <tr style="border-bottom:1px solid #f3f4f6;cursor:pointer;">
+                    <td style="padding:8px 14px;">
+                        <span style="font-weight:600;">Mumbai → Delhi</span>
+                        <div style="font-size:10px;color:#6b7280;">1,420 km · Avg 36h</div>
+                    </td>
+                    <td style="padding:8px 10px;text-align:center;">18</td>
+                    <td style="padding:8px 10px;text-align:right;color:#16a34a;font-weight:700;">₹11,200</td>
+                    <td style="padding:8px 14px;">
+                        <div style="width:60px;height:6px;background:#e5e7eb;border-radius:4px;">
+                            <div
+                                style="width:72%;height:6px;background:linear-gradient(90deg,#22c55e,#16a34a);border-radius:4px;">
+                            </div>
+                        </div>
+                        <span style="font-size:10px;color:#16a34a;">Good</span>
+                    </td>
+                </tr>
+                <tr style="border-bottom:1px solid #f3f4f6;cursor:pointer;">
+                    <td style="padding:8px 14px;">
+                        <span style="font-weight:600;">Mumbai → Ahmedabad</span>
+                        <div style="font-size:10px;color:#6b7280;">530 km · Avg 14h</div>
+                    </td>
+                    <td style="padding:8px 10px;text-align:center;">10</td>
+                    <td style="padding:8px 10px;text-align:right;color:#f59e0b;font-weight:700;">₹9,350</td>
+                    <td style="padding:8px 14px;">
+                        <div style="width:60px;height:6px;background:#e5e7eb;border-radius:4px;">
+                            <div
+                                style="width:60%;height:6px;background:linear-gradient(90deg,#fbbf24,#f59e0b);border-radius:4px;">
+                            </div>
+                        </div>
+                        <span style="font-size:10px;color:#f59e0b;">Average</span>
+                    </td>
+                </tr>
+                <tr style="cursor:pointer;">
+                    <td style="padding:8px 14px;">
+                        <span style="font-weight:600;">Mumbai → Kolkata</span>
+                        <div style="font-size:10px;color:#6b7280;">2,050 km · Avg 48h</div>
+                    </td>
+                    <td style="padding:8px 10px;text-align:center;">3</td>
+                    <td style="padding:8px 10px;text-align:right;color:#dc2626;font-weight:700;">₹3,200</td>
+                    <td style="padding:8px 14px;">
+                        <div style="width:60px;height:6px;background:#e5e7eb;border-radius:4px;">
+                            <div
+                                style="width:28%;height:6px;background:linear-gradient(90deg,#f87171,#dc2626);border-radius:4px;">
+                            </div>
+                        </div>
+                        <span style="font-size:10px;color:#dc2626;">Low ⚠</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- 💡 Insight Strip -->
+        <div style="background:linear-gradient(135deg,#fef2f2,#fff5f5); border-top:1px solid #fecaca; padding:12px 16px; display:flex; align-items:center; gap:10px;">
+            <div style="width:24px;height:24px;background:#dc2626;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i class="fas fa-exclamation-circle" style="color:#fff;font-size:11px;"></i>
+            </div>
+            <div style="font-size:12px; color:#991b1b; line-height:1.5;">
+                <strong>Mumbai→Kolkata</strong> route loss-making in 2 of last 3 trips. Consider <strong>rate renegotiation</strong> or <strong>route suspension</strong> until diesel prices stabilize.
+            </div>
+        </div>
+    </div>
+</div>

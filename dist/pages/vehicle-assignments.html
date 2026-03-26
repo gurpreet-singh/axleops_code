@@ -1,0 +1,127 @@
+<!-- Vehicle Assignments Page -->
+<div class="page-header">
+    <h1>Vehicle Assignments</h1>
+    <div class="page-header-actions">
+        <button class="btn btn-primary"><i class="fas fa-plus"></i> New Assignment</button>
+    </div>
+</div>
+<div class="table-container">
+    <div class="table-toolbar">
+        <div class="search-input"><i class="fas fa-search" style="color:var(--text-muted)"></i><input type="text"
+                placeholder="Search assignments..."></div>
+        <div class="filter-btn"><i class="fas fa-filter"></i> Vehicle</div>
+        <div class="filter-btn"><i class="fas fa-filter"></i> Operator</div>
+        <div class="filter-btn"><i class="fas fa-filter"></i> Driver</div>
+        <div class="pagination-info">1 - 10 of 47</div>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Vehicle</th>
+                <th>Current Operator</th>
+                <th>Current Driver</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><a href="#" onclick="navigateTo('vehicle-detail')">MH04AB1234</a></td>
+                <td>
+                    <div class="flex items-center gap-8"><span class="user-avatar"
+                            style="background:#e8eaf6;color:#3949ab;">RK</span>Rajesh Kumar
+                        <span style="font-size:10px;color:var(--text-muted);margin-left:4px;font-weight:400;">Ops
+                            Exec</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="flex items-center gap-8"><span class="user-avatar"
+                            style="background:#e0f2f1;color:#00695c;">SM</span>Suresh Mane
+                        <span
+                            style="font-size:10px;color:var(--text-muted);margin-left:4px;font-weight:400;">Driver</span>
+                    </div>
+                </td>
+                <td>Jan 15, 2024</td>
+                <td>—</td>
+                <td><span class="status-badge active">Current</span></td>
+            </tr>
+            <tr>
+                <td><a href="#" onclick="navigateTo('vehicle-detail')">MH04CD5678</a></td>
+                <td>
+                    <div class="flex items-center gap-8"><span class="user-avatar"
+                            style="background:#fce4ec;color:#c62828;">AV</span>Anita Verma
+                        <span style="font-size:10px;color:var(--text-muted);margin-left:4px;font-weight:400;">Ops
+                            Exec</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="flex items-center gap-8"><span class="user-avatar"
+                            style="background:#e0f2f1;color:#00695c;">RY</span>Ramesh Yadav
+                        <span
+                            style="font-size:10px;color:var(--text-muted);margin-left:4px;font-weight:400;">Driver</span>
+                    </div>
+                </td>
+                <td>Mar 1, 2024</td>
+                <td>—</td>
+                <td><span class="status-badge active">Current</span></td>
+            </tr>
+            <tr>
+                <td><a href="#" onclick="navigateTo('vehicle-detail')">MH12EF9012</a></td>
+                <td>
+                    <div class="flex items-center gap-8"><span class="user-avatar"
+                            style="background:#e8eaf6;color:#3949ab;">PS</span>Priya Sharma
+                        <span style="font-size:10px;color:var(--text-muted);margin-left:4px;font-weight:400;">Ops
+                            Exec</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="flex items-center gap-8"><span class="user-avatar"
+                            style="background:#e0f2f1;color:#00695c;">AG</span>Ajay Gaikwad
+                        <span
+                            style="font-size:10px;color:var(--text-muted);margin-left:4px;font-weight:400;">Driver</span>
+                    </div>
+                </td>
+                <td>Feb 10, 2024</td>
+                <td>—</td>
+                <td><span class="status-badge active">Current</span></td>
+            </tr>
+            <tr>
+                <td><a href="#" onclick="navigateTo('vehicle-detail')">MH12GH3456</a></td>
+                <td>
+                    <div class="flex items-center gap-8"><span class="user-avatar"
+                            style="background:#e8eaf6;color:#3949ab;">VS</span>Vikram Singh
+                        <span style="font-size:10px;color:var(--text-muted);margin-left:4px;font-weight:400;">Ops
+                            Exec</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="flex items-center gap-8"><span class="user-avatar"
+                            style="background:#e0f2f1;color:#00695c;">NS</span>Nitin Sawant
+                        <span
+                            style="font-size:10px;color:var(--text-muted);margin-left:4px;font-weight:400;">Driver</span>
+                    </div>
+                </td>
+                <td>Apr 5, 2024</td>
+                <td>—</td>
+                <td><span class="status-badge active">Current</span></td>
+            </tr>
+            <tr>
+                <td><a href="#" onclick="navigateTo('vehicle-detail')">DL01IJ7890</a></td>
+                <td>
+                    <div class="flex items-center gap-8"><span class="user-avatar"
+                            style="background:#e8eaf6;color:#3949ab;">DP</span>Deepak Patel
+                        <span style="font-size:10px;color:var(--text-muted);margin-left:4px;font-weight:400;">Ops
+                            Exec</span>
+                    </div>
+                </td>
+                <td>
+                    <span style="color:var(--text-muted);font-size:13px;">— Unassigned</span>
+                </td>
+                <td>Dec 1, 2023</td>
+                <td>May 1, 2024</td>
+                <td><span class="status-badge inactive">Ended</span></td>
+            </tr>
+        </tbody>
+    </table>
+</div>

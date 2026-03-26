@@ -1,0 +1,252 @@
+<!-- WRK-01: Workshop Forecast & Capacity -->
+<div class="page-header">
+    <h1>Workshop Forecast & Capacity</h1>
+    <div class="page-header-actions">
+        <button class="btn btn-secondary"><i class="fas fa-download"></i> Export</button>
+        <button class="btn btn-primary"><i class="fas fa-calendar-plus"></i> Add Leave</button>
+    </div>
+</div>
+
+<!-- Summary Metrics -->
+<div class="stats-row" style="grid-template-columns:repeat(4,1fr);">
+    <div class="stat-card">
+        <div class="stat-label">This Week Utilization</div>
+        <div class="stat-value text-green">100%</div>
+        <div class="stat-change positive">At full capacity</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Next Week</div>
+        <div class="stat-value text-yellow">108%</div>
+        <div class="stat-change negative">⚠ Overtime needed</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Mechanics Available</div>
+        <div class="stat-value text-blue">4</div>
+        <div class="stat-change">1 on leave this week</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Predicted Services (4 wks)</div>
+        <div class="stat-value" style="color:#7A5AF8;">54 hrs</div>
+    </div>
+</div>
+
+<!-- 4-Week Capacity Forecast Chart -->
+<div class="detail-section" style="margin-bottom:20px;">
+    <div class="section-header">
+        <h3><i class="fas fa-chart-bar" style="margin-right:8px;color:var(--text-muted);"></i>4-Week Capacity Forecast</h3>
+        <div style="display:flex;gap:14px;font-size:11px;color:var(--text-secondary);">
+            <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1a73e8;margin-right:4px;"></span>Confirmed</span>
+            <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#F59E0B;margin-right:4px;"></span>Predicted</span>
+            <span style="color:var(--text-muted);">--- Capacity (24h)</span>
+        </div>
+    </div>
+    <div class="section-body" id="fc-chart-area">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
+            <!-- populated by JS -->
+        </div>
+    </div>
+</div>
+
+<!-- Mechanic Leave Calendar -->
+<div class="detail-section" style="margin-bottom:20px;">
+    <div class="section-header">
+        <h3><i class="fas fa-calendar-alt" style="margin-right:8px;color:var(--text-muted);"></i>Mechanic Leave Calendar</h3>
+    </div>
+    <div class="section-body" style="padding:0;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Mechanic</th>
+                    <th>This Week (Mar 17-21)</th>
+                    <th>Week 2 (Mar 24-28)</th>
+                    <th>Week 3 (Mar 31-Apr 4)</th>
+                    <th>Week 4 (Apr 7-11)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#1a73e8,#4285f4);color:white;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;">VS</div>
+                            <div><div style="font-weight:600;">Vikram Singh</div><div style="font-size:11px;color:var(--text-muted);">Senior Mechanic</div></div>
+                        </div>
+                    </td>
+                    <td><span class="status-badge" style="background:#ecfdf3;color:#027a48;">Available</span></td>
+                    <td><span class="status-badge" style="background:#ecfdf3;color:#027a48;">Available</span></td>
+                    <td><span class="status-badge" style="background:#fef3f2;color:#b42318;">Leave (Mon)</span></td>
+                    <td><span class="status-badge" style="background:#ecfdf3;color:#027a48;">Available</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#F59E0B,#FBBF24);color:white;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;">RK</div>
+                            <div><div style="font-weight:600;">Rajesh Kumar</div><div style="font-size:11px;color:var(--text-muted);">Mechanic</div></div>
+                        </div>
+                    </td>
+                    <td><span class="status-badge" style="background:#ecfdf3;color:#027a48;">Available</span></td>
+                    <td><span class="status-badge" style="background:#ecfdf3;color:#027a48;">Available</span></td>
+                    <td><span class="status-badge" style="background:#ecfdf3;color:#027a48;">Available</span></td>
+                    <td><span class="status-badge" style="background:#ecfdf3;color:#027a48;">Available</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#34a853,#66bb6a);color:white;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;">DP</div>
+                            <div><div style="font-weight:600;">Deepak Patel</div><div style="font-size:11px;color:var(--text-muted);">Mechanic</div></div>
+                        </div>
+                    </td>
+                    <td><span class="status-badge" style="background:#fef3f2;color:#b42318;">Leave (Thu-Fri)</span></td>
+                    <td><span class="status-badge" style="background:#ecfdf3;color:#027a48;">Available</span></td>
+                    <td><span class="status-badge" style="background:#ecfdf3;color:#027a48;">Available</span></td>
+                    <td><span class="status-badge" style="background:#ecfdf3;color:#027a48;">Available</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#A78BFA);color:white;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;">SA</div>
+                            <div><div style="font-weight:600;">Sunil Yadav</div><div style="font-size:11px;color:var(--text-muted);">Apprentice</div></div>
+                        </div>
+                    </td>
+                    <td><span class="status-badge" style="background:#ecfdf3;color:#027a48;">Available</span></td>
+                    <td><span class="status-badge" style="background:#ecfdf3;color:#027a48;">Available</span></td>
+                    <td><span class="status-badge" style="background:#ecfdf3;color:#027a48;">Available</span></td>
+                    <td><span class="status-badge" style="background:#ecfdf3;color:#027a48;">Available</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Predicted Services Table -->
+<div class="table-container">
+    <div class="table-toolbar">
+        <h3 style="font-size:15px;font-weight:600;"><i class="fas fa-clock" style="margin-right:8px;color:var(--text-muted);"></i>Upcoming Predicted Services</h3>
+        <div class="pagination-info">Next 4 weeks</div>
+    </div>
+    <div style="overflow-x:auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Vehicle</th>
+                    <th>Service Program</th>
+                    <th>Due Date</th>
+                    <th style="text-align:right;">Est. Hours</th>
+                    <th>Key Parts Needed</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><a href="javascript:void(0);">MH 04 AB 1234</a><div style="font-size:11px;color:var(--text-muted);">Tata Prima 4928</div></td>
+                    <td><span style="font-weight:600;">A-Service (10,000 km)</span></td>
+                    <td>Mar 19, 2026</td>
+                    <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-weight:700;">4 hrs</td>
+                    <td><span class="status-badge" style="background:#ecfdf3;color:#027a48;font-size:10px;">Oil Filter</span> <span class="status-badge" style="background:#ecfdf3;color:#027a48;font-size:10px;">Engine Oil</span></td>
+                    <td><span class="status-badge" style="background:#ecfdf3;color:#027a48;">Confirmed</span></td>
+                </tr>
+                <tr>
+                    <td><a href="javascript:void(0);">GJ 01 CD 5678</a><div style="font-size:11px;color:var(--text-muted);">Ashok Leyland 3520</div></td>
+                    <td><span style="font-weight:600;">B-Service (40,000 km)</span></td>
+                    <td>Mar 20, 2026</td>
+                    <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-weight:700;">6 hrs</td>
+                    <td><span class="status-badge" style="background:#ecfdf3;color:#027a48;font-size:10px;">Air Filter</span> <span class="status-badge" style="background:#ecfdf3;color:#027a48;font-size:10px;">Oil Filter</span> <span class="status-badge" style="background:#fef3f2;color:#b42318;font-size:10px;">Brake Pad Set</span></td>
+                    <td><span class="status-badge" style="background:#ecfdf3;color:#027a48;">Confirmed</span></td>
+                </tr>
+                <tr>
+                    <td><a href="javascript:void(0);">RJ 14 EF 9012</a><div style="font-size:11px;color:var(--text-muted);">BharatBenz 1617</div></td>
+                    <td><span style="font-weight:600;">B-Service (40,000 km)</span></td>
+                    <td>Mar 21, 2026</td>
+                    <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-weight:700;">8 hrs</td>
+                    <td><span class="status-badge" style="background:#ecfdf3;color:#027a48;font-size:10px;">Engine Oil</span> <span class="status-badge" style="background:#ecfdf3;color:#027a48;font-size:10px;">Coolant</span> <span class="status-badge" style="background:#fffaeb;color:#b54708;font-size:10px;">Fan Belt</span></td>
+                    <td><span class="status-badge" style="background:#ecfdf3;color:#027a48;">Confirmed</span></td>
+                </tr>
+                <tr>
+                    <td><a href="javascript:void(0);">MH 12 GH 3456</a><div style="font-size:11px;color:var(--text-muted);">Eicher Pro 6049</div></td>
+                    <td><span style="font-weight:600;">A-Service (10,000 km)</span></td>
+                    <td>Mar 26, 2026</td>
+                    <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-weight:700;">4 hrs</td>
+                    <td><span class="status-badge" style="background:#ecfdf3;color:#027a48;font-size:10px;">Oil Filter</span> <span class="status-badge" style="background:#ecfdf3;color:#027a48;font-size:10px;">Engine Oil</span></td>
+                    <td><span class="status-badge" style="background:#fffaeb;color:#b54708;">Predicted</span></td>
+                </tr>
+                <tr>
+                    <td><a href="javascript:void(0);">KA 01 IJ 7890</a><div style="font-size:11px;color:var(--text-muted);">Tata LPT 3521</div></td>
+                    <td><span style="font-weight:600;">C-Service (80,000 km)</span></td>
+                    <td>Mar 28, 2026</td>
+                    <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-weight:700;">10 hrs</td>
+                    <td><span class="status-badge" style="background:#fef3f2;color:#b42318;font-size:10px;">ATF Fluid</span> <span class="status-badge" style="background:#ecfdf3;color:#027a48;font-size:10px;">Air Filter</span> <span class="status-badge" style="background:#ecfdf3;color:#027a48;font-size:10px;">Battery</span></td>
+                    <td><span class="status-badge" style="background:#fffaeb;color:#b54708;">Predicted</span></td>
+                </tr>
+                <tr>
+                    <td><a href="javascript:void(0);">MP 09 KL 2345</a><div style="font-size:11px;color:var(--text-muted);">Ashok Leyland 4120</div></td>
+                    <td><span style="font-weight:600;">Tyre Rotation</span></td>
+                    <td>Apr 1, 2026</td>
+                    <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-weight:700;">3 hrs</td>
+                    <td><span class="status-badge" style="background:#ecfdf3;color:#027a48;font-size:10px;">Grease</span></td>
+                    <td><span class="status-badge" style="background:#fffaeb;color:#b54708;">Predicted</span></td>
+                </tr>
+                <tr>
+                    <td><a href="javascript:void(0);">GJ 05 MN 6789</a><div style="font-size:11px;color:var(--text-muted);">BharatBenz 2823</div></td>
+                    <td><span style="font-weight:600;">A-Service (10,000 km)</span></td>
+                    <td>Apr 3, 2026</td>
+                    <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-weight:700;">4 hrs</td>
+                    <td><span class="status-badge" style="background:#ecfdf3;color:#027a48;font-size:10px;">Oil Filter</span> <span class="status-badge" style="background:#ecfdf3;color:#027a48;font-size:10px;">Engine Oil</span></td>
+                    <td><span class="status-badge" style="background:#fffaeb;color:#b54708;">Predicted</span></td>
+                </tr>
+                <tr>
+                    <td><a href="javascript:void(0);">RJ 27 OP 0123</a><div style="font-size:11px;color:var(--text-muted);">Tata Signa 4825</div></td>
+                    <td><span style="font-weight:600;">B-Service (40,000 km)</span></td>
+                    <td>Apr 8, 2026</td>
+                    <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-weight:700;">6 hrs</td>
+                    <td><span class="status-badge" style="background:#ecfdf3;color:#027a48;font-size:10px;">Air Filter</span> <span class="status-badge" style="background:#ecfdf3;color:#027a48;font-size:10px;">Coolant</span></td>
+                    <td><span class="status-badge" style="background:#fffaeb;color:#b54708;">Predicted</span></td>
+                </tr>
+                <tr>
+                    <td><a href="javascript:void(0);">MH 04 QR 4567</a><div style="font-size:11px;color:var(--text-muted);">Eicher Pro 3019</div></td>
+                    <td><span style="font-weight:600;">Brake Inspection</span></td>
+                    <td>Apr 10, 2026</td>
+                    <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-weight:700;">3 hrs</td>
+                    <td><span class="status-badge" style="background:#fef3f2;color:#b42318;font-size:10px;">Brake Pad Set</span></td>
+                    <td><span class="status-badge" style="background:#fffaeb;color:#b54708;">Predicted</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+(function(){
+    const WEEKS = [
+        {label:'This week (Mar 17-21)',confirmed:18,predicted:6,capacity:24,util:100,leave:'Leave: Deepak Patel (Thu-Fri)'},
+        {label:'Week 2 (Mar 24-28)',confirmed:12,predicted:14,capacity:24,util:108,leave:null},
+        {label:'Week 3 (Mar 31-Apr 4)',confirmed:4,predicted:18,capacity:24,util:92,leave:'Leave: Vikram Singh (Mon)'},
+        {label:'Week 4 (Apr 7-11)',confirmed:2,predicted:16,capacity:24,util:75,leave:null}
+    ];
+
+    const container = document.querySelector('#fc-chart-area > div');
+    if (!container) return;
+
+    container.innerHTML = WEEKS.map((w, i) => {
+        const totalH = w.confirmed + w.predicted;
+        const maxBar = Math.max(w.capacity, totalH);
+        const confPct = (w.confirmed / maxBar * 100).toFixed(0);
+        const predPct = (w.predicted / maxBar * 100).toFixed(0);
+        const overflow = w.util > 100;
+        const utilColor = overflow ? '#F59E0B' : (w.util >= 90 ? '#12B76A' : '#667085');
+
+        return `<div style="text-align:center;">
+            <div style="font-size:13px;font-weight:600;margin-bottom:12px;">${w.label}</div>
+            <div style="height:140px;display:flex;align-items:flex-end;justify-content:center;gap:4px;position:relative;padding-bottom:4px;">
+                <div style="position:absolute;top:0;left:0;right:0;border-bottom:2px dashed var(--border-color);"></div>
+                <div style="width:36px;border-radius:4px 4px 0 0;background:#1a73e8;height:${confPct}%;min-height:4px;"></div>
+                <div style="width:36px;border-radius:4px 4px 0 0;background:#F59E0B;height:${predPct}%;min-height:4px;"></div>
+            </div>
+            <div style="display:flex;justify-content:center;gap:8px;font-size:10px;color:var(--text-muted);margin-top:6px;">
+                <span>■ ${w.confirmed}h confirmed</span><span style="color:#F59E0B;">■ ${w.predicted}h predicted</span>
+            </div>
+            <div style="font-size:16px;font-weight:800;color:${utilColor};margin-top:4px;">${w.util}%</div>
+            ${overflow ? '<div style="font-size:10px;color:#F59E0B;">⚠ ' + (w.util - 100) + '% overtime</div>' : ''}
+            ${w.leave ? '<div style="font-size:10px;color:var(--text-muted);margin-top:4px;">' + w.leave + '</div>' : ''}
+        </div>`;
+    }).join('');
+})();
+</script>

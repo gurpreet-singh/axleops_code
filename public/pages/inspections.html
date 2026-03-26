@@ -1,0 +1,92 @@
+<!-- Inspections Page -->
+<div class="page-header">
+    <h1>Inspections <span class="learn-badge"><i class="fas fa-graduation-cap"></i> Learn</span></h1>
+    <div class="page-header-actions">
+        <button class="btn btn-secondary"><i class="fas fa-file-alt"></i> Inspection Forms</button>
+        <button class="btn btn-primary"><i class="fas fa-plus"></i> New Inspection</button>
+    </div>
+</div>
+<div class="tabs">
+    <div class="tab active">Inspection Submissions <span class="tab-count">24</span></div>
+    <div class="tab">Inspection Schedules <span class="tab-count">6</span></div>
+    <div class="tab">Failed Items</div>
+</div>
+<div class="table-container">
+    <div class="table-toolbar">
+        <div class="search-input"><i class="fas fa-search" style="color:var(--text-muted)"></i><input type="text"
+                placeholder="Search inspections..."></div>
+        <div class="filter-btn">Vehicle ▾</div>
+        <div class="filter-btn">Form ▾</div>
+        <div class="filter-btn">Result ▾</div>
+        <div class="pagination-info">1 - 20 of 24</div>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Vehicle</th>
+                <th>Form</th>
+                <th>Inspector</th>
+                <th>Result</th>
+                <th>Failed Items</th>
+                <th>Duration</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>May 14, 2024</td>
+                <td><a href="#" onclick="navigateTo('vehicle-detail')">MH04CD5678</a></td>
+                <td>Pre-Trip Inspection</td>
+                <td>Anita Verma</td>
+                <td><span class="status-badge completed">Pass</span></td>
+                <td>0</td>
+                <td>8 min</td>
+            </tr>
+            <tr>
+                <td>May 14, 2024</td>
+                <td><a href="#" onclick="navigateTo('vehicle-detail')">MH04AB1234</a></td>
+                <td>Pre-Trip Inspection</td>
+                <td>Rajesh Kumar</td>
+                <td><span class="status-badge pending">Pass w/ Defects</span></td>
+                <td>1</td>
+                <td>12 min</td>
+            </tr>
+            <tr>
+                <td>May 13, 2024</td>
+                <td><a href="#" onclick="navigateTo('vehicle-detail')">MH12EF9012</a></td>
+                <td>RTO Annual Fitness</td>
+                <td>Priya Sharma</td>
+                <td><span class="status-badge overdue">Fail</span></td>
+                <td>3</td>
+                <td>45 min</td>
+            </tr>
+            <tr>
+                <td>May 13, 2024</td>
+                <td><a href="#" onclick="navigateTo('vehicle-detail')">MH12GH3456</a></td>
+                <td>Pre-Trip Inspection</td>
+                <td>Vikram Singh</td>
+                <td><span class="status-badge completed">Pass</span></td>
+                <td>0</td>
+                <td>7 min</td>
+            </tr>
+            <tr>
+                <td>May 12, 2024</td>
+                <td><a href="#" onclick="navigateTo('vehicle-detail')">MH04KL4567</a></td>
+                <td>Monthly Safety</td>
+                <td>Meera Joshi</td>
+                <td><span class="status-badge completed">Pass</span></td>
+                <td>0</td>
+                <td>22 min</td>
+            </tr>
+            <tr>
+                <td>May 12, 2024</td>
+                <td><a href="#" onclick="navigateTo('vehicle-detail')">MH12PQ2345</a></td>
+                <td>EV Battery Check</td>
+                <td>Lakshmi Iyer</td>
+                <td><span class="status-badge completed">Pass</span></td>
+                <td>0</td>
+                <td>15 min</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

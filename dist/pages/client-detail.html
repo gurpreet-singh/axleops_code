@@ -1,0 +1,609 @@
+<!-- ═══════════════════════════════════════════════════════════════
+     🏢 CLIENT DETAIL — Comprehensive Profile (CL-02)
+     Tabbed layout: Overview, Branches, Contracts, Invoices, Payments, Aging, Statement
+     ═══════════════════════════════════════════════════════════════ -->
+
+<!-- Header -->
+<div class="page-header" style="align-items:flex-start;">
+    <div style="display:flex;align-items:center;gap:14px;flex:1;">
+        <button class="btn btn-secondary" onclick="navigateTo('clients')" style="padding:6px 10px;font-size:16px;">←</button>
+        <div style="width:48px;height:48px;border-radius:50%;background:hsl(210,50%,92%);color:hsl(210,50%,35%);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0;">RI</div>
+        <div style="flex:1;">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <h1 style="font-size:22px;font-weight:800;margin:0;">Reliance Industries</h1>
+                <span class="status-badge active" style="font-size:11px;">Active</span>
+                <span style="display:inline-flex;align-items:center;padding:1px 8px;border-radius:6px;font-size:10px;font-weight:600;background:#f4f3ff;color:#5925dc;text-transform:uppercase;letter-spacing:.04em;">Petrochemicals</span>
+            </div>
+            <div style="font-size:12px;color:#98a2b3;margin-top:3px;">CLT-001 · PAN: AAACR5055K · GSTIN: 27AAACR5055K1ZK · Account mgr: Priya Menon</div>
+        </div>
+    </div>
+    <div class="page-header-actions">
+        <button class="btn btn-secondary"><i class="fas fa-edit"></i> Edit Client</button>
+        <button class="btn btn-primary"><i class="fas fa-file-contract"></i> New Contract</button>
+    </div>
+</div>
+
+<!-- Tabs -->
+<div class="tabs" style="overflow-x:auto;flex-wrap:nowrap;margin-bottom:20px;" id="client-detail-tabs">
+    <div class="tab active" data-tab="client-overview">Overview</div>
+    <div class="tab" data-tab="client-branches">Branches <span class="tab-count">4</span></div>
+    <div class="tab" data-tab="client-contracts">Contracts <span class="tab-count">2</span></div>
+    <div class="tab" data-tab="client-invoices-tab">Invoices</div>
+    <div class="tab" data-tab="client-payments-tab">Payments</div>
+    <div class="tab" data-tab="client-aging-tab">Aging</div>
+    <div class="tab" data-tab="client-statement-tab">Statement</div>
+</div>
+
+<!-- ═══════ TAB: OVERVIEW ═══════ -->
+<div id="client-overview" class="tab-content" style="display:block;">
+
+    <!-- Metrics Row -->
+    <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:130px;background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:14px 18px;">
+            <div style="font-size:10px;font-weight:700;color:#98a2b3;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">Revenue MTD</div>
+            <div style="font-size:26px;font-weight:800;color:#1570ef;line-height:1.1;">₹5,24,300</div>
+        </div>
+        <div style="flex:1;min-width:130px;background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:14px 18px;">
+            <div style="font-size:10px;font-weight:700;color:#98a2b3;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">Trips MTD</div>
+            <div style="font-size:26px;font-weight:800;color:#101828;line-height:1.1;">42</div>
+        </div>
+        <div style="flex:1;min-width:130px;background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:14px 18px;">
+            <div style="font-size:10px;font-weight:700;color:#98a2b3;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">Outstanding</div>
+            <div style="font-size:26px;font-weight:800;color:#f04438;line-height:1.1;">₹1,45,000</div>
+        </div>
+        <div style="flex:1;min-width:130px;background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:14px 18px;">
+            <div style="font-size:10px;font-weight:700;color:#98a2b3;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">Credit Limit</div>
+            <div style="font-size:26px;font-weight:800;color:#101828;line-height:1.1;">₹10,00,000</div>
+        </div>
+        <div style="flex:1;min-width:130px;background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:14px 18px;">
+            <div style="font-size:10px;font-weight:700;color:#98a2b3;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">Credit Days</div>
+            <div style="font-size:26px;font-weight:800;color:#101828;line-height:1.1;">30</div>
+            <div style="font-size:11px;color:#98a2b3;margin-top:4px;">Fortnightly</div>
+        </div>
+    </div>
+
+    <!-- Two-column grid -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+
+        <!-- Credit Health Card -->
+        <div class="detail-section">
+            <div class="section-header"><h3>Credit Health</h3></div>
+            <div class="section-body">
+                <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px;">
+                    <div style="font-size:36px;font-weight:800;color:#12b76a;">14.5%</div>
+                    <div style="flex:1;">
+                        <div style="height:8px;background:#f2f4f7;border-radius:4px;overflow:hidden;width:100%;">
+                            <div style="height:100%;width:14.5%;background:#12b76a;border-radius:4px;transition:width .5s;"></div>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:#98a2b3;">
+                            <span>Outstanding: ₹1,45,000</span>
+                            <span>Limit: ₹10,00,000</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="padding:10px 14px;background:#ecfdf3;border-radius:8px;font-size:12px;color:#027a48;font-weight:600;">
+                    ✓ Credit health good. Well within limits.
+                </div>
+            </div>
+        </div>
+
+        <!-- Billing Configuration -->
+        <div class="detail-section">
+            <div class="section-header"><h3>Billing Configuration</h3></div>
+            <div class="section-body">
+                <div class="info-list">
+                    <div class="info-item"><span class="info-label">Contract Type</span><span class="info-value">Per KM</span></div>
+                    <div class="info-item"><span class="info-label">Rate</span><span class="info-value">₹34.15/km</span></div>
+                    <div class="info-item"><span class="info-label">Billing Cycle</span><span class="info-value">Fortnightly</span></div>
+                    <div class="info-item"><span class="info-label">Credit Days</span><span class="info-value">30 days</span></div>
+                    <div class="info-item"><span class="info-label">TDS Applicable</span><span class="info-value">Yes (1%)</span></div>
+                    <div class="info-item"><span class="info-label">GST Type</span><span class="info-value">B2B — E-Invoice eligible</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity (full width) -->
+        <div class="detail-section" style="grid-column:1 / -1;">
+            <div class="section-header"><h3>Recent Activity</h3></div>
+            <div class="section-body" style="padding:0 16px;">
+                <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid #f2f4f7;">
+                    <span style="font-size:20px;margin-top:2px;">📄</span>
+                    <div style="flex:1;">
+                        <div style="font-size:13px;font-weight:600;">Invoice INV-2024-082 generated for Reliance Industries</div>
+                        <div style="font-size:12px;color:#667085;">₹4,57,840 · 8 trips · May 1-15, 2024</div>
+                    </div>
+                    <span style="font-size:11px;color:#98a2b3;white-space:nowrap;">2 hours ago</span>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid #f2f4f7;">
+                    <span style="font-size:20px;margin-top:2px;">💰</span>
+                    <div style="flex:1;">
+                        <div style="font-size:13px;font-weight:600;">Payment received via NEFT</div>
+                        <div style="font-size:12px;color:#667085;">₹2,00,000 · UTR: HDFC24050800215</div>
+                    </div>
+                    <span style="font-size:11px;color:#98a2b3;white-space:nowrap;">3 days ago</span>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid #f2f4f7;">
+                    <span style="font-size:20px;margin-top:2px;">🚛</span>
+                    <div style="flex:1;">
+                        <div style="font-size:13px;font-weight:600;">Trip TRP-4824 settled</div>
+                        <div style="font-size:12px;color:#667085;">Mumbai → Ahmedabad · Margin 26.5%</div>
+                    </div>
+                    <span style="font-size:11px;color:#98a2b3;white-space:nowrap;">5 days ago</span>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 0;">
+                    <span style="font-size:20px;margin-top:2px;">📋</span>
+                    <div style="flex:1;">
+                        <div style="font-size:13px;font-weight:600;">Contract RC-2024-0017 renewed</div>
+                        <div style="font-size:12px;color:#667085;">Per KM · ₹34.15/km · Valid until Dec 2024</div>
+                    </div>
+                    <span style="font-size:11px;color:#98a2b3;white-space:nowrap;">2 weeks ago</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════ TAB: BRANCHES ═══════ -->
+<div id="client-branches" class="tab-content" style="display:none;">
+    <div class="table-container">
+        <div class="table-toolbar">
+            <span style="font-size:14px;font-weight:700;">4 branches</span>
+            <div style="flex:1;"></div>
+            <button class="btn btn-primary" style="font-size:12px;padding:5px 12px;">+ Add Branch</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Branch Name</th>
+                    <th>GSTIN</th>
+                    <th>City / State</th>
+                    <th>Billing Contact</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="font-weight:600;">Mumbai HQ (Primary)</td>
+                    <td style="font-family:'JetBrains Mono',monospace;font-size:12px;">27AAACR5055K1ZK</td>
+                    <td>Mumbai, Maharashtra</td>
+                    <td>Arun Sharma</td>
+                    <td>+91 98765 43210</td>
+                    <td><span class="status-badge active" style="font-size:10px;">Active</span></td>
+                </tr>
+                <tr>
+                    <td style="font-weight:600;">Delhi Warehouse</td>
+                    <td style="font-family:'JetBrains Mono',monospace;font-size:12px;">07AAACR5055K1ZD</td>
+                    <td>New Delhi, Delhi</td>
+                    <td>Kavita Reddy</td>
+                    <td>+91 98765 43211</td>
+                    <td><span class="status-badge active" style="font-size:10px;">Active</span></td>
+                </tr>
+                <tr>
+                    <td style="font-weight:600;">Jamnagar Refinery</td>
+                    <td style="font-family:'JetBrains Mono',monospace;font-size:12px;">24AAACR5055K1ZJ</td>
+                    <td>Jamnagar, Gujarat</td>
+                    <td>Sanjay Patel</td>
+                    <td>+91 98765 43212</td>
+                    <td><span class="status-badge active" style="font-size:10px;">Active</span></td>
+                </tr>
+                <tr>
+                    <td style="font-weight:600;">Chennai Office</td>
+                    <td style="font-family:'JetBrains Mono',monospace;font-size:12px;">33AAACR5055K1ZC</td>
+                    <td>Chennai, Tamil Nadu</td>
+                    <td>Rajesh Iyer</td>
+                    <td>+91 98765 43213</td>
+                    <td><span class="status-badge active" style="font-size:10px;">Active</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ═══════ TAB: CONTRACTS ═══════ -->
+<div id="client-contracts" class="tab-content" style="display:none;">
+
+    <!-- Active Contract -->
+    <div class="detail-section" style="margin-bottom:16px;">
+        <div class="section-header" style="background:#f0fdf4;">
+            <div style="display:flex;justify-content:space-between;align-items:center;width:100%;">
+                <div>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#1570ef;">RC-2024-0017</span>
+                        <span class="status-badge active" style="font-size:10px;">Active</span>
+                        <span style="display:inline-flex;padding:1px 8px;border-radius:6px;font-size:10px;font-weight:600;background:#f4f3ff;color:#5925dc;text-transform:uppercase;">v2</span>
+                        <span style="display:inline-flex;padding:1px 8px;border-radius:6px;font-size:10px;font-weight:600;background:#f0fdf9;color:#107569;text-transform:uppercase;">Per KM</span>
+                    </div>
+                    <div style="font-size:12px;color:#98a2b3;margin-top:4px;">Jan 1, 2024 → Dec 31, 2024 · 5 routes · 14/20 MTD</div>
+                </div>
+                <div style="display:flex;gap:6px;">
+                    <button class="btn btn-secondary" style="font-size:12px;padding:5px 12px;">View Rates</button>
+                    <button class="btn btn-primary" style="font-size:12px;padding:5px 12px;">Amend</button>
+                </div>
+            </div>
+        </div>
+        <div class="section-body">
+            <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;">
+                <div style="background:#f5f6f8;border-radius:8px;padding:10px 12px;">
+                    <div style="font-size:10px;color:#98a2b3;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;">Base Rate</div>
+                    <div style="font-size:12px;font-weight:600;">₹34.15/km</div>
+                </div>
+                <div style="background:#f5f6f8;border-radius:8px;padding:10px 12px;">
+                    <div style="font-size:10px;color:#98a2b3;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;">Fuel Surcharge</div>
+                    <div style="font-size:12px;font-weight:600;">Enabled (base ₹87.5/L)</div>
+                </div>
+                <div style="background:#f5f6f8;border-radius:8px;padding:10px 12px;">
+                    <div style="font-size:10px;color:#98a2b3;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;">Min Guarantee</div>
+                    <div style="font-size:12px;font-weight:600;">20 trips/month</div>
+                </div>
+                <div style="background:#f5f6f8;border-radius:8px;padding:10px 12px;">
+                    <div style="font-size:10px;color:#98a2b3;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;">SLA Penalty</div>
+                    <div style="font-size:12px;font-weight:600;">₹500/hr delay (max 10%)</div>
+                </div>
+                <div style="background:#f5f6f8;border-radius:8px;padding:10px 12px;">
+                    <div style="font-size:10px;color:#98a2b3;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;">Detention</div>
+                    <div style="font-size:12px;font-weight:600;">₹400/hr after 4h free</div>
+                </div>
+            </div>
+
+            <!-- Route Rate Cards -->
+            <div style="margin-top:16px;">
+                <div style="font-size:10px;font-weight:700;color:#98a2b3;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;">Route Rate Cards</div>
+                <table style="font-size:12px;">
+                    <thead>
+                        <tr>
+                            <th>Route</th>
+                            <th>Vehicle Type</th>
+                            <th style="text-align:right;">Rate</th>
+                            <th style="text-align:right;">Min Freight</th>
+                            <th style="text-align:right;">Loading</th>
+                            <th style="text-align:right;">Unloading</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="font-weight:600;">Mumbai → Delhi</td>
+                            <td>Multi-Axle</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹34.15/km</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹20,000</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹1,500</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹1,500</td>
+                            <td><span class="status-badge active" style="font-size:9px;">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:600;">Mumbai → Ahmedabad</td>
+                            <td>Multi-Axle</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹36.50/km</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹15,000</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹1,200</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹1,200</td>
+                            <td><span class="status-badge active" style="font-size:9px;">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:600;">Mumbai → Pune</td>
+                            <td>Single-Axle</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹38.00/km</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹8,000</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹800</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹800</td>
+                            <td><span class="status-badge active" style="font-size:9px;">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:600;">Mumbai → Nagpur</td>
+                            <td>Multi-Axle</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹33.00/km</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹18,000</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹1,200</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹1,200</td>
+                            <td><span class="status-badge active" style="font-size:9px;">Active</span></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:600;">Mumbai → Hyderabad</td>
+                            <td>ALL</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹32.00/km</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹22,000</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹1,500</td>
+                            <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹1,500</td>
+                            <td><span class="status-badge active" style="font-size:9px;">Active</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Expired Contract -->
+    <div class="detail-section" style="opacity:0.7;">
+        <div class="section-header">
+            <div style="display:flex;justify-content:space-between;align-items:center;width:100%;">
+                <div>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#667085;">RC-2023-0089</span>
+                        <span class="status-badge inactive" style="font-size:10px;">Expired</span>
+                        <span style="display:inline-flex;padding:1px 8px;border-radius:6px;font-size:10px;font-weight:600;background:#f2f4f7;color:#667085;text-transform:uppercase;">v1</span>
+                        <span style="display:inline-flex;padding:1px 8px;border-radius:6px;font-size:10px;font-weight:600;background:#f0fdf9;color:#107569;text-transform:uppercase;">Per KM</span>
+                    </div>
+                    <div style="font-size:12px;color:#98a2b3;margin-top:4px;">Jan 1, 2023 → Dec 31, 2023 · 3 routes · 248 total trips</div>
+                </div>
+            </div>
+        </div>
+        <div class="section-body">
+            <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;">
+                <div style="background:#f5f6f8;border-radius:8px;padding:10px 12px;">
+                    <div style="font-size:10px;color:#98a2b3;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;">Base Rate</div>
+                    <div style="font-size:12px;font-weight:600;">₹31.50/km</div>
+                </div>
+                <div style="background:#f5f6f8;border-radius:8px;padding:10px 12px;">
+                    <div style="font-size:10px;color:#98a2b3;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;">Fuel Surcharge</div>
+                    <div style="font-size:12px;font-weight:600;">Disabled</div>
+                </div>
+                <div style="background:#f5f6f8;border-radius:8px;padding:10px 12px;">
+                    <div style="font-size:10px;color:#98a2b3;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;">Min Guarantee</div>
+                    <div style="font-size:12px;font-weight:600;">15 trips/month</div>
+                </div>
+                <div style="background:#f5f6f8;border-radius:8px;padding:10px 12px;">
+                    <div style="font-size:10px;color:#98a2b3;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;">SLA Penalty</div>
+                    <div style="font-size:12px;font-weight:600;">₹500/hr delay (max 10%)</div>
+                </div>
+                <div style="background:#f5f6f8;border-radius:8px;padding:10px 12px;">
+                    <div style="font-size:10px;color:#98a2b3;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;">Detention</div>
+                    <div style="font-size:12px;font-weight:600;">₹400/hr after 4h free</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════ TAB: INVOICES ═══════ -->
+<div id="client-invoices-tab" class="tab-content" style="display:none;">
+    <div class="table-container">
+        <div class="table-toolbar">
+            <div class="search-input"><i class="fas fa-search" style="color:var(--text-muted)"></i><input type="text" placeholder="Search invoices..."></div>
+            <div class="filter-btn">Status ▾</div>
+            <div style="flex:1;"></div>
+            <button class="btn btn-primary" style="font-size:12px;padding:5px 12px;">+ Generate Invoice</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Invoice #</th>
+                    <th>Branch</th>
+                    <th>Period</th>
+                    <th>Trips</th>
+                    <th style="text-align:right;">Amount</th>
+                    <th style="text-align:right;">GST (18%)</th>
+                    <th style="text-align:right;">Total</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><a href="#" style="font-family:'JetBrains Mono',monospace;font-weight:700;color:#1570ef;">INV-2024-082</a></td>
+                    <td>Mumbai HQ</td>
+                    <td>May 1-15, 2024</td>
+                    <td>8</td>
+                    <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹3,88,000</td>
+                    <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹69,840</td>
+                    <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-weight:700;">₹4,57,840</td>
+                    <td>Jun 14, 2024</td>
+                    <td><span class="status-badge info">Sent</span></td>
+                </tr>
+                <tr>
+                    <td><a href="#" style="font-family:'JetBrains Mono',monospace;font-weight:700;color:#1570ef;">INV-2024-078</a></td>
+                    <td>Jamnagar Refinery</td>
+                    <td>Apr 16-30, 2024</td>
+                    <td>10</td>
+                    <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹2,84,500</td>
+                    <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹51,210</td>
+                    <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-weight:700;">₹3,35,710</td>
+                    <td>May 30, 2024</td>
+                    <td><span class="status-badge overdue">Overdue</span></td>
+                </tr>
+                <tr>
+                    <td><a href="#" style="font-family:'JetBrains Mono',monospace;font-weight:700;color:#1570ef;">INV-2024-065</a></td>
+                    <td>Mumbai HQ</td>
+                    <td>Apr 1-15, 2024</td>
+                    <td>7</td>
+                    <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹2,42,000</td>
+                    <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹43,560</td>
+                    <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-weight:700;">₹2,85,560</td>
+                    <td>May 14, 2024</td>
+                    <td><span class="status-badge completed">Paid</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ═══════ TAB: PAYMENTS ═══════ -->
+<div id="client-payments-tab" class="tab-content" style="display:none;">
+    <div class="table-container">
+        <div class="table-toolbar">
+            <span style="font-size:14px;font-weight:700;">Payment History</span>
+            <div style="flex:1;"></div>
+            <button class="btn btn-primary" style="font-size:12px;padding:5px 12px;">+ Record Payment</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Payment #</th>
+                    <th>Date</th>
+                    <th>Mode</th>
+                    <th>UTR / Ref</th>
+                    <th style="text-align:right;">Amount</th>
+                    <th style="text-align:right;">TDS</th>
+                    <th>Against Invoices</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:#1570ef;">PAY-2024-039</td>
+                    <td>May 8, 2024</td>
+                    <td><span style="display:inline-flex;padding:1px 8px;border-radius:6px;font-size:10px;font-weight:600;background:#f0fdf9;color:#107569;text-transform:uppercase;">NEFT</span></td>
+                    <td style="font-family:'JetBrains Mono',monospace;font-size:12px;">HDFC24050800215</td>
+                    <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-weight:700;">₹2,00,000</td>
+                    <td style="text-align:right;font-family:'JetBrains Mono',monospace;color:#7a5af8;">₹2,000</td>
+                    <td>
+                        <span style="display:inline-flex;padding:1px 6px;border-radius:6px;font-size:10px;font-weight:600;background:#eff8ff;color:#175cd3;margin-right:4px;">INV-2024-065</span>
+                        <span style="display:inline-flex;padding:1px 6px;border-radius:6px;font-size:10px;font-weight:600;background:#eff8ff;color:#175cd3;">INV-2024-062</span>
+                    </td>
+                    <td><span class="status-badge completed">Allocated</span></td>
+                </tr>
+                <tr>
+                    <td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:#1570ef;">PAY-2024-032</td>
+                    <td>Apr 20, 2024</td>
+                    <td><span style="display:inline-flex;padding:1px 8px;border-radius:6px;font-size:10px;font-weight:600;background:#f0fdf9;color:#107569;text-transform:uppercase;">RTGS</span></td>
+                    <td style="font-family:'JetBrains Mono',monospace;font-size:12px;">HDFC24042000189</td>
+                    <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-weight:700;">₹3,50,000</td>
+                    <td style="text-align:right;font-family:'JetBrains Mono',monospace;color:#7a5af8;">₹3,500</td>
+                    <td>
+                        <span style="display:inline-flex;padding:1px 6px;border-radius:6px;font-size:10px;font-weight:600;background:#eff8ff;color:#175cd3;">INV-2024-052</span>
+                    </td>
+                    <td><span class="status-badge completed">Allocated</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ═══════ TAB: AGING ═══════ -->
+<div id="client-aging-tab" class="tab-content" style="display:none;">
+    <!-- Aging Buckets -->
+    <div style="display:flex;gap:10px;margin-bottom:20px;">
+        <div style="flex:1;min-width:130px;background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:14px 18px;">
+            <div style="font-size:10px;font-weight:700;color:#98a2b3;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">Current</div>
+            <div style="font-size:26px;font-weight:800;color:#12b76a;line-height:1.1;">₹0</div>
+        </div>
+        <div style="flex:1;min-width:130px;background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:14px 18px;">
+            <div style="font-size:10px;font-weight:700;color:#98a2b3;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">1-30 Days</div>
+            <div style="font-size:26px;font-weight:800;color:#f79009;line-height:1.1;">₹85,000</div>
+        </div>
+        <div style="flex:1;min-width:130px;background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:14px 18px;">
+            <div style="font-size:10px;font-weight:700;color:#98a2b3;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">31-60 Days</div>
+            <div style="font-size:26px;font-weight:800;color:#ef6820;line-height:1.1;">₹60,000</div>
+        </div>
+        <div style="flex:1;min-width:130px;background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:14px 18px;">
+            <div style="font-size:10px;font-weight:700;color:#98a2b3;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">61-90 Days</div>
+            <div style="font-size:26px;font-weight:800;color:#12b76a;line-height:1.1;">₹0</div>
+        </div>
+        <div style="flex:1;min-width:130px;background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:14px 18px;">
+            <div style="font-size:10px;font-weight:700;color:#98a2b3;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">90+</div>
+            <div style="font-size:26px;font-weight:800;color:#12b76a;line-height:1.1;">₹0</div>
+        </div>
+    </div>
+
+    <!-- Aging Bar Chart -->
+    <div class="detail-section">
+        <div class="section-header"><h3>Aging Breakdown</h3></div>
+        <div class="section-body">
+            <div style="display:flex;gap:6px;height:140px;align-items:flex-end;margin-bottom:16px;padding:0 30px;">
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;">
+                    <div style="width:60%;height:4px;background:#12b76a;border-radius:4px 4px 0 0;transition:height .5s;"></div>
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;">
+                    <div style="width:60%;height:82px;background:#f79009;border-radius:4px 4px 0 0;transition:height .5s;"></div>
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;">
+                    <div style="width:60%;height:56px;background:#ef6820;border-radius:4px 4px 0 0;transition:height .5s;"></div>
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;">
+                    <div style="width:60%;height:4px;background:#f04438;border-radius:4px 4px 0 0;transition:height .5s;"></div>
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;">
+                    <div style="width:60%;height:4px;background:#b42318;border-radius:4px 4px 0 0;transition:height .5s;"></div>
+                </div>
+            </div>
+            <div style="display:flex;gap:6px;padding:0 30px;">
+                <div style="flex:1;text-align:center;font-size:10px;color:#98a2b3;font-weight:600;">Current</div>
+                <div style="flex:1;text-align:center;font-size:10px;color:#98a2b3;font-weight:600;">1-30d</div>
+                <div style="flex:1;text-align:center;font-size:10px;color:#98a2b3;font-weight:600;">31-60d</div>
+                <div style="flex:1;text-align:center;font-size:10px;color:#98a2b3;font-weight:600;">61-90d</div>
+                <div style="flex:1;text-align:center;font-size:10px;color:#98a2b3;font-weight:600;">90+d</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════ TAB: STATEMENT ═══════ -->
+<div id="client-statement-tab" class="tab-content" style="display:none;">
+    <div class="detail-section">
+        <div class="section-header" style="display:flex;justify-content:space-between;align-items:center;">
+            <h3>Account Statement — Reliance Industries</h3>
+            <div style="display:flex;gap:6px;">
+                <button class="btn btn-secondary" style="font-size:11px;padding:4px 10px;"><i class="fas fa-file-pdf" style="margin-right:4px;"></i>PDF</button>
+                <button class="btn btn-secondary" style="font-size:11px;padding:4px 10px;"><i class="fas fa-file-excel" style="margin-right:4px;"></i>Excel</button>
+            </div>
+        </div>
+        <div class="section-body" style="padding:0;">
+            <table style="font-size:12px;">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Reference #</th>
+                        <th>Description</th>
+                        <th style="text-align:right;">Debit</th>
+                        <th style="text-align:right;">Credit</th>
+                        <th style="text-align:right;">Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>May 15, 2024</td>
+                        <td><span style="display:inline-flex;padding:1px 8px;border-radius:6px;font-size:9px;font-weight:600;background:#eff8ff;color:#175cd3;text-transform:uppercase;">Invoice</span></td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-weight:600;">INV-2024-082</td>
+                        <td>Invoice for May 1-15, 2024 (8 trips)</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;color:#f04438;">₹4,57,840</td>
+                        <td style="text-align:right;">—</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-weight:700;">₹4,57,840</td>
+                    </tr>
+                    <tr>
+                        <td>May 12, 2024</td>
+                        <td><span style="display:inline-flex;padding:1px 8px;border-radius:6px;font-size:9px;font-weight:600;background:#fef3f2;color:#b42318;text-transform:uppercase;">Credit Note</span></td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-weight:600;">CN-2024-008</td>
+                        <td>Shortage deduction — TRP-4819</td>
+                        <td style="text-align:right;">—</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;color:#12b76a;">₹3,600</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-weight:700;">₹4,54,240</td>
+                    </tr>
+                    <tr>
+                        <td>May 8, 2024</td>
+                        <td><span style="display:inline-flex;padding:1px 8px;border-radius:6px;font-size:9px;font-weight:600;background:#ecfdf3;color:#027a48;text-transform:uppercase;">Payment</span></td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-weight:600;">PAY-2024-039</td>
+                        <td>NEFT · UTR: HDFC24050800215</td>
+                        <td style="text-align:right;">—</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;color:#12b76a;">₹2,00,000</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-weight:700;">₹2,54,240</td>
+                    </tr>
+                    <tr>
+                        <td>May 8, 2024</td>
+                        <td><span style="display:inline-flex;padding:1px 8px;border-radius:6px;font-size:9px;font-weight:600;background:#f4f3ff;color:#5925dc;text-transform:uppercase;">TDS</span></td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-weight:600;">TDS-039</td>
+                        <td>TDS @1% on PAY-2024-039</td>
+                        <td style="text-align:right;">—</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;color:#7a5af8;">₹2,000</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-weight:700;">₹2,52,240</td>
+                    </tr>
+                    <tr>
+                        <td>Apr 30, 2024</td>
+                        <td><span style="display:inline-flex;padding:1px 8px;border-radius:6px;font-size:9px;font-weight:600;background:#eff8ff;color:#175cd3;text-transform:uppercase;">Invoice</span></td>
+                        <td style="font-family:'JetBrains Mono',monospace;font-weight:600;">INV-2024-078</td>
+                        <td>Invoice for Apr 16-30, 2024 (10 trips)</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;color:#f04438;">₹3,35,710</td>
+                        <td style="text-align:right;">—</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-weight:700;">₹5,87,950</td>
+                    </tr>
+                    <tr style="background:#f9fafb;font-weight:700;">
+                        <td colspan="4" style="text-align:right;">Closing Balance</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;color:#f04438;">₹7,93,550</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;color:#12b76a;">₹2,05,600</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;color:#f04438;font-size:14px;">₹1,45,000</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
