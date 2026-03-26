@@ -1406,7 +1406,6 @@ function _tShowTripDetail(trip, role, onBack) {
   // --- Build Tabs UI ---
   var tabs = role === 'accts' ? ['Settlement', 'Details', 'Documents'] : ['Details', 'Documents'];
   var activeTab = tabs[0];
-  
   var tabsHtml = '<div style="display:flex; border-bottom:1px solid #E2E8F0; margin-bottom:16px;">';
   tabs.forEach(function(t) {
     tabsHtml += '<div class="t-detail-tab" data-tab="'+t+'" style="padding:10px 18px; font-size:13px; font-weight:600; color:#64748B; border-bottom:2px solid transparent; cursor:pointer; transition:all .2s;">'+t+'</div>';
@@ -1540,7 +1539,6 @@ function _tShowTripDetail(trip, role, onBack) {
       if(document.getElementById('t-tab-layer-Details')) document.getElementById('t-tab-layer-Details').style.display = 'none';
       if(document.getElementById('t-tab-layer-Settlement')) document.getElementById('t-tab-layer-Settlement').style.display = 'none';
       if(document.getElementById('t-tab-layer-Documents')) document.getElementById('t-tab-layer-Documents').style.display = 'none';
-      
       // Activate clicked
       var dest = this.getAttribute('data-tab');
       this.style.color = '#0EA5E9';

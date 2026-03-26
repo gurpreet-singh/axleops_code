@@ -1,8 +1,8 @@
 # AxleOps — Fleet Management Platform
 
-> **Product Name**: AxleOps  
-> **Version**: Demo Prototype  
-> **Last Updated**: March 2026  
+> **Product Name**: AxleOps
+> **Version**: Demo Prototype
+> **Last Updated**: March 2026
 > **Target Customer Archetype**: Ciskie Contracting (small-to-mid-size contractor fleet operator)
 
 ---
@@ -38,7 +38,7 @@
 
 ## Product Vision
 
-AxleOps is a **comprehensive fleet management platform** designed for contracting companies and fleet operators who need to manage vehicles, equipment, maintenance, compliance, fuel, drivers, parts inventory, and operational costs from a single unified interface. 
+AxleOps is a **comprehensive fleet management platform** designed for contracting companies and fleet operators who need to manage vehicles, equipment, maintenance, compliance, fuel, drivers, parts inventory, and operational costs from a single unified interface.
 
 The product aims to provide:
 - **Complete vehicle lifecycle management** — from acquisition through daily operations to disposal

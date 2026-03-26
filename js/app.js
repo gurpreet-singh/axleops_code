@@ -2437,4 +2437,3 @@ window.woCalendarNav = woCalendarNav;
 window.woCalendarToday = woCalendarToday;
 window.setWoLaborHours = setWoLaborHours;
 window.initWoStatusTabs = initWoStatusTabs;
-

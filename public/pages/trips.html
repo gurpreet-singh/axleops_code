@@ -32,7 +32,7 @@
 (function() {
     function init() {
         if (typeof TRIPS_DATA === 'undefined' || typeof TRIP_STATE_COLORS === 'undefined') { setTimeout(init, 200); return; }
-        
+
         var statusMeta = [
             { key:'Created', icon:'📝', label:'Created', sub:'Assign vehicle + driver', color:'#7C3AED' },
             { key:'In Transit', icon:'🚛', label:'In Transit', sub:'Tracking', color:'#0EA5E9' },
