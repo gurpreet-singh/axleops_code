@@ -1,0 +1,90 @@
+<!-- Reminders Page -->
+<div class="page-header">
+    <h1>Service Reminders</h1>
+    <div class="page-header-actions"><button class="btn btn-primary"><i class="fas fa-plus"></i> New Reminder</button>
+    </div>
+</div>
+<div class="table-container">
+    <div class="table-toolbar">
+        <div class="search-input"><i class="fas fa-search" style="color:var(--text-muted)"></i><input type="text"
+                placeholder="Search reminders..."></div>
+        <div class="filter-btn">Status ▾</div>
+        <div class="filter-btn">Vehicle ▾</div>
+        <div class="filter-btn">Service Task ▾</div>
+        <div class="pagination-info">1 - 5 of 34</div>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Vehicle</th>
+                <th>Service Task</th>
+                <th>Status</th>
+                <th>Due</th>
+                <th>Last Completed</th>
+                <th>Compliance</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><a href="#" onclick="navigateTo('vehicle-detail')">MH04AB1234</a></td>
+                <td>Oil & Filter Change</td>
+                <td><span class="status-badge overdue">Overdue</span></td>
+                <td>800 km ago</td>
+                <td>Feb 3, 2024</td>
+                <td>
+                    <div class="progress-bar" style="width:80px;">
+                        <div class="progress-fill red" style="width:100%"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><a href="#">MH04CD5678</a></td>
+                <td>Tire Rotation</td>
+                <td><span class="status-badge overdue">Overdue</span></td>
+                <td>3 days ago</td>
+                <td>Nov 15, 2023</td>
+                <td>
+                    <div class="progress-bar" style="width:80px;">
+                        <div class="progress-fill red" style="width:100%"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><a href="#">MH12EF9012</a></td>
+                <td>Brake Inspection</td>
+                <td><span class="status-badge pending">Due Soon</span></td>
+                <td>In 1,930 km</td>
+                <td>Jan 20, 2024</td>
+                <td>
+                    <div class="progress-bar" style="width:80px;">
+                        <div class="progress-fill yellow" style="width:85%"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><a href="#">MH12GH3456</a></td>
+                <td>A/C Service</td>
+                <td><span class="status-badge info">Upcoming</span></td>
+                <td>In 30 days</td>
+                <td>Jun 1, 2023</td>
+                <td>
+                    <div class="progress-bar" style="width:80px;">
+                        <div class="progress-fill green" style="width:40%"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><a href="#">MH12PQ2345</a></td>
+                <td>Battery Health Check</td>
+                <td><span class="status-badge info">Upcoming</span></td>
+                <td>In 60 days</td>
+                <td>Dec 15, 2023</td>
+                <td>
+                    <div class="progress-bar" style="width:80px;">
+                        <div class="progress-fill green" style="width:25%"></div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

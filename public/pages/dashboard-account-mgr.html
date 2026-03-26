@@ -1,0 +1,254 @@
+<!-- ═══════════════════════════════════════════════════════════════
+     🤝 ACCOUNT MANAGER DASHBOARD
+     Dept: Sales & CRM | Goal: Client health, retention, upsell
+     Hierarchy: 🚨 At-Risk → 📊 KPIs → 📋 Client Health → ⚡ Actions
+     ═══════════════════════════════════════════════════════════════ -->
+
+<div class="page-header">
+    <h1>Client Health Center <span class="learn-badge"><i class="fas fa-user-tie" style="color:#1D4ED8;"></i>
+            Sales</span></h1>
+    <div class="page-header-actions">
+        <div class="filter-btn"><i class="fas fa-calendar-alt" style="margin-right:6px;"></i>Mar 2026 ▾</div>
+        <button class="btn btn-primary" onclick="navigateTo('clients')"><i class="fas fa-building"></i> My
+            Clients</button>
+    </div>
+</div>
+
+<!-- 🚨 ATTENTION NEEDED -->
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:20px;">
+    <div onclick="navigateTo('client-detail')"
+        style="cursor:pointer;background:linear-gradient(135deg,#fef2f2,#fff);border:1px solid #fecaca;border-radius:12px;padding:14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <div
+                style="width:28px;height:28px;background:#dc2626;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-heart-broken" style="color:#fff;font-size:12px;"></i>
+            </div>
+            <span
+                style="font-size:11px;font-weight:700;color:#991b1b;text-transform:uppercase;letter-spacing:0.5px;">CHURN
+                RISK</span>
+        </div>
+        <div style="font-size:28px;font-weight:800;color:#dc2626;">2</div>
+        <div style="font-size:11px;color:#6b7280;margin-top:2px;">Declining order volume</div>
+        <div style="font-size:10px;color:#dc2626;margin-top:4px;">₹8.4L annual revenue at risk</div>
+    </div>
+
+    <div onclick="navigateTo('clients')"
+        style="cursor:pointer;background:linear-gradient(135deg,#fffbeb,#fff);border:1px solid #fed7aa;border-radius:12px;padding:14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <div
+                style="width:28px;height:28px;background:#f59e0b;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-exclamation-circle" style="color:#fff;font-size:12px;"></i>
+            </div>
+            <span
+                style="font-size:11px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:0.5px;">SLA
+                BREACHES</span>
+        </div>
+        <div style="font-size:28px;font-weight:800;color:#f59e0b;">3</div>
+        <div style="font-size:11px;color:#6b7280;margin-top:2px;">Late deliveries this month</div>
+        <div style="font-size:10px;color:#92400e;margin-top:4px;">Need service recovery plan</div>
+    </div>
+
+    <div onclick="navigateTo('clients')"
+        style="cursor:pointer;background:linear-gradient(135deg,#eff6ff,#fff);border:1px solid #bfdbfe;border-radius:12px;padding:14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <div
+                style="width:28px;height:28px;background:#2563eb;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-redo" style="color:#fff;font-size:12px;"></i>
+            </div>
+            <span
+                style="font-size:11px;font-weight:700;color:#1e40af;text-transform:uppercase;letter-spacing:0.5px;">RENEWALS
+                DUE</span>
+        </div>
+        <div style="font-size:28px;font-weight:800;color:#2563eb;">4</div>
+        <div style="font-size:11px;color:#6b7280;margin-top:2px;">Contracts expiring in 60 days</div>
+        <div style="font-size:10px;color:#2563eb;margin-top:4px;">₹12L renewal value</div>
+    </div>
+
+    <div
+        style="background:linear-gradient(135deg,#f0fdf4,#fff);border:1px solid #bbf7d0;border-radius:12px;padding:14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <div
+                style="width:28px;height:28px;background:#16a34a;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-trophy" style="color:#fff;font-size:12px;"></i>
+            </div>
+            <span
+                style="font-size:11px;font-weight:700;color:#166534;text-transform:uppercase;letter-spacing:0.5px;">HAPPY
+                CLIENTS</span>
+        </div>
+        <div style="font-size:28px;font-weight:800;color:#16a34a;">9</div>
+        <div style="font-size:11px;color:#6b7280;margin-top:2px;">Of 14 managed clients</div>
+        <div style="font-size:10px;color:#16a34a;margin-top:4px;">NPS: 72 (Good)</div>
+    </div>
+</div>
+
+<!-- KPIs -->
+<div class="stats-row" style="grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px;">
+    <div class="stat-card" style="border-top:3px solid #2563eb;">
+        <div class="stat-label">Portfolio Revenue</div>
+        <div class="stat-value text-blue" style="font-size:20px;">₹45L</div>
+        <div style="font-size:10px;color:var(--text-muted);">Annual · 14 clients</div>
+    </div>
+    <div class="stat-card" style="border-top:3px solid #16a34a;">
+        <div class="stat-label">SLA Compliance</div>
+        <div class="stat-value text-green" style="font-size:20px;">94%</div>
+        <div style="font-size:10px;color:var(--text-muted);">Target: 98%</div>
+    </div>
+    <div class="stat-card" style="border-top:3px solid #f59e0b;">
+        <div class="stat-label">Avg Client Tenure</div>
+        <div class="stat-value text-yellow" style="font-size:20px;">2.4y</div>
+        <div class="stat-change positive"><i class="fas fa-arrow-up"></i> Building loyalty</div>
+    </div>
+    <div class="stat-card" style="border-top:3px solid #7c3aed;">
+        <div class="stat-label">Upsell Pipeline</div>
+        <div class="stat-value" style="font-size:20px;color:#7c3aed;">₹6.2L</div>
+        <div style="font-size:10px;color:var(--text-muted);">3 expansion opps</div>
+    </div>
+    <div class="stat-card" style="border-top:3px solid #dc2626;">
+        <div class="stat-label">Open Complaints</div>
+        <div class="stat-value text-red" style="font-size:20px;">4</div>
+        <div style="font-size:10px;color:#dc2626;">2 escalated</div>
+    </div>
+</div>
+
+<!-- Client Health Table + SLA -->
+<div class="dashboard-grid two-col" style="margin-bottom:16px;">
+    <div class="widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-heartbeat" style="color:#1D4ED8;margin-right:6px;"></i> Client Health Scorecard</h3>
+        </div>
+        <div class="widget-body" style="padding:0;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Client</th>
+                        <th style="text-align:right;">Revenue/Mo</th>
+                        <th>Health</th>
+                        <th>SLA</th>
+                        <th>Trend</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <a href="#" onclick="navigateTo('client-detail')" style="font-weight:600;">Reliance
+                                Industries</a>
+                            <div style="font-size:10px;color:#6b7280;">Since Jan 2024 · 26 months</div>
+                        </td>
+                        <td style="text-align:right;font-weight:600;">₹4.2L</td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#f0fdf4;color:#16a34a;border-radius:4px;font-weight:700;">★★★★★</span>
+                        </td>
+                        <td style="color:#16a34a;font-weight:600;">99%</td>
+                        <td><span style="color:#16a34a;">↑</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="#" onclick="navigateTo('client-detail')" style="font-weight:600;">Tata Steel</a>
+                            <div style="font-size:10px;color:#6b7280;">Since Mar 2024 · 24 months</div>
+                        </td>
+                        <td style="text-align:right;font-weight:600;">₹3.8L</td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#f0fdf4;color:#16a34a;border-radius:4px;font-weight:700;">★★★★☆</span>
+                        </td>
+                        <td style="color:#16a34a;font-weight:600;">97%</td>
+                        <td><span style="color:#16a34a;">↑</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="#" onclick="navigateTo('client-detail')" style="font-weight:600;">Asian Paints</a>
+                            <div style="font-size:10px;color:#6b7280;">Since Oct 2024 · 17 months</div>
+                        </td>
+                        <td style="text-align:right;font-weight:600;">₹2.8L</td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#f0fdf4;color:#16a34a;border-radius:4px;font-weight:700;">★★★★☆</span>
+                        </td>
+                        <td style="color:#16a34a;font-weight:600;">96%</td>
+                        <td><span style="color:#6b7280;">→</span></td>
+                    </tr>
+                    <tr style="background:#fffbeb;">
+                        <td>
+                            <a href="#" onclick="navigateTo('client-detail')" style="font-weight:600;">Hindustan
+                                Unilever</a>
+                            <div style="font-size:10px;color:#f59e0b;">⚠ 2 SLA breaches this month</div>
+                        </td>
+                        <td style="text-align:right;font-weight:600;">₹3.1L</td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#fffbeb;color:#92400e;border-radius:4px;font-weight:700;">★★★☆☆</span>
+                        </td>
+                        <td style="color:#f59e0b;font-weight:600;">88%</td>
+                        <td><span style="color:#dc2626;">↓</span></td>
+                    </tr>
+                    <tr style="background:#fef2f2;">
+                        <td>
+                            <a href="#" onclick="navigateTo('client-detail')" style="font-weight:600;">Adani Ports</a>
+                            <div style="font-size:10px;color:#dc2626;">⚠ Declining orders · 3 complaints</div>
+                        </td>
+                        <td style="text-align:right;font-weight:600;color:#dc2626;">₹1.8L ↓</td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#fef2f2;color:#dc2626;border-radius:4px;font-weight:700;">★★☆☆☆</span>
+                        </td>
+                        <td style="color:#dc2626;font-weight:600;">82%</td>
+                        <td><span style="color:#dc2626;">↓↓</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Upcoming Activities + Complaints -->
+    <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="widget">
+            <div class="widget-header">
+                <h3 style="font-size:13px;"><i class="fas fa-calendar-check"
+                        style="color:#16a34a;margin-right:6px;"></i> Upcoming Activities</h3>
+            </div>
+            <div class="widget-body" style="padding:12px 16px;">
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                    <div
+                        style="display:flex;gap:8px;align-items:center;padding:6px 8px;background:#fef2f2;border-radius:6px;border-left:3px solid #dc2626;">
+                        <div style="font-size:10px;font-weight:600;color:#dc2626;min-width:30px;">TODAY</div>
+                        <div style="font-size:12px;">Service recovery call — Adani Ports</div>
+                    </div>
+                    <div
+                        style="display:flex;gap:8px;align-items:center;padding:6px 8px;background:#fffbeb;border-radius:6px;border-left:3px solid #f59e0b;">
+                        <div style="font-size:10px;font-weight:600;color:#92400e;min-width:30px;">TOM</div>
+                        <div style="font-size:12px;">Contract renewal — HUL (₹3.1L)</div>
+                    </div>
+                    <div
+                        style="display:flex;gap:8px;align-items:center;padding:6px 8px;background:#eff6ff;border-radius:6px;border-left:3px solid #2563eb;">
+                        <div style="font-size:10px;font-weight:600;color:#1e40af;min-width:30px;">FRI</div>
+                        <div style="font-size:12px;">QBR presentation — Reliance Industries</div>
+                    </div>
+                    <div
+                        style="display:flex;gap:8px;align-items:center;padding:6px 8px;background:#eff6ff;border-radius:6px;border-left:3px solid #2563eb;">
+                        <div style="font-size:10px;font-weight:600;color:#1e40af;min-width:30px;">MON</div>
+                        <div style="font-size:12px;">Upsell meeting — Asian Paints (new route)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="widget">
+            <div class="widget-header">
+                <h3 style="font-size:13px;"><i class="fas fa-exclamation-triangle"
+                        style="color:#dc2626;margin-right:6px;"></i> Open Complaints</h3>
+            </div>
+            <div class="widget-body" style="padding:12px 16px;">
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                    <div style="padding:6px 8px;background:#fef2f2;border-radius:6px;border-left:3px solid #dc2626;">
+                        <div style="font-size:12px;font-weight:600;">Adani — Late delivery 2 days</div>
+                        <div style="font-size:10px;color:#dc2626;">Escalated · Client demanding credit note</div>
+                    </div>
+                    <div style="padding:6px 8px;background:#fef2f2;border-radius:6px;border-left:3px solid #dc2626;">
+                        <div style="font-size:12px;font-weight:600;">Adani — Damaged goods report</div>
+                        <div style="font-size:10px;color:#dc2626;">Escalated · Insurance claim initiated</div>
+                    </div>
+                    <div style="padding:6px 8px;background:#fffbeb;border-radius:6px;border-left:3px solid #f59e0b;">
+                        <div style="font-size:12px;font-weight:600;">HUL — Vehicle breakdown delay</div>
+                        <div style="font-size:10px;color:#92400e;">Acknowledged · Backup vehicle sent</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,148 @@
+<!-- ═══════════════════════════════════════════════════════════════
+     🧑‍💻 OPERATIONS DASHBOARD — Trip Lifecycle (3-Domain Architecture)
+     Operations Domain: Created → In Transit → Completed → Settled
+     ═══════════════════════════════════════════════════════════════ -->
+
+<div class="page-header">
+    <h1>Operations Dashboard <span class="learn-badge"><i class="fas fa-headset" style="color:#2563EB;"></i>
+            Operations</span></h1>
+    <div class="page-header-actions">
+        <button class="btn btn-primary" onclick="openDashAddTrip()"><i class="fas fa-plus"></i> New
+            Trip</button>
+    </div>
+</div>
+
+<!-- ╔════════════════════════════════════════════════════════════════╗
+     ║  OPERATIONS DOMAIN — Trip Lifecycle (4 stages)               ║
+     ╚════════════════════════════════════════════════════════════════╝ -->
+
+<!-- Domain label with visual hierarchy -->
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+    <div style="font-size:12px;font-weight:700;color:#059669;text-transform:uppercase;letter-spacing:0.8px;">Operations Domain</div>
+    <div style="flex:1;height:1px;background:linear-gradient(90deg,#A7F3D0,transparent);"></div>
+    <div style="font-size:10px;color:#94A3B8;">Created → In Transit → Completed → Settled</div>
+</div>
+
+<!-- Trip Lifecycle — 4 boxes in a row -->
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;">
+    <!-- Created -->
+    <button onclick="openDashTripSlider('Created','ops')"
+        style="background:#F5F3FF;border:2px solid #DDD6FE;border-radius:16px;padding:20px 16px;cursor:pointer;text-align:left;transition:all .15s;display:block;"
+        onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(124,58,237,0.15)';"
+        onmouseleave="this.style.transform='none';this.style.boxShadow='none';">
+        <div style="font-size:26px;margin-bottom:10px;">📝</div>
+        <div style="font-size:28px;font-weight:800;color:#7C3AED;line-height:1;margin-bottom:4px;" data-trip-count="Created">0</div>
+        <div style="font-size:13px;font-weight:700;color:#1E293B;">Created</div>
+        <div style="font-size:11px;color:#64748B;margin-top:2px;">Assign vehicle + driver</div>
+        <div style="margin-top:12px;font-size:11px;font-weight:700;color:#7C3AED;">View trips →</div>
+    </button>
+    <!-- In Transit -->
+    <button onclick="openDashTripSlider('In Transit','ops')"
+        style="background:#F0F9FF;border:2px solid #BAE6FD;border-radius:16px;padding:20px 16px;cursor:pointer;text-align:left;transition:all .15s;display:block;"
+        onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(14,165,233,0.15)';"
+        onmouseleave="this.style.transform='none';this.style.boxShadow='none';">
+        <div style="font-size:26px;margin-bottom:10px;">🚛</div>
+        <div style="font-size:28px;font-weight:800;color:#0EA5E9;line-height:1;margin-bottom:4px;" data-trip-count="In Transit">0</div>
+        <div style="font-size:13px;font-weight:700;color:#1E293B;">In Transit</div>
+        <div style="font-size:11px;color:#64748B;margin-top:2px;">Tracking</div>
+        <div style="margin-top:12px;font-size:11px;font-weight:700;color:#0EA5E9;">View trips →</div>
+    </button>
+    <!-- Completed -->
+    <button onclick="openDashTripSlider('Completed','ops')"
+        style="background:#F0FDF4;border:2px solid #A7F3D0;border-radius:16px;padding:20px 16px;cursor:pointer;text-align:left;transition:all .15s;display:block;"
+        onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(16,185,129,0.15)';"
+        onmouseleave="this.style.transform='none';this.style.boxShadow='none';">
+        <div style="font-size:26px;margin-bottom:10px;">✅</div>
+        <div style="font-size:28px;font-weight:800;color:#10B981;line-height:1;margin-bottom:4px;" data-trip-count="Completed">0</div>
+        <div style="font-size:13px;font-weight:700;color:#1E293B;">Completed</div>
+        <div style="font-size:11px;color:#64748B;margin-top:2px;">POD + delivery details entered</div>
+        <div style="margin-top:12px;font-size:11px;font-weight:700;color:#10B981;">View trips →</div>
+    </button>
+    <!-- Settled -->
+    <button onclick="openDashTripSlider('Settled','ops')"
+        style="background:#FFFBEB;border:2px solid #FCD34D;border-radius:16px;padding:20px 16px;cursor:pointer;text-align:left;transition:all .15s;display:block;"
+        onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(217,119,6,0.15)';"
+        onmouseleave="this.style.transform='none';this.style.boxShadow='none';">
+        <div style="font-size:26px;margin-bottom:10px;">🔒</div>
+        <div style="font-size:28px;font-weight:800;color:#D97706;line-height:1;margin-bottom:4px;" data-trip-count="Settled">0</div>
+        <div style="font-size:13px;font-weight:700;color:#1E293B;">Settled</div>
+        <div style="font-size:11px;color:#64748B;margin-top:2px;">Revenue locked — Trip done</div>
+        <div style="margin-top:12px;font-size:11px;font-weight:700;color:#D97706;">View trips →</div>
+    </button>
+</div>
+
+<!-- Ops Alerts (Delayed Trips) -->
+<div style="font-size:12px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;">Ops Alerts</div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;">
+    <button id="op-delayed-btn" onclick="openDashTripSlider('Delayed','ops')"
+        style="background:#FEF2F2;border:2px solid #FECACA;border-radius:16px;padding:18px 16px;cursor:pointer;text-align:left;transition:all .15s;display:block;"
+        onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(220,38,38,0.12)';"
+        onmouseleave="this.style.transform='none';this.style.boxShadow='none';">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+            <span style="font-size:22px;">🚨</span>
+            <span style="font-size:24px;font-weight:800;color:#DC2626;" data-trip-count="Delayed">0</span>
+        </div>
+        <div style="font-size:13px;font-weight:700;color:#1E293B;">Delayed Trips</div>
+        <div style="font-size:11px;color:#94A3B8;margin-top:2px;">Overdue — follow up</div>
+    </button>
+</div>
+
+<!-- Domain boundary info -->
+<div style="background:linear-gradient(135deg,#F0F9FF,#F5F3FF);border:1.5px solid #E0E7FF;border-radius:14px;padding:18px 22px;margin-bottom:20px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <div style="font-size:16px;">📋</div>
+        <div style="font-size:13px;font-weight:800;color:#1E293B;">3-Domain Architecture</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+        <!-- Operations -->
+        <div style="background:#fff;border-radius:10px;padding:12px;border:1.5px solid #A7F3D0;">
+            <div style="font-size:10px;font-weight:700;color:#059669;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Operations Domain</div>
+            <div style="font-size:12px;color:#1E293B;font-weight:600;">Owns trip from creation to settlement</div>
+            <div style="font-size:10px;color:#64748B;margin-top:4px;">Created → In Transit → Completed → Settled</div>
+        </div>
+        <!-- Finance -->
+        <div style="background:#fff;border-radius:10px;padding:12px;border:1.5px solid #A5B4FC;">
+            <div style="font-size:10px;font-weight:700;color:#6366F1;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Finance Domain</div>
+            <div style="font-size:12px;color:#1E293B;font-weight:600;">Invoices & payments</div>
+            <div style="font-size:10px;color:#64748B;margin-top:4px;">Settled trips → Invoice → Payment → Receivable</div>
+        </div>
+        <!-- Expense -->
+        <div style="background:#fff;border-radius:10px;padding:12px;border:1.5px solid #FCD34D;">
+            <div style="font-size:10px;font-weight:700;color:#D97706;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Expense Domain</div>
+            <div style="font-size:12px;color:#1E293B;font-weight:600;">Standalone, tag-based</div>
+            <div style="font-size:10px;color:#64748B;margin-top:4px;">Expense, Cash Voucher, Driver Advance</div>
+        </div>
+    </div>
+</div>
+
+<!-- ─── INLINE SCRIPT — Count Init ─────────────────────────────── -->
+<script>
+(function() {
+    // Initialize counts from TRIPS_DATA (loaded by trip-slider.js)
+    function initCounts() {
+        if (typeof TRIPS_DATA === 'undefined') {
+            setTimeout(initCounts, 100);
+            return;
+        }
+        var counts = { 'Created':0, 'In Transit':0, 'Completed':0, 'Settled':0, 'Delayed':0 };
+        TRIPS_DATA.forEach(function(t) {
+            if (counts[t.status] !== undefined) counts[t.status]++;
+            if (t.delayed) counts['Delayed']++;
+        });
+        document.querySelectorAll('[data-trip-count]').forEach(function(el) {
+            var key = el.getAttribute('data-trip-count');
+            if (counts[key] !== undefined) el.textContent = counts[key];
+        });
+
+        // Dim delayed box if count is 0
+        var delBtn = document.getElementById('op-delayed-btn');
+        if (delBtn && counts['Delayed'] === 0) {
+            delBtn.style.opacity = '0.5';
+            delBtn.style.cursor = 'default';
+            delBtn.style.background = '#F8FAFC';
+            delBtn.style.borderColor = '#E8EDF2';
+        }
+    }
+    initCounts();
+})();
+</script>

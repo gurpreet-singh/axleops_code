@@ -1,0 +1,313 @@
+<!-- Subcontractor & Broker Management -->
+<div class="page-header">
+    <h1>Subcontractors & Brokers</h1>
+    <div class="page-header-actions">
+        <button class="btn btn-secondary"><i class="fas fa-file-export"></i> Export</button>
+        <button class="btn btn-primary" data-modal="new-subcon-modal"><i class="fas fa-plus"></i> Add
+            Subcontractor</button>
+    </div>
+</div>
+
+<div class="tabs" style="margin-bottom:16px;">
+    <div class="tab active">All</div>
+    <div class="tab">Subcontractors</div>
+    <div class="tab">Brokers</div>
+    <div class="tab">Outsourced Trips</div>
+    <div class="tab">Performance</div>
+</div>
+
+<!-- Subcontracted Trips -->
+<div class="detail-section" style="margin-bottom:20px;">
+    <div class="section-header" style="background:#fff7ed;">
+        <h3 style="color:#ea580c;font-size:14px;"><i class="fas fa-truck-loading" style="margin-right:6px;"></i> Active
+            Outsourced Trips</h3>
+        <span style="font-size:12px;font-weight:600;color:#ea580c;">6 in transit</span>
+    </div>
+    <div class="section-body" style="padding:0;">
+        <table style="font-size:12px;">
+            <thead>
+                <tr>
+                    <th>Trip</th>
+                    <th>Client</th>
+                    <th>Route</th>
+                    <th>Subcontractor</th>
+                    <th>Broker</th>
+                    <th style="text-align:right;">Client Rate</th>
+                    <th style="text-align:right;">Subcon Cost</th>
+                    <th style="text-align:right;">Margin</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><a href="#" onclick="navigateTo('trip-detail')">TRP-S001</a></td>
+                    <td>Reliance Industries</td>
+                    <td>Mumbai → Kolkata</td>
+                    <td style="font-weight:600;">Patel Roadways</td>
+                    <td>Mohan Broker</td>
+                    <td style="text-align:right;">₹1,12,000</td>
+                    <td style="text-align:right;">₹88,000</td>
+                    <td style="text-align:right;font-weight:600;color:var(--status-active);">₹24,000 (21.4%)</td>
+                    <td><span class="status-badge active">En Route</span></td>
+                </tr>
+                <tr>
+                    <td><a href="#">TRP-S002</a></td>
+                    <td>Tata Steel</td>
+                    <td>Delhi → Jamshedpur</td>
+                    <td style="font-weight:600;">Singh Transport</td>
+                    <td>—</td>
+                    <td style="text-align:right;">₹68,000</td>
+                    <td style="text-align:right;">₹52,000</td>
+                    <td style="text-align:right;font-weight:600;color:var(--status-active);">₹16,000 (23.5%)</td>
+                    <td><span class="status-badge active">En Route</span></td>
+                </tr>
+                <tr>
+                    <td><a href="#">TRP-S003</a></td>
+                    <td>ITC Limited</td>
+                    <td>Kolkata → Chennai</td>
+                    <td style="font-weight:600;">Reddy Logistics</td>
+                    <td>Gupta Associates</td>
+                    <td style="text-align:right;">₹94,000</td>
+                    <td style="text-align:right;">₹82,000</td>
+                    <td style="text-align:right;font-weight:600;color:var(--status-pending);">₹12,000 (12.8%)</td>
+                    <td><span class="status-badge pending">Scheduled</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Subcontractor Directory -->
+<div class="table-container" style="margin-bottom:20px;">
+    <h2 style="font-size:16px;font-weight:600;margin-bottom:12px;">Subcontractor Directory</h2>
+    <div class="table-toolbar">
+        <div class="search-input"><i class="fas fa-search" style="color:var(--text-muted)"></i><input type="text"
+                placeholder="Search subcontractors..."></div>
+        <div class="filter-btn">Region ▾</div>
+        <div class="filter-btn">Rating ▾</div>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Subcontractor</th>
+                <th>Type</th>
+                <th>Region</th>
+                <th>Vehicles</th>
+                <th>Trips (MTD)</th>
+                <th style="text-align:right;">Avg Cost</th>
+                <th>On-Time %</th>
+                <th>Quality</th>
+                <th>Rating</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="font-weight:600;">Patel Roadways</td>
+                <td><span class="status-badge" style="font-size:10px;">Subcontractor</span></td>
+                <td>Maharashtra</td>
+                <td>12</td>
+                <td>8</td>
+                <td style="text-align:right;">₹82,400</td>
+                <td>
+                    <div class="progress-bar" style="width:60px;">
+                        <div class="progress-fill green" style="width:94%"></div>
+                    </div>
+                </td>
+                <td>
+                    <div class="progress-bar" style="width:60px;">
+                        <div class="progress-fill green" style="width:88%"></div>
+                    </div>
+                </td>
+                <td style="font-weight:600;">4.5 ★</td>
+                <td><span class="status-badge active">Active</span></td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">Singh Transport</td>
+                <td><span class="status-badge" style="font-size:10px;">Subcontractor</span></td>
+                <td>Delhi NCR</td>
+                <td>8</td>
+                <td>6</td>
+                <td style="text-align:right;">₹54,200</td>
+                <td>
+                    <div class="progress-bar" style="width:60px;">
+                        <div class="progress-fill green" style="width:86%"></div>
+                    </div>
+                </td>
+                <td>
+                    <div class="progress-bar" style="width:60px;">
+                        <div class="progress-fill green" style="width:82%"></div>
+                    </div>
+                </td>
+                <td style="font-weight:600;">4.2 ★</td>
+                <td><span class="status-badge active">Active</span></td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">Reddy Logistics</td>
+                <td><span class="status-badge" style="font-size:10px;">Subcontractor</span></td>
+                <td>South India</td>
+                <td>15</td>
+                <td>5</td>
+                <td style="text-align:right;">₹76,800</td>
+                <td>
+                    <div class="progress-bar" style="width:60px;">
+                        <div class="progress-fill yellow" style="width:72%"></div>
+                    </div>
+                </td>
+                <td>
+                    <div class="progress-bar" style="width:60px;">
+                        <div class="progress-fill yellow" style="width:70%"></div>
+                    </div>
+                </td>
+                <td style="font-weight:600;">3.6 ★</td>
+                <td><span class="status-badge pending">Under Review</span></td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">Mohan Broker</td>
+                <td><span class="status-badge info" style="font-size:10px;">Broker</span></td>
+                <td>Pan India</td>
+                <td>—</td>
+                <td>4</td>
+                <td style="text-align:right;">₹5,000 fee</td>
+                <td>
+                    <div class="progress-bar" style="width:60px;">
+                        <div class="progress-fill green" style="width:90%"></div>
+                    </div>
+                </td>
+                <td>
+                    <div class="progress-bar" style="width:60px;">
+                        <div class="progress-fill green" style="width:85%"></div>
+                    </div>
+                </td>
+                <td style="font-weight:600;">4.0 ★</td>
+                <td><span class="status-badge active">Active</span></td>
+            </tr>
+            <tr>
+                <td style="font-weight:600;">Gupta Associates</td>
+                <td><span class="status-badge info" style="font-size:10px;">Broker</span></td>
+                <td>East India</td>
+                <td>—</td>
+                <td>3</td>
+                <td style="text-align:right;">₹4,500 fee</td>
+                <td>
+                    <div class="progress-bar" style="width:60px;">
+                        <div class="progress-fill green" style="width:82%"></div>
+                    </div>
+                </td>
+                <td>
+                    <div class="progress-bar" style="width:60px;">
+                        <div class="progress-fill yellow" style="width:75%"></div>
+                    </div>
+                </td>
+                <td style="font-weight:600;">3.8 ★</td>
+                <td><span class="status-badge active">Active</span></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Risk Tracking -->
+<div style="margin-top:0;">
+    <h2 style="font-size:16px;font-weight:600;margin-bottom:12px;">⚠️ Risk Tracker</h2>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+        <div class="detail-section" style="border-left:3px solid #DC2626;">
+            <div class="section-header" style="background:#fef2f2;">
+                <h3 style="color:#dc2626;font-size:13px;">Delays (Last 30 days)</h3>
+            </div>
+            <div class="section-body" style="font-size:12px;">
+                <div style="padding:4px 0;display:flex;justify-content:space-between;">
+                    <span>Reddy Logistics</span><span style="font-weight:600;color:#dc2626;">3 delays (avg 6hrs)</span>
+                </div>
+                <div style="padding:4px 0;display:flex;justify-content:space-between;">
+                    <span>Singh Transport</span><span style="font-weight:600;color:#f59e0b;">1 delay (2hrs)</span>
+                </div>
+            </div>
+        </div>
+        <div class="detail-section" style="border-left:3px solid #F59E0B;">
+            <div class="section-header" style="background:#fffbeb;">
+                <h3 style="color:#d97706;font-size:13px;">Quality Issues</h3>
+            </div>
+            <div class="section-body" style="font-size:12px;">
+                <div style="padding:4px 0;display:flex;justify-content:space-between;">
+                    <span>Reddy Logistics</span><span style="font-weight:600;color:#f59e0b;">Damaged cargo
+                        (TRP-S008)</span>
+                </div>
+                <div style="padding:4px 0;display:flex;justify-content:space-between;">
+                    <span>Gupta Associates</span><span style="font-weight:600;color:#f59e0b;">Wrong vehicle sent</span>
+                </div>
+            </div>
+        </div>
+        <div class="detail-section" style="border-left:3px solid #3B82F6;">
+            <div class="section-header" style="background:#eff6ff;">
+                <h3 style="color:#2563eb;font-size:13px;">Payment Disputes</h3>
+            </div>
+            <div class="section-body" style="font-size:12px;">
+                <div style="padding:4px 0;display:flex;justify-content:space-between;">
+                    <span>Patel Roadways</span><span style="font-weight:600;">₹12,000 rate dispute</span>
+                </div>
+                <div style="padding:4px 0;display:flex;justify-content:space-between;">
+                    <span>Reddy Logistics</span><span style="font-weight:600;">₹8,400 extra charges</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- New Subcontractor Modal -->
+<div class="modal-overlay" id="new-subcon-modal">
+    <div class="modal-content" style="max-width:520px;">
+        <div class="modal-header">
+            <h3>Add Subcontractor / Broker</h3><button class="close-btn" data-close-modal>×</button>
+        </div>
+        <div class="modal-body" style="padding:20px;">
+            <div style="display:grid;gap:14px;">
+                <div><label
+                        style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">Company
+                        Name *</label>
+                    <input type="text" placeholder="e.g. ABC Roadways"
+                        style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:13px;font-family:inherit;">
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div><label
+                            style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">Type
+                            *</label>
+                        <select
+                            style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:13px;font-family:inherit;">
+                            <option>Subcontractor</option>
+                            <option>Broker / Agent</option>
+                        </select>
+                    </div>
+                    <div><label
+                            style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">Region</label>
+                        <input type="text" placeholder="e.g. Western India"
+                            style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:13px;font-family:inherit;">
+                    </div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div><label
+                            style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">Contact
+                            Person</label>
+                        <input type="text" placeholder="Name"
+                            style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:13px;font-family:inherit;">
+                    </div>
+                    <div><label
+                            style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">Phone</label>
+                        <input type="tel" placeholder="+91..."
+                            style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:13px;font-family:inherit;">
+                    </div>
+                </div>
+                <div><label
+                        style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:4px;">Fleet
+                        Size (if subcontractor)</label>
+                    <input type="number" placeholder="Number of vehicles"
+                        style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:13px;font-family:inherit;">
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer"
+            style="padding:12px 20px;border-top:1px solid var(--border-color);display:flex;justify-content:flex-end;gap:8px;">
+            <button class="btn btn-secondary" data-close-modal>Cancel</button>
+            <button class="btn btn-primary" data-close-modal>Add to Network</button>
+        </div>
+    </div>
+</div>

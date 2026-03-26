@@ -1,0 +1,452 @@
+<!-- ═══════════════════════════════════════════════════════════════
+     📋 WORKFLOW TEMPLATES — Trip Workflow State Machine Configuration
+     5 configurable templates with 15 feature flags each
+     ═══════════════════════════════════════════════════════════════ -->
+
+<div class="page-header">
+    <h1>Workflow Templates</h1>
+    <div class="page-header-actions">
+        <button class="btn btn-secondary"><i class="fas fa-file-export"></i> Export</button>
+        <button class="btn btn-primary"><i class="fas fa-plus"></i> Add Template</button>
+    </div>
+</div>
+
+<p style="font-size:13px;color:var(--text-secondary);margin:-8px 0 20px;max-width:900px;line-height:1.6;">
+    Templates define which states and transitions are active for a trip. Each template enables or disables specific workflow steps
+    (weight verification, checkpoints, E-Way Bill, POD requirements). Assign templates at the route or contract level. Override per-trip if needed.
+</p>
+
+<!-- Template Cards Grid -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+
+    <!-- ═══ STANDARD ═══ -->
+    <div class="detail-section">
+        <div class="section-header" style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <h3 style="margin:0;font-size:16px;">Standard</h3>
+                <span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;background:#dcfce7;color:#16a34a;">ACTIVE</span>
+            </div>
+            <div style="text-align:right;font-size:11px;color:var(--text-muted);">
+                <div>38 vehicles</div>
+                <div>842 MTD</div>
+            </div>
+        </div>
+        <div class="section-body">
+            <div style="font-size:12px;color:var(--text-secondary);margin-bottom:14px;line-height:1.5;">
+                Default workflow for FMCG, general cargo, and most shipments. Covers ~70% of all trips.
+            </div>
+            <div style="background:var(--bg-main);border-radius:8px;padding:12px 14px;">
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Pre-departure checklist</span>
+                    <span style="font-weight:600;color:var(--text-primary);">Optional</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">AT_ORIGIN state</span>
+                    <span style="font-weight:600;color:var(--text-primary);">Enabled</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Weight verification (loading)</span>
+                    <span style="font-weight:600;color:var(--text-primary);">Optional</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Seal number capture</span>
+                    <span style="font-weight:600;color:var(--text-primary);">Optional</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">E-Way Bill generation</span>
+                    <span style="font-weight:600;color:var(--text-primary);">Auto (if >₹50K)</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">GPS tracking frequency</span>
+                    <span style="font-weight:600;color:var(--text-primary);">Every 60 seconds</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Intermediate checkpoints</span>
+                    <span style="font-weight:600;color:var(--text-muted);">Disabled</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">AT_DESTINATION state</span>
+                    <span style="font-weight:600;color:var(--text-primary);">Enabled</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Unloading verification</span>
+                    <span style="font-weight:600;color:var(--text-primary);">Enabled</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Weight verification (unloading)</span>
+                    <span style="font-weight:600;color:var(--text-primary);">Optional</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">POD — minimum photos</span>
+                    <span style="font-weight:600;color:var(--text-primary);">2</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">POD — weight slip</span>
+                    <span style="font-weight:600;color:var(--text-primary);">Optional</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">POD — receiver signature</span>
+                    <span style="font-weight:600;color:#7c3aed;">Mandatory</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Auto-settlement</span>
+                    <span style="font-weight:600;color:var(--text-primary);">Yes (if no exceptions)</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;">
+                    <span style="color:var(--text-secondary);">Detention tracking</span>
+                    <span style="font-weight:600;color:var(--text-primary);">Yes</span>
+                </div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:14px;">
+                <button class="btn btn-secondary" style="flex:1;justify-content:center;">Configure →</button>
+                <button class="btn" style="color:var(--text-muted);">Duplicate</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ EXPRESS ═══ -->
+    <div class="detail-section">
+        <div class="section-header" style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <h3 style="margin:0;font-size:16px;">Express</h3>
+                <span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;background:#dcfce7;color:#16a34a;">ACTIVE</span>
+            </div>
+            <div style="text-align:right;font-size:11px;color:var(--text-muted);">
+                <div>8 vehicles</div>
+                <div>124 MTD</div>
+            </div>
+        </div>
+        <div class="section-body">
+            <div style="font-size:12px;color:var(--text-secondary);margin-bottom:14px;line-height:1.5;">
+                Fast turnaround for time-sensitive, low-value shipments. Skips verification steps.
+            </div>
+            <div style="background:var(--bg-main);border-radius:8px;padding:12px 14px;">
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Pre-departure checklist</span>
+                    <span style="font-weight:600;color:var(--text-muted);">Disabled</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">AT_ORIGIN state</span>
+                    <span style="font-weight:600;color:var(--text-muted);">Skipped</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Weight verification (loading)</span>
+                    <span style="font-weight:600;color:var(--text-muted);">Disabled</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Seal number capture</span>
+                    <span style="font-weight:600;color:var(--text-muted);">Disabled</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">E-Way Bill generation</span>
+                    <span style="font-weight:600;color:var(--text-primary);">Auto (if >₹50K)</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">GPS tracking frequency</span>
+                    <span style="font-weight:600;color:var(--text-primary);">Every 30 seconds</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Intermediate checkpoints</span>
+                    <span style="font-weight:600;color:var(--text-muted);">Disabled</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">AT_DESTINATION state</span>
+                    <span style="font-weight:600;color:var(--text-muted);">Skipped</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Unloading verification</span>
+                    <span style="font-weight:600;color:var(--text-muted);">Skipped</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Weight verification (unloading)</span>
+                    <span style="font-weight:600;color:var(--text-muted);">Disabled</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">POD — minimum photos</span>
+                    <span style="font-weight:600;color:var(--text-primary);">1</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">POD — weight slip</span>
+                    <span style="font-weight:600;color:var(--text-muted);">No</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">POD — receiver signature</span>
+                    <span style="font-weight:600;color:#7c3aed;">Mandatory</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Auto-settlement</span>
+                    <span style="font-weight:600;color:var(--text-primary);">Yes</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;">
+                    <span style="color:var(--text-secondary);">Detention tracking</span>
+                    <span style="font-weight:600;color:var(--text-muted);">No</span>
+                </div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:14px;">
+                <button class="btn btn-secondary" style="flex:1;justify-content:center;">Configure →</button>
+                <button class="btn" style="color:var(--text-muted);">Duplicate</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ HEAVY CARGO ═══ -->
+    <div class="detail-section">
+        <div class="section-header" style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <h3 style="margin:0;font-size:16px;">Heavy Cargo</h3>
+                <span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;background:#dcfce7;color:#16a34a;">ACTIVE</span>
+            </div>
+            <div style="text-align:right;font-size:11px;color:var(--text-muted);">
+                <div>15 vehicles</div>
+                <div>186 MTD</div>
+            </div>
+        </div>
+        <div class="section-body">
+            <div style="font-size:12px;color:var(--text-secondary);margin-bottom:14px;line-height:1.5;">
+                Steel, machinery, bulk materials. Full verification at loading and unloading points.
+            </div>
+            <div style="background:var(--bg-main);border-radius:8px;padding:12px 14px;">
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Pre-departure checklist</span>
+                    <span style="font-weight:600;color:#7c3aed;">Mandatory</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">AT_ORIGIN state</span>
+                    <span style="font-weight:600;color:var(--text-primary);">Enabled</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Weight verification (loading)</span>
+                    <span style="font-weight:600;color:#7c3aed;">Mandatory</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Seal number capture</span>
+                    <span style="font-weight:600;color:#7c3aed;">Mandatory</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">E-Way Bill generation</span>
+                    <span style="font-weight:600;color:#7c3aed;">Always required</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">GPS tracking frequency</span>
+                    <span style="font-weight:600;color:var(--text-primary);">Every 30 seconds</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Intermediate checkpoints</span>
+                    <span style="font-weight:600;color:var(--text-muted);">Disabled</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">AT_DESTINATION state</span>
+                    <span style="font-weight:600;color:var(--text-primary);">Enabled</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Unloading verification</span>
+                    <span style="font-weight:600;color:#7c3aed;">Mandatory</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Weight verification (unloading)</span>
+                    <span style="font-weight:600;color:#7c3aed;">Mandatory</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">POD — minimum photos</span>
+                    <span style="font-weight:600;color:var(--text-primary);">4</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">POD — weight slip</span>
+                    <span style="font-weight:600;color:#7c3aed;">Mandatory</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">POD — receiver signature</span>
+                    <span style="font-weight:600;color:#7c3aed;">Mandatory</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Auto-settlement</span>
+                    <span style="font-weight:600;color:var(--text-primary);">Manual review required</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;">
+                    <span style="color:var(--text-secondary);">Detention tracking</span>
+                    <span style="font-weight:600;color:var(--text-primary);">Yes (strict)</span>
+                </div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:14px;">
+                <button class="btn btn-secondary" style="flex:1;justify-content:center;">Configure →</button>
+                <button class="btn" style="color:var(--text-muted);">Duplicate</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ HAZMAT ═══ -->
+    <div class="detail-section">
+        <div class="section-header" style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <h3 style="margin:0;font-size:16px;">Hazmat</h3>
+                <span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;background:#dcfce7;color:#16a34a;">ACTIVE</span>
+                <span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:#fee2e2;color:#dc2626;">MAX SAFETY</span>
+            </div>
+            <div style="text-align:right;font-size:11px;color:var(--text-muted);">
+                <div>4 vehicles</div>
+                <div>28 MTD</div>
+            </div>
+        </div>
+        <div class="section-body">
+            <div style="font-size:12px;color:var(--text-secondary);margin-bottom:14px;line-height:1.5;">
+                Chemicals, petrochemicals, hazardous materials. Maximum safety and real-time monitoring.
+            </div>
+            <div style="background:var(--bg-main);border-radius:8px;padding:12px 14px;">
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Pre-departure checklist</span>
+                    <span style="font-weight:600;color:#7c3aed;">Mandatory</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">AT_ORIGIN state</span>
+                    <span style="font-weight:600;color:var(--text-primary);">Enabled</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Weight verification (loading)</span>
+                    <span style="font-weight:600;color:#7c3aed;">Mandatory</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Seal number capture</span>
+                    <span style="font-weight:600;color:#7c3aed;">Mandatory</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">E-Way Bill generation</span>
+                    <span style="font-weight:600;color:#7c3aed;">Always required</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">GPS tracking frequency</span>
+                    <span style="font-weight:600;color:#dc2626;">Every 15 seconds</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Intermediate checkpoints</span>
+                    <span style="font-weight:600;color:#7c3aed;">Mandatory (every 200 km)</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">AT_DESTINATION state</span>
+                    <span style="font-weight:600;color:var(--text-primary);">Enabled</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Unloading verification</span>
+                    <span style="font-weight:600;color:#7c3aed;">Mandatory</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Weight verification (unloading)</span>
+                    <span style="font-weight:600;color:#7c3aed;">Mandatory</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">POD — minimum photos</span>
+                    <span style="font-weight:600;color:var(--text-primary);">4</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">POD — weight slip</span>
+                    <span style="font-weight:600;color:#7c3aed;">Mandatory</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">POD — receiver signature</span>
+                    <span style="font-weight:600;color:#7c3aed;">Mandatory + official stamp</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                    <span style="color:var(--text-secondary);">Auto-settlement</span>
+                    <span style="font-weight:600;color:var(--text-primary);">Manual review required</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;">
+                    <span style="color:var(--text-secondary);">Detention tracking</span>
+                    <span style="font-weight:600;color:var(--text-primary);">Yes (strict)</span>
+                </div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:14px;">
+                <button class="btn btn-secondary" style="flex:1;justify-content:center;">Configure →</button>
+                <button class="btn" style="color:var(--text-muted);">Duplicate</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ MULTI-DROP ═══ -->
+    <div class="detail-section" style="grid-column:1 / -1;">
+        <div class="section-header" style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <h3 style="margin:0;font-size:16px;">Multi-Drop</h3>
+                <span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;background:#dcfce7;color:#16a34a;">ACTIVE</span>
+            </div>
+            <div style="text-align:right;font-size:11px;color:var(--text-muted);">
+                <div>12 vehicles</div>
+                <div>96 MTD</div>
+            </div>
+        </div>
+        <div class="section-body">
+            <div style="font-size:12px;color:var(--text-secondary);margin-bottom:14px;line-height:1.5;">
+                Multiple delivery points per trip. POD collected at each stop. Common for FMCG distribution.
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div style="background:var(--bg-main);border-radius:8px;padding:12px 14px;">
+                    <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                        <span style="color:var(--text-secondary);">Pre-departure checklist</span>
+                        <span style="font-weight:600;color:var(--text-primary);">Optional</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                        <span style="color:var(--text-secondary);">AT_ORIGIN state</span>
+                        <span style="font-weight:600;color:var(--text-primary);">Enabled</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                        <span style="color:var(--text-secondary);">Weight verification (loading)</span>
+                        <span style="font-weight:600;color:var(--text-muted);">Disabled</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                        <span style="color:var(--text-secondary);">Seal number capture</span>
+                        <span style="font-weight:600;color:var(--text-primary);">Optional</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                        <span style="color:var(--text-secondary);">E-Way Bill generation</span>
+                        <span style="font-weight:600;color:var(--text-primary);">Auto (if >₹50K)</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                        <span style="color:var(--text-secondary);">GPS tracking frequency</span>
+                        <span style="font-weight:600;color:var(--text-primary);">Every 30 seconds</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                        <span style="color:var(--text-secondary);">Intermediate checkpoints</span>
+                        <span style="font-weight:600;color:var(--text-primary);">Enabled (per drop point)</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;">
+                        <span style="color:var(--text-secondary);">AT_DESTINATION state</span>
+                        <span style="font-weight:600;color:var(--text-primary);">Enabled per drop</span>
+                    </div>
+                </div>
+                <div style="background:var(--bg-main);border-radius:8px;padding:12px 14px;">
+                    <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                        <span style="color:var(--text-secondary);">Unloading verification</span>
+                        <span style="font-weight:600;color:var(--text-primary);">Per drop point</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                        <span style="color:var(--text-secondary);">Weight verification (unloading)</span>
+                        <span style="font-weight:600;color:var(--text-muted);">Disabled</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                        <span style="color:var(--text-secondary);">POD — minimum photos</span>
+                        <span style="font-weight:600;color:var(--text-primary);">2 per drop point</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                        <span style="color:var(--text-secondary);">POD — weight slip</span>
+                        <span style="font-weight:600;color:var(--text-muted);">No</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                        <span style="color:var(--text-secondary);">POD — receiver signature</span>
+                        <span style="font-weight:600;color:#7c3aed;">Mandatory per drop</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;border-bottom:1px solid var(--border-color);">
+                        <span style="color:var(--text-secondary);">Auto-settlement</span>
+                        <span style="font-weight:600;color:var(--text-primary);">After all drops complete</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px;">
+                        <span style="color:var(--text-secondary);">Detention tracking</span>
+                        <span style="font-weight:600;color:var(--text-primary);">Yes (per stop)</span>
+                    </div>
+                </div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:14px;">
+                <button class="btn btn-secondary" style="flex:1;max-width:200px;justify-content:center;">Configure →</button>
+                <button class="btn" style="color:var(--text-muted);">Duplicate</button>
+            </div>
+        </div>
+    </div>
+
+</div>

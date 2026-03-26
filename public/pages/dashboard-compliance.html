@@ -1,0 +1,319 @@
+<!-- ═══════════════════════════════════════════════════════════════
+     🛡️ COMPLIANCE MANAGER DASHBOARD
+     Dept: Compliance & Governance | Goal: Risk monitor, document tracking
+     Hierarchy: 🚨 Urgent → 📊 KPIs → 📋 Expiry Matrix → ⚡ Actions
+     ═══════════════════════════════════════════════════════════════ -->
+
+<div class="page-header">
+    <h1>Compliance Monitor <span class="learn-badge"><i class="fas fa-clipboard-check" style="color:#7C3AED;"></i>
+            Governance</span></h1>
+    <div class="page-header-actions">
+        <div class="filter-btn"><i class="fas fa-calendar-alt" style="margin-right:6px;"></i>Next 90 Days ▾</div>
+        <button class="btn btn-primary" onclick="navigateTo('vehicle-compliance')"><i class="fas fa-shield-alt"></i>
+            Compliance Board</button>
+    </div>
+</div>
+
+<!-- 🚨 URGENT ALERTS -->
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:20px;">
+    <div onclick="navigateTo('vehicle-compliance')"
+        style="cursor:pointer;background:linear-gradient(135deg,#fef2f2,#fff);border:1px solid #fecaca;border-radius:12px;padding:14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <div
+                style="width:28px;height:28px;background:#dc2626;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-times-circle" style="color:#fff;font-size:12px;"></i>
+            </div>
+            <span
+                style="font-size:11px;font-weight:700;color:#991b1b;text-transform:uppercase;letter-spacing:0.5px;">EXPIRED
+                DOCS</span>
+        </div>
+        <div style="font-size:28px;font-weight:800;color:#dc2626;">5</div>
+        <div style="font-size:11px;color:#6b7280;margin-top:2px;">Across 4 vehicles</div>
+        <div style="font-size:10px;color:#dc2626;margin-top:4px;">2 insurance · 2 permits · 1 PUC</div>
+    </div>
+
+    <div onclick="navigateTo('reminders')"
+        style="cursor:pointer;background:linear-gradient(135deg,#fffbeb,#fff);border:1px solid #fed7aa;border-radius:12px;padding:14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <div
+                style="width:28px;height:28px;background:#f59e0b;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-clock" style="color:#fff;font-size:12px;"></i>
+            </div>
+            <span
+                style="font-size:11px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:0.5px;">EXPIRING
+                <30D< /span>
+        </div>
+        <div style="font-size:28px;font-weight:800;color:#f59e0b;">8</div>
+        <div style="font-size:11px;color:#6b7280;margin-top:2px;">Need renewal action</div>
+        <div style="font-size:10px;color:#92400e;margin-top:4px;">3 fitness · 3 insurance · 2 RC</div>
+    </div>
+
+    <div onclick="navigateTo('inspections')"
+        style="cursor:pointer;background:linear-gradient(135deg,#fef2f2,#fff);border:1px solid #fecaca;border-radius:12px;padding:14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <div
+                style="width:28px;height:28px;background:#dc2626;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-ban" style="color:#fff;font-size:12px;"></i>
+            </div>
+            <span
+                style="font-size:11px;font-weight:700;color:#991b1b;text-transform:uppercase;letter-spacing:0.5px;">INSPECTION
+                FAIL</span>
+        </div>
+        <div style="font-size:28px;font-weight:800;color:#dc2626;">2</div>
+        <div style="font-size:11px;color:#6b7280;margin-top:2px;">Failed recent inspection</div>
+        <div style="font-size:10px;color:#dc2626;margin-top:4px;">MH04AB1234, DL01EF9012</div>
+    </div>
+
+    <div onclick="navigateTo('vehicle-list')"
+        style="cursor:pointer;background:linear-gradient(135deg,#f0fdf4,#fff);border:1px solid #bbf7d0;border-radius:12px;padding:14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <div
+                style="width:28px;height:28px;background:#16a34a;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-check-circle" style="color:#fff;font-size:12px;"></i>
+            </div>
+            <span
+                style="font-size:11px;font-weight:700;color:#166534;text-transform:uppercase;letter-spacing:0.5px;">FLEET
+                READY</span>
+        </div>
+        <div style="font-size:28px;font-weight:800;color:#16a34a;">78%</div>
+        <div style="font-size:11px;color:#6b7280;margin-top:2px;">14 of 18 fully compliant</div>
+        <div style="font-size:10px;color:#16a34a;margin-top:4px;">Target: 95%</div>
+    </div>
+</div>
+
+<!-- KPIs -->
+<div class="stats-row" style="grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px;">
+    <div class="stat-card" style="border-top:3px solid #dc2626;">
+        <div class="stat-label">Overdue Documents</div>
+        <div class="stat-value text-red" style="font-size:22px;">5</div>
+        <div style="font-size:10px;color:#dc2626;">Immediate action needed</div>
+    </div>
+    <div class="stat-card" style="border-top:3px solid #f59e0b;">
+        <div class="stat-label">Due in 30 Days</div>
+        <div class="stat-value text-yellow" style="font-size:22px;">8</div>
+        <div style="font-size:10px;color:var(--text-muted);">Plan renewals now</div>
+    </div>
+    <div class="stat-card" style="border-top:3px solid #2563eb;">
+        <div class="stat-label">Due in 90 Days</div>
+        <div class="stat-value text-blue" style="font-size:22px;">12</div>
+        <div style="font-size:10px;color:var(--text-muted);">Schedule ahead</div>
+    </div>
+    <div class="stat-card" style="border-top:3px solid #7c3aed;">
+        <div class="stat-label">Penalty Risk</div>
+        <div class="stat-value" style="font-size:22px;color:#7c3aed;">₹45K</div>
+        <div style="font-size:10px;color:#dc2626;">If not renewed in 15d</div>
+    </div>
+    <div class="stat-card" style="border-top:3px solid #16a34a;">
+        <div class="stat-label">Renewed (MTD)</div>
+        <div class="stat-value text-green" style="font-size:22px;">6</div>
+        <div class="stat-change positive"><i class="fas fa-check"></i> On track</div>
+    </div>
+</div>
+
+<!-- Expiry Matrix + Vehicle Compliance Summary -->
+<div class="dashboard-grid two-col" style="margin-bottom:16px;">
+    <div class="widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-calendar-times" style="color:#dc2626;margin-right:6px;"></i> Document Expiry Matrix
+            </h3>
+            <a href="#" onclick="navigateTo('vehicle-compliance')" class="btn btn-link">Full Board →</a>
+        </div>
+        <div class="widget-body" style="padding:0;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Vehicle</th>
+                        <th>Insurance</th>
+                        <th>Permit</th>
+                        <th>Fitness</th>
+                        <th>PUC</th>
+                        <th>RC</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-weight:600;">MH04AB1234</td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#fef2f2;color:#dc2626;border-radius:4px;font-weight:600;">EXPIRED</span>
+                        </td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#f0fdf4;color:#16a34a;border-radius:4px;">Aug
+                                26</span></td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#fffbeb;color:#92400e;border-radius:4px;">Apr
+                                12</span></td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#fef2f2;color:#dc2626;border-radius:4px;font-weight:600;">EXPIRED</span>
+                        </td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#f0fdf4;color:#16a34a;border-radius:4px;">Dec
+                                27</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:600;">DL01EF9012</td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#fffbeb;color:#92400e;border-radius:4px;">Apr
+                                5</span></td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#fef2f2;color:#dc2626;border-radius:4px;font-weight:600;">EXPIRED</span>
+                        </td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#f0fdf4;color:#16a34a;border-radius:4px;">Nov
+                                26</span></td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#f0fdf4;color:#16a34a;border-radius:4px;">Jul
+                                26</span></td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#fffbeb;color:#92400e;border-radius:4px;">Apr
+                                20</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:600;">MH12CD5678</td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#fef2f2;color:#dc2626;border-radius:4px;font-weight:600;">EXPIRED</span>
+                        </td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#fffbeb;color:#92400e;border-radius:4px;">Apr
+                                18</span></td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#fffbeb;color:#92400e;border-radius:4px;">Apr
+                                8</span></td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#f0fdf4;color:#16a34a;border-radius:4px;">Sep
+                                26</span></td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#f0fdf4;color:#16a34a;border-radius:4px;">Jan
+                                28</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:600;">MH04GH3456</td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#f0fdf4;color:#16a34a;border-radius:4px;">Oct
+                                26</span></td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#fef2f2;color:#dc2626;border-radius:4px;font-weight:600;">EXPIRED</span>
+                        </td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#f0fdf4;color:#16a34a;border-radius:4px;">Jun
+                                26</span></td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#f0fdf4;color:#16a34a;border-radius:4px;">Aug
+                                26</span></td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#f0fdf4;color:#16a34a;border-radius:4px;">Mar
+                                28</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:600;">DL01IJ7890</td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#fffbeb;color:#92400e;border-radius:4px;">Apr
+                                15</span></td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#f0fdf4;color:#16a34a;border-radius:4px;">Sep
+                                26</span></td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#fffbeb;color:#92400e;border-radius:4px;">Apr
+                                2</span></td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#f0fdf4;color:#16a34a;border-radius:4px;">Jul
+                                26</span></td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#f0fdf4;color:#16a34a;border-radius:4px;">Feb
+                                29</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Upcoming Renewals Calendar -->
+    <div class="widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-calendar" style="color:#7c3aed;margin-right:6px;"></i> Upcoming Renewals</h3>
+            <a href="#" onclick="navigateTo('reminders')" class="btn btn-link">All Reminders →</a>
+        </div>
+        <div class="widget-body" style="padding:12px 16px;">
+            <div style="display:flex;flex-direction:column;gap:8px;">
+                <div
+                    style="display:flex;gap:10px;align-items:center;padding:8px 10px;background:#fef2f2;border-radius:6px;border-left:3px solid #dc2626;">
+                    <div style="text-align:center;min-width:36px;">
+                        <div style="font-size:16px;font-weight:700;color:#dc2626;">2</div>
+                        <div style="font-size:9px;color:#991b1b;">APR</div>
+                    </div>
+                    <div style="flex:1;">
+                        <div style="font-size:12px;font-weight:600;">Fitness Certificate — DL01IJ7890</div>
+                        <div style="font-size:10px;color:#dc2626;">15 days remaining</div>
+                    </div>
+                </div>
+                <div
+                    style="display:flex;gap:10px;align-items:center;padding:8px 10px;background:#fef2f2;border-radius:6px;border-left:3px solid #dc2626;">
+                    <div style="text-align:center;min-width:36px;">
+                        <div style="font-size:16px;font-weight:700;color:#dc2626;">5</div>
+                        <div style="font-size:9px;color:#991b1b;">APR</div>
+                    </div>
+                    <div style="flex:1;">
+                        <div style="font-size:12px;font-weight:600;">Insurance — DL01EF9012</div>
+                        <div style="font-size:10px;color:#dc2626;">18 days remaining</div>
+                    </div>
+                </div>
+                <div
+                    style="display:flex;gap:10px;align-items:center;padding:8px 10px;background:#fffbeb;border-radius:6px;border-left:3px solid #f59e0b;">
+                    <div style="text-align:center;min-width:36px;">
+                        <div style="font-size:16px;font-weight:700;color:#f59e0b;">8</div>
+                        <div style="font-size:9px;color:#92400e;">APR</div>
+                    </div>
+                    <div style="flex:1;">
+                        <div style="font-size:12px;font-weight:600;">Fitness Certificate — MH12CD5678</div>
+                        <div style="font-size:10px;color:#92400e;">21 days remaining</div>
+                    </div>
+                </div>
+                <div
+                    style="display:flex;gap:10px;align-items:center;padding:8px 10px;background:#fffbeb;border-radius:6px;border-left:3px solid #f59e0b;">
+                    <div style="text-align:center;min-width:36px;">
+                        <div style="font-size:16px;font-weight:700;color:#f59e0b;">12</div>
+                        <div style="font-size:9px;color:#92400e;">APR</div>
+                    </div>
+                    <div style="flex:1;">
+                        <div style="font-size:12px;font-weight:600;">Fitness — MH04AB1234</div>
+                        <div style="font-size:10px;color:#92400e;">25 days remaining</div>
+                    </div>
+                </div>
+                <div
+                    style="display:flex;gap:10px;align-items:center;padding:8px 10px;background:#eff6ff;border-radius:6px;border-left:3px solid #2563eb;">
+                    <div style="text-align:center;min-width:36px;">
+                        <div style="font-size:16px;font-weight:700;color:#2563eb;">15</div>
+                        <div style="font-size:9px;color:#1e40af;">APR</div>
+                    </div>
+                    <div style="flex:1;">
+                        <div style="font-size:12px;font-weight:600;">Insurance — DL01IJ7890</div>
+                        <div style="font-size:10px;color:#2563eb;">28 days remaining</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+    <button onclick="navigateTo('vehicle-compliance')"
+        style="padding:14px;border:1px solid #e5e7eb;border-radius:10px;background:#fff;cursor:pointer;text-align:center;">
+        <i class="fas fa-shield-alt" style="font-size:18px;color:#7C3AED;display:block;margin-bottom:6px;"></i>
+        <span style="font-size:12px;font-weight:600;">Compliance Board</span>
+    </button>
+    <button onclick="navigateTo('reminders')"
+        style="padding:14px;border:1px solid #e5e7eb;border-radius:10px;background:#fff;cursor:pointer;text-align:center;">
+        <i class="fas fa-bell" style="font-size:18px;color:#f59e0b;display:block;margin-bottom:6px;"></i>
+        <span style="font-size:12px;font-weight:600;">Set Reminder</span>
+    </button>
+    <button onclick="navigateTo('inspections')"
+        style="padding:14px;border:1px solid #e5e7eb;border-radius:10px;background:#fff;cursor:pointer;text-align:center;">
+        <i class="fas fa-clipboard-check" style="font-size:18px;color:#2563eb;display:block;margin-bottom:6px;"></i>
+        <span style="font-size:12px;font-weight:600;">Inspections</span>
+    </button>
+    <button onclick="navigateTo('documents')"
+        style="padding:14px;border:1px solid #e5e7eb;border-radius:10px;background:#fff;cursor:pointer;text-align:center;">
+        <i class="fas fa-file-alt" style="font-size:18px;color:#059669;display:block;margin-bottom:6px;"></i>
+        <span style="font-size:12px;font-weight:600;">Documents</span>
+    </button>
+</div>

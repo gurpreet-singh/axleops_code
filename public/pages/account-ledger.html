@@ -1,0 +1,954 @@
+<!-- Account Ledger -->
+<div class="page-header">
+    <h1>Account Ledger</h1>
+    <div class="page-header-actions">
+        <button class="btn btn-secondary" onclick="navigateToPage('chart-of-accounts')"><i class="fas fa-arrow-left"></i> Back to COA</button>
+        <button class="btn btn-secondary"><i class="fas fa-download"></i> Export CSV</button>
+        <button class="btn btn-secondary"><i class="fas fa-file-pdf"></i> Export PDF</button>
+    </div>
+</div>
+
+<!-- Account Info -->
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+    <div style="width:40px;height:40px;border-radius:10px;background:#ecfdf3;display:flex;align-items:center;justify-content:center;font-size:18px;">📥</div>
+    <div style="flex:1;">
+        <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:18px;font-weight:700;">Accounts Receivable</span>
+            <span class="status-badge completed" style="font-size:10px;">RECEIVABLE</span>
+        </div>
+        <div style="font-size:12px;color:var(--text-secondary);">100-003-001 · Client outstanding collections · Tally: Sundry Debtors</div>
+    </div>
+</div>
+
+<!-- Metrics -->
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;">
+    <div class="detail-section" style="margin-bottom:0;">
+        <div class="section-body" style="padding:14px 18px;">
+            <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Opening Balance</div>
+            <div style="font-size:22px;font-weight:800;">₹1,61,958</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">1 Mar 2026</div>
+        </div>
+    </div>
+    <div class="detail-section" style="margin-bottom:0;">
+        <div class="section-body" style="padding:14px 18px;">
+            <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Total Debit</div>
+            <div style="font-size:22px;font-weight:800;color:#1570ef;">₹16,59,630</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">This month</div>
+        </div>
+    </div>
+    <div class="detail-section" style="margin-bottom:0;">
+        <div class="section-body" style="padding:14px 18px;">
+            <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Total Credit</div>
+            <div style="font-size:22px;font-weight:800;color:#b42318;">₹10,19,248</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">This month</div>
+        </div>
+    </div>
+    <div class="detail-section" style="margin-bottom:0;">
+        <div class="section-body" style="padding:14px 18px;">
+            <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Closing Balance</div>
+            <div style="font-size:22px;font-weight:800;color:#1570ef;">₹8,02,340</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Dr · 20 Mar 2026</div>
+        </div>
+    </div>
+</div>
+
+<!-- Ledger Table -->
+<div class="table-container">
+    <div class="table-toolbar">
+        <div class="filter-btn">March 2026 ▾</div>
+        <div class="filter-btn">All voucher types ▾</div>
+        <div style="font-size:11px;color:#667085;margin-left:auto;">💡 Click voucher number to view full details</div>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width:60px;">Date</th>
+                <th style="width:130px;">Voucher No.</th>
+                <th style="width:65px;">Type</th>
+                <th>Particulars</th>
+                <th style="text-align:right;width:100px;">Debit (₹)</th>
+                <th style="text-align:right;width:100px;">Credit (₹)</th>
+                <th style="text-align:right;width:100px;">Balance (₹)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Opening Balance -->
+            <tr style="background:#fffaeb;">
+                <td style="font-weight:600;">1 Mar</td>
+                <td>—</td>
+                <td><span class="status-badge" style="font-size:10px;background:#f2f4f7;color:#667085;">Opening</span></td>
+                <td style="font-weight:600;">Opening balance brought forward</td>
+                <td style="text-align:right;color:#d0d5dd;">—</td>
+                <td style="text-align:right;color:#d0d5dd;">—</td>
+                <td style="text-align:right;font-weight:700;color:#1570ef;">₹1,61,958</td>
+            </tr>
+            <tr>
+                <td>05 Mar</td>
+                <td><a href="#" onclick="event.preventDefault();document.getElementById('voucher-popup-SLS-26-03-0038').style.display='flex';" style="font-family:monospace;font-weight:600;color:#1570ef;text-decoration:none;cursor:pointer;">SLS/26-03/0038</a></td>
+                <td><span class="status-badge" style="font-size:10px;background:#ecfdf3;color:#027a48;">Sales</span></td>
+                <td>
+                    <div style="font-weight:600;color:#027a48;font-size:12px;">By Freight Revenue</div>
+                    <div style="font-size:11px;color:#98a2b3;">INV-2024-077 — Mahindra Logistics (6 trips)</div>
+                </td>
+                <td style="text-align:right;font-weight:600;color:#1570ef;">₹1,86,400</td>
+                <td style="text-align:right;color:#d0d5dd;">—</td>
+                <td style="text-align:right;font-weight:600;">₹3,48,358</td>
+            </tr>
+            <tr>
+                <td>08 Mar</td>
+                <td><a href="#" onclick="event.preventDefault();document.getElementById('voucher-popup-RCT-26-03-0035').style.display='flex';" style="font-family:monospace;font-weight:600;color:#1570ef;text-decoration:none;cursor:pointer;">RCT/26-03/0035</a></td>
+                <td><span class="status-badge info" style="font-size:10px;">Receipt</span></td>
+                <td>
+                    <div style="font-weight:600;color:#1d4ed8;font-size:12px;">To HDFC Bank — Current A/c</div>
+                    <div style="font-size:11px;color:#98a2b3;">Payment from ITC Limited — NEFT</div>
+                </td>
+                <td style="text-align:right;color:#d0d5dd;">—</td>
+                <td style="text-align:right;font-weight:600;color:#b42318;">₹2,26,560</td>
+                <td style="text-align:right;font-weight:600;">₹1,21,798</td>
+            </tr>
+            <tr>
+                <td>10 Mar</td>
+                <td><a href="#" onclick="event.preventDefault();document.getElementById('voucher-popup-SLS-26-03-0039').style.display='flex';" style="font-family:monospace;font-weight:600;color:#1570ef;text-decoration:none;cursor:pointer;">SLS/26-03/0039</a></td>
+                <td><span class="status-badge" style="font-size:10px;background:#ecfdf3;color:#027a48;">Sales</span></td>
+                <td>
+                    <div style="font-weight:600;color:#027a48;font-size:12px;">By Freight Revenue</div>
+                    <div style="font-size:11px;color:#98a2b3;">INV-2024-078 — Reliance Industries (10 trips)</div>
+                </td>
+                <td style="text-align:right;font-weight:600;color:#1570ef;">₹3,35,710</td>
+                <td style="text-align:right;color:#d0d5dd;">—</td>
+                <td style="text-align:right;font-weight:600;">₹4,57,508</td>
+            </tr>
+            <tr>
+                <td>12 Mar</td>
+                <td><a href="#" onclick="event.preventDefault();document.getElementById('voucher-popup-RCT-26-03-0036').style.display='flex';" style="font-family:monospace;font-weight:600;color:#1570ef;text-decoration:none;cursor:pointer;">RCT/26-03/0036</a></td>
+                <td><span class="status-badge info" style="font-size:10px;">Receipt</span></td>
+                <td>
+                    <div style="font-weight:600;color:#1d4ed8;font-size:12px;">To HDFC Bank — Current A/c</div>
+                    <div style="font-size:11px;color:#98a2b3;">Payment from Reliance Industries — NEFT</div>
+                </td>
+                <td style="text-align:right;color:#d0d5dd;">—</td>
+                <td style="text-align:right;font-weight:600;color:#b42318;">₹2,00,000</td>
+                <td style="text-align:right;font-weight:600;">₹2,57,508</td>
+            </tr>
+            <tr>
+                <td>14 Mar</td>
+                <td><a href="#" onclick="event.preventDefault();document.getElementById('voucher-popup-SLS-26-03-0040').style.display='flex';" style="font-family:monospace;font-weight:600;color:#1570ef;text-decoration:none;cursor:pointer;">SLS/26-03/0040</a></td>
+                <td><span class="status-badge" style="font-size:10px;background:#ecfdf3;color:#027a48;">Sales</span></td>
+                <td>
+                    <div style="font-weight:600;color:#027a48;font-size:12px;">By Freight Revenue</div>
+                    <div style="font-size:11px;color:#98a2b3;">INV-2024-079 — Adani Ports (5 trips)</div>
+                </td>
+                <td style="text-align:right;font-weight:600;color:#1570ef;">₹4,24,800</td>
+                <td style="text-align:right;color:#d0d5dd;">—</td>
+                <td style="text-align:right;font-weight:600;">₹6,82,308</td>
+            </tr>
+            <tr>
+                <td>15 Mar</td>
+                <td><a href="#" onclick="event.preventDefault();document.getElementById('voucher-popup-CRN-26-03-0004').style.display='flex';" style="font-family:monospace;font-weight:600;color:#1570ef;text-decoration:none;cursor:pointer;">CRN/26-03/0004</a></td>
+                <td><span class="status-badge" style="font-size:10px;background:#f0fdf9;color:#107569;">Cr. Note</span></td>
+                <td>
+                    <div style="font-weight:600;color:#1d4ed8;font-size:12px;">To Freight Revenue</div>
+                    <div style="font-size:11px;color:#98a2b3;">CN-2026-0091 — Reliance shortage deduction</div>
+                </td>
+                <td style="text-align:right;color:#d0d5dd;">—</td>
+                <td style="text-align:right;font-weight:600;color:#b42318;">₹4,248</td>
+                <td style="text-align:right;font-weight:600;">₹6,78,060</td>
+            </tr>
+            <tr>
+                <td>17 Mar</td>
+                <td><a href="#" onclick="event.preventDefault();document.getElementById('voucher-popup-RCT-26-03-0037').style.display='flex';" style="font-family:monospace;font-weight:600;color:#1570ef;text-decoration:none;cursor:pointer;">RCT/26-03/0037</a></td>
+                <td><span class="status-badge info" style="font-size:10px;">Receipt</span></td>
+                <td>
+                    <div style="font-weight:600;color:#1d4ed8;font-size:12px;">To HDFC Bank — Current A/c</div>
+                    <div style="font-size:11px;color:#98a2b3;">Payment from Tata Steel — RTGS UTR: SBIN26031700087</div>
+                </td>
+                <td style="text-align:right;color:#d0d5dd;">—</td>
+                <td style="text-align:right;font-weight:600;color:#b42318;">₹3,39,840</td>
+                <td style="text-align:right;font-weight:600;">₹3,38,220</td>
+            </tr>
+            <tr>
+                <td>18 Mar</td>
+                <td><a href="#" onclick="event.preventDefault();document.getElementById('voucher-popup-SLS-26-03-0041').style.display='flex';" style="font-family:monospace;font-weight:600;color:#1570ef;text-decoration:none;cursor:pointer;">SLS/26-03/0041</a></td>
+                <td><span class="status-badge" style="font-size:10px;background:#ecfdf3;color:#027a48;">Sales</span></td>
+                <td>
+                    <div style="font-weight:600;color:#027a48;font-size:12px;">By Freight Revenue</div>
+                    <div style="font-size:11px;color:#98a2b3;">INV-2024-081 — Hindustan Unilever (12 trips)</div>
+                </td>
+                <td style="text-align:right;font-weight:600;color:#1570ef;">₹2,54,880</td>
+                <td style="text-align:right;color:#d0d5dd;">—</td>
+                <td style="text-align:right;font-weight:600;">₹5,93,100</td>
+            </tr>
+            <tr>
+                <td>19 Mar</td>
+                <td><a href="#" onclick="event.preventDefault();document.getElementById('voucher-popup-RCT-26-03-0038').style.display='flex';" style="font-family:monospace;font-weight:600;color:#1570ef;text-decoration:none;cursor:pointer;">RCT/26-03/0038</a></td>
+                <td><span class="status-badge info" style="font-size:10px;">Receipt</span></td>
+                <td>
+                    <div style="font-weight:600;color:#1d4ed8;font-size:12px;">To HDFC Bank — Current A/c</div>
+                    <div style="font-size:11px;color:#98a2b3;">Payment from HUL — NEFT UTR: ICIC26031900142</div>
+                </td>
+                <td style="text-align:right;color:#d0d5dd;">—</td>
+                <td style="text-align:right;font-weight:600;color:#b42318;">₹2,48,600</td>
+                <td style="text-align:right;font-weight:600;">₹3,44,500</td>
+            </tr>
+            <tr>
+                <td>20 Mar</td>
+                <td><a href="#" onclick="event.preventDefault();document.getElementById('voucher-popup-SLS-26-03-0042').style.display='flex';" style="font-family:monospace;font-weight:600;color:#1570ef;text-decoration:none;cursor:pointer;">SLS/26-03/0042</a></td>
+                <td><span class="status-badge" style="font-size:10px;background:#ecfdf3;color:#027a48;">Sales</span></td>
+                <td>
+                    <div style="font-weight:600;color:#027a48;font-size:12px;">By Freight Revenue</div>
+                    <div style="font-size:11px;color:#98a2b3;">INV-2024-082 — Reliance Industries (8 trips)</div>
+                </td>
+                <td style="text-align:right;font-weight:600;color:#1570ef;">₹4,57,840</td>
+                <td style="text-align:right;color:#d0d5dd;">—</td>
+                <td style="text-align:right;font-weight:600;">₹8,02,340</td>
+            </tr>
+            <!-- Closing Balance -->
+            <tr style="background:#eff8ff;">
+                <td style="font-weight:600;">20 Mar</td>
+                <td>—</td>
+                <td><span class="status-badge info" style="font-size:10px;">Closing</span></td>
+                <td style="font-weight:600;">Closing balance</td>
+                <td style="text-align:right;font-weight:700;">₹16,59,630</td>
+                <td style="text-align:right;font-weight:700;">₹10,19,248</td>
+                <td style="text-align:right;font-weight:700;color:#1570ef;">₹8,02,340</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Voucher Detail Popups -->
+    <div class="modal-overlay" id="voucher-popup-SLS-26-03-0042" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
+        <div style="background:#fff;border-radius:14px;width:600px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 24px 48px rgba(0,0,0,.18);">
+            <div style="padding:20px 24px 16px;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:flex-start;">
+                <div>
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                        <span style="font-size:17px;font-weight:700;font-family:monospace;">SLS/26-03/0042</span>
+                        <span style="display:inline-flex;padding:2px 10px;border-radius:6px;font-size:10px;font-weight:700;background:#ecfdf3;color:#027a48;text-transform:uppercase;letter-spacing:.04em;">Sales</span>
+                    </div>
+                    <div style="font-size:12px;color:#667085;">20 Mar 2026</div>
+                </div>
+                <button onclick="this.closest('.modal-overlay').style.display='none'" style="background:none;border:none;font-size:22px;cursor:pointer;color:#667085;line-height:1;">&times;</button>
+            </div>
+            <div style="padding:16px 24px;background:#f9fafb;border-bottom:1px solid #e5e7eb;text-align:center;">
+                <div style="font-size:10px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Amount</div>
+                <div style="font-size:28px;font-weight:800;color:#101828;">₹4,57,840</div>
+            </div>
+            <div style="padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Journal Entry</div>
+                <div style="display:flex;gap:12px;">
+                    <div style="flex:1;padding:12px;background:#eff8ff;border-radius:8px;border:1px solid #bfdbfe;">
+                        <div style="font-size:10px;font-weight:700;color:#1d4ed8;text-transform:uppercase;margin-bottom:4px;">Debit (Dr.)</div>
+                        <div style="font-size:14px;font-weight:700;color:#1e3a5f;">Accounts Receivable</div>
+                        <div style="font-size:10px;color:#667085;margin-top:2px;">100-003-001</div>
+                    </div>
+                    <div style="flex:1;padding:12px;background:#fef2f2;border-radius:8px;border:1px solid #fecaca;">
+                        <div style="font-size:10px;font-weight:700;color:#b91c1c;text-transform:uppercase;margin-bottom:4px;">Credit (Cr.)</div>
+                        <div style="font-size:14px;font-weight:700;color:#5f1e1e;">Freight Revenue</div>
+                        <div style="font-size:10px;color:#667085;margin-top:2px;">300-001-001</div>
+                    </div>
+                </div>
+            </div>
+            <div style="padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Voucher Details</div>
+                <div style="display:flex;flex-direction:column;gap:0;">
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">Narration</span>
+                        <span style="font-weight:500;font-size:12px;max-width:60%;text-align:right;">INV-2024-082 — Reliance Industries (8 trips)</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">GST</span>
+                        <span style="font-weight:600;font-size:12px;">IGST 18% — ₹69,840</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">Branch</span>
+                        <span style="font-weight:600;font-size:12px;">🏢 Mumbai HQ</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">Created By</span>
+                        <span style="font-weight:500;font-size:12px;">Anita Verma (Accounts Exec)</span>
+                    </div>
+                </div>
+            </div>
+            <div style="padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">References &amp; Tags</div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                    <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;background:#dbeafe;color:#1d4ed8;">📄 INV-2024-082</span>
+                    <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;background:#fef3c7;color:#92400e;">🏢 Reliance Industries</span>
+                </div>
+                <div style="margin-top:8px;font-size:11px;color:#667085;">
+                    <span style="font-weight:600;">Trips:</span> TRP-4842, TRP-4840, TRP-4838, TRP-4836, TRP-4834, TRP-4832, TRP-4830, TRP-4828
+                </div>
+            </div>
+            <div style="padding:12px 24px;display:flex;justify-content:space-between;align-items:center;">
+                <div style="font-size:10px;color:#98a2b3;">Voucher ID: SLS-26-03-0042</div>
+                <div style="display:flex;gap:8px;">
+                    <button onclick="this.closest('.modal-overlay').style.display='none'" style="padding:6px 16px;border:1px solid #d0d5dd;border-radius:6px;background:#fff;font-size:12px;font-weight:600;cursor:pointer;color:#344054;">Close</button>
+                    <button style="padding:6px 16px;border:none;border-radius:6px;background:#1570ef;color:#fff;font-size:12px;font-weight:600;cursor:pointer;"><i class="fas fa-print" style="margin-right:4px;"></i> Print</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="voucher-popup-RCT-26-03-0038" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
+        <div style="background:#fff;border-radius:14px;width:600px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 24px 48px rgba(0,0,0,.18);">
+            <div style="padding:20px 24px 16px;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:flex-start;">
+                <div>
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                        <span style="font-size:17px;font-weight:700;font-family:monospace;">RCT/26-03/0038</span>
+                        <span style="display:inline-flex;padding:2px 10px;border-radius:6px;font-size:10px;font-weight:700;background:#eff8ff;color:#175cd3;text-transform:uppercase;letter-spacing:.04em;">Receipt</span>
+                    </div>
+                    <div style="font-size:12px;color:#667085;">19 Mar 2026</div>
+                </div>
+                <button onclick="this.closest('.modal-overlay').style.display='none'" style="background:none;border:none;font-size:22px;cursor:pointer;color:#667085;line-height:1;">&times;</button>
+            </div>
+            <div style="padding:16px 24px;background:#f9fafb;border-bottom:1px solid #e5e7eb;text-align:center;">
+                <div style="font-size:10px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Amount</div>
+                <div style="font-size:28px;font-weight:800;color:#101828;">₹2,48,600</div>
+            </div>
+            <div style="padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Journal Entry</div>
+                <div style="display:flex;gap:12px;">
+                    <div style="flex:1;padding:12px;background:#eff8ff;border-radius:8px;border:1px solid #bfdbfe;">
+                        <div style="font-size:10px;font-weight:700;color:#1d4ed8;text-transform:uppercase;margin-bottom:4px;">Debit (Dr.)</div>
+                        <div style="font-size:14px;font-weight:700;color:#1e3a5f;">HDFC Bank — Current A/c</div>
+                        <div style="font-size:10px;color:#667085;margin-top:2px;">100-001-001</div>
+                    </div>
+                    <div style="flex:1;padding:12px;background:#fef2f2;border-radius:8px;border:1px solid #fecaca;">
+                        <div style="font-size:10px;font-weight:700;color:#b91c1c;text-transform:uppercase;margin-bottom:4px;">Credit (Cr.)</div>
+                        <div style="font-size:14px;font-weight:700;color:#5f1e1e;">Accounts Receivable</div>
+                        <div style="font-size:10px;color:#667085;margin-top:2px;">100-003-001</div>
+                    </div>
+                </div>
+            </div>
+            <div style="padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Voucher Details</div>
+                <div style="display:flex;flex-direction:column;gap:0;">
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">Narration</span>
+                        <span style="font-weight:500;font-size:12px;max-width:60%;text-align:right;">Payment from HUL — NEFT UTR: ICIC26031900142</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">GST</span>
+                        <span style="font-weight:600;font-size:12px;">N/A</span>
+                    </div>
+                        <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                            <span style="color:#667085;font-size:12px;">Bank Reference</span>
+                            <span style="font-weight:600;font-size:12px;font-family:monospace;">NEFT UTR: ICIC26031900142</span>
+                        </div>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">Branch</span>
+                        <span style="font-weight:600;font-size:12px;">🏢 Mumbai HQ</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">Created By</span>
+                        <span style="font-weight:500;font-size:12px;">Anita Verma (Accounts Exec)</span>
+                    </div>
+                </div>
+            </div>
+            <div style="padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">References &amp; Tags</div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                    <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;background:#dbeafe;color:#1d4ed8;">📄 INV-2024-081</span>
+                    <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;background:#fef3c7;color:#92400e;">🏢 Hindustan Unilever</span>
+                </div>
+                <div style="margin-top:8px;font-size:11px;color:#667085;">
+                    <span style="font-weight:600;">Trips:</span> —
+                </div>
+            </div>
+            <div style="padding:12px 24px;display:flex;justify-content:space-between;align-items:center;">
+                <div style="font-size:10px;color:#98a2b3;">Voucher ID: RCT-26-03-0038</div>
+                <div style="display:flex;gap:8px;">
+                    <button onclick="this.closest('.modal-overlay').style.display='none'" style="padding:6px 16px;border:1px solid #d0d5dd;border-radius:6px;background:#fff;font-size:12px;font-weight:600;cursor:pointer;color:#344054;">Close</button>
+                    <button style="padding:6px 16px;border:none;border-radius:6px;background:#1570ef;color:#fff;font-size:12px;font-weight:600;cursor:pointer;"><i class="fas fa-print" style="margin-right:4px;"></i> Print</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="voucher-popup-SLS-26-03-0041" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
+        <div style="background:#fff;border-radius:14px;width:600px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 24px 48px rgba(0,0,0,.18);">
+            <div style="padding:20px 24px 16px;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:flex-start;">
+                <div>
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                        <span style="font-size:17px;font-weight:700;font-family:monospace;">SLS/26-03/0041</span>
+                        <span style="display:inline-flex;padding:2px 10px;border-radius:6px;font-size:10px;font-weight:700;background:#ecfdf3;color:#027a48;text-transform:uppercase;letter-spacing:.04em;">Sales</span>
+                    </div>
+                    <div style="font-size:12px;color:#667085;">18 Mar 2026</div>
+                </div>
+                <button onclick="this.closest('.modal-overlay').style.display='none'" style="background:none;border:none;font-size:22px;cursor:pointer;color:#667085;line-height:1;">&times;</button>
+            </div>
+            <div style="padding:16px 24px;background:#f9fafb;border-bottom:1px solid #e5e7eb;text-align:center;">
+                <div style="font-size:10px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Amount</div>
+                <div style="font-size:28px;font-weight:800;color:#101828;">₹2,54,880</div>
+            </div>
+            <div style="padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Journal Entry</div>
+                <div style="display:flex;gap:12px;">
+                    <div style="flex:1;padding:12px;background:#eff8ff;border-radius:8px;border:1px solid #bfdbfe;">
+                        <div style="font-size:10px;font-weight:700;color:#1d4ed8;text-transform:uppercase;margin-bottom:4px;">Debit (Dr.)</div>
+                        <div style="font-size:14px;font-weight:700;color:#1e3a5f;">Accounts Receivable</div>
+                        <div style="font-size:10px;color:#667085;margin-top:2px;">100-003-001</div>
+                    </div>
+                    <div style="flex:1;padding:12px;background:#fef2f2;border-radius:8px;border:1px solid #fecaca;">
+                        <div style="font-size:10px;font-weight:700;color:#b91c1c;text-transform:uppercase;margin-bottom:4px;">Credit (Cr.)</div>
+                        <div style="font-size:14px;font-weight:700;color:#5f1e1e;">Freight Revenue</div>
+                        <div style="font-size:10px;color:#667085;margin-top:2px;">300-001-001</div>
+                    </div>
+                </div>
+            </div>
+            <div style="padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Voucher Details</div>
+                <div style="display:flex;flex-direction:column;gap:0;">
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">Narration</span>
+                        <span style="font-weight:500;font-size:12px;max-width:60%;text-align:right;">INV-2024-081 — Hindustan Unilever (12 trips)</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">GST</span>
+                        <span style="font-weight:600;font-size:12px;">IGST 18% — ₹38,980</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">Branch</span>
+                        <span style="font-weight:600;font-size:12px;">🏢 Mumbai HQ</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">Created By</span>
+                        <span style="font-weight:500;font-size:12px;">Anita Verma (Accounts Exec)</span>
+                    </div>
+                </div>
+            </div>
+            <div style="padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">References &amp; Tags</div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                    <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;background:#dbeafe;color:#1d4ed8;">📄 INV-2024-081</span>
+                    <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;background:#fef3c7;color:#92400e;">🏢 Hindustan Unilever</span>
+                </div>
+                <div style="margin-top:8px;font-size:11px;color:#667085;">
+                    <span style="font-weight:600;">Trips:</span> TRP-4826, TRP-4824, TRP-4822, TRP-4820, TRP-4818, TRP-4816, TRP-4814, TRP-4812, TRP-4810, TRP-4808, TRP-4806, TRP-4804
+                </div>
+            </div>
+            <div style="padding:12px 24px;display:flex;justify-content:space-between;align-items:center;">
+                <div style="font-size:10px;color:#98a2b3;">Voucher ID: SLS-26-03-0041</div>
+                <div style="display:flex;gap:8px;">
+                    <button onclick="this.closest('.modal-overlay').style.display='none'" style="padding:6px 16px;border:1px solid #d0d5dd;border-radius:6px;background:#fff;font-size:12px;font-weight:600;cursor:pointer;color:#344054;">Close</button>
+                    <button style="padding:6px 16px;border:none;border-radius:6px;background:#1570ef;color:#fff;font-size:12px;font-weight:600;cursor:pointer;"><i class="fas fa-print" style="margin-right:4px;"></i> Print</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="voucher-popup-RCT-26-03-0037" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
+        <div style="background:#fff;border-radius:14px;width:600px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 24px 48px rgba(0,0,0,.18);">
+            <div style="padding:20px 24px 16px;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:flex-start;">
+                <div>
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                        <span style="font-size:17px;font-weight:700;font-family:monospace;">RCT/26-03/0037</span>
+                        <span style="display:inline-flex;padding:2px 10px;border-radius:6px;font-size:10px;font-weight:700;background:#eff8ff;color:#175cd3;text-transform:uppercase;letter-spacing:.04em;">Receipt</span>
+                    </div>
+                    <div style="font-size:12px;color:#667085;">17 Mar 2026</div>
+                </div>
+                <button onclick="this.closest('.modal-overlay').style.display='none'" style="background:none;border:none;font-size:22px;cursor:pointer;color:#667085;line-height:1;">&times;</button>
+            </div>
+            <div style="padding:16px 24px;background:#f9fafb;border-bottom:1px solid #e5e7eb;text-align:center;">
+                <div style="font-size:10px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Amount</div>
+                <div style="font-size:28px;font-weight:800;color:#101828;">₹3,39,840</div>
+            </div>
+            <div style="padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Journal Entry</div>
+                <div style="display:flex;gap:12px;">
+                    <div style="flex:1;padding:12px;background:#eff8ff;border-radius:8px;border:1px solid #bfdbfe;">
+                        <div style="font-size:10px;font-weight:700;color:#1d4ed8;text-transform:uppercase;margin-bottom:4px;">Debit (Dr.)</div>
+                        <div style="font-size:14px;font-weight:700;color:#1e3a5f;">HDFC Bank — Current A/c</div>
+                        <div style="font-size:10px;color:#667085;margin-top:2px;">100-001-001</div>
+                    </div>
+                    <div style="flex:1;padding:12px;background:#fef2f2;border-radius:8px;border:1px solid #fecaca;">
+                        <div style="font-size:10px;font-weight:700;color:#b91c1c;text-transform:uppercase;margin-bottom:4px;">Credit (Cr.)</div>
+                        <div style="font-size:14px;font-weight:700;color:#5f1e1e;">Accounts Receivable</div>
+                        <div style="font-size:10px;color:#667085;margin-top:2px;">100-003-001</div>
+                    </div>
+                </div>
+            </div>
+            <div style="padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Voucher Details</div>
+                <div style="display:flex;flex-direction:column;gap:0;">
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">Narration</span>
+                        <span style="font-weight:500;font-size:12px;max-width:60%;text-align:right;">Payment from Tata Steel — RTGS UTR: SBIN26031700087</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">GST</span>
+                        <span style="font-weight:600;font-size:12px;">N/A</span>
+                    </div>
+                        <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                            <span style="color:#667085;font-size:12px;">Bank Reference</span>
+                            <span style="font-weight:600;font-size:12px;font-family:monospace;">RTGS UTR: SBIN26031700087</span>
+                        </div>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">Branch</span>
+                        <span style="font-weight:600;font-size:12px;">🏢 Mumbai HQ</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">Created By</span>
+                        <span style="font-weight:500;font-size:12px;">Priya Sharma (Finance Controller)</span>
+                    </div>
+                </div>
+            </div>
+            <div style="padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">References &amp; Tags</div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                    <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;background:#dbeafe;color:#1d4ed8;">📄 INV-2024-080</span>
+                    <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;background:#fef3c7;color:#92400e;">🏢 Tata Steel</span>
+                </div>
+                <div style="margin-top:8px;font-size:11px;color:#667085;">
+                    <span style="font-weight:600;">Trips:</span> —
+                </div>
+            </div>
+            <div style="padding:12px 24px;display:flex;justify-content:space-between;align-items:center;">
+                <div style="font-size:10px;color:#98a2b3;">Voucher ID: RCT-26-03-0037</div>
+                <div style="display:flex;gap:8px;">
+                    <button onclick="this.closest('.modal-overlay').style.display='none'" style="padding:6px 16px;border:1px solid #d0d5dd;border-radius:6px;background:#fff;font-size:12px;font-weight:600;cursor:pointer;color:#344054;">Close</button>
+                    <button style="padding:6px 16px;border:none;border-radius:6px;background:#1570ef;color:#fff;font-size:12px;font-weight:600;cursor:pointer;"><i class="fas fa-print" style="margin-right:4px;"></i> Print</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="voucher-popup-CRN-26-03-0004" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
+        <div style="background:#fff;border-radius:14px;width:600px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 24px 48px rgba(0,0,0,.18);">
+            <div style="padding:20px 24px 16px;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:flex-start;">
+                <div>
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                        <span style="font-size:17px;font-weight:700;font-family:monospace;">CRN/26-03/0004</span>
+                        <span style="display:inline-flex;padding:2px 10px;border-radius:6px;font-size:10px;font-weight:700;background:#f0fdf9;color:#107569;text-transform:uppercase;letter-spacing:.04em;">Cr. Note</span>
+                    </div>
+                    <div style="font-size:12px;color:#667085;">15 Mar 2026</div>
+                </div>
+                <button onclick="this.closest('.modal-overlay').style.display='none'" style="background:none;border:none;font-size:22px;cursor:pointer;color:#667085;line-height:1;">&times;</button>
+            </div>
+            <div style="padding:16px 24px;background:#f9fafb;border-bottom:1px solid #e5e7eb;text-align:center;">
+                <div style="font-size:10px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Amount</div>
+                <div style="font-size:28px;font-weight:800;color:#101828;">₹4,248</div>
+            </div>
+            <div style="padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Journal Entry</div>
+                <div style="display:flex;gap:12px;">
+                    <div style="flex:1;padding:12px;background:#eff8ff;border-radius:8px;border:1px solid #bfdbfe;">
+                        <div style="font-size:10px;font-weight:700;color:#1d4ed8;text-transform:uppercase;margin-bottom:4px;">Debit (Dr.)</div>
+                        <div style="font-size:14px;font-weight:700;color:#1e3a5f;">Freight Revenue</div>
+                        <div style="font-size:10px;color:#667085;margin-top:2px;">300-001-001</div>
+                    </div>
+                    <div style="flex:1;padding:12px;background:#fef2f2;border-radius:8px;border:1px solid #fecaca;">
+                        <div style="font-size:10px;font-weight:700;color:#b91c1c;text-transform:uppercase;margin-bottom:4px;">Credit (Cr.)</div>
+                        <div style="font-size:14px;font-weight:700;color:#5f1e1e;">Accounts Receivable</div>
+                        <div style="font-size:10px;color:#667085;margin-top:2px;">100-003-001</div>
+                    </div>
+                </div>
+            </div>
+            <div style="padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Voucher Details</div>
+                <div style="display:flex;flex-direction:column;gap:0;">
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">Narration</span>
+                        <span style="font-weight:500;font-size:12px;max-width:60%;text-align:right;">CN-2026-0091 — Reliance shortage deduction</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">GST</span>
+                        <span style="font-weight:600;font-size:12px;">IGST reversal — ₹648</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">Branch</span>
+                        <span style="font-weight:600;font-size:12px;">🏢 Mumbai HQ</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">Created By</span>
+                        <span style="font-weight:500;font-size:12px;">Anita Verma (Accounts Exec)</span>
+                    </div>
+                </div>
+            </div>
+            <div style="padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">References &amp; Tags</div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                    <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;background:#dbeafe;color:#1d4ed8;">📄 INV-2024-079</span>
+                    <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;background:#fef3c7;color:#92400e;">🏢 Reliance Industries</span>
+                </div>
+                <div style="margin-top:8px;font-size:11px;color:#667085;">
+                    <span style="font-weight:600;">Trips:</span> TRP-4802
+                </div>
+            </div>
+            <div style="padding:12px 24px;display:flex;justify-content:space-between;align-items:center;">
+                <div style="font-size:10px;color:#98a2b3;">Voucher ID: CRN-26-03-0004</div>
+                <div style="display:flex;gap:8px;">
+                    <button onclick="this.closest('.modal-overlay').style.display='none'" style="padding:6px 16px;border:1px solid #d0d5dd;border-radius:6px;background:#fff;font-size:12px;font-weight:600;cursor:pointer;color:#344054;">Close</button>
+                    <button style="padding:6px 16px;border:none;border-radius:6px;background:#1570ef;color:#fff;font-size:12px;font-weight:600;cursor:pointer;"><i class="fas fa-print" style="margin-right:4px;"></i> Print</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="voucher-popup-SLS-26-03-0040" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
+        <div style="background:#fff;border-radius:14px;width:600px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 24px 48px rgba(0,0,0,.18);">
+            <div style="padding:20px 24px 16px;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:flex-start;">
+                <div>
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                        <span style="font-size:17px;font-weight:700;font-family:monospace;">SLS/26-03/0040</span>
+                        <span style="display:inline-flex;padding:2px 10px;border-radius:6px;font-size:10px;font-weight:700;background:#ecfdf3;color:#027a48;text-transform:uppercase;letter-spacing:.04em;">Sales</span>
+                    </div>
+                    <div style="font-size:12px;color:#667085;">14 Mar 2026</div>
+                </div>
+                <button onclick="this.closest('.modal-overlay').style.display='none'" style="background:none;border:none;font-size:22px;cursor:pointer;color:#667085;line-height:1;">&times;</button>
+            </div>
+            <div style="padding:16px 24px;background:#f9fafb;border-bottom:1px solid #e5e7eb;text-align:center;">
+                <div style="font-size:10px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Amount</div>
+                <div style="font-size:28px;font-weight:800;color:#101828;">₹4,24,800</div>
+            </div>
+            <div style="padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Journal Entry</div>
+                <div style="display:flex;gap:12px;">
+                    <div style="flex:1;padding:12px;background:#eff8ff;border-radius:8px;border:1px solid #bfdbfe;">
+                        <div style="font-size:10px;font-weight:700;color:#1d4ed8;text-transform:uppercase;margin-bottom:4px;">Debit (Dr.)</div>
+                        <div style="font-size:14px;font-weight:700;color:#1e3a5f;">Accounts Receivable</div>
+                        <div style="font-size:10px;color:#667085;margin-top:2px;">100-003-001</div>
+                    </div>
+                    <div style="flex:1;padding:12px;background:#fef2f2;border-radius:8px;border:1px solid #fecaca;">
+                        <div style="font-size:10px;font-weight:700;color:#b91c1c;text-transform:uppercase;margin-bottom:4px;">Credit (Cr.)</div>
+                        <div style="font-size:14px;font-weight:700;color:#5f1e1e;">Freight Revenue</div>
+                        <div style="font-size:10px;color:#667085;margin-top:2px;">300-001-001</div>
+                    </div>
+                </div>
+            </div>
+            <div style="padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Voucher Details</div>
+                <div style="display:flex;flex-direction:column;gap:0;">
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">Narration</span>
+                        <span style="font-weight:500;font-size:12px;max-width:60%;text-align:right;">INV-2024-079 — Adani Ports (5 trips)</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">GST</span>
+                        <span style="font-weight:600;font-size:12px;">IGST 18% — ₹64,970</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">Branch</span>
+                        <span style="font-weight:600;font-size:12px;">🏢 Pune Branch</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">Created By</span>
+                        <span style="font-weight:500;font-size:12px;">Anita Verma (Accounts Exec)</span>
+                    </div>
+                </div>
+            </div>
+            <div style="padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">References &amp; Tags</div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                    <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;background:#dbeafe;color:#1d4ed8;">📄 INV-2024-079</span>
+                    <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;background:#fef3c7;color:#92400e;">🏢 Adani Ports</span>
+                </div>
+                <div style="margin-top:8px;font-size:11px;color:#667085;">
+                    <span style="font-weight:600;">Trips:</span> TRP-4800, TRP-4798, TRP-4796, TRP-4794, TRP-4792
+                </div>
+            </div>
+            <div style="padding:12px 24px;display:flex;justify-content:space-between;align-items:center;">
+                <div style="font-size:10px;color:#98a2b3;">Voucher ID: SLS-26-03-0040</div>
+                <div style="display:flex;gap:8px;">
+                    <button onclick="this.closest('.modal-overlay').style.display='none'" style="padding:6px 16px;border:1px solid #d0d5dd;border-radius:6px;background:#fff;font-size:12px;font-weight:600;cursor:pointer;color:#344054;">Close</button>
+                    <button style="padding:6px 16px;border:none;border-radius:6px;background:#1570ef;color:#fff;font-size:12px;font-weight:600;cursor:pointer;"><i class="fas fa-print" style="margin-right:4px;"></i> Print</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="voucher-popup-RCT-26-03-0036" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
+        <div style="background:#fff;border-radius:14px;width:600px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 24px 48px rgba(0,0,0,.18);">
+            <div style="padding:20px 24px 16px;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:flex-start;">
+                <div>
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                        <span style="font-size:17px;font-weight:700;font-family:monospace;">RCT/26-03/0036</span>
+                        <span style="display:inline-flex;padding:2px 10px;border-radius:6px;font-size:10px;font-weight:700;background:#eff8ff;color:#175cd3;text-transform:uppercase;letter-spacing:.04em;">Receipt</span>
+                    </div>
+                    <div style="font-size:12px;color:#667085;">12 Mar 2026</div>
+                </div>
+                <button onclick="this.closest('.modal-overlay').style.display='none'" style="background:none;border:none;font-size:22px;cursor:pointer;color:#667085;line-height:1;">&times;</button>
+            </div>
+            <div style="padding:16px 24px;background:#f9fafb;border-bottom:1px solid #e5e7eb;text-align:center;">
+                <div style="font-size:10px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Amount</div>
+                <div style="font-size:28px;font-weight:800;color:#101828;">₹2,00,000</div>
+            </div>
+            <div style="padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Journal Entry</div>
+                <div style="display:flex;gap:12px;">
+                    <div style="flex:1;padding:12px;background:#eff8ff;border-radius:8px;border:1px solid #bfdbfe;">
+                        <div style="font-size:10px;font-weight:700;color:#1d4ed8;text-transform:uppercase;margin-bottom:4px;">Debit (Dr.)</div>
+                        <div style="font-size:14px;font-weight:700;color:#1e3a5f;">HDFC Bank — Current A/c</div>
+                        <div style="font-size:10px;color:#667085;margin-top:2px;">100-001-001</div>
+                    </div>
+                    <div style="flex:1;padding:12px;background:#fef2f2;border-radius:8px;border:1px solid #fecaca;">
+                        <div style="font-size:10px;font-weight:700;color:#b91c1c;text-transform:uppercase;margin-bottom:4px;">Credit (Cr.)</div>
+                        <div style="font-size:14px;font-weight:700;color:#5f1e1e;">Accounts Receivable</div>
+                        <div style="font-size:10px;color:#667085;margin-top:2px;">100-003-001</div>
+                    </div>
+                </div>
+            </div>
+            <div style="padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Voucher Details</div>
+                <div style="display:flex;flex-direction:column;gap:0;">
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">Narration</span>
+                        <span style="font-weight:500;font-size:12px;max-width:60%;text-align:right;">Payment from Reliance Industries — NEFT</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">GST</span>
+                        <span style="font-weight:600;font-size:12px;">N/A</span>
+                    </div>
+                        <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                            <span style="color:#667085;font-size:12px;">Bank Reference</span>
+                            <span style="font-weight:600;font-size:12px;font-family:monospace;">NEFT UTR: HDFC26031200045</span>
+                        </div>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">Branch</span>
+                        <span style="font-weight:600;font-size:12px;">🏢 Mumbai HQ</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">Created By</span>
+                        <span style="font-weight:500;font-size:12px;">Anita Verma (Accounts Exec)</span>
+                    </div>
+                </div>
+            </div>
+            <div style="padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">References &amp; Tags</div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                    <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;background:#dbeafe;color:#1d4ed8;">📄 INV-2024-077</span>
+                    <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;background:#fef3c7;color:#92400e;">🏢 Reliance Industries</span>
+                </div>
+                <div style="margin-top:8px;font-size:11px;color:#667085;">
+                    <span style="font-weight:600;">Trips:</span> —
+                </div>
+            </div>
+            <div style="padding:12px 24px;display:flex;justify-content:space-between;align-items:center;">
+                <div style="font-size:10px;color:#98a2b3;">Voucher ID: RCT-26-03-0036</div>
+                <div style="display:flex;gap:8px;">
+                    <button onclick="this.closest('.modal-overlay').style.display='none'" style="padding:6px 16px;border:1px solid #d0d5dd;border-radius:6px;background:#fff;font-size:12px;font-weight:600;cursor:pointer;color:#344054;">Close</button>
+                    <button style="padding:6px 16px;border:none;border-radius:6px;background:#1570ef;color:#fff;font-size:12px;font-weight:600;cursor:pointer;"><i class="fas fa-print" style="margin-right:4px;"></i> Print</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="voucher-popup-SLS-26-03-0039" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
+        <div style="background:#fff;border-radius:14px;width:600px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 24px 48px rgba(0,0,0,.18);">
+            <div style="padding:20px 24px 16px;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:flex-start;">
+                <div>
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                        <span style="font-size:17px;font-weight:700;font-family:monospace;">SLS/26-03/0039</span>
+                        <span style="display:inline-flex;padding:2px 10px;border-radius:6px;font-size:10px;font-weight:700;background:#ecfdf3;color:#027a48;text-transform:uppercase;letter-spacing:.04em;">Sales</span>
+                    </div>
+                    <div style="font-size:12px;color:#667085;">10 Mar 2026</div>
+                </div>
+                <button onclick="this.closest('.modal-overlay').style.display='none'" style="background:none;border:none;font-size:22px;cursor:pointer;color:#667085;line-height:1;">&times;</button>
+            </div>
+            <div style="padding:16px 24px;background:#f9fafb;border-bottom:1px solid #e5e7eb;text-align:center;">
+                <div style="font-size:10px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Amount</div>
+                <div style="font-size:28px;font-weight:800;color:#101828;">₹3,35,710</div>
+            </div>
+            <div style="padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Journal Entry</div>
+                <div style="display:flex;gap:12px;">
+                    <div style="flex:1;padding:12px;background:#eff8ff;border-radius:8px;border:1px solid #bfdbfe;">
+                        <div style="font-size:10px;font-weight:700;color:#1d4ed8;text-transform:uppercase;margin-bottom:4px;">Debit (Dr.)</div>
+                        <div style="font-size:14px;font-weight:700;color:#1e3a5f;">Accounts Receivable</div>
+                        <div style="font-size:10px;color:#667085;margin-top:2px;">100-003-001</div>
+                    </div>
+                    <div style="flex:1;padding:12px;background:#fef2f2;border-radius:8px;border:1px solid #fecaca;">
+                        <div style="font-size:10px;font-weight:700;color:#b91c1c;text-transform:uppercase;margin-bottom:4px;">Credit (Cr.)</div>
+                        <div style="font-size:14px;font-weight:700;color:#5f1e1e;">Freight Revenue</div>
+                        <div style="font-size:10px;color:#667085;margin-top:2px;">300-001-001</div>
+                    </div>
+                </div>
+            </div>
+            <div style="padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Voucher Details</div>
+                <div style="display:flex;flex-direction:column;gap:0;">
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">Narration</span>
+                        <span style="font-weight:500;font-size:12px;max-width:60%;text-align:right;">INV-2024-078 — Reliance Industries (10 trips)</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">GST</span>
+                        <span style="font-weight:600;font-size:12px;">IGST 18% — ₹51,312</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">Branch</span>
+                        <span style="font-weight:600;font-size:12px;">🏢 Mumbai HQ</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">Created By</span>
+                        <span style="font-weight:500;font-size:12px;">Anita Verma (Accounts Exec)</span>
+                    </div>
+                </div>
+            </div>
+            <div style="padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">References &amp; Tags</div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                    <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;background:#dbeafe;color:#1d4ed8;">📄 INV-2024-078</span>
+                    <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;background:#fef3c7;color:#92400e;">🏢 Reliance Industries</span>
+                </div>
+                <div style="margin-top:8px;font-size:11px;color:#667085;">
+                    <span style="font-weight:600;">Trips:</span> TRP-4790, TRP-4788, TRP-4786, TRP-4784, TRP-4782, TRP-4780, TRP-4778, TRP-4776, TRP-4774, TRP-4772
+                </div>
+            </div>
+            <div style="padding:12px 24px;display:flex;justify-content:space-between;align-items:center;">
+                <div style="font-size:10px;color:#98a2b3;">Voucher ID: SLS-26-03-0039</div>
+                <div style="display:flex;gap:8px;">
+                    <button onclick="this.closest('.modal-overlay').style.display='none'" style="padding:6px 16px;border:1px solid #d0d5dd;border-radius:6px;background:#fff;font-size:12px;font-weight:600;cursor:pointer;color:#344054;">Close</button>
+                    <button style="padding:6px 16px;border:none;border-radius:6px;background:#1570ef;color:#fff;font-size:12px;font-weight:600;cursor:pointer;"><i class="fas fa-print" style="margin-right:4px;"></i> Print</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="voucher-popup-RCT-26-03-0035" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
+        <div style="background:#fff;border-radius:14px;width:600px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 24px 48px rgba(0,0,0,.18);">
+            <div style="padding:20px 24px 16px;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:flex-start;">
+                <div>
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                        <span style="font-size:17px;font-weight:700;font-family:monospace;">RCT/26-03/0035</span>
+                        <span style="display:inline-flex;padding:2px 10px;border-radius:6px;font-size:10px;font-weight:700;background:#eff8ff;color:#175cd3;text-transform:uppercase;letter-spacing:.04em;">Receipt</span>
+                    </div>
+                    <div style="font-size:12px;color:#667085;">08 Mar 2026</div>
+                </div>
+                <button onclick="this.closest('.modal-overlay').style.display='none'" style="background:none;border:none;font-size:22px;cursor:pointer;color:#667085;line-height:1;">&times;</button>
+            </div>
+            <div style="padding:16px 24px;background:#f9fafb;border-bottom:1px solid #e5e7eb;text-align:center;">
+                <div style="font-size:10px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Amount</div>
+                <div style="font-size:28px;font-weight:800;color:#101828;">₹2,26,560</div>
+            </div>
+            <div style="padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Journal Entry</div>
+                <div style="display:flex;gap:12px;">
+                    <div style="flex:1;padding:12px;background:#eff8ff;border-radius:8px;border:1px solid #bfdbfe;">
+                        <div style="font-size:10px;font-weight:700;color:#1d4ed8;text-transform:uppercase;margin-bottom:4px;">Debit (Dr.)</div>
+                        <div style="font-size:14px;font-weight:700;color:#1e3a5f;">HDFC Bank — Current A/c</div>
+                        <div style="font-size:10px;color:#667085;margin-top:2px;">100-001-001</div>
+                    </div>
+                    <div style="flex:1;padding:12px;background:#fef2f2;border-radius:8px;border:1px solid #fecaca;">
+                        <div style="font-size:10px;font-weight:700;color:#b91c1c;text-transform:uppercase;margin-bottom:4px;">Credit (Cr.)</div>
+                        <div style="font-size:14px;font-weight:700;color:#5f1e1e;">Accounts Receivable</div>
+                        <div style="font-size:10px;color:#667085;margin-top:2px;">100-003-001</div>
+                    </div>
+                </div>
+            </div>
+            <div style="padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Voucher Details</div>
+                <div style="display:flex;flex-direction:column;gap:0;">
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">Narration</span>
+                        <span style="font-weight:500;font-size:12px;max-width:60%;text-align:right;">Payment from ITC Limited — NEFT</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">GST</span>
+                        <span style="font-weight:600;font-size:12px;">N/A</span>
+                    </div>
+                        <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                            <span style="color:#667085;font-size:12px;">Bank Reference</span>
+                            <span style="font-weight:600;font-size:12px;font-family:monospace;">NEFT UTR: ICIC26030800112</span>
+                        </div>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">Branch</span>
+                        <span style="font-weight:600;font-size:12px;">🏢 Mumbai HQ</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">Created By</span>
+                        <span style="font-weight:500;font-size:12px;">Priya Sharma (Finance Controller)</span>
+                    </div>
+                </div>
+            </div>
+            <div style="padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">References &amp; Tags</div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                    <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;background:#dbeafe;color:#1d4ed8;">📄 INV-2024-076</span>
+                    <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;background:#fef3c7;color:#92400e;">🏢 ITC Limited</span>
+                </div>
+                <div style="margin-top:8px;font-size:11px;color:#667085;">
+                    <span style="font-weight:600;">Trips:</span> —
+                </div>
+            </div>
+            <div style="padding:12px 24px;display:flex;justify-content:space-between;align-items:center;">
+                <div style="font-size:10px;color:#98a2b3;">Voucher ID: RCT-26-03-0035</div>
+                <div style="display:flex;gap:8px;">
+                    <button onclick="this.closest('.modal-overlay').style.display='none'" style="padding:6px 16px;border:1px solid #d0d5dd;border-radius:6px;background:#fff;font-size:12px;font-weight:600;cursor:pointer;color:#344054;">Close</button>
+                    <button style="padding:6px 16px;border:none;border-radius:6px;background:#1570ef;color:#fff;font-size:12px;font-weight:600;cursor:pointer;"><i class="fas fa-print" style="margin-right:4px;"></i> Print</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="voucher-popup-SLS-26-03-0038" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
+        <div style="background:#fff;border-radius:14px;width:600px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 24px 48px rgba(0,0,0,.18);">
+            <div style="padding:20px 24px 16px;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:flex-start;">
+                <div>
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                        <span style="font-size:17px;font-weight:700;font-family:monospace;">SLS/26-03/0038</span>
+                        <span style="display:inline-flex;padding:2px 10px;border-radius:6px;font-size:10px;font-weight:700;background:#ecfdf3;color:#027a48;text-transform:uppercase;letter-spacing:.04em;">Sales</span>
+                    </div>
+                    <div style="font-size:12px;color:#667085;">05 Mar 2026</div>
+                </div>
+                <button onclick="this.closest('.modal-overlay').style.display='none'" style="background:none;border:none;font-size:22px;cursor:pointer;color:#667085;line-height:1;">&times;</button>
+            </div>
+            <div style="padding:16px 24px;background:#f9fafb;border-bottom:1px solid #e5e7eb;text-align:center;">
+                <div style="font-size:10px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Amount</div>
+                <div style="font-size:28px;font-weight:800;color:#101828;">₹1,86,400</div>
+            </div>
+            <div style="padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Journal Entry</div>
+                <div style="display:flex;gap:12px;">
+                    <div style="flex:1;padding:12px;background:#eff8ff;border-radius:8px;border:1px solid #bfdbfe;">
+                        <div style="font-size:10px;font-weight:700;color:#1d4ed8;text-transform:uppercase;margin-bottom:4px;">Debit (Dr.)</div>
+                        <div style="font-size:14px;font-weight:700;color:#1e3a5f;">Accounts Receivable</div>
+                        <div style="font-size:10px;color:#667085;margin-top:2px;">100-003-001</div>
+                    </div>
+                    <div style="flex:1;padding:12px;background:#fef2f2;border-radius:8px;border:1px solid #fecaca;">
+                        <div style="font-size:10px;font-weight:700;color:#b91c1c;text-transform:uppercase;margin-bottom:4px;">Credit (Cr.)</div>
+                        <div style="font-size:14px;font-weight:700;color:#5f1e1e;">Freight Revenue</div>
+                        <div style="font-size:10px;color:#667085;margin-top:2px;">300-001-001</div>
+                    </div>
+                </div>
+            </div>
+            <div style="padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Voucher Details</div>
+                <div style="display:flex;flex-direction:column;gap:0;">
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">Narration</span>
+                        <span style="font-weight:500;font-size:12px;max-width:60%;text-align:right;">INV-2024-077 — Mahindra Logistics (6 trips)</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">GST</span>
+                        <span style="font-weight:600;font-size:12px;">IGST 18% — ₹28,502</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">Branch</span>
+                        <span style="font-weight:600;font-size:12px;">🏢 Pune Branch</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f4f7;">
+                        <span style="color:#667085;font-size:12px;">Created By</span>
+                        <span style="font-weight:500;font-size:12px;">Anita Verma (Accounts Exec)</span>
+                    </div>
+                </div>
+            </div>
+            <div style="padding:16px 24px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:11px;font-weight:700;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">References &amp; Tags</div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                    <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;background:#dbeafe;color:#1d4ed8;">📄 INV-2024-077</span>
+                    <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;background:#fef3c7;color:#92400e;">🏢 Mahindra Logistics</span>
+                </div>
+                <div style="margin-top:8px;font-size:11px;color:#667085;">
+                    <span style="font-weight:600;">Trips:</span> TRP-4770, TRP-4768, TRP-4766, TRP-4764, TRP-4762, TRP-4760
+                </div>
+            </div>
+            <div style="padding:12px 24px;display:flex;justify-content:space-between;align-items:center;">
+                <div style="font-size:10px;color:#98a2b3;">Voucher ID: SLS-26-03-0038</div>
+                <div style="display:flex;gap:8px;">
+                    <button onclick="this.closest('.modal-overlay').style.display='none'" style="padding:6px 16px;border:1px solid #d0d5dd;border-radius:6px;background:#fff;font-size:12px;font-weight:600;cursor:pointer;color:#344054;">Close</button>
+                    <button style="padding:6px 16px;border:none;border-radius:6px;background:#1570ef;color:#fff;font-size:12px;font-weight:600;cursor:pointer;"><i class="fas fa-print" style="margin-right:4px;"></i> Print</button>
+                </div>
+            </div>
+        </div>
+    </div>

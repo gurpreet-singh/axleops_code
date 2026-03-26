@@ -1,0 +1,121 @@
+<!-- Driver Ledger Page -->
+<div class="page-header">
+    <h1>Driver Ledger</h1>
+    <div class="page-header-actions">
+        <button class="btn btn-secondary"><i class="fas fa-file-export"></i> Export</button>
+        <button class="btn btn-primary"><i class="fas fa-plus"></i> New Transaction</button>
+    </div>
+</div>
+
+<div class="tabs" style="overflow-x:auto; flex-wrap:nowrap;">
+    <div class="tab active">All Transactions</div>
+    <div class="tab">Advances</div>
+    <div class="tab">Settlements</div>
+    <div class="tab">Pending</div>
+</div>
+
+<div class="table-container">
+    <div class="table-toolbar">
+        <div class="search-input"><i class="fas fa-search" style="color:var(--text-muted)"></i><input type="text"
+                placeholder="Search..."></div>
+        <div class="filter-btn">Driver ▾</div>
+        <div class="filter-btn">Type ▾</div>
+        <div class="filter-btn">Date ▾</div>
+        <div class="pagination-info">1 - 20 of 156</div>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Driver</th>
+                <th>Trip</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th style="text-align:right;">Debit</th>
+                <th style="text-align:right;">Credit</th>
+                <th style="text-align:right;">Balance</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>May 14, 2024</td>
+                <td>
+                    <div class="flex items-center gap-8"><span class="user-avatar">RK</span>Rajesh Kumar</div>
+                </td>
+                <td><a href="#" onclick="navigateTo('trip-detail')">TRP-0142</a></td>
+                <td><span class="status-badge pending">Advance</span></td>
+                <td>Trip advance — Mumbai to Delhi</td>
+                <td style="text-align:right;color:var(--status-overdue);font-weight:600;">₹8,500</td>
+                <td style="text-align:right;">—</td>
+                <td style="text-align:right;font-weight:600;">₹8,500</td>
+                <td><span class="status-badge pending">Outstanding</span></td>
+            </tr>
+            <tr>
+                <td>May 13, 2024</td>
+                <td>
+                    <div class="flex items-center gap-8"><span class="user-avatar">AV</span>Anita Verma</div>
+                </td>
+                <td><a href="#">TRP-0141</a></td>
+                <td><span class="status-badge pending">Advance</span></td>
+                <td>Trip advance — Mumbai to Pune</td>
+                <td style="text-align:right;color:var(--status-overdue);font-weight:600;">₹3,500</td>
+                <td style="text-align:right;">—</td>
+                <td style="text-align:right;font-weight:600;">₹3,500</td>
+                <td><span class="status-badge pending">Outstanding</span></td>
+            </tr>
+            <tr>
+                <td>May 13, 2024</td>
+                <td>
+                    <div class="flex items-center gap-8"><span class="user-avatar">DP</span>Deepak Patel</div>
+                </td>
+                <td><a href="#">TRP-0139</a></td>
+                <td><span class="status-badge completed">Settlement</span></td>
+                <td>Trip settlement — Returned ₹1,200 excess</td>
+                <td style="text-align:right;">—</td>
+                <td style="text-align:right;color:var(--status-active);font-weight:600;">₹1,200</td>
+                <td style="text-align:right;font-weight:600;">₹0</td>
+                <td><span class="status-badge completed">Settled</span></td>
+            </tr>
+            <tr>
+                <td>May 12, 2024</td>
+                <td>
+                    <div class="flex items-center gap-8"><span class="user-avatar">MJ</span>Meera Joshi</div>
+                </td>
+                <td><a href="#">TRP-0138</a></td>
+                <td><span class="status-badge completed">Settlement</span></td>
+                <td>Trip expenses — Receipts submitted</td>
+                <td style="text-align:right;">—</td>
+                <td style="text-align:right;color:var(--status-active);font-weight:600;">₹2,800</td>
+                <td style="text-align:right;font-weight:600;">₹0</td>
+                <td><span class="status-badge completed">Settled</span></td>
+            </tr>
+            <tr>
+                <td>May 12, 2024</td>
+                <td>
+                    <div class="flex items-center gap-8"><span class="user-avatar">VS</span>Vikram Singh</div>
+                </td>
+                <td><a href="#">TRP-0140</a></td>
+                <td><span class="status-badge pending">Advance</span></td>
+                <td>Trip advance — Delhi to Jaipur</td>
+                <td style="text-align:right;color:var(--status-overdue);font-weight:600;">₹5,000</td>
+                <td style="text-align:right;">—</td>
+                <td style="text-align:right;font-weight:600;">₹5,000</td>
+                <td><span class="status-badge pending">Outstanding</span></td>
+            </tr>
+            <tr>
+                <td>May 11, 2024</td>
+                <td>
+                    <div class="flex items-center gap-8"><span class="user-avatar">RK</span>Rajesh Kumar</div>
+                </td>
+                <td><a href="#">TRP-0135</a></td>
+                <td><span class="status-badge info">Salary</span></td>
+                <td>Monthly salary — April 2024</td>
+                <td style="text-align:right;color:var(--status-overdue);font-weight:600;">₹22,000</td>
+                <td style="text-align:right;">—</td>
+                <td style="text-align:right;font-weight:600;">—</td>
+                <td><span class="status-badge completed">Paid</span></td>
+            </tr>
+        </tbody>
+    </table>
+</div>

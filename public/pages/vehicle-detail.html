@@ -1,0 +1,622 @@
+<!-- Vehicle Detail Page — 3-Panel Layout Redesign -->
+
+<!-- Fixed Vehicle Header -->
+<div class="vd-page-header">
+    <div class="vd-page-header-left">
+        <div class="vd-veh-icon">🚛</div>
+        <div>
+            <div class="vd-veh-title">MH04VW6256 <span class="status-badge active" style="font-size:11px;vertical-align:middle;">Active</span></div>
+            <div class="vd-veh-subtitle">2023 BharatBenz 1217C · 32ft Multi-Axle Trailer · 1,50,004 km</div>
+        </div>
+    </div>
+    <div style="display:flex;gap:8px;">
+        <button class="btn btn-secondary"><i class="fas fa-edit"></i> Edit</button>
+        <button class="btn btn-primary"><i class="fas fa-plus"></i> Add ▾</button>
+    </div>
+</div>
+
+<!-- 3-Panel Layout -->
+<div class="vd-layout">
+
+<!-- ═══ PANEL 1: LEFT NAVIGATION ═══ -->
+<div class="vd-left-nav" id="vd-left-nav">
+    <!-- Identity Card -->
+    <div class="vd-identity-card">
+        <div class="vd-reg">MH04VW6256</div>
+        <div class="vd-health-circle">
+            <svg viewBox="0 0 36 36">
+                <circle cx="18" cy="18" r="15.9" fill="none" stroke="#E2E8F0" stroke-width="2.5"/>
+                <circle cx="18" cy="18" r="15.9" fill="none" stroke="#D97706" stroke-width="2.5" stroke-dasharray="78 22" stroke-linecap="round"/>
+            </svg>
+            <div class="vd-health-value" style="color:#D97706;">78</div>
+        </div>
+        <div class="vd-health-label" style="color:#D97706;">Vehicle Health</div>
+        <div style="margin-top:8px;">
+            <span class="status-badge active" style="font-size:11px;">● On Trip</span>
+        </div>
+    </div>
+
+    <!-- Module Navigation -->
+    <div class="vd-module-nav">
+        <button class="vd-nav-btn active" onclick="switchVdModule('overview')">
+            <span class="vd-nav-icon">📋</span> Overview
+        </button>
+        <button class="vd-nav-btn" onclick="switchVdModule('maintenance')">
+            <span class="vd-nav-icon">🔧</span> Maintenance & Health
+            <span class="vd-nav-badge">3</span>
+        </button>
+        <button class="vd-nav-btn" onclick="switchVdModule('operations')">
+            <span class="vd-nav-icon">📊</span> Operations & Tracking
+        </button>
+        <button class="vd-nav-btn" onclick="switchVdModule('finance')">
+            <span class="vd-nav-icon">💰</span> Finance & Compliance
+            <span class="vd-nav-badge" style="background:#FEF3C7;color:#D97706;">1</span>
+        </button>
+    </div>
+
+    <!-- Quick Info -->
+    <div class="vd-quick-info">
+        <div class="vd-qi-row"><span class="vd-qi-label">Branch</span><span class="vd-qi-value">Mumbai HQ</span></div>
+        <div class="vd-qi-row"><span class="vd-qi-label">Group</span><span class="vd-qi-value">Delhi</span></div>
+        <div class="vd-qi-row"><span class="vd-qi-label">Operator</span><span class="vd-qi-value">Unassigned</span></div>
+        <div class="vd-qi-row"><span class="vd-qi-label">Fuel Type</span><span class="vd-qi-value">Diesel</span></div>
+    </div>
+</div>
+
+<!-- ═══ PANEL 2: CENTER CONTENT ═══ -->
+<div class="vd-center-content">
+
+<!-- ──── MODULE 1: OVERVIEW ──── -->
+<div class="vd-module-content active" id="vd-mod-overview">
+    <div class="detail-grid">
+        <div>
+            <!-- Key Details -->
+            <div class="detail-section">
+                <div class="section-header">
+                    <h3>Key Details</h3>
+                    <a href="#" class="btn btn-link" onclick="openVdSlider('fullSpecs');return false;">View Full Specs →</a>
+                </div>
+                <div class="section-body">
+                    <div class="info-list">
+                        <div class="info-item"><span class="info-label">License Plate</span><span class="info-value">MH04VW6256</span></div>
+                        <div class="info-item"><span class="info-label">Vehicle Type</span><span class="info-value"><a href="#" onclick="navigateTo('vehicle-types')" style="color:var(--primary);font-weight:600;">32ft Multi-Axle Trailer</a></span></div>
+                        <div class="info-item"><span class="info-label">Make / Model</span><span class="info-value">BharatBenz 1217C Duty</span></div>
+                        <div class="info-item"><span class="info-label">Year</span><span class="info-value">2023</span></div>
+                        <div class="info-item"><span class="info-label">Chassis No.</span><span class="info-value">MBLH111EXPMXB2345</span></div>
+                        <div class="info-item"><span class="info-label">Meter</span><span class="info-value">1,50,004 km ↻</span></div>
+                        <div class="info-item"><span class="info-label">Axle Config</span><span class="info-value">6×4</span></div>
+                        <div class="info-item"><span class="info-label">Payload Capacity</span><span class="info-value">16,200 kg</span></div>
+                        <div class="info-item"><span class="info-label">Registration State</span><span class="info-value">Maharashtra</span></div>
+                        <div class="info-item"><span class="info-label">Ownership</span><span class="info-value">Owned</span></div>
+                        <div class="info-item"><span class="info-label">Color</span><span class="info-value">Silver</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Last Known Location -->
+            <div class="detail-section" style="margin-top:16px;">
+                <div class="section-header"><h3>Last Known Location</h3></div>
+                <div class="section-body" style="padding:0;">
+                    <div style="height:180px;background:linear-gradient(135deg,#e8f5e9 0%,#c8e6c9 30%,#a5d6a7 60%,#b2dfdb 100%);display:flex;align-items:center;justify-content:center;position:relative;border-radius:0 0 8px 8px;">
+                        <div style="width:24px;height:24px;background:#ea4335;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 2px 6px rgba(0,0,0,0.3);"></div>
+                        <div style="position:absolute;bottom:8px;font-size:11px;color:#666;">Delhi, DL · Flora Johnston Nature Park area</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <!-- Cost of Ownership -->
+            <div class="detail-section">
+                <div class="section-header">
+                    <h3>Cost of Ownership</h3>
+                    <span style="font-size:12px;color:var(--text-secondary);border:1px solid var(--border-color);border-radius:6px;padding:3px 8px;">Last 12 Months</span>
+                </div>
+                <div class="section-body">
+                    <div style="display:flex;gap:40px;margin-bottom:16px;">
+                        <div><div style="font-size:12px;color:var(--text-muted);">Total Costs</div><div style="font-size:22px;font-weight:700;">₹20,77,557</div></div>
+                        <div><div style="font-size:12px;color:var(--text-muted);">Cost Per Meter</div><div style="font-size:22px;font-weight:700;">₹101 <span style="font-size:13px;font-weight:400;color:var(--text-muted);">/ km</span></div></div>
+                    </div>
+                    <div style="height:120px;display:flex;align-items:flex-end;gap:4px;padding:0 4px;border-bottom:1px solid var(--border-color);">
+                        <div style="flex:1;height:65px;background:#36bfb1;border-radius:2px 2px 0 0;"></div>
+                        <div style="flex:1;height:72px;background:#36bfb1;border-radius:2px 2px 0 0;"></div>
+                        <div style="flex:1;height:58px;background:#36bfb1;border-radius:2px 2px 0 0;"></div>
+                        <div style="flex:1;height:82px;background:#36bfb1;border-radius:2px 2px 0 0;"></div>
+                        <div style="flex:1;height:68px;background:#36bfb1;border-radius:2px 2px 0 0;"></div>
+                        <div style="flex:1;height:75px;background:#36bfb1;border-radius:2px 2px 0 0;"></div>
+                        <div style="flex:1;height:62px;background:#36bfb1;border-radius:2px 2px 0 0;"></div>
+                        <div style="flex:1;height:70px;background:#36bfb1;border-radius:2px 2px 0 0;"></div>
+                        <div style="flex:1;height:55px;background:#36bfb1;border-radius:2px 2px 0 0;"></div>
+                        <div style="flex:1;height:78px;background:#36bfb1;border-radius:2px 2px 0 0;"></div>
+                        <div style="flex:1;height:48px;background:#fbbf24;border-radius:2px 2px 0 0;"></div>
+                        <div style="flex:1;height:88px;background:#a78bfa;border-radius:2px 2px 0 0;"></div>
+                    </div>
+                    <div style="display:flex;gap:8px;margin-top:4px;font-size:10px;color:var(--text-muted);">
+                        <span style="flex:1;text-align:center;">Jun</span><span style="flex:1;text-align:center;">Jul</span><span style="flex:1;text-align:center;">Aug</span>
+                        <span style="flex:1;text-align:center;">Sep</span><span style="flex:1;text-align:center;">Oct</span><span style="flex:1;text-align:center;">Nov</span>
+                        <span style="flex:1;text-align:center;">Dec</span><span style="flex:1;text-align:center;">Jan</span><span style="flex:1;text-align:center;">Feb</span>
+                        <span style="flex:1;text-align:center;">Mar</span><span style="flex:1;text-align:center;">Apr</span><span style="flex:1;text-align:center;">May</span>
+                    </div>
+                    <div style="display:flex;gap:24px;margin-top:16px;font-size:13px;">
+                        <div><span class="status-dot" style="background:#36bfb1;"></span> Fuel Costs<div style="font-weight:600;margin-top:2px;">₹58,301</div></div>
+                        <div><span class="status-dot" style="background:#fbbf24;"></span> Service Costs<div style="font-weight:600;margin-top:2px;">₹2,64,512</div></div>
+                        <div><span class="status-dot" style="background:#a78bfa;"></span> Other Costs<div style="font-weight:600;margin-top:2px;">₹17,54,745</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Open Issues -->
+            <div class="detail-section" style="margin-top:16px;">
+                <div class="section-header">
+                    <h3>Open Issues</h3>
+                    <div><a href="#" class="btn btn-link" style="margin-right:8px;">+ Add Issue</a><a href="#" class="btn btn-link" onclick="switchVdModule('maintenance')">View All</a></div>
+                </div>
+                <div class="section-body">
+                    <div style="display:flex;gap:40px;margin-bottom:16px;">
+                        <div><div style="font-size:12px;color:var(--text-muted);">Overdue</div><div style="font-size:24px;font-weight:700;">0</div></div>
+                        <div><div style="font-size:12px;color:var(--text-muted);">Open</div><div style="font-size:24px;font-weight:700;color:var(--primary);">1</div></div>
+                    </div>
+                    <div style="padding:12px;background:var(--bg-main);border-radius:8px;border-left:3px solid var(--primary);cursor:pointer;" onclick="openVdSlider('issue')">
+                        <div style="font-weight:600;">#1 - Oil leak</div>
+                        <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">Oil leak that appears to be coming from the oil pan</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Assignment -->
+            <div class="detail-section" style="margin-top:16px;">
+                <div class="section-header"><h3>Current Assignment</h3></div>
+                <div class="section-body">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                        <span style="font-size:14px;font-weight:700;color:var(--primary);">TRP-0142</span>
+                        <span class="status-badge info" style="font-size:10px;">En Route</span>
+                    </div>
+                    <div class="info-list" style="gap:8px;">
+                        <div class="info-item"><span class="info-label">Driver</span><span class="info-value" style="cursor:pointer;color:var(--primary);" onclick="openVdSlider('driver')">Rajesh K.</span></div>
+                        <div class="info-item"><span class="info-label">Route</span><span class="info-value">Mumbai → Delhi</span></div>
+                        <div class="info-item"><span class="info-label">Phase</span><span class="info-value">En Route</span></div>
+                    </div>
+                    <div style="margin-top:12px;">
+                        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);margin-bottom:4px;">
+                            <span>Progress</span><span style="font-weight:600;">68%</span>
+                        </div>
+                        <div style="height:6px;background:#E2E8F0;border-radius:3px;overflow:hidden;">
+                            <div style="width:68%;height:100%;background:var(--primary);border-radius:3px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ──── MODULE 2: MAINTENANCE & HEALTH ──── -->
+<div class="vd-module-content" id="vd-mod-maintenance">
+    <!-- Action Required -->
+    <div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:12px;padding:16px 20px;margin-bottom:20px;">
+        <div style="font-size:13px;font-weight:700;color:#DC2626;margin-bottom:8px;">⚠ ACTION REQUIRED</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:13px;color:#1E293B;">Issue #1: Oil leak — Medium Priority</span>
+            <button class="btn btn-secondary" style="font-size:12px;padding:4px 12px;" onclick="openVdSlider('issue')">View & Create WO</button>
+        </div>
+    </div>
+
+    <!-- Upcoming Service Schedule -->
+    <div class="detail-section" style="margin-bottom:20px;">
+        <div class="section-header">
+            <h3>Upcoming Service Schedule</h3>
+            <a href="#" class="btn btn-link" onclick="openVdSlider('serviceHistory');return false;">View Full History →</a>
+        </div>
+        <div class="section-body" style="padding:0;">
+            <table>
+                <thead><tr><th>Service Task</th><th>Interval</th><th>Next Due</th><th>Last Completed</th><th>Compliance</th></tr></thead>
+                <tbody>
+                    <tr class="vd-clickable-row" onclick="openVdSlider('serviceTask','DEF Fluid Fill')"><td style="font-weight:500;color:var(--primary);">DEF Fluid Fill</td><td>Every 1 month / 4,000 km</td><td>4 weeks</td><td>05/06/2024</td><td style="font-weight:500;">100%</td></tr>
+                    <tr class="vd-clickable-row" onclick="openVdSlider('serviceTask','DEF Pump Filter')"><td style="font-weight:500;color:var(--primary);">DEF Pump Filter Replacement</td><td>Every 4 months / 2,00,000 km</td><td>4 months</td><td>05/06/2024</td><td style="font-weight:500;">100%</td></tr>
+                    <tr class="vd-clickable-row" onclick="openVdSlider('serviceTask','Engine Oil')"><td style="font-weight:500;color:var(--primary);">Engine Oil & Filter</td><td>Every 5 months / 45,000 km</td><td>5 months</td><td>05/02/2024</td><td style="font-weight:500;">100%</td></tr>
+                    <tr class="vd-clickable-row" onclick="openVdSlider('serviceTask','Tire Rotation')"><td style="font-weight:500;color:var(--primary);">Tire Rotation</td><td>Every 10 months / 45,000 km</td><td>10 months</td><td>05/02/2024</td><td style="font-weight:500;">100%</td></tr>
+                    <tr class="vd-clickable-row" onclick="openVdSlider('serviceTask','Engine Air Filter')"><td style="font-weight:500;color:var(--primary);">Engine Air Filter Replacement</td><td>Every 12 months / 1,50,000 km</td><td>1 year</td><td>05/06/2024</td><td style="font-weight:500;">100%</td></tr>
+                    <tr class="vd-clickable-row" onclick="openVdSlider('serviceTask','Engine Coolant')"><td style="font-weight:500;color:var(--primary);">Engine Coolant Drain & Refill</td><td>Every 24 months / 7,00,000 km</td><td>2 years</td><td>05/01/2024</td><td style="font-weight:500;">100%</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="detail-grid">
+        <!-- Tire Status -->
+        <div class="detail-section">
+            <div class="section-header"><h3>Tire Status — 6×4</h3></div>
+            <div class="section-body" style="text-align:center;">
+                <div style="margin-bottom:18px;">
+                    <div style="font-size:10px;font-weight:700;color:#94A3B8;letter-spacing:0.3px;margin-bottom:8px;">FRONT AXLE</div>
+                    <div style="display:flex;gap:48px;justify-content:center;">
+                        <div style="width:54px;padding:8px 4px;background:#F8FAFC;border-radius:8px;cursor:pointer;border:1px solid #E2E8F0;" onclick="openVdSlider('tire','LF')"><div style="font-size:9px;font-weight:700;color:#64748B;">LF</div><div style="font-size:18px;font-weight:800;color:#059669;">18</div><div style="font-size:8px;color:#94A3B8;">/32 in</div></div>
+                        <div style="width:54px;padding:8px 4px;background:#F8FAFC;border-radius:8px;cursor:pointer;border:1px solid #E2E8F0;" onclick="openVdSlider('tire','RF')"><div style="font-size:9px;font-weight:700;color:#64748B;">RF</div><div style="font-size:18px;font-weight:800;color:#059669;">16</div><div style="font-size:8px;color:#94A3B8;">/32 in</div></div>
+                    </div>
+                </div>
+                <div style="margin-bottom:18px;">
+                    <div style="font-size:10px;font-weight:700;color:#94A3B8;letter-spacing:0.3px;margin-bottom:8px;">REAR AXLE 1</div>
+                    <div style="display:flex;gap:8px;justify-content:center;">
+                        <div style="width:50px;padding:6px 4px;background:#F8FAFC;border-radius:6px;cursor:pointer;border:1px solid #E2E8F0;" onclick="openVdSlider('tire','LR-O')"><div style="font-size:9px;font-weight:700;color:#64748B;">LR-O</div><div style="font-size:15px;font-weight:800;color:#059669;">22</div><div style="font-size:8px;color:#94A3B8;">/32</div></div>
+                        <div style="width:50px;padding:6px 4px;background:#F8FAFC;border-radius:6px;cursor:pointer;border:1px solid #E2E8F0;" onclick="openVdSlider('tire','LR-I')"><div style="font-size:9px;font-weight:700;color:#64748B;">LR-I</div><div style="font-size:15px;font-weight:800;color:#059669;">21</div><div style="font-size:8px;color:#94A3B8;">/32</div></div>
+                        <div style="width:50px;padding:6px 4px;background:#F8FAFC;border-radius:6px;cursor:pointer;border:1px solid #E2E8F0;" onclick="openVdSlider('tire','RR-I')"><div style="font-size:9px;font-weight:700;color:#64748B;">RR-I</div><div style="font-size:15px;font-weight:800;color:#059669;">20</div><div style="font-size:8px;color:#94A3B8;">/32</div></div>
+                        <div style="width:50px;padding:6px 4px;background:#F8FAFC;border-radius:6px;cursor:pointer;border:1px solid #E2E8F0;" onclick="openVdSlider('tire','RR-O')"><div style="font-size:9px;font-weight:700;color:#64748B;">RR-O</div><div style="font-size:15px;font-weight:800;color:#059669;">22</div><div style="font-size:8px;color:#94A3B8;">/32</div></div>
+                    </div>
+                </div>
+                <div>
+                    <div style="font-size:10px;font-weight:700;color:#94A3B8;letter-spacing:0.3px;margin-bottom:8px;">REAR AXLE 2</div>
+                    <div style="display:flex;gap:8px;justify-content:center;">
+                        <div style="width:50px;padding:6px 4px;background:#F8FAFC;border-radius:6px;cursor:pointer;border:1px solid #E2E8F0;" onclick="openVdSlider('tire','LR2-O')"><div style="font-size:9px;font-weight:700;color:#64748B;">LR2-O</div><div style="font-size:15px;font-weight:800;color:#059669;">24</div><div style="font-size:8px;color:#94A3B8;">/32</div></div>
+                        <div style="width:50px;padding:6px 4px;background:#F8FAFC;border-radius:6px;cursor:pointer;border:1px solid #E2E8F0;" onclick="openVdSlider('tire','LR2-I')"><div style="font-size:9px;font-weight:700;color:#64748B;">LR2-I</div><div style="font-size:15px;font-weight:800;color:#059669;">23</div><div style="font-size:8px;color:#94A3B8;">/32</div></div>
+                        <div style="width:50px;padding:6px 4px;background:#F8FAFC;border-radius:6px;cursor:pointer;border:1px solid #E2E8F0;" onclick="openVdSlider('tire','RR2-I')"><div style="font-size:9px;font-weight:700;color:#64748B;">RR2-I</div><div style="font-size:15px;font-weight:800;color:#059669;">25</div><div style="font-size:8px;color:#94A3B8;">/32</div></div>
+                        <div style="width:50px;padding:6px 4px;background:#F8FAFC;border-radius:6px;cursor:pointer;border:1px solid #E2E8F0;" onclick="openVdSlider('tire','RR2-O')"><div style="font-size:9px;font-weight:700;color:#64748B;">RR2-O</div><div style="font-size:15px;font-weight:800;color:#059669;">24</div><div style="font-size:8px;color:#94A3B8;">/32</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <!-- Warranties -->
+            <div class="detail-section" style="margin-bottom:16px;">
+                <div class="section-header"><h3>Warranties (5)</h3><button class="btn btn-primary" style="font-size:12px;">+ Add Warranty</button></div>
+                <div class="section-body" style="padding:12px 20px;">
+                    <div style="padding:10px 0;border-bottom:1px solid #F8FAFC;cursor:pointer;display:flex;justify-content:space-between;align-items:center;" onclick="openVdSlider('warranty','Manufacturer')"><div><div style="font-size:13px;font-weight:600;">Manufacturer Warranty</div><div style="font-size:11px;color:#94A3B8;">BharatBenz · Exp: 15 Mar 2026</div></div><span class="status-badge active" style="font-size:10px;">Active</span></div>
+                    <div style="padding:10px 0;border-bottom:1px solid #F8FAFC;cursor:pointer;display:flex;justify-content:space-between;align-items:center;" onclick="openVdSlider('warranty','Extended')"><div><div style="font-size:13px;font-weight:600;">Extended Warranty</div><div style="font-size:11px;color:#94A3B8;">BharatBenz ProCare+ · Exp: 15 Mar 2028</div></div><span class="status-badge active" style="font-size:10px;">Active</span></div>
+                    <div style="padding:10px 0;border-bottom:1px solid #F8FAFC;cursor:pointer;display:flex;justify-content:space-between;align-items:center;" onclick="openVdSlider('warranty','Powertrain')"><div><div style="font-size:13px;font-weight:600;">Powertrain Warranty</div><div style="font-size:11px;color:#94A3B8;">BharatBenz · Exp: 15 Mar 2028</div></div><span class="status-badge active" style="font-size:10px;">Active</span></div>
+                    <div style="padding:10px 0;border-bottom:1px solid #F8FAFC;cursor:pointer;display:flex;justify-content:space-between;align-items:center;" onclick="openVdSlider('warranty','Battery')"><div><div style="font-size:13px;font-weight:600;">Battery Warranty</div><div style="font-size:11px;color:#94A3B8;">Exide Industries · Exp: 10 Jun 2026</div></div><span class="status-badge" style="background:#fff8e1;color:#e65100;font-size:10px;">Expiring</span></div>
+                    <div style="padding:10px 0;cursor:pointer;display:flex;justify-content:space-between;align-items:center;" onclick="openVdSlider('warranty','Emission')"><div><div style="font-size:13px;font-weight:600;">Emission System Warranty</div><div style="font-size:11px;color:#94A3B8;">BharatBenz · Exp: 15 Mar 2025</div></div><span class="status-badge" style="background:#ffebee;color:#c62828;font-size:10px;">Expired</span></div>
+                </div>
+            </div>
+
+            <!-- Open Issues -->
+            <div class="detail-section">
+                <div class="section-header"><h3>Open Issues</h3><a href="#" class="btn btn-link">+ Add Issue</a></div>
+                <div class="section-body">
+                    <div style="padding:12px;background:var(--bg-main);border-radius:8px;border-left:3px solid #D97706;cursor:pointer;" onclick="openVdSlider('issue')">
+                        <div style="font-weight:600;">#1 - Oil leak</div>
+                        <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">Oil leak from the oil pan area</div>
+                        <div style="font-size:11px;margin-top:4px;"><span class="status-badge" style="background:#FEF3C7;color:#D97706;font-size:10px;">Open</span> · Medium Priority · May 10, 2024</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ──── MODULE 3: OPERATIONS & TRACKING ──── -->
+<div class="vd-module-content" id="vd-mod-operations">
+    <!-- Fuel History -->
+    <div class="detail-section" style="margin-bottom:20px;">
+        <div class="section-header"><h3>⛽ Fuel History</h3></div>
+        <div class="section-body" style="padding:0;">
+            <table>
+                <thead><tr><th>Date</th><th>Vendor</th><th>Meter</th><th>Usage</th><th>Volume</th><th>Total</th><th>KMPL</th><th>Cost/km</th></tr></thead>
+                <tbody>
+                    <tr class="vd-clickable-row" onclick="openVdSlider('fuelEntry','May 09')"><td>Thu, May 09, 2024</td><td style="color:var(--primary);">Indian Oil</td><td>288 km</td><td>26.0 km</td><td>144.9 L</td><td style="font-weight:500;">₹13,041</td><td style="font-weight:700;color:#DC2626;">0.18</td><td>₹501/km</td></tr>
+                    <tr class="vd-clickable-row" onclick="openVdSlider('fuelEntry','May 08')"><td>Wed, May 08, 2024</td><td style="color:var(--primary);">Indian Oil</td><td>262 km</td><td>40.0 km</td><td>141.9 L</td><td style="font-weight:500;">₹12,778</td><td style="font-weight:700;color:#059669;">0.28</td><td>₹319/km</td></tr>
+                    <tr class="vd-clickable-row" onclick="openVdSlider('fuelEntry','May 03')"><td>Fri, May 03, 2024</td><td style="color:var(--primary);">Indian Oil</td><td>222 km</td><td>42.0 km</td><td>150.3 L</td><td style="font-weight:500;">₹13,527</td><td style="font-weight:700;color:#059669;">0.28</td><td>₹322/km</td></tr>
+                    <tr class="vd-clickable-row" onclick="openVdSlider('fuelEntry','Apr 28')"><td>Sun, Apr 28, 2024</td><td style="color:var(--primary);">Bharat Petroleum</td><td>180 km</td><td>38.0 km</td><td>142.6 L</td><td style="font-weight:500;">₹12,841</td><td style="font-weight:700;color:#059669;">0.27</td><td>₹338/km</td></tr>
+                    <tr class="vd-clickable-row" onclick="openVdSlider('fuelEntry','Apr 23')"><td>Tue, Apr 23, 2024</td><td style="color:var(--primary);">HP Petrol</td><td>142 km</td><td>50.0 km</td><td>145.3 L</td><td style="font-weight:500;">₹13,086</td><td style="font-weight:700;color:#059669;">0.34</td><td>₹262/km</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Inspection History -->
+    <div class="detail-section" style="margin-bottom:20px;">
+        <div class="section-header"><h3>🔍 Inspection History</h3></div>
+        <div class="section-body" style="padding:0;">
+            <table>
+                <thead><tr><th>Submitted</th><th>Duration</th><th>Inspection Form</th><th>Inspector</th></tr></thead>
+                <tbody>
+                    <tr class="vd-clickable-row" onclick="openVdSlider('inspection','May 08 2:09pm')"><td style="color:var(--primary);">Wed, May 08, 2024 2:09pm</td><td>19m 10s</td><td>DVIR (Simple)</td><td><span class="user-avatar" style="width:24px;height:24px;font-size:10px;display:inline-flex;vertical-align:middle;margin-right:6px;">EJ</span>Eddie Johns</td></tr>
+                    <tr class="vd-clickable-row" onclick="openVdSlider('inspection','May 08 9:43am')"><td style="color:var(--primary);">Wed, May 08, 2024 9:43am</td><td>18m 12s</td><td>DVIR (Simple)</td><td><span class="user-avatar" style="width:24px;height:24px;font-size:10px;display:inline-flex;vertical-align:middle;margin-right:6px;">EJ</span>Eddie Johns</td></tr>
+                    <tr class="vd-clickable-row" onclick="openVdSlider('inspection','May 06')"><td style="color:var(--primary);">Mon, May 06, 2024 10:50pm</td><td>19m 38s</td><td>DVIR (Simple)</td><td><span class="user-avatar" style="width:24px;height:24px;font-size:10px;display:inline-flex;vertical-align:middle;margin-right:6px;">EJ</span>Eddie Johns</td></tr>
+                    <tr class="vd-clickable-row" onclick="openVdSlider('inspection','May 04')"><td style="color:var(--primary);">Sat, May 04, 2024 11:44am</td><td>15m 42s</td><td>DVIR (Simple)</td><td><span class="user-avatar" style="width:24px;height:24px;font-size:10px;display:inline-flex;vertical-align:middle;margin-right:6px;">RK</span>Rajesh Kumar</td></tr>
+                    <tr class="vd-clickable-row" onclick="openVdSlider('inspection','May 02')"><td style="color:var(--primary);">Thu, May 02, 2024 11:52am</td><td>15m 13s</td><td>DVIR (Simple)</td><td><span class="user-avatar" style="width:24px;height:24px;font-size:10px;display:inline-flex;vertical-align:middle;margin-right:6px;">RK</span>Rajesh Kumar</td></tr>
+                    <tr class="vd-clickable-row" onclick="openVdSlider('inspection','Apr 30')"><td style="color:var(--primary);">Tue, Apr 30, 2024 6:27pm</td><td>19m 53s</td><td>DVIR (Simple)</td><td><span class="user-avatar" style="width:24px;height:24px;font-size:10px;display:inline-flex;vertical-align:middle;margin-right:6px;">RK</span>Rajesh Kumar</td></tr>
+                    <tr class="vd-clickable-row" onclick="openVdSlider('inspection','Apr 28')"><td style="color:var(--primary);">Sun, Apr 28, 2024 10:18am</td><td>17m 6s</td><td>DVIR (Simple)</td><td><span class="user-avatar" style="width:24px;height:24px;font-size:10px;display:inline-flex;vertical-align:middle;margin-right:6px;">RK</span>Rajesh Kumar</td></tr>
+                    <tr class="vd-clickable-row" onclick="openVdSlider('inspection','Apr 26')"><td style="color:var(--primary);">Fri, Apr 26, 2024 7:47am</td><td>18m 29s</td><td>DVIR (Simple)</td><td><span class="user-avatar" style="width:24px;height:24px;font-size:10px;display:inline-flex;vertical-align:middle;margin-right:6px;">RK</span>Rajesh Kumar</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Meter History -->
+    <div class="detail-section">
+        <div class="section-header"><h3>📏 Meter History</h3></div>
+        <div class="section-body" style="padding:0;">
+            <table>
+                <thead><tr><th>Date</th><th>Meter Reading</th><th>Source</th><th>Usage Since Last</th></tr></thead>
+                <tbody>
+                    <tr><td>May 09, 2024</td><td style="font-weight:600;">1,50,004 km</td><td><span class="status-badge info" style="font-size:10px;">GPS</span></td><td>288 km</td></tr>
+                    <tr><td>May 08, 2024</td><td style="font-weight:600;">1,49,716 km</td><td><span class="status-badge" style="background:#e8f5e9;color:#137333;font-size:10px;">Fuel Entry</span></td><td>262 km</td></tr>
+                    <tr><td>May 03, 2024</td><td style="font-weight:600;">1,49,454 km</td><td><span class="status-badge info" style="font-size:10px;">GPS</span></td><td>222 km</td></tr>
+                    <tr><td>Apr 28, 2024</td><td style="font-weight:600;">1,49,232 km</td><td><span class="status-badge" style="background:#e8f5e9;color:#137333;font-size:10px;">Fuel Entry</span></td><td>180 km</td></tr>
+                    <tr><td>Apr 23, 2024</td><td style="font-weight:600;">1,49,052 km</td><td><span class="status-badge" style="background:#f1f3f4;color:#5f6368;font-size:10px;">Manual</span></td><td>142 km</td></tr>
+                    <tr><td>Apr 18, 2024</td><td style="font-weight:600;">1,48,910 km</td><td><span class="status-badge info" style="font-size:10px;">GPS</span></td><td>310 km</td></tr>
+                    <tr><td>Apr 12, 2024</td><td style="font-weight:600;">1,48,600 km</td><td><span class="status-badge" style="background:#fef7e0;color:#b06000;font-size:10px;">Work Order</span></td><td>195 km</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- ──── MODULE 4: FINANCE & COMPLIANCE ──── -->
+<div class="vd-module-content" id="vd-mod-finance">
+    <!-- KPI Cards -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;">
+        <div class="detail-section" style="margin:0;"><div class="section-body" style="padding:16px;"><div style="font-size:12px;color:var(--text-muted);margin-bottom:4px;">Purchase Price</div><div style="font-size:22px;font-weight:700;">₹28,50,000</div><div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Acquired: 15 Mar 2023</div></div></div>
+        <div class="detail-section" style="margin:0;"><div class="section-body" style="padding:16px;"><div style="font-size:12px;color:var(--text-muted);margin-bottom:4px;">Current Book Value</div><div style="font-size:22px;font-weight:700;">₹19,95,000</div><div style="font-size:11px;color:#e53935;margin-top:4px;">↓ 30% depreciated</div></div></div>
+        <div class="detail-section" style="margin:0;"><div class="section-body" style="padding:16px;"><div style="font-size:12px;color:var(--text-muted);margin-bottom:4px;">Estimated Resale</div><div style="font-size:22px;font-weight:700;">₹17,10,000</div><div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Based on market trends</div></div></div>
+        <div class="detail-section" style="margin:0;"><div class="section-body" style="padding:16px;"><div style="font-size:12px;color:var(--text-muted);margin-bottom:4px;">Total Cost of Ownership</div><div style="font-size:22px;font-weight:700;">₹48,27,557</div><div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Including all expenses</div></div></div>
+    </div>
+
+    <div class="detail-grid">
+        <div>
+            <!-- Loan Information -->
+            <div class="detail-section" style="margin-bottom:16px;">
+                <div class="section-header"><h3>Loan Information</h3></div>
+                <div class="section-body">
+                    <div class="info-list">
+                        <div class="info-item"><span class="info-label">Lender</span><span class="info-value">HDFC Bank</span></div>
+                        <div class="info-item"><span class="info-label">Loan Account No.</span><span class="info-value">HDFC-VL-984521</span></div>
+                        <div class="info-item"><span class="info-label">Loan Amount</span><span class="info-value">₹22,80,000</span></div>
+                        <div class="info-item"><span class="info-label">Down Payment</span><span class="info-value">₹5,70,000</span></div>
+                        <div class="info-item"><span class="info-label">Interest Rate</span><span class="info-value">9.25% p.a.</span></div>
+                        <div class="info-item"><span class="info-label">Loan Term</span><span class="info-value">60 months</span></div>
+                        <div class="info-item"><span class="info-label">Monthly EMI</span><span class="info-value" style="font-weight:700;">₹47,412</span></div>
+                        <div class="info-item"><span class="info-label">EMI Start Date</span><span class="info-value">15 Apr 2023</span></div>
+                        <div class="info-item"><span class="info-label">EMI End Date</span><span class="info-value">15 Mar 2028</span></div>
+                        <div class="info-item"><span class="info-label">Outstanding Balance</span><span class="info-value" style="color:#e53935;font-weight:700;">₹14,22,360</span></div>
+                        <div class="info-item"><span class="info-label">Loan Status</span><span class="info-value"><span class="status-badge active" style="font-size:10px;">Active</span></span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Insurance -->
+            <div class="detail-section">
+                <div class="section-header"><h3>Insurance Policy</h3></div>
+                <div class="section-body">
+                    <div class="info-list">
+                        <div class="info-item"><span class="info-label">Provider</span><span class="info-value">ICICI Lombard</span></div>
+                        <div class="info-item"><span class="info-label">Policy Number</span><span class="info-value">3214-7892-COMP-MH04</span></div>
+                        <div class="info-item"><span class="info-label">Policy Type</span><span class="info-value">Comprehensive</span></div>
+                        <div class="info-item"><span class="info-label">Coverage Amount</span><span class="info-value">₹28,50,000</span></div>
+                        <div class="info-item"><span class="info-label">Annual Premium</span><span class="info-value">₹38,475</span></div>
+                        <div class="info-item"><span class="info-label">Effective Date</span><span class="info-value">15 Mar 2025</span></div>
+                        <div class="info-item"><span class="info-label">Expiry Date</span><span class="info-value">14 Mar 2026</span></div>
+                        <div class="info-item"><span class="info-label">Status</span><span class="info-value"><span class="status-badge active" style="font-size:10px;">Active</span></span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <!-- Compliance Documents -->
+            <div class="detail-section" style="margin-bottom:16px;">
+                <div class="section-header"><h3>Compliance Documents</h3></div>
+                <div class="section-body" style="padding:0;">
+                    <table>
+                        <thead><tr><th>Document Type</th><th>Result</th><th>Next Due</th><th>Status</th></tr></thead>
+                        <tbody>
+                            <tr><td>RTO Fitness</td><td><span class="status-badge active" style="font-size:10px;">Pass</span></td><td>Feb 20, 2025</td><td><span class="status-badge active" style="font-size:10px;">Current</span></td></tr>
+                            <tr><td>PUC Certificate</td><td><span class="status-badge active" style="font-size:10px;">Pass</span></td><td>Mar 05, 2026</td><td><span class="status-badge active" style="font-size:10px;">Current</span></td></tr>
+                            <tr><td>Safety Inspection</td><td><span class="status-badge" style="background:#fef7e0;color:#b06000;font-size:10px;">Cond. Pass</span></td><td>Jun 10, 2024</td><td><span class="status-badge overdue" style="font-size:10px;">Overdue</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Expense Breakdown -->
+            <div class="detail-section" style="margin-bottom:16px;">
+                <div class="section-header"><h3>Expense Breakdown (12M)</h3></div>
+                <div class="section-body" style="padding:0;">
+                    <table>
+                        <thead><tr><th>Category</th><th>Amount</th><th>%</th></tr></thead>
+                        <tbody>
+                            <tr><td><span class="status-dot" style="background:#36bfb1;"></span> Fuel</td><td style="font-weight:500;">₹10,23,456</td><td>49.2%</td></tr>
+                            <tr><td><span class="status-dot" style="background:#fbbf24;"></span> EMI / Loan</td><td style="font-weight:500;">₹5,68,944</td><td>27.4%</td></tr>
+                            <tr><td><span class="status-dot" style="background:#a78bfa;"></span> Service</td><td style="font-weight:500;">₹2,64,512</td><td>12.7%</td></tr>
+                            <tr><td><span class="status-dot" style="background:#f97316;"></span> Insurance</td><td style="font-weight:500;">₹38,475</td><td>1.9%</td></tr>
+                            <tr><td><span class="status-dot" style="background:#ec4899;"></span> Tolls & Permits</td><td style="font-weight:500;">₹1,12,400</td><td>5.4%</td></tr>
+                            <tr><td><span class="status-dot" style="background:#6366f1;"></span> Tyres & Parts</td><td style="font-weight:500;">₹69,770</td><td>3.4%</td></tr>
+                            <tr style="font-weight:700;border-top:2px solid var(--border-color);"><td>Total</td><td>₹20,77,557</td><td>100%</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Recalls -->
+            <div class="detail-section">
+                <div class="section-header"><h3>Recalls & Safety Campaigns</h3></div>
+                <div class="section-body">
+                    <div style="padding:12px;margin-bottom:8px;border-radius:8px;border:1px solid #FECACA;background:#FEF2F2;cursor:pointer;" onclick="openVdSlider('recall','24V-187')">
+                        <div style="display:flex;justify-content:space-between;"><span style="font-size:13px;font-weight:700;">#24V-187</span><span style="font-size:11px;font-weight:700;color:#DC2626;">Action Required</span></div>
+                        <div style="font-size:12px;color:#475569;margin-top:4px;">Fuel Pump Assembly — Potential leak</div>
+                    </div>
+                    <div style="padding:12px;border-radius:8px;border:1px solid #D1FAE5;background:#ECFDF5;cursor:pointer;" onclick="openVdSlider('recall','23V-541')">
+                        <div style="display:flex;justify-content:space-between;"><span style="font-size:13px;font-weight:700;">#23V-541</span><span style="font-size:11px;font-weight:700;color:#059669;">Completed</span></div>
+                        <div style="font-size:12px;color:#475569;margin-top:4px;">Rear Axle Nut — Completed Oct 2023</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div><!-- end .vd-center-content -->
+</div><!-- end .vd-layout -->
+
+<!-- Mobile toggle -->
+<button class="vd-mobile-toggle" onclick="document.getElementById('vd-left-nav').classList.toggle('open')">☰</button>
+
+<!-- Right Slider Container -->
+<div id="vd-slider-container"></div>
+<!-- Vehicle Detail — Module Switching & Right Slider Logic -->
+<script>
+(function() {
+    // ── Module Switching ──
+    window.switchVdModule = function(mod) {
+        document.querySelectorAll('.vd-module-content').forEach(function(el) { el.classList.remove('active'); });
+        document.querySelectorAll('.vd-nav-btn').forEach(function(btn) { btn.classList.remove('active'); });
+        var target = document.getElementById('vd-mod-' + mod);
+        if (target) target.classList.add('active');
+        // Activate the clicked nav button
+        var btns = document.querySelectorAll('.vd-nav-btn');
+        var modMap = { 'overview': 0, 'maintenance': 1, 'operations': 2, 'finance': 3 };
+        if (modMap[mod] !== undefined && btns[modMap[mod]]) btns[modMap[mod]].classList.add('active');
+        // Close mobile nav
+        var leftNav = document.getElementById('vd-left-nav');
+        if (leftNav) leftNav.classList.remove('open');
+    };
+
+    // ── Slider Data ──
+    var tireData = {
+        'LF': { pos:'Left Front',axle:'Front',brand:'Milestar BS625',serial:'21135005',tread:18,pressure:110,installed:'22 Mar 2023' },
+        'RF': { pos:'Right Front',axle:'Front',brand:'Milestar BS625',serial:'21135006',tread:16,pressure:110,installed:'22 Mar 2023' },
+        'LR-O': { pos:'Left Rear Outer',axle:'Rear 1',brand:'Apollo EnduRace',serial:'AP-4421-LRO',tread:22,pressure:120,installed:'10 Jan 2024' },
+        'LR-I': { pos:'Left Rear Inner',axle:'Rear 1',brand:'Apollo EnduRace',serial:'AP-4421-LRI',tread:21,pressure:120,installed:'10 Jan 2024' },
+        'RR-I': { pos:'Right Rear Inner',axle:'Rear 1',brand:'Apollo EnduRace',serial:'AP-4421-RRI',tread:20,pressure:118,installed:'10 Jan 2024' },
+        'RR-O': { pos:'Right Rear Outer',axle:'Rear 1',brand:'Apollo EnduRace',serial:'AP-4421-RRO',tread:22,pressure:120,installed:'10 Jan 2024' },
+        'LR2-O': { pos:'Left Rear 2 Outer',axle:'Rear 2',brand:'Apollo EnduRace',serial:'AP-5532-LR2O',tread:24,pressure:120,installed:'10 Jan 2024' },
+        'LR2-I': { pos:'Left Rear 2 Inner',axle:'Rear 2',brand:'Apollo EnduRace',serial:'AP-5532-LR2I',tread:23,pressure:120,installed:'10 Jan 2024' },
+        'RR2-I': { pos:'Right Rear 2 Inner',axle:'Rear 2',brand:'Apollo EnduRace',serial:'AP-5532-RR2I',tread:25,pressure:120,installed:'10 Jan 2024' },
+        'RR2-O': { pos:'Right Rear 2 Outer',axle:'Rear 2',brand:'Apollo EnduRace',serial:'AP-5532-RR2O',tread:24,pressure:118,installed:'10 Jan 2024' }
+    };
+
+    var warrantyData = {
+        'Manufacturer': { name:'Manufacturer Warranty',provider:'BharatBenz (Daimler India)',type:'Bumper-to-Bumper',number:'BB-WTY-2023-MH04-6256',start:'15 Mar 2023',expiry:'15 Mar 2026',mileageLimit:'3,00,000 km',currentMileage:'1,50,004 km (50%)',deductible:'Nil',exclusions:'Wear & tear items, consumables',status:'Active' },
+        'Extended': { name:'Extended Warranty',provider:'BharatBenz ProCare+',type:'Comprehensive (Non-Wear Parts)',number:'PCR-EXT-2025-4412',start:'15 Mar 2026',expiry:'15 Mar 2028',mileageLimit:'5,00,000 km',annualCost:'₹45,000/year',deductible:'₹2,500 per claim',status:'Active' },
+        'Powertrain': { name:'Powertrain Warranty',provider:'BharatBenz (Daimler India)',type:'Engine, Transmission, Drivetrain',number:'BB-PT-2023-6256',start:'15 Mar 2023',expiry:'15 Mar 2028',mileageLimit:'5,00,000 km',components:'Engine block, cylinder heads, transmission, differential, axle shafts',status:'Active' },
+        'Battery': { name:'Battery Warranty',provider:'Exide Industries',type:'Battery Replacement',number:'EXIDE-HD180-84521',start:'10 Jan 2024',expiry:'10 Jun 2026',batteryType:'Heavy Duty 12V 180Ah',status:'Expiring Soon' },
+        'Emission': { name:'Emission System Warranty',provider:'BharatBenz (Daimler India)',type:'BS-VI Emission Components',number:'BB-EM-2023-6256',start:'15 Mar 2023',expiry:'15 Mar 2025',mileageLimit:'1,60,000 km',components:'Catalytic converter, DPF, EGR valve, SCR system, DEF injector',note:'Expired — mileage limit exceeded',status:'Expired' }
+    };
+
+    function tc(d) { return d >= 20 ? '#059669' : d >= 10 ? '#D97706' : '#DC2626'; }
+
+    function makeRow(label, value, valueStyle) {
+        return '<div class="vd-sl-row"><span class="vd-sl-label">' + label + '</span><span class="vd-sl-value"' + (valueStyle ? ' style="' + valueStyle + '"' : '') + '>' + value + '</span></div>';
+    }
+
+    // ── Open Slider ──
+    window.openVdSlider = function(type, data) {
+        var title = '', body = '', footer = '';
+
+        if (type === 'fullSpecs') {
+            title = 'Full Vehicle Specifications';
+            body = '<div style="font-size:12px;font-weight:700;color:#94A3B8;letter-spacing:0.3px;margin-bottom:10px;">ENGINE</div>' +
+                makeRow('Engine Summary','Detroit DD15 14.8L I6 455-560hp') + makeRow('Engine Brand','Detroit') + makeRow('Aspiration','Turbocharger') +
+                makeRow('Block Type','I') + makeRow('Cam Type','DOHC') + makeRow('Cylinders','6') + makeRow('Displacement','14.8L') +
+                makeRow('Fuel Induction','Common Rail Direct Injection') + makeRow('Max HP','455') + makeRow('Max Torque','1,550 Nm') +
+                '<div style="font-size:12px;font-weight:700;color:#94A3B8;letter-spacing:0.3px;margin:20px 0 10px;">DIMENSIONS</div>' +
+                makeRow('Width','—') + makeRow('Height','—') + makeRow('Length','—') + makeRow('Ground Clearance','—') + makeRow('Bed Length','—') +
+                '<div style="font-size:12px;font-weight:700;color:#94A3B8;letter-spacing:0.3px;margin:20px 0 10px;">WEIGHT & CAPACITY</div>' +
+                makeRow('GVW','28,500 kg') + makeRow('Payload Capacity','16,200 kg') + makeRow('Axle Configuration','6×4') + makeRow('Fuel Tank','400 L');
+        }
+        else if (type === 'serviceHistory') {
+            title = 'Service History';
+            var orders = [
+                { wo:'#26',date:'05/06/2024',meter:'1,50,004 km',tasks:['Engine Air Filter','DEF Pump Filter','DEF Fluid Fill'],total:'₹6,604' },
+                { wo:'#25',date:'05/02/2024',meter:'1,49,716 km',tasks:['Tire Rotation','Engine Oil & Filter','Engine Air Filter','DEF Pump Filter','DEF Fluid Fill'],total:'₹12,290' },
+                { wo:'#24',date:'05/01/2024',meter:'1,49,454 km',tasks:['Engine Coolant Drain & Refill','Engine Oil & Filter'],total:'₹16,270' },
+                { wo:'#23',date:'04/21/2024',meter:'1,49,232 km',tasks:['Tire Rotation','Engine Air Filter','Engine Oil & Filter'],total:'₹8,068' },
+                { wo:'#22',date:'04/09/2024',meter:'1,48,910 km',tasks:['Engine Oil & Filter','Tire Rotation'],total:'₹5,485' }
+            ];
+            body = orders.map(function(s) {
+                return '<div style="padding:14px;margin-bottom:10px;background:#F8FAFC;border-radius:10px;">' +
+                    '<div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:14px;font-weight:700;color:#2563EB;">WO ' + s.wo + '</span><span style="font-size:13px;font-weight:700;">' + s.total + '</span></div>' +
+                    '<div style="font-size:12px;color:#64748B;">' + s.date + ' · ' + s.meter + '</div>' +
+                    '<div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:4px;">' + s.tasks.map(function(t) { return '<span style="font-size:10px;background:#EFF6FF;color:#2563EB;padding:2px 8px;border-radius:4px;">' + t + '</span>'; }).join('') + '</div></div>';
+            }).join('');
+        }
+        else if (type === 'serviceTask') {
+            title = data || 'Service Task';
+            body = makeRow('Task', data) + makeRow('Status','Upcoming') + makeRow('Compliance','100%') +
+                makeRow('Last Completed','05/06/2024') + makeRow('Next Due','4 weeks') +
+                '<div style="margin-top:16px;padding:12px;background:#F8FAFC;border-radius:8px;font-size:12px;color:#475569;">This service task is scheduled based on time and mileage intervals. The vehicle is currently compliant.</div>';
+        }
+        else if (type === 'tire') {
+            var t = tireData[data] || {};
+            title = 'Tire: ' + (t.pos || data);
+            var condition = t.tread >= 20 ? 'Good' : t.tread >= 10 ? 'Monitor' : 'Replace Soon';
+            body = makeRow('Position', t.pos || data) + makeRow('Axle', t.axle || '—') + makeRow('Brand / Model', t.brand || '—') +
+                makeRow('Serial Number', t.serial || '—') + makeRow('Tread Depth', (t.tread || '—') + '/32 in', 'color:' + tc(t.tread)) +
+                makeRow('Pressure', (t.pressure || '—') + ' PSI') + makeRow('Condition', condition, 'color:' + tc(t.tread)) +
+                makeRow('Installed', t.installed || '—');
+        }
+        else if (type === 'warranty') {
+            var w = warrantyData[data] || {};
+            title = w.name || 'Warranty';
+            body = makeRow('Provider', w.provider || '—') + makeRow('Coverage Type', w.type || '—') +
+                (w.number ? makeRow('Warranty Number', w.number) : '') + makeRow('Start Date', w.start || '—') +
+                makeRow('Expiry Date', w.expiry || '—') + (w.mileageLimit ? makeRow('Mileage Limit', w.mileageLimit) : '') +
+                (w.currentMileage ? makeRow('Current Mileage', w.currentMileage) : '') +
+                (w.deductible ? makeRow('Deductible', w.deductible) : '') + (w.annualCost ? makeRow('Annual Cost', w.annualCost) : '') +
+                (w.components ? makeRow('Components', w.components) : '') + (w.exclusions ? makeRow('Exclusions', w.exclusions) : '') +
+                (w.note ? '<div style="margin-top:12px;padding:10px;background:#FEF2F2;border-radius:6px;font-size:12px;color:#DC2626;">' + w.note + '</div>' : '') +
+                makeRow('Status', w.status || '—', w.status === 'Expired' ? 'color:#DC2626' : w.status === 'Expiring Soon' ? 'color:#D97706' : 'color:#059669');
+        }
+        else if (type === 'issue') {
+            title = 'Issue #1 — Oil leak';
+            body = '<div style="padding:14px;background:#FEF3C7;border-radius:10px;margin-bottom:16px;">' +
+                '<div style="font-size:15px;font-weight:800;">#1 — Oil leak</div>' +
+                '<div style="font-size:13px;color:#64748B;margin-top:4px;">Oil leak that appears to be coming from the oil pan</div>' +
+                '<div style="font-size:12px;color:#94A3B8;margin-top:4px;">Medium Priority · Created May 10, 2024</div></div>' +
+                makeRow('Status','Open','color:#D97706;font-weight:700') + makeRow('Priority','Medium') + makeRow('Reported By','Rajesh K.') + makeRow('Vehicle','MH04VW6256');
+            footer = '<button class="btn btn-primary" style="flex:1;">Create Work Order</button><button class="btn btn-secondary" style="flex:1;">Close Issue</button>';
+        }
+        else if (type === 'fuelEntry') {
+            title = 'Fuel Entry — ' + (data || '');
+            body = makeRow('Date', data || '—') + makeRow('Vendor','Indian Oil') + makeRow('Volume','144.9 litres') +
+                makeRow('Total','₹13,041','font-weight:700') + makeRow('Meter Entry','288 km') + makeRow('Usage','26.0 km') +
+                makeRow('Fuel Economy','0.18 kmpl','color:#DC2626') + makeRow('Cost Per Meter','₹501 / km') +
+                '<div style="margin-top:16px;padding:16px;background:#F8FAFC;border-radius:8px;text-align:center;color:#94A3B8;font-size:12px;">📷 Receipt photo not available</div>';
+        }
+        else if (type === 'inspection') {
+            title = 'Inspection Details';
+            body = makeRow('Submitted', data || '—') + makeRow('Form','Driver Vehicle Inspection Report (Simple)') +
+                makeRow('Duration','19m 10s') + makeRow('Result','<span class="status-badge active" style="font-size:10px;">Pass</span>') +
+                '<div style="font-size:12px;font-weight:700;color:#94A3B8;letter-spacing:0.3px;margin:16px 0 10px;">CHECKLIST ITEMS</div>' +
+                ['Engine','Brakes','Tires','Lights','Horn','Mirrors','Wipers','Fluid Levels','Body/Frame','Exhaust'].map(function(item) {
+                    return '<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-bottom:1px solid #F8FAFC;"><span>' + item + '</span><span style="color:#059669;font-weight:600;">✓ Pass</span></div>';
+                }).join('');
+        }
+        else if (type === 'recall') {
+            title = 'Recall #' + (data || '');
+            var isAction = data === '24V-187';
+            body = makeRow('Recall ID', data || '—') + makeRow('Status', isAction ? 'Action Required' : 'Completed', isAction ? 'color:#DC2626;font-weight:700' : 'color:#059669;font-weight:700') +
+                makeRow('Title', isAction ? 'Fuel Pump Assembly — Potential leak' : 'Rear Axle Nut — Completed Oct 2023') +
+                makeRow('Affected Components', isAction ? 'Fuel pump, fuel lines' : 'Rear axle retaining nut') +
+                makeRow('Severity', isAction ? 'High' : 'Medium');
+            if (isAction) {
+                footer = '<button class="btn btn-primary" style="flex:1;">Schedule Repair</button><button class="btn btn-secondary" style="flex:1;">Mark Complete</button>';
+            }
+        }
+        else if (type === 'driver') {
+            title = 'Assigned Driver';
+            body = '<div style="text-align:center;margin-bottom:16px;"><div class="user-avatar" style="width:64px;height:64px;font-size:22px;margin:0 auto 8px;">RK</div>' +
+                '<div style="font-size:16px;font-weight:700;">Rajesh Kumar</div><div style="font-size:12px;color:#64748B;">Driver · Mumbai HQ</div></div>' +
+                makeRow('License No.','MH04-2019-DL-78542') + makeRow('License Expiry','22 Aug 2027') + makeRow('Phone','+91 98765 43210') +
+                makeRow('Experience','8 years') + makeRow('Current Trip','TRP-0142') + makeRow('Total Trips','142') + makeRow('Rating','4.6 / 5.0','color:#059669');
+        }
+
+        // Render slider
+        var container = document.getElementById('vd-slider-container');
+        container.innerHTML =
+            '<div class="vd-slider-backdrop" onclick="closeVdSlider()"></div>' +
+            '<div class="vd-slider-panel">' +
+                '<div class="vd-slider-header"><h3>' + title + '</h3><button class="vd-slider-close" onclick="closeVdSlider()">✕</button></div>' +
+                '<div class="vd-slider-body">' + body + '</div>' +
+                (footer ? '<div class="vd-slider-footer">' + footer + '</div>' : '') +
+            '</div>';
+    };
+
+    // ── Close Slider ──
+    window.closeVdSlider = function() {
+        document.getElementById('vd-slider-container').innerHTML = '';
+    };
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeVdSlider();
+    });
+})();
+</script>

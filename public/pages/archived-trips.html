@@ -1,0 +1,106 @@
+<!-- ═══════════════════════════════════════════════════════════════
+     📦 SETTLED TRIPS — Revenue locked, trip lifecycle complete
+     Operations Domain: Trips that have completed the operational lifecycle
+     These become billable line items in the Finance domain
+     ═══════════════════════════════════════════════════════════════ -->
+
+<!-- ─── HEADER ─────────────────────────────────────────────────────── -->
+<div class="page-header">
+    <h1>Settled Trips <span class="learn-badge"><i class="fas fa-lock" style="color:#D97706;"></i> Archived</span></h1>
+    <div class="page-header-actions">
+        <div class="filter-btn"><i class="fas fa-calendar-alt" style="margin-right:6px;"></i>Last 30 Days ▾</div>
+    </div>
+</div>
+
+
+<!-- ─── FILTER / SEARCH BAR ───────────────────────────────────── -->
+<div style="background:#fff;border:1.5px solid #E2E8F0;border-radius:14px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:12px;">
+    <div style="font-size:12px;font-weight:700;color:#64748B;">Showing settled trips</div>
+    <div style="flex:1;"></div>
+    <input id="settled-trip-search" placeholder="🔍 Search by ID, client, route..." style="border:1.5px solid #E2E8F0;border-radius:10px;padding:8px 14px;font-size:13px;color:#1E293B;outline:none;width:260px;font-family:inherit;" />
+</div>
+
+<!-- ─── TRIP TABLE ─────────────────────────────────────────────── -->
+<div style="background:#fff;border:1.5px solid #E2E8F0;border-radius:16px;overflow:hidden;">
+    <div id="settled-trips-table"></div>
+</div>
+
+<script>
+(function() {
+    var searchVal = '';
+
+    function getSettledTrips() {
+        if (typeof TRIPS_DATA === 'undefined') return [];
+        return TRIPS_DATA.filter(function(t) { return t.status === 'Settled'; });
+    }
+
+
+
+    function renderTable() {
+        var trips = getSettledTrips();
+        if (searchVal) {
+            var q = searchVal.toLowerCase();
+            trips = trips.filter(function(t){
+                return t.id.toLowerCase().indexOf(q) >= 0
+                    || t.lr.toLowerCase().indexOf(q) >= 0
+                    || t.client.toLowerCase().indexOf(q) >= 0
+                    || (t.vehicle || '').toLowerCase().indexOf(q) >= 0
+                    || t.origin.toLowerCase().indexOf(q) >= 0
+                    || t.destination.toLowerCase().indexOf(q) >= 0;
+            });
+        }
+
+        var table = document.getElementById('settled-trips-table');
+        if (!table) return;
+
+        var html = '<div style="display:grid;grid-template-columns:80px 80px 1.1fr 1fr 1fr 80px 70px 70px 60px;padding:12px 18px;background:#F8FAFC;border-bottom:1px solid #E2E8F0;font-size:11px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:.5px;">';
+        html += '<span>Trip ID</span><span>LR No.</span><span>Route</span><span>Client</span><span>Vehicle</span><span>Freight</span><span>Settled</span><span>Balance</span><span></span></div>';
+
+        if (trips.length === 0) {
+            html += '<div style="text-align:center;padding:40px;color:#94A3B8;"><div style="font-size:28px;margin-bottom:8px;">📭</div><div style="font-size:13px;font-weight:600;">No settled trips found</div></div>';
+        } else {
+            trips.forEach(function(t) {
+                var settledDate = t.tripSheet ? t.tripSheet.settledDate : t.deliveryDate;
+                var balance = t.tripSheet ? t.tripSheet.balance : 0;
+                html += '<div class="settled-trip-row" data-trip-id="' + t.id + '" style="display:grid;grid-template-columns:80px 80px 1.1fr 1fr 1fr 80px 70px 70px 60px;padding:13px 18px;border-bottom:1px solid #F1F5F9;align-items:center;cursor:pointer;transition:all .1s;" onmouseenter="this.style.background=\'#FFFBEB\'" onmouseleave="this.style.background=\'#fff\'">';
+                html += '<div style="font-size:12px;color:#94A3B8;font-family:monospace;">' + t.id + '</div>';
+                html += '<div style="font-size:12px;color:#475569;font-family:monospace;">' + t.lr + '</div>';
+                html += '<div style="font-size:13px;font-weight:700;color:#1E293B;">' + t.origin + ' → ' + t.destination + '</div>';
+                html += '<div style="font-size:12px;color:#475569;">' + t.client + '</div>';
+                html += '<div style="font-size:12px;font-family:monospace;color:#475569;">' + (t.vehicle||'—') + '</div>';
+                html += '<div style="font-size:12px;font-weight:700;color:#1E293B;">₹' + (t.freight||0).toLocaleString() + '</div>';
+                html += '<div style="font-size:11px;color:#94A3B8;">' + (settledDate ? (function(iso){ var p=iso.split('-'); return p[2]+'/'+p[1]; })(settledDate) : '—') + '</div>';
+                html += '<div style="font-size:12px;font-weight:700;color:' + (balance >= 0 ? '#059669' : '#DC2626') + ';">' + (balance !== 0 ? (balance > 0 ? '+' : '') + '₹' + Math.abs(balance).toLocaleString() : '—') + '</div>';
+                html += '<div style="text-align:right;"><span style="display:inline-flex;align-items:center;gap:3px;background:#FEF3C7;color:#92400E;border:1px solid #FCD34D;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;"><span style="width:5px;height:5px;border-radius:50%;background:#D97706;"></span>Settled</span></div>';
+                html += '</div>';
+            });
+        }
+        table.innerHTML = html;
+
+        // Wire row clicks
+        table.querySelectorAll('.settled-trip-row').forEach(function(row) {
+            row.addEventListener('click', function() {
+                var tripId = this.getAttribute('data-trip-id');
+                if (typeof openTripDetailById === 'function') {
+                    openTripDetailById(tripId);
+                }
+            });
+        });
+    }
+
+    function init() {
+        if (typeof TRIPS_DATA === 'undefined') { setTimeout(init, 200); return; }
+
+        renderTable();
+
+        var searchInput = document.getElementById('settled-trip-search');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                searchVal = this.value;
+                renderTable();
+            });
+        }
+    }
+    init();
+})();
+</script>

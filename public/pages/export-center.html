@@ -1,0 +1,136 @@
+<!-- Export Center -->
+<div class="page-header">
+    <h1>Export Center</h1>
+    <div class="page-header-actions">
+        <div class="filter-btn">FY 2025-26 ▾</div>
+    </div>
+</div>
+
+<!-- Export Format Cards -->
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;">
+    <!-- Tally Prime -->
+    <div class="detail-section" style="cursor:pointer;transition:box-shadow .15s;" onmouseover="this.style.boxShadow='0 4px 20px rgba(0,0,0,.08)'" onmouseout="this.style.boxShadow='none'">
+        <div class="section-body" style="text-align:center;padding:24px 16px;">
+            <div style="font-size:36px;margin-bottom:10px;">📗</div>
+            <div style="font-size:15px;font-weight:700;margin-bottom:4px;">Tally Prime</div>
+            <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;">XML format with masters &amp; vouchers</div>
+            <span class="status-badge completed" style="font-size:10px;">TALLY XML</span>
+            <div style="margin-top:12px;"><button class="btn btn-primary" style="width:100%;font-size:12px;">Export →</button></div>
+        </div>
+    </div>
+    <!-- SAP B1 -->
+    <div class="detail-section" style="cursor:pointer;transition:box-shadow .15s;" onmouseover="this.style.boxShadow='0 4px 20px rgba(0,0,0,.08)'" onmouseout="this.style.boxShadow='none'">
+        <div class="section-body" style="text-align:center;padding:24px 16px;">
+            <div style="font-size:36px;margin-bottom:10px;">📘</div>
+            <div style="font-size:15px;font-weight:700;margin-bottom:4px;">SAP Business One</div>
+            <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;">CSV with G/L mapping &amp; cost centers</div>
+            <span class="status-badge info" style="font-size:10px;">SAP DI CSV</span>
+            <div style="margin-top:12px;"><button class="btn btn-primary" style="width:100%;font-size:12px;">Export →</button></div>
+        </div>
+    </div>
+    <!-- Zoho Books -->
+    <div class="detail-section" style="cursor:pointer;transition:box-shadow .15s;" onmouseover="this.style.boxShadow='0 4px 20px rgba(0,0,0,.08)'" onmouseout="this.style.boxShadow='none'">
+        <div class="section-body" style="text-align:center;padding:24px 16px;">
+            <div style="font-size:36px;margin-bottom:10px;">📕</div>
+            <div style="font-size:15px;font-weight:700;margin-bottom:4px;">Zoho Books</div>
+            <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;">API sync or CSV import</div>
+            <span class="status-badge overdue" style="font-size:10px;">ZOHO CSV / API</span>
+            <div style="margin-top:12px;"><button class="btn btn-primary" style="width:100%;font-size:12px;">Export →</button></div>
+        </div>
+    </div>
+    <!-- Generic CSV -->
+    <div class="detail-section" style="cursor:pointer;transition:box-shadow .15s;" onmouseover="this.style.boxShadow='0 4px 20px rgba(0,0,0,.08)'" onmouseout="this.style.boxShadow='none'">
+        <div class="section-body" style="text-align:center;padding:24px 16px;">
+            <div style="font-size:36px;margin-bottom:10px;">📊</div>
+            <div style="font-size:15px;font-weight:700;margin-bottom:4px;">Generic CSV</div>
+            <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;">Universal journal register &amp; trial balance</div>
+            <span class="status-badge" style="font-size:10px;background:#f4f3ff;color:#5925dc;">CSV / EXCEL</span>
+            <div style="margin-top:12px;"><button class="btn btn-primary" style="width:100%;font-size:12px;">Export →</button></div>
+        </div>
+    </div>
+</div>
+
+<!-- What Gets Exported -->
+<div class="detail-section">
+    <div class="section-header"><h3>What Gets Exported</h3></div>
+    <div class="section-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div style="background:#f8fafc;border-radius:8px;padding:12px 14px;">
+                <div style="font-size:13px;font-weight:700;margin-bottom:3px;">Chart of Accounts (Masters)</div>
+                <div style="font-size:11px;color:var(--text-secondary);">All ledger accounts with group hierarchy, opening balances, Tally group mapping</div>
+            </div>
+            <div style="background:#f8fafc;border-radius:8px;padding:12px 14px;">
+                <div style="font-size:13px;font-weight:700;margin-bottom:3px;">Sales Vouchers</div>
+                <div style="font-size:11px;color:var(--text-secondary);">Client invoices with line items, GST breakup, HSN codes, party ledger</div>
+            </div>
+            <div style="background:#f8fafc;border-radius:8px;padding:12px 14px;">
+                <div style="font-size:13px;font-weight:700;margin-bottom:3px;">Receipt Vouchers</div>
+                <div style="font-size:11px;color:var(--text-secondary);">Payment receipts with bank details, UTR, TDS, allocation against invoices</div>
+            </div>
+            <div style="background:#f8fafc;border-radius:8px;padding:12px 14px;">
+                <div style="font-size:13px;font-weight:700;margin-bottom:3px;">Payment Vouchers</div>
+                <div style="font-size:11px;color:var(--text-secondary);">Vendor settlements, driver payouts, advance disbursements</div>
+            </div>
+            <div style="background:#f8fafc;border-radius:8px;padding:12px 14px;">
+                <div style="font-size:13px;font-weight:700;margin-bottom:3px;">Journal Vouchers</div>
+                <div style="font-size:11px;color:var(--text-secondary);">Revenue recognition, fuel/toll expenses, depreciation, adjustments</div>
+            </div>
+            <div style="background:#f8fafc;border-radius:8px;padding:12px 14px;">
+                <div style="font-size:13px;font-weight:700;margin-bottom:3px;">Credit / Debit Notes</div>
+                <div style="font-size:11px;color:var(--text-secondary);">Shortage deductions, rate corrections, penalty adjustments with GST reversal</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Export History -->
+<div class="detail-section" style="margin-top:16px;">
+    <div class="section-header"><h3>Export History</h3></div>
+    <div class="section-body" style="padding:0;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th><th>Format</th><th>Period</th><th>Type</th><th>Records</th><th>Status</th><th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>20 Mar 2026</td>
+                    <td><span class="status-badge completed" style="font-size:10px;">Tally XML</span></td>
+                    <td>Mar 1–20, 2026</td>
+                    <td>Masters + Vouchers</td>
+                    <td>42 accounts, 186 vouchers</td>
+                    <td><span class="status-badge completed" style="font-size:10px;">Success</span></td>
+                    <td><button class="btn btn-secondary" style="font-size:11px;padding:4px 10px;">Re-download</button></td>
+                </tr>
+                <tr>
+                    <td>01 Mar 2026</td>
+                    <td><span class="status-badge" style="font-size:10px;background:#f4f3ff;color:#5925dc;">Generic CSV</span></td>
+                    <td>Feb 2026</td>
+                    <td>Journal register</td>
+                    <td>248 entries</td>
+                    <td><span class="status-badge completed" style="font-size:10px;">Success</span></td>
+                    <td><button class="btn btn-secondary" style="font-size:11px;padding:4px 10px;">Re-download</button></td>
+                </tr>
+                <tr>
+                    <td>01 Mar 2026</td>
+                    <td><span class="status-badge completed" style="font-size:10px;">Tally XML</span></td>
+                    <td>Feb 2026</td>
+                    <td>Vouchers only</td>
+                    <td>248 vouchers</td>
+                    <td><span class="status-badge completed" style="font-size:10px;">Success</span></td>
+                    <td><button class="btn btn-secondary" style="font-size:11px;padding:4px 10px;">Re-download</button></td>
+                </tr>
+                <tr>
+                    <td>01 Feb 2026</td>
+                    <td><span class="status-badge overdue" style="font-size:10px;">Zoho API</span></td>
+                    <td>Jan 2026</td>
+                    <td>Full sync</td>
+                    <td>198 invoices + payments</td>
+                    <td><span class="status-badge completed" style="font-size:10px;">Success</span></td>
+                    <td><button class="btn btn-secondary" style="font-size:11px;padding:4px 10px;">Re-download</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

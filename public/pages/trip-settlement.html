@@ -1,0 +1,366 @@
+<!-- ═══════════════════════════════════════════════════════════════
+     💰 TRIP SETTLEMENT — Operations Domain (STL-01)
+     Multi-rate support, rate type badges, fuel surcharge, detention
+     ═══════════════════════════════════════════════════════════════ -->
+
+<div class="page-header">
+    <div>
+        <div style="font-size:11px;color:#98a2b3;margin-bottom:2px;">Trip Management › Settlement</div>
+        <h1>Trip Settlement</h1>
+    </div>
+    <div class="page-header-actions">
+        <button class="btn btn-secondary"><i class="fas fa-file-export"></i> Export</button>
+        <button class="btn btn-primary" onclick="showToast('Batch settle selected trips...','info')"><i class="fas fa-check-double"></i> Batch Settle</button>
+    </div>
+</div>
+
+<!-- KPI Cards -->
+<div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
+    <div style="flex:1;min-width:140px;background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:16px 20px;">
+        <div style="font-size:10px;color:#98a2b3;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Ready to Settle</div>
+        <div style="font-size:26px;font-weight:800;color:#12b76a;line-height:1.1;">4</div>
+        <div style="font-size:11px;color:#98a2b3;margin-top:4px;">POD verified, awaiting settlement</div>
+    </div>
+    <div style="flex:1;min-width:140px;background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:16px 20px;">
+        <div style="font-size:10px;color:#98a2b3;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Pending POD</div>
+        <div style="font-size:26px;font-weight:800;color:#101828;line-height:1.1;">2</div>
+        <div style="font-size:11px;color:#98a2b3;margin-top:4px;">Cannot settle yet</div>
+    </div>
+    <div style="flex:1;min-width:140px;background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:16px 20px;">
+        <div style="font-size:10px;color:#98a2b3;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Total Receivable</div>
+        <div style="font-size:26px;font-weight:800;color:#1570ef;line-height:1.1;">₹1.5L</div>
+    </div>
+    <div style="flex:1;min-width:140px;background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:16px 20px;">
+        <div style="font-size:10px;color:#98a2b3;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Total Payable</div>
+        <div style="font-size:26px;font-weight:800;color:#7a5af8;line-height:1.1;">₹1.2L</div>
+        <div style="font-size:11px;color:#98a2b3;margin-top:4px;">Vendor payouts</div>
+    </div>
+    <div style="flex:1;min-width:140px;background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:16px 20px;">
+        <div style="font-size:10px;color:#98a2b3;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Avg. Margin</div>
+        <div style="font-size:26px;font-weight:800;color:#12b76a;line-height:1.1;">22%</div>
+        <div style="font-size:11px;color:#12b76a;margin-top:4px;">↑ Above 18% floor</div>
+    </div>
+</div>
+
+<!-- Settlement Table -->
+<div class="table-container">
+    <div class="table-toolbar">
+        <div class="search-input" style="min-width:200px;">
+            <i class="fas fa-search" style="color:var(--text-muted)"></i>
+            <input type="text" placeholder="Search trip, client..." autocomplete="off">
+        </div>
+        <div class="filter-btn">
+            <select style="border:none;background:transparent;font-size:12px;color:#344054;font-weight:600;cursor:pointer;outline:none;">
+                <option>All Statuses ▾</option>
+                <option>Ready</option>
+                <option>Disputed</option>
+                <option>En Route</option>
+            </select>
+        </div>
+        <div class="filter-btn">
+            <select style="border:none;background:transparent;font-size:12px;color:#344054;font-weight:600;cursor:pointer;outline:none;">
+                <option>Rate Type ▾</option>
+                <option>Per KM</option>
+                <option>Per Trip</option>
+                <option>Per Tonne</option>
+                <option>Per Package</option>
+                <option>Slab-Based</option>
+            </select>
+        </div>
+        <div class="pagination-info">1 – 6 of 6</div>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Trip ID</th>
+                <th>Client / Route</th>
+                <th>Rate Type</th>
+                <th style="text-align:right;">Contract Rate</th>
+                <th style="text-align:right;">Expenses</th>
+                <th style="text-align:right;">Deductions</th>
+                <th style="text-align:right;">Net Receivable</th>
+                <th style="text-align:right;">Vendor Payable</th>
+                <th>Margin</th>
+                <th>Status</th>
+                <th style="text-align:center;">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr onclick="document.getElementById('settlement-detail-panel').style.display='grid'" style="cursor:pointer;">
+                <td><a href="#" onclick="navigateTo('trip-detail');event.stopPropagation();" style="font-family:'JetBrains Mono',monospace;font-weight:700;color:#1570ef;">TRP-4824</a></td>
+                <td>
+                    <div style="font-weight:600;">Reliance Industries</div>
+                    <div style="font-size:11px;color:#667085;">Mumbai → Ahmedabad</div>
+                </td>
+                <td>
+                    <span style="display:inline-flex;align-items:center;padding:1px 8px;border-radius:6px;font-size:10px;font-weight:600;background:#f4f3ff;color:#5925dc;text-transform:uppercase;letter-spacing:.04em;">Per KM</span>
+                    <div style="font-size:10px;color:#98a2b3;margin-top:2px;">₹34.15 × 540 km</div>
+                </td>
+                <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹42,800</td>
+                <td style="text-align:right;font-family:'JetBrains Mono',monospace;color:#f04438;">₹31,450</td>
+                <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹0</td>
+                <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-weight:700;color:#12b76a;">₹42,800</td>
+                <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹31,450</td>
+                <td>
+                    <span style="font-weight:700;color:#12b76a;">26.5%</span>
+                    <div style="font-size:10px;color:#98a2b3;">₹11,350</div>
+                </td>
+                <td><span class="status-badge completed">Ready</span></td>
+                <td style="text-align:center;">
+                    <button class="btn btn-primary" style="font-size:11px;padding:4px 12px;" onclick="showToast('Settling TRP-4824...','success');event.stopPropagation();">Settle</button>
+                </td>
+            </tr>
+            <tr style="cursor:pointer;">
+                <td><a href="#" onclick="navigateTo('trip-detail');event.stopPropagation();" style="font-family:'JetBrains Mono',monospace;font-weight:700;color:#1570ef;">TRP-4827</a></td>
+                <td>
+                    <div style="font-weight:600;">Hindustan Unilever</div>
+                    <div style="font-size:11px;color:#667085;">Mumbai → Hyderabad</div>
+                </td>
+                <td>
+                    <span style="display:inline-flex;align-items:center;padding:1px 8px;border-radius:6px;font-size:10px;font-weight:600;background:#f4f3ff;color:#5925dc;text-transform:uppercase;letter-spacing:.04em;">Per KM</span>
+                    <div style="font-size:10px;color:#98a2b3;margin-top:2px;">₹28.50 × 780 km</div>
+                </td>
+                <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹55,200</td>
+                <td style="text-align:right;font-family:'JetBrains Mono',monospace;color:#f04438;">₹41,600</td>
+                <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹0</td>
+                <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-weight:700;color:#12b76a;">₹55,200</td>
+                <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹41,600</td>
+                <td>
+                    <span style="font-weight:700;color:#12b76a;">24.6%</span>
+                    <div style="font-size:10px;color:#98a2b3;">₹13,600</div>
+                </td>
+                <td><span class="status-badge completed">Ready</span></td>
+                <td style="text-align:center;">
+                    <button class="btn btn-primary" style="font-size:11px;padding:4px 12px;" onclick="showToast('Settling TRP-4827...','success');event.stopPropagation();">Settle</button>
+                </td>
+            </tr>
+            <tr style="background:#fef3f2;cursor:pointer;">
+                <td><a href="#" onclick="navigateTo('trip-detail');event.stopPropagation();" style="font-family:'JetBrains Mono',monospace;font-weight:700;color:#1570ef;">TRP-4819</a></td>
+                <td>
+                    <div style="font-weight:600;">Reliance Industries</div>
+                    <div style="font-size:11px;color:#667085;">Mumbai → Nagpur</div>
+                </td>
+                <td>
+                    <span style="display:inline-flex;align-items:center;padding:1px 8px;border-radius:6px;font-size:10px;font-weight:600;background:#f4f3ff;color:#5925dc;text-transform:uppercase;letter-spacing:.04em;">Per KM</span>
+                    <div style="font-size:10px;color:#98a2b3;margin-top:2px;">₹34.15 × 820 km</div>
+                </td>
+                <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹38,500</td>
+                <td style="text-align:right;font-family:'JetBrains Mono',monospace;color:#f04438;">₹30,200</td>
+                <td style="text-align:right;font-family:'JetBrains Mono',monospace;color:#f04438;">₹3,600</td>
+                <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-weight:700;color:#12b76a;">₹34,900</td>
+                <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹30,200</td>
+                <td>
+                    <span style="font-weight:700;color:#f79009;">12.2%</span> <span style="font-size:10px;color:#f79009;">⚠</span>
+                    <div style="font-size:10px;color:#f04438;">₹4,700</div>
+                </td>
+                <td>
+                    <span class="status-badge pending">Disputed</span>
+                    <div style="font-size:9px;color:#b42318;margin-top:2px;">Shortage deduction</div>
+                </td>
+                <td style="text-align:center;">
+                    <button class="btn btn-secondary" style="font-size:11px;padding:4px 12px;" onclick="navigateTo('trip-detail');event.stopPropagation();">Detail</button>
+                </td>
+            </tr>
+            <tr style="cursor:pointer;">
+                <td><a href="#" style="font-family:'JetBrains Mono',monospace;font-weight:700;color:#1570ef;">TRP-4820</a></td>
+                <td>
+                    <div style="font-weight:600;">Tata Steel</div>
+                    <div style="font-size:11px;color:#667085;">Mumbai → Pune</div>
+                </td>
+                <td>
+                    <span style="display:inline-flex;align-items:center;padding:1px 8px;border-radius:6px;font-size:10px;font-weight:600;background:#f4f3ff;color:#5925dc;text-transform:uppercase;letter-spacing:.04em;">Per Trip</span>
+                    <div style="font-size:10px;color:#98a2b3;margin-top:2px;">₹18,200 flat</div>
+                </td>
+                <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹18,200</td>
+                <td style="text-align:right;font-family:'JetBrains Mono',monospace;color:#f04438;">₹13,800</td>
+                <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹0</td>
+                <td style="text-align:right;font-family:'JetBrains Mono',monospace;font-weight:700;color:#12b76a;">₹18,200</td>
+                <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹13,800</td>
+                <td>
+                    <span style="font-weight:700;color:#12b76a;">24.2%</span>
+                    <div style="font-size:10px;color:#98a2b3;">₹4,400</div>
+                </td>
+                <td><span class="status-badge completed">Ready</span></td>
+                <td style="text-align:center;">
+                    <button class="btn btn-primary" style="font-size:11px;padding:4px 12px;" onclick="showToast('Settling TRP-4820...','success');event.stopPropagation();">Settle</button>
+                </td>
+            </tr>
+            <tr style="opacity:0.6;">
+                <td><a href="#" style="font-family:'JetBrains Mono',monospace;font-weight:700;color:#1570ef;">TRP-4821</a></td>
+                <td>
+                    <div style="font-weight:600;">Reliance Industries</div>
+                    <div style="font-size:11px;color:#667085;">Mumbai → Delhi</div>
+                </td>
+                <td>
+                    <span style="display:inline-flex;align-items:center;padding:1px 8px;border-radius:6px;font-size:10px;font-weight:600;background:#f4f3ff;color:#5925dc;text-transform:uppercase;letter-spacing:.04em;">Per KM</span>
+                    <div style="font-size:10px;color:#98a2b3;margin-top:2px;">₹34.15 × 1380 km</div>
+                </td>
+                <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹48,500</td>
+                <td style="text-align:right;font-family:'JetBrains Mono',monospace;color:#667085;">₹36,100</td>
+                <td style="text-align:right;color:#667085;">—</td>
+                <td style="text-align:right;color:#667085;">—</td>
+                <td style="text-align:right;color:#667085;">—</td>
+                <td style="color:#667085;">—</td>
+                <td><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;background:#fffaeb;color:#b54708;">En Route</span></td>
+                <td style="text-align:center;"><span style="font-size:10px;color:#667085;">Pending POD</span></td>
+            </tr>
+            <tr style="opacity:0.6;">
+                <td><a href="#" style="font-family:'JetBrains Mono',monospace;font-weight:700;color:#1570ef;">TRP-4825</a></td>
+                <td>
+                    <div style="font-weight:600;">Adani Ports</div>
+                    <div style="font-size:11px;color:#667085;">Mundra → Delhi</div>
+                </td>
+                <td>
+                    <span style="display:inline-flex;align-items:center;padding:1px 8px;border-radius:6px;font-size:10px;font-weight:600;background:#f4f3ff;color:#5925dc;text-transform:uppercase;letter-spacing:.04em;">Per Trip</span>
+                    <div style="font-size:10px;color:#98a2b3;margin-top:2px;">₹62,000 flat</div>
+                </td>
+                <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹62,000</td>
+                <td style="text-align:right;font-family:'JetBrains Mono',monospace;color:#667085;">₹48,800</td>
+                <td style="text-align:right;color:#667085;">—</td>
+                <td style="text-align:right;color:#667085;">—</td>
+                <td style="text-align:right;color:#667085;">—</td>
+                <td style="color:#667085;">—</td>
+                <td><span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;background:#fffaeb;color:#b54708;">En Route</span></td>
+                <td style="text-align:center;"><span style="font-size:10px;color:#667085;">Pending POD</span></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Settlement Breakdown + Invoice Preview -->
+<div id="settlement-detail-panel" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;">
+
+    <!-- Settlement Breakdown -->
+    <div class="detail-section">
+        <div class="section-header" style="background:#f0fdf4;">
+            <h3 style="color:#059669;"><i class="fas fa-calculator" style="margin-right:6px;"></i> Settlement Breakdown — TRP-4824</h3>
+        </div>
+        <div class="section-body" style="padding:0;">
+            <table style="font-size:13px;">
+                <tbody>
+                    <tr>
+                        <td style="font-weight:500;"><i class="fas fa-truck" style="color:#1570ef;margin-right:6px;"></i> Freight Rate
+                            <span style="display:inline-flex;padding:1px 6px;border-radius:4px;font-size:9px;font-weight:600;background:#f4f3ff;color:#5925dc;margin-left:6px;">Per KM</span>
+                        </td>
+                        <td style="text-align:right;font-weight:600;font-family:'JetBrains Mono',monospace;">₹42,800</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:500;color:#f79009;"><i class="fas fa-gas-pump" style="margin-right:6px;"></i> Fuel Surcharge (+2.4%)</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;color:#f79009;">+₹1,027</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:500;"><i class="fas fa-warehouse" style="color:#0e9384;margin-right:6px;"></i> Loading Charge</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹1,200</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:500;"><i class="fas fa-warehouse" style="color:#0e9384;margin-right:6px;"></i> Unloading Charge</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹1,200</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:500;color:#f04438;"><i class="fas fa-minus-circle" style="margin-right:6px;"></i> Deductions</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;color:#f04438;">₹0</td>
+                    </tr>
+                    <tr style="background:#f0fdf4;font-weight:700;">
+                        <td><i class="fas fa-arrow-right" style="color:#059669;margin-right:6px;"></i> Net Client Receivable</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;color:#059669;">₹42,800</td>
+                    </tr>
+                    <tr><td colspan="2" style="height:8px;padding:0;border:none;"></td></tr>
+                    <tr>
+                        <td style="font-weight:500;"><i class="fas fa-gas-pump" style="color:#d97706;margin-right:6px;"></i> Diesel (250L)</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹22,400</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:500;"><i class="fas fa-road" style="color:#1570ef;margin-right:6px;"></i> Tolls (FASTag)</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹4,850</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:500;"><i class="fas fa-user" style="color:#7a5af8;margin-right:6px;"></i> Driver Allowance</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹2,500</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:500;"><i class="fas fa-utensils" style="color:#ef6820;margin-right:6px;"></i> Driver Food</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹1,200</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:500;"><i class="fas fa-ellipsis-h" style="color:#667085;margin-right:6px;"></i> Misc Expenses</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹500</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:500;color:#1570ef;"><i class="fas fa-money-bill-wave" style="margin-right:6px;"></i> Driver Advance (Given)</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;color:#1570ef;">-₹5,000</td>
+                    </tr>
+                    <tr style="background:#f4f3ff;font-weight:700;">
+                        <td><i class="fas fa-arrow-right" style="color:#7a5af8;margin-right:6px;"></i> Net Vendor Payable</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;color:#7a5af8;">₹26,450</td>
+                    </tr>
+                    <tr style="background:#f0fdf4;font-weight:700;font-size:14px;">
+                        <td><i class="fas fa-chart-line" style="color:#059669;margin-right:6px;"></i> Margin</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;color:#059669;">₹11,350 (26.5%)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Invoice Preview -->
+    <div class="detail-section">
+        <div class="section-header" style="background:#eff6ff;">
+            <h3 style="color:#1570ef;"><i class="fas fa-file-invoice" style="margin-right:6px;"></i> Invoice Preview</h3>
+        </div>
+        <div class="section-body">
+            <div class="info-list">
+                <div class="info-item"><span class="info-label">Invoice To</span><span class="info-value">Reliance Industries Limited</span></div>
+                <div class="info-item"><span class="info-label">GSTIN</span><span class="info-value" style="font-family:monospace;font-weight:700;">27AAACR5055K1ZK</span></div>
+                <div class="info-item"><span class="info-label">Invoice #</span><span class="info-value" style="font-family:monospace;font-weight:700;">INV-2024-4824</span></div>
+                <div class="info-item"><span class="info-label">Date</span><span class="info-value">May 15, 2024</span></div>
+                <div class="info-item"><span class="info-label">GST Type</span><span class="info-value">
+                    <span style="display:inline-flex;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600;background:#f4f3ff;color:#5925dc;">IGST (Interstate)</span>
+                </span></div>
+            </div>
+
+            <!-- Line Items -->
+            <table style="font-size:12px;margin-top:12px;">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th style="text-align:right;">HSN</th>
+                        <th style="text-align:right;">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            Freight Charges — Mumbai → Ahmedabad
+                            <div style="font-size:11px;color:#98a2b3;margin-top:2px;">
+                                <span style="display:inline-flex;padding:0px 4px;border-radius:3px;font-size:9px;font-weight:600;background:#f4f3ff;color:#5925dc;margin-right:4px;">Per KM</span>
+                                540 km × ₹34.15/km
+                            </div>
+                        </td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;">9965</td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹42,800</td>
+                    </tr>
+                    <tr>
+                        <td style="color:#f79009;">Fuel Surcharge (+2.4%)</td>
+                        <td style="text-align:right;"></td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;color:#f79009;">₹1,027</td>
+                    </tr>
+                    <tr>
+                        <td style="color:#667085;">IGST @ 18%</td>
+                        <td style="text-align:right;"></td>
+                        <td style="text-align:right;font-family:'JetBrains Mono',monospace;">₹7,889</td>
+                    </tr>
+                    <tr style="font-weight:700;background:#fffaeb;">
+                        <td>Total Payable (incl. GST)</td>
+                        <td></td>
+                        <td style="text-align:right;font-size:14px;font-family:'JetBrains Mono',monospace;color:#f04438;">₹51,716</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="display:flex;gap:8px;margin-top:16px;">
+                <button class="btn btn-primary" style="flex:1;" onclick="showToast('Invoice INV-2024-4824 generated!','success')"><i class="fas fa-file-invoice" style="margin-right:4px;"></i> Generate Invoice</button>
+                <button class="btn btn-secondary" style="flex:1;" onclick="showToast('Invoice emailed to client','success')"><i class="fas fa-envelope" style="margin-right:4px;"></i> Email to Client</button>
+            </div>
+        </div>
+    </div>
+</div>

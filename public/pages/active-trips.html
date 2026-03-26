@@ -1,0 +1,133 @@
+<!-- ═══════════════════════════════════════════════════════════════
+     🚛 ACTIVE TRIPS — Created, In Transit, Completed
+     Operations Domain: Trips still in operational lifecycle
+     ═══════════════════════════════════════════════════════════════ -->
+
+<!-- ─── HEADER ─────────────────────────────────────────────────────── -->
+<div class="page-header">
+    <h1>Active Trips <span class="learn-badge"><i class="fas fa-route" style="color:#059669;"></i> Operations</span></h1>
+    <div class="page-header-actions">
+        <button class="btn btn-primary" onclick="openDashAddTrip()"><i class="fas fa-plus"></i> New Trip</button>
+    </div>
+</div>
+
+
+<!-- ─── FILTER BAR ────────────────────────────────────────────── -->
+<div style="background:#fff;border:1.5px solid #E2E8F0;border-radius:14px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:4px;background:#E2E8F0;border-radius:10px;padding:3px;" id="active-status-filter">
+        <button data-filter="all" style="background:#1E3A5F;color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;">All</button>
+        <button data-filter="Created" style="background:transparent;color:#475569;border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;">Created</button>
+        <button data-filter="In Transit" style="background:transparent;color:#475569;border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;">In Transit</button>
+        <button data-filter="Completed" style="background:transparent;color:#475569;border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;">Completed</button>
+    </div>
+    <div style="flex:1;"></div>
+    <input id="active-trip-search" placeholder="🔍 Search trips..." style="border:1.5px solid #E2E8F0;border-radius:10px;padding:8px 14px;font-size:13px;color:#1E293B;outline:none;width:240px;font-family:inherit;" />
+</div>
+
+<!-- ─── TRIP TABLE ─────────────────────────────────────────────── -->
+<div style="background:#fff;border:1.5px solid #E2E8F0;border-radius:16px;overflow:hidden;">
+    <div id="active-trips-table"></div>
+</div>
+
+<script>
+(function() {
+    var currentFilter = 'all';
+    var searchVal = '';
+
+    function getActiveTrips() {
+        if (typeof TRIPS_DATA === 'undefined') return [];
+        return TRIPS_DATA.filter(function(t) {
+            return t.status === 'Created' || t.status === 'In Transit' || t.status === 'Completed';
+        });
+    }
+
+
+
+    function renderTable() {
+        var trips = getActiveTrips();
+        // Apply filter
+        if (currentFilter !== 'all') {
+            trips = trips.filter(function(t){ return t.status === currentFilter; });
+        }
+        // Apply search
+        if (searchVal) {
+            var q = searchVal.toLowerCase();
+            trips = trips.filter(function(t){
+                return t.id.toLowerCase().indexOf(q) >= 0
+                    || t.lr.toLowerCase().indexOf(q) >= 0
+                    || t.client.toLowerCase().indexOf(q) >= 0
+                    || (t.vehicle || '').toLowerCase().indexOf(q) >= 0
+                    || t.origin.toLowerCase().indexOf(q) >= 0
+                    || t.destination.toLowerCase().indexOf(q) >= 0;
+            });
+        }
+
+        var COLORS = typeof TRIP_STATE_COLORS !== 'undefined' ? TRIP_STATE_COLORS : {};
+        var table = document.getElementById('active-trips-table');
+        if (!table) return;
+
+        var html = '<div style="display:grid;grid-template-columns:90px 90px 1.2fr 1fr 1fr 100px 80px 60px;padding:12px 18px;background:#F8FAFC;border-bottom:1px solid #E2E8F0;font-size:11px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:.5px;">';
+        html += '<span>Trip ID</span><span>LR No.</span><span>Route</span><span>Client</span><span>Vehicle</span><span>Status</span><span>Freight</span><span></span></div>';
+
+        if (trips.length === 0) {
+            html += '<div style="text-align:center;padding:40px;color:#94A3B8;"><div style="font-size:28px;margin-bottom:8px;">📭</div><div style="font-size:13px;font-weight:600;">No trips found</div></div>';
+        } else {
+            trips.forEach(function(t) {
+                var sc = COLORS[t.status] || { mid:'#F1F5F9', text:'#475569', dot:'#94A3B8', border:'#E5E7EB' };
+                html += '<div class="active-trip-row" data-trip-id="' + t.id + '" style="display:grid;grid-template-columns:90px 90px 1.2fr 1fr 1fr 100px 80px 60px;padding:14px 18px;border-bottom:1px solid #F1F5F9;align-items:center;cursor:pointer;transition:all .1s;" onmouseenter="this.style.background=\'#F8FAFC\'" onmouseleave="this.style.background=\'#fff\'">';
+                html += '<div style="font-size:12px;color:#94A3B8;font-family:monospace;">' + t.id + '</div>';
+                html += '<div style="font-size:12px;color:#475569;font-family:monospace;">' + t.lr + '</div>';
+                html += '<div style="font-size:13px;font-weight:700;color:#1E293B;">' + t.origin + ' → ' + t.destination + '</div>';
+                html += '<div style="font-size:12px;color:#475569;font-weight:600;">' + t.client + '</div>';
+                html += '<div>' + (t.vehicle ? '<span style="font-size:12px;font-family:monospace;background:#F1F5F9;padding:2px 8px;border-radius:6px;">' + t.vehicle + '</span>' : '<span style="font-size:11px;color:#7C3AED;font-weight:700;">Unassigned</span>') + '</div>';
+                html += '<div><span style="display:inline-flex;align-items:center;gap:4px;background:' + sc.mid + ';color:' + sc.text + ';border:1px solid ' + sc.border + ';font-size:10px;font-weight:700;padding:3px 8px;border-radius:12px;"><span style="width:6px;height:6px;border-radius:50%;background:' + sc.dot + ';"></span>' + t.status + '</span>' + (t.delayed ? '<span style="display:inline-flex;margin-left:4px;font-size:10px;background:#FEE2E2;color:#991B1B;padding:2px 6px;border-radius:6px;font-weight:700;">⚠</span>' : '') + '</div>';
+                html += '<div style="font-size:12px;font-weight:700;color:#1E293B;">₹' + (t.freight||0).toLocaleString() + '</div>';
+                html += '<div style="font-size:11px;color:#94A3B8;font-weight:700;text-align:right;">Open →</div>';
+                html += '</div>';
+            });
+        }
+        table.innerHTML = html;
+
+        // Wire row clicks
+        table.querySelectorAll('.active-trip-row').forEach(function(row) {
+            row.addEventListener('click', function() {
+                var tripId = this.getAttribute('data-trip-id');
+                if (typeof openTripDetailById === 'function') {
+                    openTripDetailById(tripId);
+                }
+            });
+        });
+    }
+
+    function init() {
+        if (typeof TRIPS_DATA === 'undefined') { setTimeout(init, 200); return; }
+
+        renderTable();
+
+        // Filter buttons
+        var filterBtns = document.querySelectorAll('#active-status-filter button');
+        filterBtns.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                currentFilter = this.getAttribute('data-filter');
+                filterBtns.forEach(function(b) {
+                    b.style.background = 'transparent';
+                    b.style.color = '#475569';
+                });
+                this.style.background = '#1E3A5F';
+                this.style.color = '#fff';
+                renderTable();
+            });
+        });
+
+        // Search
+        var searchInput = document.getElementById('active-trip-search');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                searchVal = this.value;
+                renderTable();
+            });
+        }
+    }
+    init();
+})();
+</script>
