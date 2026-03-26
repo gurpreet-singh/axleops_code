@@ -1,0 +1,9 @@
+[
+  { "id": "CLT-001", "name": "Reliance Industries", "initials": "RI", "hue": 210, "industry": "Petrochemicals", "contractType": "Per KM", "rate": "₹34.15/km", "totalTrips": 42, "revenueMtd": 524300, "outstanding": 145000, "creditLimit": 1000000, "creditUtil": 14.5, "status": "Active" },
+  { "id": "CLT-002", "name": "Tata Steel", "initials": "TS", "hue": 45, "industry": "Steel & Metals", "contractType": "Per Trip", "rate": "₹48,000/trip", "totalTrips": 28, "revenueMtd": 384000, "outstanding": 0, "creditLimit": 800000, "creditUtil": 0, "status": "Active" },
+  { "id": "CLT-003", "name": "Hindustan Unilever", "initials": "HU", "hue": 180, "industry": "FMCG", "contractType": "Per KM", "rate": "₹28.50/km", "totalTrips": 56, "revenueMtd": 412800, "outstanding": 87800, "creditLimit": 1200000, "creditUtil": 7.3, "status": "Active" },
+  { "id": "CLT-004", "name": "ITC Limited", "initials": "IL", "hue": 120, "industry": "FMCG", "contractType": "Per Tonne", "rate": "₹1,200/MT", "totalTrips": 34, "revenueMtd": 288000, "outstanding": 0, "creditLimit": 600000, "creditUtil": 0, "status": "Active" },
+  { "id": "CLT-005", "name": "Adani Ports", "initials": "AP", "hue": 280, "industry": "Infrastructure", "contractType": "Per Trip", "rate": "₹72,000/trip", "totalTrips": 15, "revenueMtd": 180000, "outstanding": 200000, "creditLimit": 600000, "creditUtil": 33.3, "status": "Active" },
+  { "id": "CLT-006", "name": "Mahindra Logistics", "initials": "ML", "hue": 190, "industry": "3PL", "contractType": "Per KM", "rate": "₹32.00/km", "totalTrips": 22, "revenueMtd": 156100, "outstanding": 0, "creditLimit": 500000, "creditUtil": 0, "status": "Active" },
+  { "id": "CLT-007", "name": "Asian Paints", "initials": "AP", "hue": 60, "industry": "Chemicals", "contractType": "Per Trip", "rate": "₹35,000/trip", "totalTrips": 8, "revenueMtd": 0, "outstanding": 0, "creditLimit": 400000, "creditUtil": 0, "status": "Inactive" }
+]

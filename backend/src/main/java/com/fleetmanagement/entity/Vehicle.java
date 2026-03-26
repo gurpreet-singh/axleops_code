@@ -36,6 +36,9 @@ public class Vehicle extends BaseEntity {
     private java.math.BigDecimal odometer;
     private String status = "ACTIVE";
 
+    @Column(name = "vehicle_group")
+    private String vehicleGroup;
+
     @Column(name = "insurance_expiry")
     private java.time.LocalDate insuranceExpiry;
 

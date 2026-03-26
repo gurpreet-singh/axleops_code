@@ -28,6 +28,22 @@ public class Route extends BaseEntity {
     @Column(name = "toll_cost")
     private java.math.BigDecimal tollCost;
 
+    private String via;
+
+    @Column(name = "origin_pin")
+    private String originPin;
+
+    @Column(name = "dest_pin")
+    private String destPin;
+
+    @Column(name = "sla_hours")
+    private Integer slaHours;
+
+    @Column(name = "payment_terms")
+    private String paymentTerms;
+
+    private String template;
+
     private String status = "ACTIVE";
 
     @ManyToOne(fetch = FetchType.LAZY)

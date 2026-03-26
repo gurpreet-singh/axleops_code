@@ -16,4 +16,6 @@ public class WorkOrderResponse {
     private BigDecimal totalCost;
     private LocalDate issueDate;
     private String assignedToName;
+    private String serviceTasks;
+    private String label;
 }

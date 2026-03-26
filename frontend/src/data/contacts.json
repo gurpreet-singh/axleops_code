@@ -1,0 +1,12 @@
+[
+  { "id": "CON-001", "name": "Rajesh Kumar", "type": "Driver", "phone": "+91 98765 43210", "email": "rajesh.kumar@example.com", "branch": "Mumbai", "status": "Active", "licenseNo": "MH0420190012345", "licenseExpiry": "2027-06-15", "vehicleAssigned": "MH04AB1234" },
+  { "id": "CON-002", "name": "Anita Verma", "type": "Driver", "phone": "+91 87654 32109", "email": "anita.verma@example.com", "branch": "Delhi", "status": "Active", "licenseNo": "DL0420200023456", "licenseExpiry": "2028-03-20", "vehicleAssigned": "MH04CD5678" },
+  { "id": "CON-003", "name": "Priya Sharma", "type": "Operations", "phone": "+91 76543 21098", "email": "priya.sharma@example.com", "branch": "Pune", "status": "Active", "licenseNo": null, "licenseExpiry": null, "vehicleAssigned": null },
+  { "id": "CON-004", "name": "Vikram Singh", "type": "Driver", "phone": "+91 65432 10987", "email": "vikram.singh@example.com", "branch": "Pune", "status": "Active", "licenseNo": "MH1220210034567", "licenseExpiry": "2029-01-10", "vehicleAssigned": "MH12GH3456" },
+  { "id": "CON-005", "name": "Deepak Patel", "type": "Driver", "phone": "+91 54321 09876", "email": "deepak.patel@example.com", "branch": "Delhi", "status": "Active", "licenseNo": "DL0120180045678", "licenseExpiry": "2026-09-30", "vehicleAssigned": "DL01IJ7890" },
+  { "id": "CON-006", "name": "Meera Joshi", "type": "Driver", "phone": "+91 43210 98765", "email": "meera.joshi@example.com", "branch": "Mumbai", "status": "Active", "licenseNo": "MH0420200056789", "licenseExpiry": "2028-12-05", "vehicleAssigned": "MH04KL4567" },
+  { "id": "CON-007", "name": "Tarun Mishra", "type": "Mechanic", "phone": "+91 32109 87654", "email": "tarun.mishra@example.com", "branch": "Maharashtra", "status": "Active", "licenseNo": null, "licenseExpiry": null, "vehicleAssigned": null },
+  { "id": "CON-008", "name": "Lakshmi Iyer", "type": "Driver", "phone": "+91 21098 76543", "email": "lakshmi.iyer@example.com", "branch": "Pune", "status": "Active", "licenseNo": "MH1220220067890", "licenseExpiry": "2030-05-18", "vehicleAssigned": "MH12PQ2345" },
+  { "id": "CON-009", "name": "Suresh Menon", "type": "Vendor", "phone": "+91 10987 65432", "email": "suresh@autospares.com", "branch": "Mumbai", "status": "Active", "licenseNo": null, "licenseExpiry": null, "vehicleAssigned": null },
+  { "id": "CON-010", "name": "Kavitha Reddy", "type": "Subcontractor", "phone": "+91 09876 54321", "email": "kavitha@reddy-transport.in", "branch": "Chennai", "status": "Inactive", "licenseNo": null, "licenseExpiry": null, "vehicleAssigned": null }
+]

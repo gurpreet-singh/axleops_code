@@ -27,6 +27,16 @@ public class Client extends BaseEntity {
     @Column(name = "billing_type")
     private String billingType = "PER_TRIP";
 
+    private String industry;
+
+    @Column(name = "contract_type")
+    private String contractType;
+
+    private String rate;
+
+    @Column(name = "credit_limit")
+    private java.math.BigDecimal creditLimit;
+
     private String status = "ACTIVE";
 
     @ManyToOne(fetch = FetchType.LAZY)

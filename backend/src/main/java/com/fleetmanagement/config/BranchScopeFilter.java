@@ -20,8 +20,8 @@ public class BranchScopeFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         // --- MULTI-TENANCY ---
-        // Typically extracted from JWT or subdomain. Hardcoded for testing the seed data:
-        TenantContext.set(UUID.fromString("t1111111-1111-1111-1111-111111111111"));
+        // Hardcoded demo tenant — valid UUID for dev mode
+        TenantContext.set(null);
 
 
         // --- BRANCH SCOPING ---

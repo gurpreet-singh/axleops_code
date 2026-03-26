@@ -12,7 +12,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.List;
+
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
@@ -33,7 +35,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         // We mock actual validation. We set a dummy authentication context.
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                "demo-user", null, Collections.emptyList()
+                "demo-user", null, List.of(new SimpleGrantedAuthority("ROLE_USER"))
         );
         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authToken);

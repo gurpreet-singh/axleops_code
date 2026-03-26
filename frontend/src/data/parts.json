@@ -1,0 +1,12 @@
+[
+  { "id": "PRT-001", "name": "CEAT Czar SUV 265/65R17", "partNumber": "CEAT-CZR-26565", "category": "Tires", "location": "Main Warehouse", "inStock": 12, "minQty": 4, "unitCost": 15768 },
+  { "id": "PRT-002", "name": "MANN Oil Filter W 712/95", "partNumber": "MANN-W71295", "category": "Filters", "location": "Main Warehouse", "inStock": 24, "minQty": 10, "unitCost": 705 },
+  { "id": "PRT-003", "name": "Castrol MAGNATEC 5W-30", "partNumber": "CAST-MAG-5W30", "category": "Oil & Fluids", "location": "Main Warehouse", "inStock": 18, "minQty": 6, "unitCost": 2323 },
+  { "id": "PRT-004", "name": "Bosch Brake Pads BP1234", "partNumber": "BOSCH-BP1234", "category": "Brakes", "location": "Main Warehouse", "inStock": 2, "minQty": 4, "unitCost": 3817 },
+  { "id": "PRT-005", "name": "Exide Inva Master 150Ah", "partNumber": "EXIDE-IM-150", "category": "Electrical", "location": "Main Warehouse", "inStock": 6, "minQty": 3, "unitCost": 14109 },
+  { "id": "PRT-006", "name": "MANN Air Filter C 27 006", "partNumber": "MANN-C27006", "category": "Filters", "location": "Main Warehouse", "inStock": 0, "minQty": 5, "unitCost": 1078 },
+  { "id": "PRT-007", "name": "Mobil Super 3000 X1 5W-40", "partNumber": "MOB-S3K-5W40", "category": "Oil & Fluids", "location": "Main Warehouse", "inStock": 14, "minQty": 8, "unitCost": 2850 },
+  { "id": "PRT-008", "name": "TVS Star Sport Spark Plug", "partNumber": "TVS-SP-200", "category": "Electrical", "location": "Branch Store", "inStock": 32, "minQty": 12, "unitCost": 185 },
+  { "id": "PRT-009", "name": "Gabriel Shock Absorber G3", "partNumber": "GAB-SA-G3", "category": "Suspension", "location": "Main Warehouse", "inStock": 8, "minQty": 4, "unitCost": 4250 },
+  { "id": "PRT-010", "name": "Bosch Diesel Injector CRI2", "partNumber": "BOSCH-INJ-CRI2", "category": "Engine", "location": "Main Warehouse", "inStock": 4, "minQty": 2, "unitCost": 12500 }
+]

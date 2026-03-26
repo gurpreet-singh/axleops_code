@@ -1,0 +1,7 @@
+[
+  { "id": "PO-2024-001", "poNumber": "PO-2024-001", "vendor": "CEAT Tyres Ltd", "date": "2024-03-15", "items": 3, "totalAmount": 189216, "status": "Approved", "deliveryDate": "2024-03-25" },
+  { "id": "PO-2024-002", "poNumber": "PO-2024-002", "vendor": "Bosch India", "date": "2024-03-12", "items": 5, "totalAmount": 45600, "status": "Delivered", "deliveryDate": "2024-03-18" },
+  { "id": "PO-2024-003", "poNumber": "PO-2024-003", "vendor": "Castrol India", "date": "2024-03-18", "items": 2, "totalAmount": 27876, "status": "Pending", "deliveryDate": "2024-03-28" },
+  { "id": "PO-2024-004", "poNumber": "PO-2024-004", "vendor": "Exide Industries", "date": "2024-03-20", "items": 4, "totalAmount": 84654, "status": "Draft", "deliveryDate": null },
+  { "id": "PO-2024-005", "poNumber": "PO-2024-005", "vendor": "Gabriel India Ltd", "date": "2024-03-08", "items": 6, "totalAmount": 51000, "status": "Delivered", "deliveryDate": "2024-03-14" }
+]

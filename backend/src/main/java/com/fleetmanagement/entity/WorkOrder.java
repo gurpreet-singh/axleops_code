@@ -30,6 +30,12 @@ public class WorkOrder extends BaseEntity {
     @Column(name = "issue_date")
     private LocalDate issueDate;
 
+    @Column(name = "service_tasks", length = 500)
+    private String serviceTasks;
+
+    @Column(length = 100)
+    private String label;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assigned_to")
     private Contact assignedTo;

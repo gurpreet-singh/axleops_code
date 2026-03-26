@@ -1,0 +1,7 @@
+[
+  { "id": "GTLC/10075/F-26", "client": "Mahindra & Mahindra Cosma", "billDate": "2026-03-21", "totalTaxable": 801000, "totalGst": 144180, "grandTotal": 937170, "status": "Invoiced", "trips": 12, "dueDate": "2026-04-20" },
+  { "id": "GTLC/10076/F-27", "client": "Reliance Industries", "billDate": "2026-03-22", "totalTaxable": 452000, "totalGst": 81360, "grandTotal": 533360, "status": "Pending", "trips": 8, "dueDate": "2026-04-21" },
+  { "id": "GTLC/10077/F-28", "client": "Tata Steel", "billDate": "2026-03-18", "totalTaxable": 624000, "totalGst": 112320, "grandTotal": 736320, "status": "Paid", "trips": 6, "dueDate": "2026-04-17" },
+  { "id": "GTLC/10078/F-29", "client": "Hindustan Unilever", "billDate": "2026-03-15", "totalTaxable": 318000, "totalGst": 57240, "grandTotal": 375240, "status": "Invoiced", "trips": 14, "dueDate": "2026-03-30" },
+  { "id": "GTLC/10079/F-30", "client": "Adani Ports", "billDate": "2026-03-10", "totalTaxable": 540000, "totalGst": 97200, "grandTotal": 637200, "status": "Overdue", "trips": 5, "dueDate": "2026-03-25" }
+]

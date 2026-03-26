@@ -5,6 +5,30 @@ import RoleSelector from './pages/RoleSelector';
 import Dashboard from './pages/Dashboard';
 import PlaceholderPage from './pages/PlaceholderPage';
 
+// ─── Trip Management ──────────────────────────────────────
+import TripsPage from './pages/trips/TripsPage';
+import ActiveTripsPage from './pages/trips/ActiveTripsPage';
+
+// ─── Fleet Management ─────────────────────────────────────
+import VehicleListPage from './pages/fleet/VehicleListPage';
+
+// ─── Routes ───────────────────────────────────────────────
+import RoutesPage from './pages/routes/RoutesPage';
+
+// ─── Clients & Billing ────────────────────────────────────
+import ClientsPage from './pages/clients/ClientsPage';
+import BillCollectPage from './pages/accounting/BillCollectPage';
+
+// ─── Contacts / Drivers ───────────────────────────────────
+import ContactsPage from './pages/contacts/ContactsPage';
+
+// ─── MRO / Maintenance ────────────────────────────────────
+import WorkOrdersPage from './pages/mro/WorkOrdersPage';
+
+// ─── Inventory ────────────────────────────────────────────
+import PartsListPage from './pages/inventory/PartsListPage';
+import PurchaseOrdersPage from './pages/inventory/PurchaseOrdersPage';
+
 function ProtectedRoute({ children }) {
   const { currentRole } = useAuthStore();
   if (!currentRole) return <Navigate to="/" replace />;
@@ -26,16 +50,38 @@ export default function App() {
         }
       >
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/trips" element={<PlaceholderPage title="Trip Management" icon="fas fa-route" />} />
-        <Route path="/fleet" element={<PlaceholderPage title="Fleet Management" icon="fas fa-truck-moving" />} />
-        <Route path="/clients" element={<PlaceholderPage title="Clients" icon="fas fa-building" />} />
-        <Route path="/routes" element={<PlaceholderPage title="Route Management" icon="fas fa-map-marked-alt" />} />
-        <Route path="/drivers" element={<PlaceholderPage title="Drivers" icon="fas fa-id-card" />} />
-        <Route path="/billing" element={<PlaceholderPage title="Bill & Collect" icon="fas fa-file-invoice-dollar" />} />
+
+        {/* Trip Management */}
+        <Route path="/trips" element={<TripsPage />} />
+        <Route path="/trips/active" element={<ActiveTripsPage />} />
+        <Route path="/trips/create" element={<PlaceholderPage title="Create Trip" icon="fas fa-plus-circle" />} />
+
+        {/* Fleet */}
+        <Route path="/fleet" element={<VehicleListPage />} />
+        <Route path="/fleet/new" element={<PlaceholderPage title="Add Vehicle" icon="fas fa-truck" />} />
+
+        {/* Routes */}
+        <Route path="/routes" element={<RoutesPage />} />
+
+        {/* Clients */}
+        <Route path="/clients" element={<ClientsPage />} />
+
+        {/* Contacts / Drivers */}
+        <Route path="/drivers" element={<ContactsPage />} />
+
+        {/* Finance / Accounting */}
+        <Route path="/billing" element={<BillCollectPage />} />
         <Route path="/accounting" element={<PlaceholderPage title="Accounting" icon="fas fa-rupee-sign" />} />
-        <Route path="/mro" element={<PlaceholderPage title="MRO & Maintenance" icon="fas fa-wrench" />} />
-        <Route path="/inventory" element={<PlaceholderPage title="Parts & Inventory" icon="fas fa-boxes-stacked" />} />
-        <Route path="/procurement" element={<PlaceholderPage title="Purchase Orders" icon="fas fa-file-alt" />} />
+
+        {/* MRO */}
+        <Route path="/mro" element={<WorkOrdersPage />} />
+        <Route path="/mro/create" element={<PlaceholderPage title="Create Work Order" icon="fas fa-wrench" />} />
+
+        {/* Inventory */}
+        <Route path="/inventory" element={<PartsListPage />} />
+        <Route path="/procurement" element={<PurchaseOrdersPage />} />
+
+        {/* Admin */}
         <Route path="/reports" element={<PlaceholderPage title="Reports & Analytics" icon="fas fa-chart-bar" />} />
         <Route path="/users" element={<PlaceholderPage title="User Management" icon="fas fa-users-cog" />} />
         <Route path="/branches" element={<PlaceholderPage title="Branches" icon="fas fa-code-branch" />} />
