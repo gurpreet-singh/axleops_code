@@ -6,3 +6,9 @@ build/
 .vscode/
 *.log
 
+# Backend (Gradle/Spring Boot)
+backend/build/
+backend/.gradle/
+*.class
+*.jar
+!backend/gradle/wrapper/gradle-wrapper.jar

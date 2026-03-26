@@ -14,7 +14,7 @@ public class Voucher extends BaseEntity {
     @Column(name = "voucher_number", nullable = false, unique = true, length = 100)
     private String voucherNumber;
 
-    @Column(nullable = false, length = 50)
+    @Column(name = "voucher_type", nullable = false, length = 50)
     private String type; // PMT, RCT, SLS, PUR, JRN, CNT, CRN, DRN
 
     @Column(nullable = false)

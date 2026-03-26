@@ -23,7 +23,7 @@ public abstract class BaseEntity {
     @GeneratedValue
     private UUID id;
 
-    @Column(name = "tenant_id", nullable = false)
+    @Column(name = "tenant_id")
     private UUID tenantId;
 
     @CreatedDate

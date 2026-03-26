@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface WorkOrderMapper {
     @Mapping(source = "vehicle.id", target = "vehicleId")
-    @Mapping(source = "vehicle.name", target = "vehicleName")
-    @Mapping(source = "assignedTo.name", target = "assignedToName")
+    @Mapping(source = "vehicle.registrationNumber", target = "vehicleName")
+    @Mapping(source = "assignedTo.firstName", target = "assignedToName")
     WorkOrderResponse toResponse(WorkOrder workOrder);
 }
