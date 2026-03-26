@@ -53,7 +53,7 @@ function navigateTo(page) {
     }
   }
 
-  // Update active states
+  // Update active states  
   document.querySelectorAll('.nav-item').forEach(function (n) {
     n.classList.remove('active');
   });
@@ -843,7 +843,7 @@ function initGlobalActions() {
       link.addEventListener('click', function (e) { e.preventDefault(); navigateTo('voucher-entry'); });
       return;
     }
-    // Known client names
+    // Known client names 
     var knownClients = ['Reliance Industries', 'Tata Steel', 'Hindustan Unilever', 'ITC Limited', 'Adani Ports', 'Mahindra Logistics', 'Asian Paints', 'Bharat Petroleum', 'BlueDart Express', 'Godrej Consumer', 'Larsen & Toubro', 'GAIL India', 'Sun Pharma'];
     if (knownClients.indexOf(text) >= 0) {
       link.addEventListener('click', function (e) { e.preventDefault(); navigateTo('client-detail'); });

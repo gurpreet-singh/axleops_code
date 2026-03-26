@@ -1,0 +1,200 @@
+<!-- ═══════════════════════════════════════════════════════════════
+     🧑‍💻 TMS OPERATOR DASHBOARD — v6
+     Role-based: Operations (Create, Track, Deliver) / Accounts (Settle, Bill, Collect)
+     All drill-downs via right-side slider (trip-slider.js)
+     ═══════════════════════════════════════════════════════════════ -->
+
+
+
+<!-- ╔════════════════════════════════════════════════════════════════╗
+     ║  OPERATIONS VIEW                                              ║
+     ╚════════════════════════════════════════════════════════════════╝ -->
+<div id="op-view-ops">
+    <!-- Trip Movement (3 boxes) -->
+    <div style="font-size:12px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;">Trip Movement</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;">
+        <!-- Consignment -->
+        <button onclick="openDashTripSlider('Consignment','ops')"
+            style="background:#F5F3FF;border:2px solid #DDD6FE;border-radius:16px;padding:20px 16px;cursor:pointer;text-align:left;transition:all .15s;display:block;"
+            onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(124,58,237,0.15)';"
+            onmouseleave="this.style.transform='none';this.style.boxShadow='none';">
+            <div style="font-size:26px;margin-bottom:10px;">📝</div>
+            <div style="font-size:28px;font-weight:800;color:#7C3AED;line-height:1;margin-bottom:4px;" data-trip-count="Consignment">0</div>
+            <div style="font-size:13px;font-weight:700;color:#1E293B;">Consignment</div>
+            <div style="font-size:11px;color:#64748B;margin-top:2px;">Assign vehicle & dispatch</div>
+            <div style="margin-top:12px;font-size:11px;font-weight:700;color:#7C3AED;">View trips →</div>
+        </button>
+        <!-- In Transit -->
+        <button onclick="openDashTripSlider('In Transit','ops')"
+            style="background:#F0F9FF;border:2px solid #BAE6FD;border-radius:16px;padding:20px 16px;cursor:pointer;text-align:left;transition:all .15s;display:block;"
+            onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(14,165,233,0.15)';"
+            onmouseleave="this.style.transform='none';this.style.boxShadow='none';">
+            <div style="font-size:26px;margin-bottom:10px;">🚛</div>
+            <div style="font-size:28px;font-weight:800;color:#0EA5E9;line-height:1;margin-bottom:4px;" data-trip-count="In Transit">0</div>
+            <div style="font-size:13px;font-weight:700;color:#1E293B;">In Transit</div>
+            <div style="font-size:11px;color:#64748B;margin-top:2px;">Mark delivered + ePOD</div>
+            <div style="margin-top:12px;font-size:11px;font-weight:700;color:#0EA5E9;">View trips →</div>
+        </button>
+        <!-- Delivered -->
+        <button onclick="openDashTripSlider('Delivered','ops')"
+            style="background:#F0FDF4;border:2px solid #A7F3D0;border-radius:16px;padding:20px 16px;cursor:pointer;text-align:left;transition:all .15s;display:block;"
+            onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(16,185,129,0.15)';"
+            onmouseleave="this.style.transform='none';this.style.boxShadow='none';">
+            <div style="font-size:26px;margin-bottom:10px;">✅</div>
+            <div style="font-size:28px;font-weight:800;color:#10B981;line-height:1;margin-bottom:4px;" data-trip-count="Delivered">0</div>
+            <div style="font-size:13px;font-weight:700;color:#1E293B;">Delivered</div>
+            <div style="font-size:11px;color:#64748B;margin-top:2px;">Handed to Accounts</div>
+            <div style="margin-top:12px;font-size:11px;font-weight:700;color:#10B981;">View trips →</div>
+        </button>
+    </div>
+
+    <!-- Ops Alerts (Delayed Trips — 1 box in 3-col grid) -->
+    <div style="font-size:12px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;">Ops Alerts</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;">
+        <button id="op-delayed-btn" onclick="openDashTripSlider('Delayed','ops')"
+            style="background:#FEF2F2;border:2px solid #FECACA;border-radius:16px;padding:18px 16px;cursor:pointer;text-align:left;transition:all .15s;display:block;"
+            onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(220,38,38,0.12)';"
+            onmouseleave="this.style.transform='none';this.style.boxShadow='none';">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                <span style="font-size:22px;">🚨</span>
+                <span style="font-size:24px;font-weight:800;color:#DC2626;" data-trip-count="Delayed">0</span>
+            </div>
+            <div style="font-size:13px;font-weight:700;color:#1E293B;">Delayed Trips</div>
+            <div style="font-size:11px;color:#94A3B8;margin-top:2px;">Overdue — follow up</div>
+        </button>
+    </div>
+</div>
+
+<!-- ╔════════════════════════════════════════════════════════════════╗
+     ║  ACCOUNTS VIEW                                               ║
+     ╚════════════════════════════════════════════════════════════════╝ -->
+<div id="op-view-accts" style="display:none;">
+    <!-- Trip Movement (3 boxes — same statuses, different subtitles) -->
+    <div style="font-size:12px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;">Trip Movement</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;">
+        <!-- Consignment -->
+        <button onclick="openDashTripSlider('Consignment','accts')"
+            style="background:#F5F3FF;border:2px solid #DDD6FE;border-radius:16px;padding:20px 16px;cursor:pointer;text-align:left;transition:all .15s;display:block;"
+            onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(124,58,237,0.15)';"
+            onmouseleave="this.style.transform='none';this.style.boxShadow='none';">
+            <div style="font-size:26px;margin-bottom:10px;">📝</div>
+            <div style="font-size:28px;font-weight:800;color:#7C3AED;line-height:1;margin-bottom:4px;" data-trip-count="Consignment">0</div>
+            <div style="font-size:13px;font-weight:700;color:#1E293B;">Consignment</div>
+            <div style="font-size:11px;color:#64748B;margin-top:2px;">Awaiting dispatch</div>
+            <div style="margin-top:12px;font-size:11px;font-weight:700;color:#7C3AED;">View trips →</div>
+        </button>
+        <!-- In Transit -->
+        <button onclick="openDashTripSlider('In Transit','accts')"
+            style="background:#F0F9FF;border:2px solid #BAE6FD;border-radius:16px;padding:20px 16px;cursor:pointer;text-align:left;transition:all .15s;display:block;"
+            onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(14,165,233,0.15)';"
+            onmouseleave="this.style.transform='none';this.style.boxShadow='none';">
+            <div style="font-size:26px;margin-bottom:10px;">🚛</div>
+            <div style="font-size:28px;font-weight:800;color:#0EA5E9;line-height:1;margin-bottom:4px;" data-trip-count="In Transit">0</div>
+            <div style="font-size:13px;font-weight:700;color:#1E293B;">In Transit</div>
+            <div style="font-size:11px;color:#64748B;margin-top:2px;">Add advances</div>
+            <div style="margin-top:12px;font-size:11px;font-weight:700;color:#0EA5E9;">View trips →</div>
+        </button>
+        <!-- Delivered -->
+        <button onclick="openDashTripSlider('Delivered','accts')"
+            style="background:#F0FDF4;border:2px solid #A7F3D0;border-radius:16px;padding:20px 16px;cursor:pointer;text-align:left;transition:all .15s;display:block;"
+            onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(16,185,129,0.15)';"
+            onmouseleave="this.style.transform='none';this.style.boxShadow='none';">
+            <div style="font-size:26px;margin-bottom:10px;">✅</div>
+            <div style="font-size:28px;font-weight:800;color:#10B981;line-height:1;margin-bottom:4px;" data-trip-count="Delivered">0</div>
+            <div style="font-size:13px;font-weight:700;color:#1E293B;">Delivered</div>
+            <div style="font-size:11px;color:#64748B;margin-top:2px;">Create Trip Sheet</div>
+            <div style="margin-top:12px;font-size:11px;font-weight:700;color:#10B981;">View trips →</div>
+        </button>
+    </div>
+
+    <!-- Bill & Collect (3 boxes) -->
+    <div style="font-size:12px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;">Bill & Collect</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;">
+        <!-- Trip Sheet -->
+        <button onclick="openDashTripSlider('Trip Sheet','accts')"
+            style="background:#FFFBEB;border:2px solid #FCD34D;border-radius:16px;padding:20px 16px;cursor:pointer;text-align:left;transition:all .15s;display:block;"
+            onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(217,119,6,0.15)';"
+            onmouseleave="this.style.transform='none';this.style.boxShadow='none';">
+            <div style="font-size:26px;margin-bottom:10px;">🧾</div>
+            <div style="font-size:28px;font-weight:800;color:#D97706;line-height:1;margin-bottom:4px;" data-trip-count="Trip Sheet">0</div>
+            <div style="font-size:13px;font-weight:700;color:#1E293B;">Trip Sheet</div>
+            <div style="font-size:11px;color:#64748B;margin-top:2px;">Raise freight bill</div>
+            <div style="margin-top:12px;font-size:11px;font-weight:700;color:#D97706;">View trips →</div>
+        </button>
+        <!-- Billed -->
+        <button onclick="openDashTripSlider('Billed','accts')"
+            style="background:#EEF2FF;border:2px solid #A5B4FC;border-radius:16px;padding:20px 16px;cursor:pointer;text-align:left;transition:all .15s;display:block;"
+            onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(99,102,241,0.15)';"
+            onmouseleave="this.style.transform='none';this.style.boxShadow='none';">
+            <div style="font-size:26px;margin-bottom:10px;">📄</div>
+            <div style="font-size:28px;font-weight:800;color:#6366F1;line-height:1;margin-bottom:4px;" data-trip-count="Billed">0</div>
+            <div style="font-size:13px;font-weight:700;color:#1E293B;">Billed</div>
+            <div style="font-size:11px;color:#64748B;margin-top:2px;">Collect payment</div>
+            <div style="margin-top:12px;font-size:11px;font-weight:700;color:#6366F1;">View trips →</div>
+        </button>
+        <!-- Paid & Closed -->
+        <button onclick="openDashTripSlider('Paid','accts')"
+            style="background:#DCFCE7;border:2px solid #86EFAC;border-radius:16px;padding:20px 16px;cursor:pointer;text-align:left;transition:all .15s;display:block;"
+            onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(22,163,74,0.15)';"
+            onmouseleave="this.style.transform='none';this.style.boxShadow='none';">
+            <div style="font-size:26px;margin-bottom:10px;">💰</div>
+            <div style="font-size:28px;font-weight:800;color:#16A34A;line-height:1;margin-bottom:4px;" data-trip-count="Paid">0</div>
+            <div style="font-size:13px;font-weight:700;color:#1E293B;">Paid & Closed</div>
+            <div style="font-size:11px;color:#64748B;margin-top:2px;">Fully settled</div>
+            <div style="margin-top:12px;font-size:11px;font-weight:700;color:#16A34A;">View trips →</div>
+        </button>
+    </div>
+</div>
+
+<!-- ─── INLINE SCRIPT — Role Toggle & Count Init ─────────────────────────────── -->
+<script>
+(function() {
+    // Current sub-role for this dashboard (ops or accts)
+    var _opRole = 'ops';
+
+    window.switchOpRole = function(role) {
+        _opRole = role;
+        var opsBtn = document.getElementById('op-role-ops');
+        var acctsBtn = document.getElementById('op-role-accts');
+        var opsView = document.getElementById('op-view-ops');
+        var acctsView = document.getElementById('op-view-accts');
+
+        if (role === 'ops') {
+            opsBtn.style.background = '#1E3A5F'; opsBtn.style.color = '#fff'; opsBtn.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+            acctsBtn.style.background = 'transparent'; acctsBtn.style.color = '#475569'; acctsBtn.style.boxShadow = 'none';
+            opsView.style.display = 'block'; acctsView.style.display = 'none';
+        } else {
+            acctsBtn.style.background = '#1E3A5F'; acctsBtn.style.color = '#fff'; acctsBtn.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+            opsBtn.style.background = 'transparent'; opsBtn.style.color = '#475569'; opsBtn.style.boxShadow = 'none';
+            opsView.style.display = 'none'; acctsView.style.display = 'block';
+        }
+    };
+
+    // Initialize counts from TRIPS_DATA (loaded by trip-slider.js)
+    function initCounts() {
+        if (typeof TRIPS_DATA === 'undefined') {
+            setTimeout(initCounts, 100);
+            return;
+        }
+        var counts = { 'Consignment':0, 'In Transit':0, 'Delivered':0, 'Trip Sheet':0, 'Billed':0, 'Paid':0, 'Delayed':0 };
+        TRIPS_DATA.forEach(function(t) {
+            if (counts[t.status] !== undefined) counts[t.status]++;
+            if (t.delayed) counts['Delayed']++;
+        });
+        document.querySelectorAll('[data-trip-count]').forEach(function(el) {
+            var key = el.getAttribute('data-trip-count');
+            if (counts[key] !== undefined) el.textContent = counts[key];
+        });
+
+        // Dim delayed box if count is 0
+        var delBtn = document.getElementById('op-delayed-btn');
+        if (delBtn && counts['Delayed'] === 0) {
+            delBtn.style.opacity = '0.5';
+            delBtn.style.cursor = 'default';
+            delBtn.style.background = '#F8FAFC';
+            delBtn.style.borderColor = '#E8EDF2';
+        }
+    }
+    initCounts();
+})();
+</script>

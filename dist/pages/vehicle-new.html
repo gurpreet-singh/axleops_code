@@ -1,0 +1,958 @@
+<!-- New Vehicle Form — from fleet-management.jsx NewVehicleForm -->
+<div class="page-header">
+    <h1>New Vehicle</h1>
+    <div class="page-header-actions">
+        <button class="btn btn-secondary" onclick="navigateTo('vehicle-list')">Cancel</button>
+        <button class="btn btn-secondary" onclick="navigateTo('vehicle-add-multiple')">Add Multiple Vehicles</button>
+        <button class="btn btn-primary"
+            onclick="showToast('Vehicle saved successfully!','success');navigateTo('vehicle-list')"><i
+                class="fas fa-check"></i> Save Vehicle</button>
+    </div>
+</div>
+
+<div style="display:flex;gap:32px;">
+    <!-- Sidebar Navigation -->
+    <div style="width:200px;flex-shrink:0;">
+        <div class="vnf-sidebar-item active" data-vnf-tab="details" onclick="switchVNFTab(this)">
+            <i class="fas fa-file-alt" style="width:16px;text-align:center;"></i> Details
+        </div>
+        <div class="vnf-sidebar-item" data-vnf-tab="maintenance" onclick="switchVNFTab(this)">
+            <i class="fas fa-wrench" style="width:16px;text-align:center;"></i> Maintenance
+        </div>
+        <div class="vnf-sidebar-item" data-vnf-tab="lifecycle" onclick="switchVNFTab(this)">
+            <i class="fas fa-th-large" style="width:16px;text-align:center;"></i> Lifecycle
+        </div>
+        <div class="vnf-sidebar-item" data-vnf-tab="financial" onclick="switchVNFTab(this)">
+            <i class="fas fa-th-large" style="width:16px;text-align:center;"></i> Financial
+        </div>
+        <div class="vnf-sidebar-item" data-vnf-tab="custom-fields" onclick="switchVNFTab(this)">
+            <i class="fas fa-th-large" style="width:16px;text-align:center;"></i> Custom Fields
+        </div>
+        <div class="vnf-sidebar-item" data-vnf-tab="specifications" onclick="switchVNFTab(this)">
+            <i class="fas fa-th-large" style="width:16px;text-align:center;"></i> Specifications
+        </div>
+        <div class="vnf-sidebar-item" data-vnf-tab="settings" onclick="switchVNFTab(this)">
+            <i class="fas fa-cog" style="width:16px;text-align:center;"></i> Settings
+        </div>
+    </div>
+
+    <!-- Form Content -->
+    <div style="flex:1;">
+        <!-- TAB: Details -->
+        <div class="vnf-tab-content active" id="vnf-details">
+            <div class="detail-section">
+                <div class="section-body" style="padding:24px;">
+                    <h3 style="font-size:17px;font-weight:600;margin:0 0 20px;color:var(--text-primary);">Identification
+                    </h3>
+                    <div style="display:flex;flex-direction:column;gap:16px;">
+                        <!-- Vehicle Name -->
+                        <div>
+                            <label
+                                style="display:block;font-size:13px;font-weight:500;color:var(--text-primary);margin-bottom:4px;">Vehicle
+                                Name <span style="color:#e53935;">*</span></label>
+                            <input type="text" placeholder="e.g. MH04XX1234"
+                                style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            <p style="font-size:12px;color:var(--text-muted);margin:4px 0 0;">Enter a nickname to
+                                distinguish this vehicle.</p>
+                        </div>
+                        <!-- Telematics Device -->
+                        <div>
+                            <label
+                                style="display:block;font-size:13px;font-weight:500;color:var(--text-primary);margin-bottom:4px;">Telematics
+                                Device</label>
+                            <select
+                                style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                <option value="" disabled selected>Please select</option>
+                                <option>GPS Tracker 1</option>
+                                <option>GPS Tracker 2</option>
+                                <option>FASTag Unit</option>
+                            </select>
+                            <p style="font-size:12px;color:var(--text-muted);margin:4px 0 0;">Link this vehicle with one
+                                of your Telematics Devices to begin automatically collecting data.</p>
+                        </div>
+                        <!-- VIN/SN -->
+                        <div>
+                            <label
+                                style="display:block;font-size:13px;font-weight:500;color:var(--text-primary);margin-bottom:4px;">VIN/SN
+                                (Chassis Number)</label>
+                            <div style="display:flex;gap:8px;">
+                                <div style="flex:1;">
+                                    <input type="text" placeholder="e.g. MBLH111EXPMXB2345"
+                                        style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                </div>
+                                <button class="btn btn-secondary" style="white-space:nowrap;">Decode VIN</button>
+                            </div>
+                            <p style="font-size:12px;color:var(--text-muted);margin:4px 0 0;">Vehicle Identification
+                                Number or Serial Number.</p>
+                        </div>
+                        <!-- License Plate -->
+                        <div>
+                            <label
+                                style="display:block;font-size:13px;font-weight:500;color:var(--text-primary);margin-bottom:4px;">License
+                                Plate</label>
+                            <input type="text" placeholder="e.g. MH04AB1234"
+                                style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                        </div>
+                        <!-- Type + Fuel Type -->
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;">
+                                <label
+                                    style="display:block;font-size:13px;font-weight:500;color:var(--text-primary);margin-bottom:4px;">Type
+                                    <span style="color:#e53935;">*</span></label>
+                                <select
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                    <option>Truck</option>
+                                    <option>Pickup</option>
+                                    <option>Van</option>
+                                    <option>Car</option>
+                                    <option>EV</option>
+                                </select>
+                            </div>
+                            <div style="flex:1;">
+                                <label
+                                    style="display:block;font-size:13px;font-weight:500;color:var(--text-primary);margin-bottom:4px;">Fuel
+                                    Type</label>
+                                <select
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                    <option value="" disabled selected>Please select</option>
+                                    <option>Diesel</option>
+                                    <option>Petrol</option>
+                                    <option>CNG</option>
+                                    <option>Electric</option>
+                                    <option>Hybrid</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Year + Make + Model -->
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;">
+                                <label
+                                    style="display:block;font-size:13px;font-weight:500;color:var(--text-primary);margin-bottom:4px;">Year</label>
+                                <input type="text" placeholder="e.g. 2023"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                <p style="font-size:12px;color:var(--text-muted);margin:4px 0 0;">e.g. 1999, 2012, etc.
+                                </p>
+                            </div>
+                            <div style="flex:1;">
+                                <label
+                                    style="display:block;font-size:13px;font-weight:500;color:var(--text-primary);margin-bottom:4px;">Make</label>
+                                <select
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                    <option value="" disabled selected>Please select</option>
+                                    <option>Tata</option>
+                                    <option>Mahindra</option>
+                                    <option>Ashok Leyland</option>
+                                    <option>BharatBenz</option>
+                                    <option>Eicher</option>
+                                    <option>Force</option>
+                                </select>
+                                <p style="font-size:12px;color:var(--text-muted);margin:4px 0 0;">e.g. Toyota, GMC,
+                                    Chevrolet, etc.</p>
+                            </div>
+                            <div style="flex:1;">
+                                <label
+                                    style="display:block;font-size:13px;font-weight:500;color:var(--text-primary);margin-bottom:4px;">Model</label>
+                                <select
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                    <option value="" disabled selected>Please select</option>
+                                    <option>Ace Gold</option>
+                                    <option>407</option>
+                                    <option>LPT 1109</option>
+                                    <option>Signa 2823</option>
+                                </select>
+                                <p style="font-size:12px;color:var(--text-muted);margin:4px 0 0;">e.g. 4Runner, Yukon,
+                                    Silverado, etc.</p>
+                            </div>
+                        </div>
+                        <!-- Trim + Registration State -->
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;">
+                                <label
+                                    style="display:block;font-size:13px;font-weight:500;color:var(--text-primary);margin-bottom:4px;">Trim</label>
+                                <input type="text" placeholder="e.g. SE, LE, XLE, etc."
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                <p style="font-size:12px;color:var(--text-muted);margin:4px 0 0;">e.g. SE, LE, XLE, etc.
+                                </p>
+                            </div>
+                            <div style="flex:1;">
+                                <label
+                                    style="display:block;font-size:13px;font-weight:500;color:var(--text-primary);margin-bottom:4px;">Registration
+                                    State/Province</label>
+                                <input type="text" placeholder="e.g. Maharashtra"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                        </div>
+                        <!-- Labels -->
+                        <div>
+                            <label
+                                style="display:block;font-size:13px;font-weight:500;color:var(--text-primary);margin-bottom:4px;">Labels</label>
+                            <select
+                                style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                <option value="" disabled selected>Please select</option>
+                                <option>Heavy Duty</option>
+                                <option>Light Duty</option>
+                                <option>Leased</option>
+                                <option>Owned</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Maintenance -->
+        <div class="vnf-tab-content" id="vnf-maintenance" style="display:none;">
+            <div class="detail-section">
+                <div class="section-body" style="padding:24px;">
+                    <h3 style="font-size:17px;font-weight:600;margin:0 0 8px;">Maintenance Schedule</h3>
+                    <p style="font-size:13px;color:var(--text-secondary);margin:0 0 20px;">Choose a Service Program.
+                        Service Programs automatically manage Service Reminders for Vehicles that share common
+                        preventative maintenance needs.</p>
+                    <!-- Option 1: None -->
+                    <div
+                        style="border:2px solid var(--primary);border-radius:10px;padding:16px 20px;margin-bottom:12px;cursor:pointer;background:#f0f5ff;">
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <div
+                                style="width:18px;height:18px;border-radius:50%;border:2px solid var(--primary);display:flex;align-items:center;justify-content:center;">
+                                <div style="width:8px;height:8px;border-radius:50%;background:var(--primary);"></div>
+                            </div>
+                            <div>
+                                <p style="margin:0;font-size:14px;font-weight:500;">None</p>
+                                <p style="margin:0;font-size:12px;color:var(--text-secondary);">No Service Reminders
+                                    will be created</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Option 2: Manufacturer Recommended -->
+                    <div
+                        style="border:2px solid var(--border-color);border-radius:10px;padding:16px 20px;margin-bottom:12px;cursor:pointer;">
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <div style="width:18px;height:18px;border-radius:50%;border:2px solid var(--border-color);">
+                            </div>
+                            <div>
+                                <p style="margin:0;font-size:14px;font-weight:500;">Manufacturer Recommended Maintenance
+                                    Schedule</p>
+                                <p style="margin:0;font-size:12px;color:var(--text-secondary);">OEM Maintenance Schedule
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Option 3: Existing Program -->
+                    <div
+                        style="border:2px solid var(--border-color);border-radius:10px;padding:16px 20px;cursor:pointer;">
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <div style="width:18px;height:18px;border-radius:50%;border:2px solid var(--border-color);">
+                            </div>
+                            <div>
+                                <p style="margin:0;font-size:14px;font-weight:500;">Choose an existing Service Program
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Lifecycle -->
+        <div class="vnf-tab-content" id="vnf-lifecycle" style="display:none;">
+            <div class="detail-section">
+                <div class="section-body" style="padding:24px;">
+                    <h3 style="font-size:17px;font-weight:600;margin:0 0 20px;">Acquisition</h3>
+                    <div style="display:flex;flex-direction:column;gap:16px;">
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">In Service
+                                    Date</label><input type="date"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                <p style="font-size:12px;color:var(--text-muted);margin:4px 0 0;">Date the vehicle
+                                    entered service</p>
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">In Service
+                                    Meter</label><input type="text" placeholder="e.g. 12"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                <p style="font-size:12px;color:var(--text-muted);margin:4px 0 0;">Meter reading when
+                                    placed in service</p>
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Estimated
+                                    Service Life (Months)</label><input type="number" placeholder="e.g. 120"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Estimated
+                                    Service Life (Meter)</label><input type="text" placeholder="e.g. 5,00,000 km"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                        </div>
+                        <div><label style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Estimated
+                                Replacement Date</label><input type="date"
+                                style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            <p style="font-size:12px;color:var(--text-muted);margin:4px 0 0;">Planned date to replace
+                                this vehicle</p>
+                        </div>
+                    </div>
+                    <h3
+                        style="font-size:17px;font-weight:600;margin:24px 0 20px;padding-top:20px;border-top:1px solid var(--border-color);">
+                        Disposal</h3>
+                    <div style="display:flex;flex-direction:column;gap:16px;">
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Out of
+                                    Service Date</label><input type="date"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Out of
+                                    Service Meter</label><input type="text" placeholder="Meter at disposal"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Disposal
+                                    Method</label><select
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                    <option value="" disabled selected>Please select</option>
+                                    <option>Sold</option>
+                                    <option>Traded In</option>
+                                    <option>Scrapped</option>
+                                    <option>Donated</option>
+                                    <option>Returned (Lease)</option>
+                                </select></div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Resale /
+                                    Scrap Value</label><input type="text" placeholder="e.g. ₹5,00,000"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Financial -->
+        <div class="vnf-tab-content" id="vnf-financial" style="display:none;">
+            <div class="detail-section">
+                <div class="section-body" style="padding:24px;">
+                    <h3 style="font-size:17px;font-weight:600;margin:0 0 20px;">Purchase Information</h3>
+                    <div style="display:flex;flex-direction:column;gap:16px;">
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Ownership
+                                    Type</label><select
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                    <option value="" disabled selected>Please select</option>
+                                    <option>Owned</option>
+                                    <option>Leased</option>
+                                    <option>Rented</option>
+                                    <option>Financed</option>
+                                </select></div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Purchase
+                                    Date</label><input type="date"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Purchase
+                                    Price</label><input type="text" placeholder="e.g. ₹28,50,000"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Purchase
+                                    Vendor</label><input type="text" placeholder="e.g. Daimler India"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                        </div>
+                        <div><label style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Purchase
+                                Comments</label><textarea placeholder="Notes about this purchase..." rows="2"
+                                style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;resize:vertical;"></textarea>
+                        </div>
+                    </div>
+                    <h3
+                        style="font-size:17px;font-weight:600;margin:24px 0 20px;padding-top:20px;border-top:1px solid var(--border-color);">
+                        Loan / Financing</h3>
+                    <div style="display:flex;flex-direction:column;gap:16px;">
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Lender /
+                                    Bank</label><input type="text" placeholder="e.g. HDFC Bank"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Loan Account
+                                    Number</label><input type="text" placeholder="e.g. HDFC-VL-984521"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Loan
+                                    Amount</label><input type="text" placeholder="e.g. ₹22,80,000"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Down
+                                    Payment</label><input type="text" placeholder="e.g. ₹5,70,000"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Interest
+                                    Rate (% p.a.)</label><input type="text" placeholder="e.g. 9.25"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Loan Term
+                                    (Months)</label><input type="number" placeholder="e.g. 60"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Monthly
+                                    EMI</label><input type="text" placeholder="e.g. ₹47,412"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                        </div>
+                    </div>
+                    <h3
+                        style="font-size:17px;font-weight:600;margin:24px 0 20px;padding-top:20px;border-top:1px solid var(--border-color);">
+                        Depreciation</h3>
+                    <div style="display:flex;flex-direction:column;gap:16px;">
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Depreciation
+                                    Method</label><select
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                    <option value="" disabled selected>Please select</option>
+                                    <option>Straight-Line (SLM)</option>
+                                    <option>Written Down Value (WDV)</option>
+                                    <option>Units of Production</option>
+                                    <option>None</option>
+                                </select></div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Useful Life
+                                    (Years)</label><input type="number" placeholder="e.g. 10"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Salvage
+                                    Value</label><input type="text" placeholder="e.g. ₹2,85,000"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                        </div>
+                    </div>
+                    <h3
+                        style="font-size:17px;font-weight:600;margin:24px 0 20px;padding-top:20px;border-top:1px solid var(--border-color);">
+                        Insurance</h3>
+                    <div style="display:flex;flex-direction:column;gap:16px;">
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Insurance
+                                    Provider</label><input type="text" placeholder="e.g. ICICI Lombard"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Policy
+                                    Number</label><input type="text" placeholder="Policy number"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Policy
+                                    Type</label><select
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                    <option value="" disabled selected>Please select</option>
+                                    <option>Comprehensive</option>
+                                    <option>Third Party Only</option>
+                                    <option>Third Party + Fire & Theft</option>
+                                </select></div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Annual
+                                    Premium</label><input type="text" placeholder="e.g. ₹38,475"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Effective
+                                    Date</label><input type="date"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Expiry
+                                    Date</label><input type="date"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Custom Fields -->
+        <div class="vnf-tab-content" id="vnf-custom-fields" style="display:none;">
+            <div class="detail-section">
+                <div class="section-body" style="padding:24px;">
+                    <h3 style="font-size:17px;font-weight:600;margin:0 0 4px;">Custom Fields</h3>
+                    <p style="font-size:13px;color:var(--text-secondary);margin:0 0 20px;">Add organization-specific
+                        metadata to this vehicle. These fields are unique to your fleet operations.</p>
+                    <div style="display:flex;flex-direction:column;gap:16px;">
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Fleet
+                                    Code</label><input type="text" placeholder="e.g. FL-MH-042"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                <p style="font-size:12px;color:var(--text-muted);margin:4px 0 0;">Internal fleet
+                                    tracking code</p>
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Cost
+                                    Centre</label><input type="text" placeholder="e.g. CC-OPS-WEST"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                <p style="font-size:12px;color:var(--text-muted);margin:4px 0 0;">Used for accounting
+                                    allocation</p>
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Department</label><select
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                    <option value="" disabled selected>Please select</option>
+                                    <option>Operations</option>
+                                    <option>Logistics</option>
+                                    <option>Sales</option>
+                                    <option>Administration</option>
+                                </select></div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Project /
+                                    Contract</label><input type="text" placeholder="e.g. PRJ-2024-MUM-DEL"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Body
+                                    Builder</label><input type="text" placeholder="e.g. Supreme Industries"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                <p style="font-size:12px;color:var(--text-muted);margin:4px 0 0;">Body / container
+                                    fabricator</p>
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Body
+                                    Type</label><select
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                    <option value="" disabled selected>Please select</option>
+                                    <option>Open Body</option>
+                                    <option>Closed Container</option>
+                                    <option>Refrigerated</option>
+                                    <option>Tanker</option>
+                                    <option>Flatbed</option>
+                                    <option>Tipper</option>
+                                </select></div>
+                        </div>
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">GPS Device
+                                    ID</label><input type="text" placeholder="e.g. GPS-84521"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">FASTag
+                                    ID</label><input type="text" placeholder="e.g. 34-0021-8845-2109"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                        </div>
+                        <div><label
+                                style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Notes</label><textarea
+                                placeholder="Any additional notes about this vehicle..." rows="3"
+                                style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;resize:vertical;"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Specifications -->
+        <div class="vnf-tab-content" id="vnf-specifications" style="display:none;">
+            <div class="detail-section">
+                <div class="section-body" style="padding:24px;">
+                    <h3 style="font-size:17px;font-weight:600;margin:0 0 20px;">Dimensions</h3>
+                    <div style="display:flex;flex-direction:column;gap:16px;">
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Overall
+                                    Length (mm)</label><input type="text" placeholder="e.g. 9500"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Overall
+                                    Width (mm)</label><input type="text" placeholder="e.g. 2500"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Overall
+                                    Height (mm)</label><input type="text" placeholder="e.g. 3200"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Wheelbase
+                                    (mm)</label><input type="text" placeholder="e.g. 4880"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Ground
+                                    Clearance (mm)</label><input type="text" placeholder="e.g. 235"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Turning
+                                    Radius (m)</label><input type="text" placeholder="e.g. 7.8"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Cargo Volume
+                                    (cu. ft)</label><input type="text" placeholder="e.g. 850"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Bed / Body
+                                    Length (ft)</label><input type="text" placeholder="e.g. 32"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Cab
+                                    Type</label><select
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                    <option value="" disabled selected>Please select</option>
+                                    <option>Day Cab</option>
+                                    <option>Sleeper Cab</option>
+                                    <option>Crew Cab</option>
+                                    <option>Regular Cab</option>
+                                </select></div>
+                        </div>
+                    </div>
+                    <h3
+                        style="font-size:17px;font-weight:600;margin:24px 0 20px;padding-top:20px;border-top:1px solid var(--border-color);">
+                        Engine</h3>
+                    <div style="display:flex;flex-direction:column;gap:16px;">
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Engine
+                                    Brand</label><input type="text" placeholder="e.g. Detroit, Cummins"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Displacement
+                                    (L)</label><input type="text" placeholder="e.g. 14.8"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Cylinders</label><input
+                                    type="number" placeholder="e.g. 6"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Max
+                                    Horsepower</label><input type="text" placeholder="e.g. 455"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Max Torque
+                                    (Nm)</label><input type="text" placeholder="e.g. 1550"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Aspiration</label><select
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                    <option value="" disabled selected>Please select</option>
+                                    <option>Naturally Aspirated</option>
+                                    <option>Turbocharger</option>
+                                    <option>Supercharger</option>
+                                    <option>Twin Turbo</option>
+                                </select></div>
+                        </div>
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Emission
+                                    Standard</label><select
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                    <option value="" disabled selected>Please select</option>
+                                    <option>BS-VI Phase 2</option>
+                                    <option>BS-VI</option>
+                                    <option>BS-IV</option>
+                                </select></div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Oil Capacity
+                                    (L)</label><input type="text" placeholder="e.g. 36"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Coolant
+                                    Capacity (L)</label><input type="text" placeholder="e.g. 42"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                        </div>
+                    </div>
+                    <h3
+                        style="font-size:17px;font-weight:600;margin:24px 0 20px;padding-top:20px;border-top:1px solid var(--border-color);">
+                        Transmission & Drivetrain</h3>
+                    <div style="display:flex;flex-direction:column;gap:16px;">
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Transmission
+                                    Type</label><select
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                    <option value="" disabled selected>Please select</option>
+                                    <option>Manual</option>
+                                    <option>Automatic</option>
+                                    <option>AMT</option>
+                                    <option>CVT</option>
+                                </select></div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Number of
+                                    Gears</label><input type="number" placeholder="e.g. 9"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Drive
+                                    Type</label><select
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                    <option value="" disabled selected>Please select</option>
+                                    <option>4x2</option>
+                                    <option>6x2</option>
+                                    <option>6x4</option>
+                                    <option>8x4</option>
+                                    <option>AWD</option>
+                                </select></div>
+                        </div>
+                    </div>
+                    <h3
+                        style="font-size:17px;font-weight:600;margin:24px 0 20px;padding-top:20px;border-top:1px solid var(--border-color);">
+                        Weights & Capacity</h3>
+                    <div style="display:flex;flex-direction:column;gap:16px;">
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Kerb Weight
+                                    (kg)</label><input type="text" placeholder="e.g. 5200"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">GVW
+                                    (kg)</label><input type="text" placeholder="e.g. 16200"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                <p style="font-size:12px;color:var(--text-muted);margin:4px 0 0;">Gross Vehicle Weight
+                                </p>
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Max Payload
+                                    (kg)</label><input type="text" placeholder="e.g. 11000"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Fuel Tank
+                                    Capacity (L)</label><input type="text" placeholder="e.g. 200"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">DEF Tank
+                                    Capacity (L)</label><input type="text" placeholder="e.g. 25"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Axle
+                                    Configuration</label><select
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                    <option value="" disabled selected>Please select</option>
+                                    <option>4x2 (2 axle, 2 driven)</option>
+                                    <option>6x2 (3 axle, 2 driven)</option>
+                                    <option>6x4 (3 axle, 4 driven)</option>
+                                    <option>8x4 (4 axle, 4 driven)</option>
+                                </select></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: Settings -->
+        <div class="vnf-tab-content" id="vnf-settings" style="display:none;">
+            <div class="detail-section">
+                <div class="section-body" style="padding:24px;">
+                    <h3 style="font-size:17px;font-weight:600;margin:0 0 20px;">Meter Settings</h3>
+                    <div style="display:flex;flex-direction:column;gap:16px;">
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Primary
+                                    Meter Type</label><select
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                    <option>Kilometres (km)</option>
+                                    <option>Miles (mi)</option>
+                                    <option>Hours (hr)</option>
+                                </select>
+                                <p style="font-size:12px;color:var(--text-muted);margin:4px 0 0;">Used for scheduling
+                                    service reminders</p>
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Secondary
+                                    Meter Type</label><select
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                    <option value="" disabled selected>None</option>
+                                    <option>Hours (hr)</option>
+                                    <option>Kilometres (km)</option>
+                                </select></div>
+                        </div>
+                    </div>
+                    <h3
+                        style="font-size:17px;font-weight:600;margin:24px 0 20px;padding-top:20px;border-top:1px solid var(--border-color);">
+                        Fuel Settings</h3>
+                    <div style="display:flex;flex-direction:column;gap:16px;">
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Fuel
+                                    Unit</label><select
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                    <option>Litres</option>
+                                    <option>Gallons (US)</option>
+                                    <option>Gallons (UK)</option>
+                                </select></div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Fuel Economy
+                                    Unit</label><select
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                    <option>km/L (KMPL)</option>
+                                    <option>L/100km</option>
+                                    <option>MPG</option>
+                                </select></div>
+                        </div>
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Expected
+                                    Fuel Economy</label><input type="text" placeholder="e.g. 4.2 kmpl"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                <p style="font-size:12px;color:var(--text-muted);margin:4px 0 0;">Used to flag anomalous
+                                    fuel entries</p>
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Fuel
+                                    Variance Threshold (%)</label><input type="number" placeholder="e.g. 15"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                <p style="font-size:12px;color:var(--text-muted);margin:4px 0 0;">Alert when fuel
+                                    economy deviates beyond this %</p>
+                            </div>
+                        </div>
+                    </div>
+                    <h3
+                        style="font-size:17px;font-weight:600;margin:24px 0 20px;padding-top:20px;border-top:1px solid var(--border-color);">
+                        Notification Preferences</h3>
+                    <div style="display:flex;flex-direction:column;gap:12px;">
+                        <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer;"><input
+                                type="checkbox" checked style="accent-color:var(--primary);width:16px;height:16px;">
+                            Send service reminders for this vehicle</label>
+                        <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer;"><input
+                                type="checkbox" checked style="accent-color:var(--primary);width:16px;height:16px;">
+                            Send inspection reminders</label>
+                        <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer;"><input
+                                type="checkbox" checked style="accent-color:var(--primary);width:16px;height:16px;">
+                            Send compliance & document expiry alerts</label>
+                        <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer;"><input
+                                type="checkbox" style="accent-color:var(--primary);width:16px;height:16px;"> Send fuel
+                            anomaly alerts</label>
+                        <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer;"><input
+                                type="checkbox" style="accent-color:var(--primary);width:16px;height:16px;"> Exclude
+                            from utilization reports</label>
+                    </div>
+                    <h3
+                        style="font-size:17px;font-weight:600;margin:24px 0 20px;padding-top:20px;border-top:1px solid var(--border-color);">
+                        Compliance</h3>
+                    <div style="display:flex;flex-direction:column;gap:16px;">
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Permit
+                                    Type</label><select
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                                    <option value="" disabled selected>Please select</option>
+                                    <option>National Permit</option>
+                                    <option>State Permit</option>
+                                    <option>All India Tourist Permit</option>
+                                </select></div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">PUC
+                                    Certificate Validity</label><input type="date"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:16px;">
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Fitness
+                                    Certificate Expiry</label><input type="date"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                            <div style="flex:1;"><label
+                                    style="display:block;font-size:13px;font-weight:500;margin-bottom:4px;">Road Tax
+                                    Validity</label><input type="date"
+                                    style="width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:6px;font-size:14px;box-sizing:border-box;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .vnf-sidebar-item {
+        padding: 10px 14px;
+        font-size: 13.5px;
+        cursor: pointer;
+        border-radius: 6px;
+        color: var(--text-secondary);
+        font-weight: 400;
+        margin-bottom: 2px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: background 0.15s, color 0.15s;
+    }
+
+    .vnf-sidebar-item:hover {
+        background: #f1f5f9;
+    }
+
+    .vnf-sidebar-item.active {
+        background: #f0f5ff;
+        color: var(--primary);
+        font-weight: 500;
+    }
+
+    .vnf-sidebar-item.active i {
+        color: var(--primary);
+    }
+</style>
+
+<script>
+    function switchVNFTab(el) {
+        var target = el.getAttribute('data-vnf-tab');
+        // Update sidebar
+        document.querySelectorAll('.vnf-sidebar-item').forEach(function (item) { item.classList.remove('active'); });
+        el.classList.add('active');
+        // Update content
+        document.querySelectorAll('.vnf-tab-content').forEach(function (c) { c.style.display = 'none'; });
+        var content = document.getElementById('vnf-' + target);
+        if (content) content.style.display = 'block';
+    }
+</script>

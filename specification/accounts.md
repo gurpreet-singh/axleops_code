@@ -183,7 +183,7 @@ This is the heart of the system. Each stage of a trip's lifecycle triggers speci
 *Tags: Trip ID, Driver, Vehicle*
 
 ### Stage 2: Fuel Purchase (During Trip)
-**Trigger:** Driver swipes fuel card OR Accounts Exec logs fuel bill
+**Trigger:** Driver swipes fuel card OR Accounts Exec logs fuel bill  
 **Entry type:** AUTOMATIC (Fuel Card swipes) or SEMI-AUTOMATIC (cash fuel → driver reports, Accounts Exec approves)
 
 | Dr. | Cr. | Amount | Narration |
@@ -191,7 +191,7 @@ This is the heart of the system. Each stage of a trip's lifecycle triggers speci
 | Diesel / Fuel Expense | Fuel Card Account | ₹12,480 | IOCL Nashik, 120L — TRP-4828 |
 
 ### Stage 3: Toll Deductions (During Trip)
-**Trigger:** FASTag deduction in real-time
+**Trigger:** FASTag deduction in real-time  
 **Entry type:** AUTOMATIC (synced from FASTag API)
 
 | Dr. | Cr. | Amount | Narration |
@@ -199,7 +199,7 @@ This is the heart of the system. Each stage of a trip's lifecycle triggers speci
 | Toll Expense | FASTag Account | ₹2,850 | 4 toll plazas — TRP-4828 |
 
 ### Stage 4: Trip Completed → POD Verified
-**Trigger:** Fleet Manager verifies Proof of Delivery
+**Trigger:** Fleet Manager verifies Proof of Delivery  
 **Entry type:** AUTOMATIC (system generates on POD approval)
 
 | Dr. | Cr. | Amount | Narration |
@@ -209,7 +209,7 @@ This is the heart of the system. Each stage of a trip's lifecycle triggers speci
 *This is revenue recognition before invoice is raised. Freight is now "earned" but not yet billed.*
 
 ### Stage 5: Invoice Generated
-**Trigger:** Accounts Executive / Finance Controller raises invoice for completed trips
+**Trigger:** Accounts Executive / Finance Controller raises invoice for completed trips  
 **Entry type:** AUTOMATIC (generated when invoice is created in the Invoicing module)
 
 | Dr. | Cr. | Amount | Narration |
@@ -220,7 +220,7 @@ This is the heart of the system. Each stage of a trip's lifecycle triggers speci
 *Tags: Invoice No., Client*
 
 ### Stage 6: Client Payment Received
-**Trigger:** Receipt recorded when NEFT/RTGS/cheque hits bank
+**Trigger:** Receipt recorded when NEFT/RTGS/cheque hits bank  
 **Entry type:** MANUAL (Accounts Exec creates Receipt voucher)
 
 | Dr. | Cr. | Amount | Narration |
@@ -231,7 +231,7 @@ This is the heart of the system. Each stage of a trip's lifecycle triggers speci
 *Tags: Invoice No., Client*
 
 ### Stage 7: Driver Settlement (Trip Close)
-**Trigger:** Trip Settlement module — Operations approves, Finance pays
+**Trigger:** Trip Settlement module — Operations approves, Finance pays  
 **Entry type:** SEMI-AUTOMATIC (system calculates; Finance Controller approves)
 
 | Dr. | Cr. | Amount | Narration |
@@ -241,7 +241,7 @@ This is the heart of the system. Each stage of a trip's lifecycle triggers speci
 | Accounts Payable — Drivers | HDFC Bank — Current A/c | ₹1,200 | Net settlement paid |
 
 ### Stage 8: Vendor / Vehicle Owner Settlement
-**Trigger:** For attached (hired) vehicles — vendor payment after trip completion
+**Trigger:** For attached (hired) vehicles — vendor payment after trip completion  
 **Entry type:** MANUAL (Finance Controller creates Payment voucher)
 
 | Dr. | Cr. | Amount | Narration |
@@ -251,7 +251,7 @@ This is the heart of the system. Each stage of a trip's lifecycle triggers speci
 | Accounts Payable — Vendors | TDS Payable | ₹530 | TDS deducted @ 2% |
 
 ### Stage 9: Credit/Debit Notes (Adjustments)
-**Trigger:** Client shortage deduction or vendor quality penalty
+**Trigger:** Client shortage deduction or vendor quality penalty  
 **Entry type:** MANUAL (Accounts Exec creates CRN/DRN voucher)
 
 | Dr. | Cr. | Amount | Narration |
@@ -259,7 +259,7 @@ This is the heart of the system. Each stage of a trip's lifecycle triggers speci
 | Freight Revenue | Accounts Receivable | ₹4,248 | CN-2024-0091 — Reliance shortage deduction |
 
 ### Stage 10: Monthly Recurring Entries
-**Trigger:** Month-end processing
+**Trigger:** Month-end processing  
 **Entry type:** AUTOMATIC (system generates on month close)
 
 | Entry | Dr. | Cr. |

@@ -1,0 +1,590 @@
+<!-- ═══════════════════════════════════════════════════════════════
+     🛣️ ROUTES PAGE — Slider-Based UX
+     Route = Client + Vehicle Type + Origin–Destination
+     Click row → slider opens. Escape/backdrop → close. ↑↓ arrows navigate.
+     ═══════════════════════════════════════════════════════════════ -->
+
+<div class="page-header" style="font-family:'DM Sans',system-ui,sans-serif;">
+    <h1 style="font-size:22px;font-weight:800;">Route Management</h1>
+    <div class="page-header-actions">
+        <button class="sl-btn default" id="route-export-btn"><i class="fas fa-file-export" style="margin-right:4px;"></i> Export</button>
+        <button class="sl-btn primary" id="route-add-btn"><i class="fas fa-plus" style="margin-right:4px;"></i> Add Route</button>
+    </div>
+</div>
+
+<!-- Metrics Row -->
+<div id="route-metrics-row" style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;font-family:'DM Sans',system-ui,sans-serif;"></div>
+
+<!-- Info Banner -->
+<div style="background:#eff8ff;border:1px solid rgba(23,92,211,0.19);border-radius:8px;padding:8px 14px;margin-bottom:12px;font-size:10px;color:#175cd3;font-family:'DM Sans',system-ui,sans-serif;">
+    <strong>Route = Client + Vehicle Type + Origin → Destination.</strong> Click any row to open route detail in the side panel. Use ↑↓ arrow keys to navigate between routes.
+</div>
+
+<!-- Filters -->
+<div class="route-filters">
+    <input type="text" id="route-search" placeholder="Search routes..." style="width:170px;">
+    <select id="route-filter-client"><option value="all">Client ▾</option></select>
+    <select id="route-filter-vt"><option value="all">Vehicle ▾</option></select>
+    <select id="route-filter-tmpl"><option value="all">Template ▾</option></select>
+    <div style="flex:1;"></div>
+    <span id="route-count" style="font-size:10px;color:#98a2b3;"></span>
+</div>
+
+<!-- Table -->
+<div style="background:#fff;border-radius:0 0 10px 10px;border:1px solid #e4e7ec;overflow:hidden;">
+    <div style="overflow-x:auto;">
+        <table class="route-table-enhanced">
+            <thead><tr id="route-thead"></tr></thead>
+            <tbody id="route-tbody"></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Slider Container (injected by JS) -->
+<div id="route-slider-container"></div>
+
+<script>
+(function(){
+/* ═══ THEME TOKENS ═══ */
+const T={bg:"#f5f6f8",card:"#fff",ink:"#101828",ink2:"#344054",ink3:"#667085",ink4:"#98a2b3",
+bdr:"#e4e7ec",bdr2:"#f2f4f7",blue:"#1570ef",blueBg:"#eff8ff",blueTx:"#175cd3",
+green:"#12b76a",greenBg:"#ecfdf3",greenTx:"#027a48",red:"#f04438",redBg:"#fef3f2",redTx:"#b42318",
+amber:"#f79009",amberBg:"#fffaeb",amberTx:"#b54708",purple:"#7a5af8",purpleBg:"#f4f3ff",purpleTx:"#5925dc",
+teal:"#0e9384",tealBg:"#f0fdf9",tealTx:"#107569",coral:"#ef6820",coralBg:"#fff6ed",coralTx:"#b93815"};
+const MN="'JetBrains Mono',monospace";
+const INR=n=>"₹"+Number(n).toLocaleString("en-IN");
+const vtC={"Multi-Axle Truck":"coral","2-Axle Truck":"amber","Container 40ft":"purple",LCV:"teal",Tanker:"red","3-Axle Truck":"blue"};
+const tmC={Standard:"blue",Express:"teal","Heavy Cargo":"purple",Hazmat:"red","Multi-Drop":"coral"};
+const riskC=r=>r>=7?T.red:r>=4?T.amber:T.green;
+const badge=(txt,c,xs)=>`<span class="sl-badge ${xs?'xs':''} ${c}">${txt}</span>`;
+const bar=(v,mx,color)=>`<div class="sl-bar"><div class="sl-bar-fill" style="width:${Math.min(v/mx*100,100)}%;background:${color}"></div></div>`;
+
+/* ═══ ROUTE DATA ═══ */
+const ROUTES=[
+{id:"RTE-0012",client:"Reliance Industries",route:"Mumbai → Delhi (JNPT)",via:"NH48 → NH44",sc:"MH→DL",origin:"JNPT Navi Mumbai, Gate 3, Plot 12, Uran Road",originPin:"400707",dest:"Mathura Refinery, Loading Bay 4, NH-2 Junction",destPin:"281006",vType:"Multi-Axle Truck",dist:1380,estTime:"22–26 hrs",toll:8400,diesel:300,kmpl:3.2,trips:87,tripsMtd:18,contracts:2,branch:"Global",template:"Standard",risk:3.2,onTime:88,avgMargin:22,status:"Active",revenue:4219500,avgProfit:11200,loadInstr:"JNPT Gate 3. Present driver ID + vehicle RC at security. Loading Dock C preferred for Multi-Axle. Weigh-bridge on exit mandatory.",unloadInstr:"Mathura Refinery Loading Bay 4. Weigh-bridge mandatory before entry. Night unloading not permitted (gates close 9 PM). Safety induction for first-time drivers. POD must be signed by Warehouse Supervisor."},
+{id:"RTE-0013",client:"Tata Steel",route:"Mumbai → Delhi (Kalamboli)",via:"NH48 → NH44",sc:"MH→DL",origin:"Kalamboli Steel Yard",originPin:"410218",dest:"Faridabad",destPin:"121003",vType:"Container 40ft",dist:1420,estTime:"24–30 hrs",toll:12200,diesel:355,kmpl:2.8,trips:42,tripsMtd:8,contracts:1,branch:"Global",template:"Heavy Cargo",risk:4.1,onTime:82,avgMargin:18,status:"Active",revenue:1860000,avgProfit:8400,loadInstr:"Steel coils require crane loading.",unloadInstr:"Faridabad yard. Weigh-bridge mandatory."},
+{id:"RTE-0014",client:"Reliance Industries",route:"Mumbai → Delhi",via:"NH48 → NH44",sc:"MH→DL",origin:"JNPT Navi Mumbai",originPin:"400707",dest:"Mathura Refinery",destPin:"281006",vType:"2-Axle Truck",dist:1380,estTime:"20–24 hrs",toll:4850,diesel:205,kmpl:4.8,trips:52,tripsMtd:12,contracts:1,branch:"Mumbai",template:"Standard",risk:2.8,onTime:91,avgMargin:24,status:"Active",revenue:2640000,avgProfit:9800,loadInstr:"Standard loading bay.",unloadInstr:"Standard unloading."},
+{id:"RTE-0015",client:"Hindustan Unilever",route:"Mumbai → Pune",via:"Expressway",sc:"MH→MH",origin:"HUL Andheri Plant",originPin:"400093",dest:"Pune DC Hadapsar",destPin:"411028",vType:"LCV",dist:150,estTime:"3–4 hrs",toll:420,diesel:32,kmpl:8.5,trips:196,tripsMtd:24,contracts:2,branch:"Mumbai",template:"Express",risk:1.4,onTime:96,avgMargin:28,status:"Active",revenue:3920000,avgProfit:6200,loadInstr:"HUL Andheri. Fast loading dock.",unloadInstr:"Pune DC. Scan delivery."},
+{id:"RTE-0016",client:"ITC Limited",route:"Delhi → Jaipur",via:"NH48",sc:"DL→RJ",origin:"ITC Gurgaon Hub",originPin:"122001",dest:"Jaipur Central WH",destPin:"302017",vType:"3-Axle Truck",dist:280,estTime:"5–6 hrs",toll:2100,diesel:63,kmpl:4.4,trips:64,tripsMtd:12,contracts:1,branch:"Delhi",template:"Standard",risk:2.1,onTime:94,avgMargin:26,status:"Active",revenue:1280000,avgProfit:7600,loadInstr:"ITC Hub loading.",unloadInstr:"Jaipur WH."},
+{id:"RTE-0017",client:"Reliance Industries",route:"Mumbai → Ahmedabad",via:"NH48",sc:"MH→GJ",origin:"JNPT Chemical Terminal",originPin:"400707",dest:"Ahmedabad Refinery",destPin:"382443",vType:"Tanker",dist:530,estTime:"8–10 hrs",toll:3200,diesel:140,kmpl:3.2,trips:38,tripsMtd:10,contracts:1,branch:"Global",template:"Hazmat",risk:6.8,onTime:84,avgMargin:16,status:"Active",revenue:2280000,avgProfit:5800,loadInstr:"Chemical terminal. Hazmat clearance required.",unloadInstr:"Ahmedabad Refinery. Safety induction mandatory."},
+{id:"RTE-0018",client:"Adani Ports",route:"Mumbai → Chennai",via:"NH48 → NH44",sc:"MH→TN",origin:"Adani JNPT",originPin:"400707",dest:"Chennai Port Trust",destPin:"600001",vType:"Multi-Axle Truck",dist:1340,estTime:"20–24 hrs",toll:7800,diesel:285,kmpl:3.2,trips:28,tripsMtd:6,contracts:1,branch:"Global",template:"Heavy Cargo",risk:4.5,onTime:80,avgMargin:19,status:"Active",revenue:1680000,avgProfit:8100,loadInstr:"Adani JNPT. Container handling.",unloadInstr:"Chennai Port Trust gate."},
+{id:"RTE-ADH-1",client:"Asian Paints",route:"Mumbai → Indore",via:"NH48",sc:"MH→MP",origin:"Andheri WH",originPin:"400053",dest:"Indore Depot",destPin:"452001",vType:"LCV",dist:580,estTime:"10–12 hrs",toll:2800,diesel:110,kmpl:5.2,trips:2,tripsMtd:2,contracts:0,branch:"Mumbai",template:"Standard",risk:null,onTime:null,avgMargin:null,status:"Ad-hoc",revenue:0,avgProfit:0,isAdhoc:true,adhocTrips:2,loadInstr:"",unloadInstr:""}
+];
+
+const TOLL_PLAZAS=[
+{name:"JNPT to Panvel Toll",km:25,hwy:"NH48",rate:180},
+{name:"Khopoli Toll",km:65,hwy:"NH48",rate:240},
+{name:"Khalapur Toll Plaza",km:84,hwy:"Expressway",rate:320},
+{name:"Talegaon Toll",km:135,hwy:"NH48",rate:280},
+{name:"Nashik Toll Plaza",km:260,hwy:"NH48",rate:420},
+{name:"Dhule Bypass Toll",km:410,hwy:"NH48",rate:380},
+{name:"MP Border Toll",km:520,hwy:"NH48",rate:560,border:true,entering:"Madhya Pradesh"},
+{name:"Indore Bypass Toll",km:640,hwy:"NH48",rate:420},
+{name:"UP Border Toll",km:780,hwy:"NH44",rate:480,border:true,entering:"Uttar Pradesh"},
+{name:"Gwalior Toll",km:880,hwy:"NH44",rate:480},
+{name:"Agra Bypass Toll",km:1020,hwy:"NH44",rate:520},
+{name:"Mathura Toll",km:1080,hwy:"NH44",rate:380},
+{name:"Haryana Border Toll",km:1180,hwy:"NH44",rate:640,border:true,entering:"Haryana"},
+{name:"Delhi Entry (Badarpur)",km:1320,hwy:"NH44",rate:700}
+];
+
+const TRIPS_DATA=[
+{id:"TRP-4821",date:"Mar 20",driver:"Rajesh K.",time:"24.2 hrs",diesel:"308L",sla:true,margin:"22%"},
+{id:"TRP-4815",date:"Mar 17",driver:"Vikram Y.",time:"25.8 hrs",diesel:"315L",sla:true,margin:"19%"},
+{id:"TRP-4808",date:"Mar 14",driver:"Amit S.",time:"28.1 hrs",diesel:"298L",sla:false,margin:"24%"},
+{id:"TRP-4801",date:"Mar 10",driver:"Rajesh K.",time:"23.5 hrs",diesel:"302L",sla:true,margin:"21%"},
+{id:"TRP-4795",date:"Mar 7",driver:"Sanjay P.",time:"26.4 hrs",diesel:"320L",sla:false,margin:"17%"}
+];
+
+/* ═══ STATE ═══ */
+let selectedRoute=null, sliderMode="view", activeTab="overview";
+let search="",clientF="all",vtF="all",tmplF="all";
+let sort={key:"dist",dir:"desc"};
+
+/* ═══ HELPERS ═══ */
+function getFiltered(){
+  let r=ROUTES.filter(rt=>
+    (clientF==="all"||rt.client===clientF)&&
+    (vtF==="all"||rt.vType===vtF)&&
+    (tmplF==="all"||rt.template===tmplF)&&
+    (search===""||rt.route.toLowerCase().includes(search.toLowerCase())||rt.client.toLowerCase().includes(search.toLowerCase())||rt.id.toLowerCase().includes(search.toLowerCase()))
+  );
+  if(sort.key){
+    r=[...r].sort((a,b)=>{
+      let va=a[sort.key],vb=b[sort.key];
+      if(va==null)return 1;if(vb==null)return -1;
+      if(typeof va==="string")return sort.dir==="asc"?va.localeCompare(vb):vb.localeCompare(va);
+      return sort.dir==="asc"?va-vb:vb-va;
+    });
+  }
+  return r;
+}
+
+/* ═══ RENDER METRICS ═══ */
+function renderMetrics(){
+  const el=document.getElementById("route-metrics-row");if(!el)return;
+  const active=ROUTES.filter(r=>r.status==="Active").length;
+  const adhoc=ROUTES.filter(r=>r.isAdhoc).length;
+  const highRisk=ROUTES.filter(r=>r.risk>=5).length;
+  const otArr=ROUTES.filter(r=>r.onTime!=null);
+  const avgOT=otArr.length?Math.round(otArr.reduce((s,r)=>s+r.onTime,0)/otArr.length):0;
+  el.innerHTML=[
+    ["Total routes",ROUTES.length,""],["Active",active,T.green],["Ad-hoc",adhoc,T.amber,"Pending calibration"],
+    ["High risk",highRisk,T.red,"Score ≥ 5"],["Avg on-time",avgOT+"%",T.green,""]
+  ].map(([l,v,c,s])=>`<div class="sl-metric"><div class="sl-metric-label">${l}</div><div class="sl-metric-value" style="color:${c||T.ink}">${v}</div>${s?`<div class="sl-metric-sub">${s}</div>`:""}</div>`).join("");
+}
+
+/* ═══ RENDER FILTERS ═══ */
+function renderFilters(){
+  const cs=[...new Set(ROUTES.map(r=>r.client))].sort();
+  const vs=[...new Set(ROUTES.map(r=>r.vType))].sort();
+  document.getElementById("route-filter-client").innerHTML=`<option value="all">Client ▾</option>`+cs.map(c=>`<option value="${c}"${clientF===c?" selected":""}>${c}</option>`).join("");
+  document.getElementById("route-filter-vt").innerHTML=`<option value="all">Vehicle ▾</option>`+vs.map(v=>`<option value="${v}"${vtF===v?" selected":""}>${v}</option>`).join("");
+  document.getElementById("route-filter-tmpl").innerHTML=`<option value="all">Template ▾</option>`+["Standard","Express","Heavy Cargo","Hazmat"].map(t=>`<option value="${t}"${tmplF===t?" selected":""}>${t}</option>`).join("");
+}
+
+/* ═══ RENDER TABLE ═══ */
+function renderTable(){
+  const filtered=getFiltered();
+  document.getElementById("route-count").textContent=`${filtered.length} of ${ROUTES.length} routes`;
+  // Header
+  const cols=[
+    {l:"Client",k:"client"},{l:"Route",k:"route"},{l:"Vehicle",k:""},{l:"Template",k:""},{l:"Dist.",k:"dist",r:1},
+    {l:"Est. time",k:""},{l:"Toll",k:"toll",r:1},{l:"Diesel",k:"",r:1},
+    {l:"On-time",k:"onTime",r:1},{l:"Risk",k:"risk",r:1},{l:"Margin",k:"avgMargin",r:1},{l:"Status",k:""}
+  ];
+  document.getElementById("route-thead").innerHTML=cols.map(c=>{
+    const active=sort.key===c.k;
+    const arrow=c.k?`<span style="margin-left:2px;opacity:${active?1:.3}">${active?(sort.dir==="asc"?"▲":"▼"):"⇅"}</span>`:"";
+    return `<th class="${active?"active":""} ${c.r?"right":""}" data-sort="${c.k||""}" style="${c.r?"text-align:right":""}">${c.l}${arrow}</th>`;
+  }).join("");
+  // Body
+  document.getElementById("route-tbody").innerHTML=filtered.map((rt,idx)=>{
+    const sel=selectedRoute&&selectedRoute.id===rt.id;
+    const vtBadge=badge(rt.vType,vtC[rt.vType]||"gray",true);
+    const tmBadge=badge(rt.template,tmC[rt.template]||"gray",true);
+    const stBadge=badge(rt.status,rt.status==="Active"?"green":rt.status==="Ad-hoc"?"amber":"gray",true);
+    const onTimeHtml=rt.onTime!=null?`<span style="font-size:11px;font-weight:700;color:${rt.onTime>=90?T.green:rt.onTime>=80?T.amber:T.red}">${rt.onTime}%</span>`:`<span style="color:${T.ink4}">—</span>`;
+    const riskHtml=rt.risk!=null?`<div style="display:flex;align-items:center;gap:3px;justify-content:flex-end">${bar(rt.risk,10,riskC(rt.risk))}<span style="font-size:10px;font-weight:700;color:${riskC(rt.risk)}">${rt.risk.toFixed(1)}</span></div>`:`<span style="font-size:10px;color:${T.ink4}">N/A</span>`;
+    const marginHtml=rt.avgMargin!=null?`<span style="font-size:11px;font-weight:700;color:${rt.avgMargin>=20?T.green:T.amber}">${rt.avgMargin}%</span>`:`<span style="color:${T.ink4}">—</span>`;
+    const adhocHtml=rt.isAdhoc?`<div style="font-size:8px;color:${T.amberTx}">${rt.adhocTrips}/3</div>`:"";
+    return `<tr class="${sel?"selected":""}" data-id="${rt.id}" style="${!sel&&idx%2?`background:${T.bdr2}40`:""}">
+      <td style="font-weight:600;color:${T.blue};${sel?"border-left:3px solid "+T.blue:""}">${rt.client}</td>
+      <td><div style="font-weight:600;font-size:12px;color:${T.blue}">${rt.route}</div><div style="font-size:8px;color:${T.ink4}">${rt.via} ${badge(rt.sc,"gray",true)}</div></td>
+      <td>${vtBadge}</td><td>${tmBadge}</td>
+      <td style="font-family:${MN};font-size:11px;font-weight:600;text-align:right">${rt.dist.toLocaleString()}</td>
+      <td style="font-size:11px;color:${T.ink3}">${rt.estTime}</td>
+      <td style="font-family:${MN};font-size:11px;font-weight:600;text-align:right;color:${T.coral}">${INR(rt.toll)}</td>
+      <td style="font-size:11px;font-weight:600;text-align:right;color:${T.green}">${rt.diesel}L</td>
+      <td style="text-align:right">${onTimeHtml}</td>
+      <td style="text-align:right">${riskHtml}</td>
+      <td style="text-align:right">${marginHtml}</td>
+      <td>${stBadge}${adhocHtml}</td>
+    </tr>`;
+  }).join("");
+}
+
+/* ═══ SLIDER CONTENT BUILDERS ═══ */
+function tabRouteForm(rt){
+  const clients=[...new Set(ROUTES.map(r=>r.client))].sort();
+  const vehicles=[...new Set(ROUTES.map(r=>r.vType))].sort();
+  const templates=["Standard","Express","Heavy Cargo","Hazmat"];
+  const branches=["Mumbai","Delhi","Pune","Global"];
+  const billingTypes=["Per KM","Per Trip","Fixed Monthly"];
+  const paymentTerms=["7 days","15 days","30 days","45 days","60 days"];
+  const isNew=rt.id==="NEW";
+  const sel=(arr,ph,cur)=>`<select class="sl-input">${[`<option value="">${ph}</option>`,...arr.map(a=>`<option value="${a}"${a===cur?" selected":""}>${a}</option>`)].join("")}</select>`;
+  const inp=(val,ph,type)=>`<input class="sl-input" type="${type||"text"}" ${type==="number"?'step="any"':""} value="${val||""}" placeholder="${ph}">`;
+  const ta=(val,ph)=>`<textarea class="sl-input" rows="3" placeholder="${ph}">${val||""}</textarea>`;
+  return `<div class="slider-section">
+    <div class="sl-section-label">Route details</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="sl-form-label">Client *</label>${sel(clients,"Select client",rt.client)}</div>
+        <div><label class="sl-form-label">Vehicle type *</label>${sel(vehicles,"Select vehicle type",rt.vType)}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="sl-form-label">Origin *</label>${inp(rt.origin,"e.g. JNPT Navi Mumbai")}</div>
+        <div><label class="sl-form-label">Origin pincode</label>${inp(rt.originPin,"e.g. 400707")}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="sl-form-label">Destination *</label>${inp(rt.dest,"e.g. Mathura Refinery")}</div>
+        <div><label class="sl-form-label">Dest pincode</label>${inp(rt.destPin,"e.g. 281006")}</div>
+      </div>
+      <div><label class="sl-form-label">Via highway</label>${inp(rt.via,"e.g. NH48 → NH44")}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="sl-form-label">Distance (km) *</label>${inp(rt.dist||"0","e.g. 1380","number")}</div>
+        <div><label class="sl-form-label">Est. duration</label>${inp(rt.estTime,"e.g. 22–26 hrs")}</div>
+      </div>
+    </div>
+    <div style="margin-top:20px"><div class="sl-section-label">Financial estimates</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="sl-form-label">Toll estimate (₹)</label>${inp(rt.toll||"0","e.g. 8400","number")}</div>
+        <div><label class="sl-form-label">Diesel estimate (L)</label>${inp(rt.diesel||"0","e.g. 300","number")}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="sl-form-label">Avg KMPL</label>${inp(rt.kmpl||"0","e.g. 3.2","number")}</div>
+      </div>
+    </div></div>
+    <div style="margin-top:20px"><div class="sl-section-label">Operational config</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="sl-form-label">Workflow template</label>${sel(templates,"Select template",rt.template)}</div>
+        <div><label class="sl-form-label">Branch</label>${sel(branches,"Select branch",rt.branch)}</div>
+      </div>
+      <div><label class="sl-form-label">Loading instructions</label>${ta(rt.loadInstr,"Special loading instructions for this route...")}</div>
+      <div><label class="sl-form-label">Unloading instructions</label>${ta(rt.unloadInstr,"Special unloading instructions for this route...")}</div>
+    </div></div>
+    <div style="margin-top:20px"><div class="sl-section-label">Route contract</div>
+    <div style="background:${T.blueBg};border:1px solid ${T.blueTx}30;border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:10px;color:${T.blueTx}">
+      Billing type, rate, SLA, and payment terms. Operational data lives on the Route itself.
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="sl-form-label">Billing type *</label>${sel(billingTypes,"Select billing type",isNew?"":"Per KM")}</div>
+        <div><label class="sl-form-label">Rate *</label>${inp(isNew?"":"34.15","e.g. 34.15")}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="sl-form-label">SLA (hrs) *</label>${inp(isNew?"":"26","e.g. 26","number")}</div>
+        <div><label class="sl-form-label">Min margin %</label>${inp(isNew?"":"18","e.g. 18","number")}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="sl-form-label">Payment terms</label>${sel(paymentTerms,"Select terms",isNew?"":"30 days")}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="sl-form-label">Demurrage (₹/hr)</label>${inp(isNew?"":"500","e.g. 500","number")}</div>
+        <div><label class="sl-form-label">Free hours</label>${inp(isNew?"":"4","e.g. 4","number")}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="sl-form-label">Volume commitment (trips/mo)</label>${inp(isNew?"":"20","e.g. 20","number")}</div>
+        <div><label class="sl-form-label">Contract validity</label>${inp(isNew?"":"Jan 2024 — Open","e.g. Jan 2024 — Dec 2024")}</div>
+      </div>
+    </div></div>
+  </div>`;
+}
+function tabOverview(rt){return tabRouteForm(rt);}
+function tabOldOverview(rt){
+  const dieselCost=Math.round(rt.diesel*89.6);
+  const totalBench=dieselCost+rt.toll+2500+1500+1200;
+  const benchmarks=[["Diesel",INR(dieselCost)],["Toll ("+rt.vType+")",INR(rt.toll)],["Driver allowance",INR(2500)],["Loading / Unloading",INR(1500)],["Miscellaneous",INR(1200)]];
+  let riskHtml="";
+  if(rt.risk){
+    riskHtml=`<div style="margin-top:16px;background:${T.bg};border-radius:8px;padding:12px 14px">
+      <div class="sl-section-label">Route risk score</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <span style="font-size:28px;font-weight:800;color:${riskC(rt.risk)}">${rt.risk.toFixed(1)}</span>
+        <div style="flex:1">${bar(rt.risk,10,riskC(rt.risk))}<div style="display:flex;justify-content:space-between;font-size:8px;color:${T.ink4};margin-top:2px"><span>Low 1</span><span>High 10</span></div></div>
+      </div>
+      ${[["SLA breach rate","12%",T.amber],["Damage rate","3%",T.green],["Road quality","Good",T.green]].map(([l,v,c])=>`<div style="display:flex;justify-content:space-between;padding:2px 0;font-size:10px"><span style="color:${T.ink3}">${l}</span><span style="font-weight:600;color:${c}">${v}</span></div>`).join("")}
+    </div>`;
+  }
+  return `<div class="slider-section">
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <div class="sl-metric"><div class="sl-metric-label">Total trips</div><div class="sl-metric-value">${rt.trips}</div></div>
+      <div class="sl-metric"><div class="sl-metric-label">Revenue YTD</div><div class="sl-metric-value" style="color:${T.blue}">${INR(rt.revenue)}</div></div>
+      <div class="sl-metric"><div class="sl-metric-label">Avg profit</div><div class="sl-metric-value" style="color:${T.green}">${INR(rt.avgProfit)}</div></div>
+      <div class="sl-metric"><div class="sl-metric-label">On-time</div><div class="sl-metric-value" style="color:${rt.onTime>=90?T.green:T.amber}">${rt.onTime?rt.onTime+"%":"—"}</div></div>
+    </div>
+    <div class="sl-section-label">Route operational data</div>
+    ${[["Client",rt.client],["Vehicle type",badge(rt.vType,vtC[rt.vType]||"gray",true)],["Origin",rt.origin],["Origin pincode",rt.originPin+" "+badge("EWB Dispatch PIN","amber",true)],["Destination",rt.dest],["Dest pincode",rt.destPin+" "+badge("EWB Delivery PIN","green",true)],["Distance",rt.dist+" km"],["Est. duration",rt.estTime],["Via highway",rt.via],["Toll estimate",INR(rt.toll)+" ("+TOLL_PLAZAS.length+" plazas · FASTag)"],["Diesel estimate",rt.diesel+"L (based on "+rt.kmpl+" kmpl)"],["Avg KMPL",rt.kmpl+" kmpl (from "+rt.trips+" trips)"]].map(([l,v],i)=>`<div class="sl-field-row"><span class="sl-label">${l}</span><span class="sl-value${[6,9,10,11].includes(i)?" mono":""}" ${i===9?`style="color:${T.coral}"`:i===10?`style="color:${T.green}"`:""} >${v}</span></div>`).join("")}
+    <div style="margin-top:16px"><div class="sl-section-label">Expense benchmarks (per trip)</div>
+      ${benchmarks.map(([l,v])=>`<div class="sl-field-row"><span class="sl-label">${l}</span><span class="sl-value mono">${v}</span></div>`).join("")}
+      <div style="display:flex;justify-content:space-between;padding:8px 0;font-weight:700"><span style="font-size:12px">Total benchmark</span><span style="font-size:13px;font-family:${MN};color:${T.blue}">${INR(totalBench)}</span></div>
+    </div>
+    ${riskHtml}
+    ${rt.loadInstr?`<div style="margin-top:16px"><div class="sl-section-label">Loading instructions</div><div style="font-size:11px;color:${T.ink2};background:${T.bg};border-radius:8px;padding:10px 12px;line-height:1.5">${rt.loadInstr}</div></div>`:""}
+    ${rt.unloadInstr?`<div style="margin-top:10px"><div class="sl-section-label">Unloading instructions</div><div style="font-size:11px;color:${T.ink2};background:${T.bg};border-radius:8px;padding:10px 12px;line-height:1.5">${rt.unloadInstr}</div></div>`:""}
+  </div>`;
+}
+
+function tabTolls(rt){
+  let cum=0;
+  return `<div class="slider-section">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div><div class="sl-section-label">Toll plaza mapping</div><span style="font-size:11px;color:${T.ink3}">${TOLL_PLAZAS.length} plazas · ${rt.vType} rates · FASTag</span></div>
+      <span style="font-size:16px;font-weight:800;font-family:${MN};color:${T.coral}">${INR(rt.toll)}</span>
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:11px">
+      <thead><tr>${["#","Toll plaza","Hwy","KM","Rate","Cumul."].map(h=>`<th style="padding:6px 8px;text-align:${["#","KM","Rate","Cumul."].includes(h)?"right":"left"};font-size:9px;font-weight:700;color:${T.ink4};text-transform:uppercase;border-bottom:1px solid ${T.bdr};background:${T.bg}">${h}</th>`).join("")}</tr></thead>
+      <tbody>${TOLL_PLAZAS.map((tp,i)=>{cum+=tp.rate;return `<tr style="background:${i%2?T.bdr2+"60":"transparent"}">
+        <td style="padding:7px 8px;text-align:right;color:${T.ink4};border-bottom:1px solid ${T.bdr2}">${i+1}</td>
+        <td style="padding:7px 8px;font-weight:600;border-bottom:1px solid ${T.bdr2}">${tp.name}${tp.border?` ${badge(tp.entering,"amber",true)}`:""}</td>
+        <td style="padding:7px 8px;color:${T.ink3};border-bottom:1px solid ${T.bdr2}">${tp.hwy}</td>
+        <td style="padding:7px 8px;font-family:${MN};text-align:right;border-bottom:1px solid ${T.bdr2}">${tp.km}</td>
+        <td style="padding:7px 8px;font-family:${MN};font-weight:600;text-align:right;color:${T.coral};border-bottom:1px solid ${T.bdr2}">${INR(tp.rate)}</td>
+        <td style="padding:7px 8px;font-family:${MN};font-weight:700;text-align:right;border-bottom:1px solid ${T.bdr2}">${INR(cum)}</td>
+      </tr>`;}).join("")}</tbody>
+    </table>
+    <button class="sl-btn ghost sm" style="margin-top:10px;width:100%;justify-content:center">+ Add toll plaza</button>
+  </div>`;
+}
+
+function tabWorkflow(rt){
+  const t=rt.template;
+  const desc={Standard:"Default workflow. Optional weight verification. EWB auto if >₹50K. GPS every 60s.",
+    "Heavy Cargo":"Mandatory weight + seal at both ends. EWB always required. Manual settlement review.",
+    Hazmat:"Maximum safety: GPS every 15s. Mandatory checkpoints every 200km. Full verification suite.",
+    Express:"Fast turnaround. Skips AT_ORIGIN and UNLOADING. Minimal verification."};
+  const flags=[
+    ["Pre-departure checklist",t==="Express"?"Disabled":t==="Standard"?"Optional":"Mandatory"],
+    ["Weight verification (loading)",t==="Express"?"Disabled":t==="Standard"?"Optional":"Mandatory"],
+    ["Seal number capture",t==="Express"?"Disabled":t==="Standard"?"Optional":"Mandatory"],
+    ["E-Way Bill",t==="Heavy Cargo"||t==="Hazmat"?"Always required":"Auto (>₹50K)"],
+    ["GPS tracking frequency",t==="Hazmat"?"Every 15s":t==="Standard"?"Every 60s":"Every 30s"],
+    ["Checkpoints",t==="Hazmat"?"Every 200 km":"Disabled"],
+    ["Unloading verification",t==="Express"?"Skipped":t==="Standard"?"Enabled":"Mandatory"],
+    ["POD min photos",t==="Express"?"1":t==="Standard"?"2":"4"],
+    ["Auto-settlement",t==="Standard"||t==="Express"?"Yes":"Manual review"],
+    ["Detention tracking",t==="Express"?"No":"Yes"]
+  ];
+  const hierarchy=[
+    {level:"1. Trip override",desc:"Dispatcher selects at trip creation",active:false},
+    {level:"2. Route level",desc:t+" ✓",active:true},
+    {level:"3. Contract fallback",desc:"If route has no template",active:false},
+    {level:"4. Client default",desc:rt.client+" default",active:false},
+    {level:"5. System default",desc:"Standard",active:false}
+  ];
+  return `<div class="slider-section">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div><div class="sl-section-label">Assigned workflow template</div>${badge(t,tmC[t]||"gray")}</div>
+      <button class="sl-btn sm default">Change template</button>
+    </div>
+    <div style="font-size:11px;color:${T.ink3};margin-bottom:14px;line-height:1.5">${desc[t]||""}</div>
+    <div style="background:${T.bg};border-radius:8px;padding:10px 12px;margin-bottom:16px">
+      ${flags.map(([k,v])=>{
+        const c=v==="Mandatory"||v==="Always required"?T.purple:v==="Disabled"||v==="Skipped"||v==="No"?T.ink4:T.ink;
+        return `<div style="display:flex;justify-content:space-between;padding:3px 0;font-size:10px"><span style="color:${T.ink3}">${k}</span><span style="font-weight:600;color:${c}">${v}</span></div>`;
+      }).join("")}
+    </div>
+    <div class="sl-section-label">Template resolution hierarchy</div>
+    ${hierarchy.map(h=>`<div style="display:flex;align-items:center;gap:8px;padding:${h.active?"6px 10px":"6px 0"};background:${h.active?T.blueBg:"transparent"};border-radius:${h.active?"6px":"0"};margin-bottom:2px">
+      <span style="font-size:10px;font-weight:700;color:${h.active?T.blue:T.ink3};min-width:100px">${h.level}</span>
+      <span style="font-size:10px;color:${h.active?T.blueTx:T.ink4}">${h.desc}</span>
+    </div>`).join("")}
+  </div>`;
+}
+
+function tabContracts(rt){
+  const contracts=[
+    {id:"RC-2024-0017",type:"Per KM",rate:"₹34.15/km",sla:"26 hrs",margin:"18%",vol:"20 trips/mo",achieved:14,demurrage:"₹500/hr (4h free)",terms:"30 days",dates:"Jan 2024 — Open",renew:true},
+    {id:"RC-2025-0003",type:"Per Trip",rate:"₹52,000/trip",sla:"24 hrs",margin:"20%",vol:"—",achieved:null,demurrage:"₹750/hr (6h free)",terms:"15 days",dates:"Apr 2025 — Mar 2026",expiring:true}
+  ];
+  return `<div class="slider-section">
+    <div style="background:${T.blueBg};border:1px solid ${T.blueTx}30;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:10px;color:${T.blueTx}">
+      Route contracts hold <strong>only financial data</strong>: billing type, rate, SLA, demurrage, payment terms. Operational data lives on the Route.
+    </div>
+    ${contracts.map(c=>`<div style="border:1px solid ${T.bdr};border-radius:8px;padding:12px 14px;margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <div style="display:flex;gap:6px;align-items:center"><span style="font-family:${MN};font-size:12px;font-weight:700;color:${T.blue}">${c.id}</span>${badge(c.type,c.type==="Per KM"?"blue":"purple",true)}</div>
+        <div style="text-align:right"><div style="font-size:10px;color:${T.ink3}">${c.dates}</div>${c.renew?badge("Auto-renew","green",true):""}${c.expiring?badge("Expiring","amber",true):""}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        ${[["Rate",c.rate],["SLA",c.sla],["Min margin",c.margin],["Volume",c.vol],["Demurrage",c.demurrage],["Payment",c.terms]].map(([l,v])=>`<div><div style="font-size:8px;color:${T.ink4};text-transform:uppercase">${l}</div><div style="font-size:11px;font-weight:600">${v}</div></div>`).join("")}
+      </div>
+      ${c.achieved!=null?`<div style="margin-top:8px;display:flex;align-items:center;gap:6px"><span style="font-size:10px;color:${T.ink3}">Volume achieved:</span><span style="font-weight:700">${c.achieved}</span><div style="width:60px">${bar(c.achieved,20,T.green)}</div><span style="font-size:10px;color:${T.green}">70%</span></div>`:""}
+    </div>`).join("")}
+    <button class="sl-btn primary sm" style="width:100%;justify-content:center">+ New contract</button>
+    <div style="margin-top:16px"><div class="sl-section-label">FK chain</div>
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">${badge("Trip","blue")}<span style="color:${T.ink4}">→</span>${badge("Contract","purple")}<span style="color:${T.ink4}">→</span>${badge(rt.id,"green")}<span style="color:${T.ink4}">→</span>${badge(rt.client,"coral")}</div>
+    </div>
+  </div>`;
+}
+
+function tabPerformance(rt){
+  const months=["Oct","Nov","Dec","Jan","Feb","Mar"];
+  const tripVol=[12,15,18,14,20,18],otTrend=[85,88,82,90,86,88];
+  return `<div class="slider-section">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div><div class="sl-section-label">Monthly trips (6 months)</div>
+        <div style="display:flex;gap:3px;height:80px;align-items:flex-end">${tripVol.map((v,i)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center"><span style="font-size:8px;font-weight:600;color:${T.ink3};margin-bottom:2px">${v}</span><div style="width:70%;height:${v*3.5}px;background:${i===5?T.blue:T.blue+"50"};border-radius:2px 2px 0 0"></div><span style="font-size:7px;color:${T.ink4};margin-top:2px">${months[i]}</span></div>`).join("")}</div>
+      </div>
+      <div><div class="sl-section-label">On-time trend</div>
+        <div style="display:flex;gap:3px;height:80px;align-items:flex-end">${otTrend.map((v,i)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center"><span style="font-size:8px;font-weight:600;color:${v>=85?T.green:T.amber};margin-bottom:2px">${v}%</span><div style="width:70%;height:${(v-70)*4}px;background:${v>=85?T.green:T.amber};border-radius:2px 2px 0 0"></div><span style="font-size:7px;color:${T.ink4};margin-top:2px">${months[i]}</span></div>`).join("")}</div>
+      </div>
+    </div>
+    <div style="margin-top:16px"><div class="sl-section-label">Estimate accuracy</div>
+      ${[["Transit time","Est: "+rt.estTime,"Actual avg: 24.2 hrs",92,T.green],["Diesel","Est: "+rt.diesel+"L","Actual avg: 312L",84,T.amber],["Toll charges","Est: "+INR(rt.toll),"Actual avg: "+INR(rt.toll-20),98,T.green]].map(([l,est,act,acc,c])=>`<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px"><span style="font-weight:600">${l}</span><span style="font-weight:700;color:${c}">${acc}%</span></div><div style="display:flex;justify-content:space-between;font-size:9px;color:${T.ink4};margin-bottom:3px"><span>${est}</span><span>${act}</span></div>${bar(acc,100,c)}</div>`).join("")}
+    </div>
+    <div style="margin-top:16px"><div class="sl-section-label">Top exceptions</div>
+      ${[["SLA breach",8,T.red],["Fuel anomaly",5,T.amber],["Route deviation",3,T.amber],["Loading delay",2,T.ink3]].map(([type,count,c])=>`<div style="display:flex;align-items:center;gap:8px;padding:4px 0"><span style="flex:1;font-size:11px">${type}</span><div style="width:50px">${bar(count,10,c)}</div><span style="font-size:11px;font-family:${MN};font-weight:700;color:${c};min-width:16px">${count}</span></div>`).join("")}
+    </div>
+  </div>`;
+}
+
+function tabTrips(rt){
+  return `<div class="slider-section">
+    <div class="sl-section-label">Recent trips on this route</div>
+    <table style="width:100%;border-collapse:collapse;font-size:11px">
+      <thead><tr>${["Trip","Date","Driver","Actual time","Diesel","SLA","Margin"].map(h=>`<th style="padding:6px 8px;text-align:left;font-size:9px;font-weight:700;color:${T.ink4};text-transform:uppercase;border-bottom:1px solid ${T.bdr};background:${T.bg}">${h}</th>`).join("")}</tr></thead>
+      <tbody>${TRIPS_DATA.map(tr=>`<tr style="cursor:pointer" onmouseenter="this.style.background='${T.blueBg}'" onmouseleave="this.style.background='transparent'">
+        <td style="padding:8px;font-family:${MN};font-weight:700;color:${T.blue};border-bottom:1px solid ${T.bdr2}">${tr.id}</td>
+        <td style="padding:8px;border-bottom:1px solid ${T.bdr2}">${tr.date}</td>
+        <td style="padding:8px;border-bottom:1px solid ${T.bdr2}">${tr.driver}</td>
+        <td style="padding:8px;font-family:${MN};border-bottom:1px solid ${T.bdr2}">${tr.time}</td>
+        <td style="padding:8px;font-family:${MN};border-bottom:1px solid ${T.bdr2}">${tr.diesel}</td>
+        <td style="padding:8px;border-bottom:1px solid ${T.bdr2}">${badge(tr.sla?"Met":"Breached",tr.sla?"green":"red",true)}</td>
+        <td style="padding:8px;font-weight:700;color:${parseInt(tr.margin)>=20?T.green:T.amber};border-bottom:1px solid ${T.bdr2}">${tr.margin}</td>
+      </tr>`).join("")}</tbody>
+    </table>
+  </div>`;
+}
+
+/* ═══ ADD ROUTE FORM ═══ */
+function tabAddRoute(){return tabRouteForm({id:"NEW",client:"",route:"New Route",via:"",origin:"",originPin:"",dest:"",destPin:"",vType:"",dist:0,estTime:"",toll:0,diesel:0,kmpl:0,trips:0,branch:"",template:"",loadInstr:"",unloadInstr:""});}
+function tabAddRouteOld(){
+  const clients=[...new Set(ROUTES.map(r=>r.client))].sort();
+  const vehicles=[...new Set(ROUTES.map(r=>r.vType))].sort();
+  const templates=["Standard","Express","Heavy Cargo","Hazmat"];
+  const branches=["Mumbai","Delhi","Pune","Global"];
+  const sel=(arr,ph)=>`<select class="sl-input">${[`<option value="">${ph}</option>`,...arr.map(a=>`<option value="${a}">${a}</option>`)].join("")}</select>`;
+  return `<div class="slider-section">
+    <div class="sl-section-label">Route details</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div><label class="sl-form-label">Client *</label>${sel(clients,"Select client")}</div>
+      <div><label class="sl-form-label">Vehicle type *</label>${sel(vehicles,"Select vehicle type")}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="sl-form-label">Origin *</label><input class="sl-input" placeholder="e.g. JNPT Navi Mumbai"></div>
+        <div><label class="sl-form-label">Origin pincode</label><input class="sl-input" placeholder="e.g. 400707"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="sl-form-label">Destination *</label><input class="sl-input" placeholder="e.g. Mathura Refinery"></div>
+        <div><label class="sl-form-label">Dest pincode</label><input class="sl-input" placeholder="e.g. 281006"></div>
+      </div>
+      <div><label class="sl-form-label">Via highway</label><input class="sl-input" placeholder="e.g. NH48 → NH44"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="sl-form-label">Distance (km) *</label><input class="sl-input" type="number" placeholder="e.g. 1380"></div>
+        <div><label class="sl-form-label">Est. duration</label><input class="sl-input" placeholder="e.g. 22–26 hrs"></div>
+      </div>
+    </div>
+    <div style="margin-top:20px"><div class="sl-section-label">Financial estimates</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="sl-form-label">Toll estimate (₹)</label><input class="sl-input" type="number" placeholder="e.g. 8400"></div>
+        <div><label class="sl-form-label">Diesel estimate (L)</label><input class="sl-input" type="number" placeholder="e.g. 300"></div>
+      </div>
+      <div><label class="sl-form-label">Avg KMPL</label><input class="sl-input" type="number" step="0.1" placeholder="e.g. 3.2"></div>
+    </div></div>
+    <div style="margin-top:20px"><div class="sl-section-label">Operational config</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="sl-form-label">Workflow template</label>${sel(templates,"Select template")}</div>
+        <div><label class="sl-form-label">Branch</label>${sel(branches,"Select branch")}</div>
+      </div>
+      <div><label class="sl-form-label">Loading instructions</label><textarea class="sl-input" rows="3" placeholder="Special loading instructions for this route..."></textarea></div>
+      <div><label class="sl-form-label">Unloading instructions</label><textarea class="sl-input" rows="3" placeholder="Special unloading instructions for this route..."></textarea></div>
+    </div></div>
+  </div>`;
+}
+
+/* ═══ RENDER SLIDER ═══ */
+function getTabContent(rt,tab){
+  if(tab==="overview")return tabOverview(rt);
+  if(tab==="template")return tabWorkflow(rt);
+
+  return "";
+}
+
+function updateTabContent(){
+  const c=document.getElementById("route-slider-container");if(!c||!selectedRoute)return;
+  const rt=selectedRoute;
+  // Update body content only
+  const body=c.querySelector(".slider-body");
+  if(body)body.innerHTML=getTabContent(rt,activeTab);
+  // Update active tab styling
+  c.querySelectorAll(".slider-tab").forEach(btn=>{
+    btn.classList.toggle("active",btn.dataset.tab===activeTab);
+  });
+}
+
+function renderSlider(){
+  const c=document.getElementById("route-slider-container");if(!c)return;
+  if(!selectedRoute){c.innerHTML="";return;}
+  const rt=selectedRoute;
+  const isCreate=sliderMode==="create";
+  const tabs=[{id:"overview",l:"Overview"},{id:"template",l:"Workflow"}];
+
+  let actionHtml="";
+  if(isCreate) actionHtml=`<button class="sl-btn primary sm" id="slider-create-btn" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);"><i class="fas fa-plus" style="margin-right:4px"></i>Add Route</button>`;
+  else actionHtml=`<button class="sl-btn success sm" id="slider-save-btn" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);"><i class="fas fa-check" style="margin-right:4px"></i>Save</button>`;
+
+  const bodyContent=isCreate?tabAddRoute():getTabContent(rt,activeTab);
+
+  c.innerHTML=`
+    <div class="slider-backdrop" id="slider-backdrop"></div>
+    <div class="slider-panel">
+      <div class="slider-header">
+        <div class="slider-header-info">
+          <div style="color:rgba(255,255,255,.65);font-size:10px;font-weight:700;letter-spacing:1.5px;margin-bottom:3px;text-transform:uppercase;">${isCreate?'NEW ROUTE':'ROUTE DETAIL'}</div>
+          <div class="slider-header-title">
+            <span class="sl-title">${isCreate?'Add New Route':rt.route}</span>
+          </div>
+          ${!isCreate?`<div class="slider-header-subtitle">${rt.client} · ${rt.vType} · ${rt.via} · ${rt.dist} km · ${rt.branch}</div>`:`<div class="slider-header-subtitle">Define a new client + vehicle type + origin → destination route</div>`}
+        </div>
+        <div class="slider-header-actions">${actionHtml}</div>
+        <button class="slider-close-btn" id="slider-close-btn">&times;</button>
+      </div>
+      ${!isCreate?`<div class="slider-tabs">${tabs.map(t=>`<button class="slider-tab${activeTab===t.id?" active":""}" data-tab="${t.id}">${t.l}${t.cnt!=null?`<span class="tab-count">${t.cnt}</span>`:""}</button>`).join("")}</div>`:""}
+      <div class="slider-body">${bodyContent}</div>
+    </div>`;
+
+  // Attach slider events
+  document.getElementById("slider-backdrop").onclick=closeSlider;
+  document.getElementById("slider-close-btn").onclick=closeSlider;
+  // Tab clicks only swap body content — no full re-render
+  c.querySelectorAll(".slider-tab").forEach(btn=>btn.onclick=function(){activeTab=this.dataset.tab;updateTabContent();});
+
+  const saveBtn=document.getElementById("slider-save-btn");
+  if(saveBtn)saveBtn.onclick=function(){sliderMode="view";renderSlider();if(window.showToast)showToast("Route saved successfully","success");};
+  const createBtn=document.getElementById("slider-create-btn");
+  if(createBtn)createBtn.onclick=function(){closeSlider();if(window.showToast)showToast("Route added successfully","success");};
+}
+
+function openSlider(rt){selectedRoute=rt;sliderMode="edit";activeTab="overview";renderSlider();renderTable();}
+function closeSlider(){selectedRoute=null;sliderMode="view";document.getElementById("route-slider-container").innerHTML="";renderTable();}
+
+/* ═══ EVENT BINDINGS ═══ */
+function bindEvents(){
+  // Table row click
+  document.getElementById("route-tbody").addEventListener("click",function(e){
+    const row=e.target.closest("tr[data-id]");
+    if(!row)return;
+    const rt=ROUTES.find(r=>r.id===row.dataset.id);
+    if(rt)openSlider(rt);
+  });
+  // Sort headers
+  document.getElementById("route-thead").addEventListener("click",function(e){
+    const th=e.target.closest("th[data-sort]");
+    if(!th||!th.dataset.sort)return;
+    const k=th.dataset.sort;
+    sort=sort.key===k&&sort.dir==="asc"?{key:k,dir:"desc"}:{key:k,dir:"asc"};
+    renderTable();
+  });
+  // Filters
+  document.getElementById("route-search").addEventListener("input",function(){search=this.value;renderTable();});
+  document.getElementById("route-filter-client").addEventListener("change",function(){clientF=this.value;renderTable();});
+  document.getElementById("route-filter-vt").addEventListener("change",function(){vtF=this.value;renderTable();});
+  document.getElementById("route-filter-tmpl").addEventListener("change",function(){tmplF=this.value;renderTable();});
+  // Add route button
+  document.getElementById("route-add-btn").addEventListener("click",function(){
+    selectedRoute={id:"NEW",client:"",route:"New Route",via:"",sc:"",origin:"",originPin:"",dest:"",destPin:"",vType:"",dist:0,estTime:"",toll:0,diesel:0,kmpl:0,trips:0,tripsMtd:0,contracts:0,branch:"",template:"Standard",risk:null,onTime:null,avgMargin:null,status:"Draft",revenue:0,avgProfit:0,loadInstr:"",unloadInstr:""};
+    sliderMode="create";activeTab="overview";renderSlider();
+  });
+  // Keyboard: Escape & Arrow keys
+  document.addEventListener("keydown",function(e){
+    if(!selectedRoute)return;
+    if(e.key==="Escape"){e.preventDefault();closeSlider();return;}
+    const filtered=getFiltered();
+    const idx=filtered.findIndex(r=>r.id===selectedRoute.id);
+    if(e.key==="ArrowDown"&&idx<filtered.length-1){e.preventDefault();selectedRoute=filtered[idx+1];renderSlider();renderTable();}
+    if(e.key==="ArrowUp"&&idx>0){e.preventDefault();selectedRoute=filtered[idx-1];renderSlider();renderTable();}
+  });
+}
+
+/* ═══ INIT ═══ */
+renderMetrics();
+renderFilters();
+renderTable();
+bindEvents();
+})();
+</script>

@@ -206,7 +206,7 @@ CREATE TABLE trip_stops (
   skip_reason           TEXT,
   created_at            TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at            TIMESTAMPTZ NOT NULL DEFAULT now(),
-
+  
   UNIQUE(trip_id, stop_number)
 );
 ```
@@ -426,7 +426,7 @@ interface TransitionContext {
 const TRANSITIONS: TransitionRule[] = [
 
   // ═══ HAPPY PATH ═══
-
+  
   {
     from: 'DRAFT', to: 'CREATED',
     trigger: 'save_complete',

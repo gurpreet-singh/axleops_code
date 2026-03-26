@@ -1,0 +1,528 @@
+<!-- ═══════════════════════════════════════════════════════════════
+     🚚 FLEET MANAGER DASHBOARD — Operations Command Center
+     Hierarchy: 🚨 Alerts (4) → 📊 KPIs (4) → 📋 Live Trips → 🔧 Maintenance → ⛽ Fuel → 📄 Status+Renewals
+     ═══════════════════════════════════════════════════════════════ -->
+
+<div class="page-header">
+    <h1>Fleet Operations <span class="learn-badge"><i class="fas fa-truck-moving" style="color:#2563EB;"></i> Fleet
+            Manager</span></h1>
+    <div class="page-header-actions">
+        <span style="font-size:12px;color:var(--status-active);margin-right:8px;"><i class="fas fa-circle"
+                style="font-size:7px;margin-right:3px;"></i> Live</span>
+        <div class="filter-btn"><i class="fas fa-calendar-alt" style="margin-right:6px;"></i>This Month ▾</div>
+        <button class="btn btn-primary" onclick="navigateTo('trip-create')"><i class="fas fa-plus"></i> Add
+            Trip</button>
+    </div>
+</div>
+
+<!-- ╔════════════════════════════════════════════════════════════════╗
+     ║  📦 TRIP MOVEMENT — Operations View (3 boxes)                 ║
+     ╚════════════════════════════════════════════════════════════════╝ -->
+<div style="font-size:12px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;">Trip Movement</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;">
+    <!-- Consignment -->
+    <button onclick="navigateTo('trips')"
+        style="background:#F5F3FF;border:2px solid #DDD6FE;border-radius:16px;padding:20px 16px;cursor:pointer;text-align:left;transition:all .15s;display:block;"
+        onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(124,58,237,0.15)';"
+        onmouseleave="this.style.transform='none';this.style.boxShadow='none';">
+        <div style="font-size:26px;margin-bottom:10px;">📝</div>
+        <div style="font-size:28px;font-weight:800;color:#7C3AED;line-height:1;margin-bottom:4px;">1</div>
+        <div style="font-size:13px;font-weight:700;color:#1E293B;">Consignment</div>
+        <div style="font-size:11px;color:#64748B;margin-top:2px;">Assign vehicle & dispatch</div>
+        <div style="margin-top:12px;font-size:11px;font-weight:700;color:#7C3AED;">View trips →</div>
+    </button>
+    <!-- In Transit -->
+    <button onclick="navigateTo('trips')"
+        style="background:#F0F9FF;border:2px solid #BAE6FD;border-radius:16px;padding:20px 16px;cursor:pointer;text-align:left;transition:all .15s;display:block;"
+        onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(14,165,233,0.15)';"
+        onmouseleave="this.style.transform='none';this.style.boxShadow='none';">
+        <div style="font-size:26px;margin-bottom:10px;">🚛</div>
+        <div style="font-size:28px;font-weight:800;color:#0EA5E9;line-height:1;margin-bottom:4px;">3</div>
+        <div style="font-size:13px;font-weight:700;color:#1E293B;">In Transit</div>
+        <div style="font-size:11px;color:#64748B;margin-top:2px;">Mark delivered + ePOD</div>
+        <div style="margin-top:12px;font-size:11px;font-weight:700;color:#0EA5E9;">View trips →</div>
+    </button>
+    <!-- Delivered -->
+    <button onclick="navigateTo('trips')"
+        style="background:#F0FDF4;border:2px solid #A7F3D0;border-radius:16px;padding:20px 16px;cursor:pointer;text-align:left;transition:all .15s;display:block;"
+        onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(16,185,129,0.15)';"
+        onmouseleave="this.style.transform='none';this.style.boxShadow='none';">
+        <div style="font-size:26px;margin-bottom:10px;">✅</div>
+        <div style="font-size:28px;font-weight:800;color:#10B981;line-height:1;margin-bottom:4px;">1</div>
+        <div style="font-size:13px;font-weight:700;color:#1E293B;">Delivered</div>
+        <div style="font-size:11px;color:#64748B;margin-top:2px;">Handed to Accounts</div>
+        <div style="margin-top:12px;font-size:11px;font-weight:700;color:#10B981;">View trips →</div>
+    </button>
+</div>
+
+<!-- ╔════════════════════════════════════════════════════════════════╗
+     ║  🚨 OPS ALERTS — Delayed Trips (1 box in 3-col grid)         ║
+     ╚════════════════════════════════════════════════════════════════╝ -->
+<div style="font-size:12px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;">Ops Alerts</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;">
+    <!-- Delayed Trips -->
+    <button onclick="navigateTo('trips')"
+        style="background:#FEF2F2;border:2px solid #FECACA;border-radius:16px;padding:18px 16px;cursor:pointer;text-align:left;transition:all .15s;display:block;"
+        onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(220,38,38,0.12)';"
+        onmouseleave="this.style.transform='none';this.style.boxShadow='none';">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+            <span style="font-size:22px;">🚨</span>
+            <span style="font-size:24px;font-weight:800;color:#DC2626;">1</span>
+        </div>
+        <div style="font-size:13px;font-weight:700;color:#1E293B;">Delayed Trips</div>
+        <div style="font-size:11px;color:#94A3B8;margin-top:2px;">Overdue — follow up</div>
+    </button>
+</div>
+
+<!-- ╔════════════════════════════════════════════════════════════════╗
+     ║  🚨 ALERT CARDS — 4 problems, each with an action link       ║
+     ╚════════════════════════════════════════════════════════════════╝ -->
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:20px;">
+    <!-- Idle vehicles (RED) -->
+    <div onclick="navigateTo('vehicle-list')"
+        style="cursor:pointer;background:linear-gradient(135deg,#fef2f2,#fff);border:1px solid #fecaca;border-radius:12px;padding:14px;transition:transform 0.15s;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <div
+                style="width:28px;height:28px;background:#dc2626;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-parking" style="color:#fff;font-size:12px;"></i>
+            </div>
+            <span
+                style="font-size:11px;font-weight:700;color:#991b1b;text-transform:uppercase;letter-spacing:0.5px;">IDLE
+                &gt;3 DAYS</span>
+        </div>
+        <div style="font-size:28px;font-weight:800;color:#dc2626;">3</div>
+        <div style="font-size:11px;color:#6b7280;margin-top:2px;">MH04XY5500, MH04KL4567, KA01AL2010</div>
+        <div style="font-size:10px;color:#dc2626;margin-top:4px;">Opportunity cost: ~₹54K/week</div>
+        <div style="margin-top:6px;">
+            <a href="#" onclick="event.stopPropagation();navigateTo('vehicle-list')"
+                style="font-size:11px;font-weight:600;color:#dc2626;text-decoration:none;">Assign now ↗</a>
+        </div>
+    </div>
+
+    <!-- Maintenance Due (AMBER) -->
+    <div onclick="navigateTo('reminders')"
+        style="cursor:pointer;background:linear-gradient(135deg,#fffbeb,#fff);border:1px solid #fed7aa;border-radius:12px;padding:14px;transition:transform 0.15s;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <div
+                style="width:28px;height:28px;background:#f59e0b;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-tools" style="color:#fff;font-size:12px;"></i>
+            </div>
+            <span
+                style="font-size:11px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:0.5px;">MAINTENANCE
+                DUE</span>
+        </div>
+        <div style="font-size:28px;font-weight:800;color:#f59e0b;">6</div>
+        <div style="font-size:11px;color:#6b7280;margin-top:2px;"><span style="color:#dc2626;font-weight:600;">4
+                overdue</span> · 2 due soon</div>
+        <div style="font-size:10px;color:#92400e;margin-top:4px;">Next: MH04AB1234 Oil Change — 2 days</div>
+        <div style="margin-top:6px;">
+            <a href="#" onclick="event.stopPropagation();navigateTo('reminders')"
+                style="font-size:11px;font-weight:600;color:#92400e;text-decoration:none;">View schedule ↗</a>
+        </div>
+    </div>
+
+    <!-- Delayed Trips (RED) -->
+    <div onclick="navigateTo('trips')"
+        style="cursor:pointer;background:linear-gradient(135deg,#fef2f2,#fff);border:1px solid #fecaca;border-radius:12px;padding:14px;transition:transform 0.15s;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <div
+                style="width:28px;height:28px;background:#dc2626;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-clock" style="color:#fff;font-size:12px;"></i>
+            </div>
+            <span
+                style="font-size:11px;font-weight:700;color:#991b1b;text-transform:uppercase;letter-spacing:0.5px;">DELAYED
+                TRIPS</span>
+        </div>
+        <div style="font-size:28px;font-weight:800;color:#dc2626;">2</div>
+        <div style="font-size:11px;color:#6b7280;margin-top:2px;">TRP-0140 (2h), TRP-0138 (1h)</div>
+        <div style="font-size:10px;color:#dc2626;margin-top:4px;">Avg delay: 1.5 hours</div>
+        <div style="margin-top:6px;">
+            <a href="#" onclick="event.stopPropagation();navigateTo('trips')"
+                style="font-size:11px;font-weight:600;color:#dc2626;text-decoration:none;">Investigate ↗</a>
+        </div>
+    </div>
+
+    <!-- Overutilized (AMBER) -->
+    <div onclick="navigateTo('vehicle-list')"
+        style="cursor:pointer;background:linear-gradient(135deg,#fffbeb,#fff);border:1px solid #fed7aa;border-radius:12px;padding:14px;transition:transform 0.15s;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <div
+                style="width:28px;height:28px;background:#ea580c;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-tachometer-alt" style="color:#fff;font-size:12px;"></i>
+            </div>
+            <span
+                style="font-size:11px;font-weight:700;color:#9a3412;text-transform:uppercase;letter-spacing:0.5px;">OVERUTILIZED</span>
+        </div>
+        <div style="font-size:28px;font-weight:800;color:#ea580c;">4</div>
+        <div style="font-size:11px;color:#6b7280;margin-top:2px;">Running &gt;14h/day avg</div>
+        <div style="font-size:10px;color:#ea580c;margin-top:4px;">Risk of breakdown ⚠</div>
+        <div style="margin-top:6px;">
+            <a href="#" onclick="event.stopPropagation();navigateTo('vehicle-list')"
+                style="font-size:11px;font-weight:600;color:#ea580c;text-decoration:none;">Review ↗</a>
+        </div>
+    </div>
+</div>
+
+<!-- ╔════════════════════════════════════════════════════════════════╗
+     ║  📊 KPI CARDS — 4 cards (Fleet Status, Utilisation, Trips, OTD)║
+     ╚════════════════════════════════════════════════════════════════╝ -->
+<div class="stats-row" style="grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;">
+    <div class="stat-card" style="cursor:pointer;border-top:3px solid #2563eb;" onclick="navigateTo('vehicle-list')">
+        <div class="stat-label">Fleet Status</div>
+        <div class="stat-value text-blue" style="font-size:22px;">42</div>
+        <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">
+            <span style="color:#16a34a;font-weight:600;">32</span> on trip · <span
+                style="color:#2563eb;font-weight:600;">7</span> yard · <span
+                style="color:#dc2626;font-weight:600;">3</span> shop
+        </div>
+    </div>
+    <div class="stat-card" style="cursor:pointer;border-top:3px solid #0891b2;">
+        <div class="stat-label">Fleet Utilisation</div>
+        <div class="stat-value" style="font-size:22px;color:#0891b2;">78%</div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:2px;">
+            <span class="stat-change positive"><i class="fas fa-arrow-up"></i> 3.2% MoM</span>
+        </div>
+        <div style="margin-top:6px;width:100%;height:4px;background:#e5e7eb;border-radius:4px;position:relative;">
+            <div style="width:78%;height:4px;background:linear-gradient(90deg,#0891b2,#06b6d4);border-radius:4px;">
+            </div>
+            <!-- Target marker at 85% -->
+            <div
+                style="position:absolute;left:85%;top:-3px;width:2px;height:10px;background:#dc2626;border-radius:1px;">
+            </div>
+        </div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:4px;">Target: <strong
+                style="color:#dc2626;">85%</strong></div>
+    </div>
+    <div class="stat-card" style="cursor:pointer;border-top:3px solid #16a34a;" onclick="navigateTo('trips')">
+        <div class="stat-label">Trips Completed</div>
+        <div class="stat-value text-green" style="font-size:22px;">87</div>
+        <div style="font-size:11px;color:var(--text-secondary);">This month · <span
+                style="color:#16a34a;font-weight:600;">↑ 6</span></div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">Today: 4 completed</div>
+    </div>
+    <div class="stat-card" style="cursor:pointer;border-top:3px solid #7c3aed;" onclick="navigateTo('trips')">
+        <div class="stat-label">On-Time Delivery</div>
+        <div class="stat-value" style="font-size:22px;color:#7c3aed;">92%</div>
+        <div class="stat-change positive"><i class="fas fa-arrow-up"></i> 2.1% <span style="font-size:10px;">vs last
+                month</span></div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">80 / 87 on time</div>
+    </div>
+</div>
+
+<!-- ╔════════════════════════════════════════════════════════════════╗
+     ║  📋 ACTIVE TRIPS + 🔧 MAINTENANCE QUEUE (Side-by-Side)       ║
+     ╚════════════════════════════════════════════════════════════════╝ -->
+<div class="dashboard-grid two-col" style="margin-bottom:16px;">
+    <!-- Active Trips — delayed rows float to top -->
+    <div class="widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-satellite-dish" style="color:#16a34a;margin-right:6px;"></i> Active Trips (14)</h3>
+            <a href="#" onclick="navigateTo('trips')" class="btn btn-link">View All →</a>
+        </div>
+        <div class="widget-body" style="padding:0;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Trip</th>
+                        <th>Route</th>
+                        <th>Vehicle</th>
+                        <th>Driver</th>
+                        <th>ETA</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- DELAYED — floated to top -->
+                    <tr onclick="navigateTo('trip-detail')" style="cursor:pointer;background:#fef2f2;">
+                        <td><a href="#" onclick="navigateTo('trip-detail')" style="color:#dc2626;font-weight:600;">TRP-0140</a></td>
+                        <td>Delhi→Jaipur</td>
+                        <td>MH04CD5678</td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <span
+                                    style="width:22px;height:22px;background:linear-gradient(135deg,#ff5722,#ff9800);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:700;">VS</span>
+                                Vikram S.
+                            </div>
+                        </td>
+                        <td style="font-size:11px;color:#dc2626;font-weight:600;">11:30 PM <span style="font-size:10px;color:#991b1b;background:#fee2e2;padding:1px 5px;border-radius:4px;margin-left:2px;">+2h</span></td>
+                        <td><span class="status-badge overdue">Delayed</span></td>
+                    </tr>
+                    <tr onclick="navigateTo('trip-detail')" style="cursor:pointer;background:#fef2f2;">
+                        <td><a href="#" style="color:#dc2626;font-weight:600;">TRP-0138</a></td>
+                        <td>Mumbai→Nagpur</td>
+                        <td>MH12GH3456</td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <span
+                                    style="width:22px;height:22px;background:linear-gradient(135deg,#795548,#a1887f);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:700;">SP</span>
+                                Suresh P.
+                            </div>
+                        </td>
+                        <td style="font-size:11px;color:#dc2626;font-weight:600;">10:45 PM <span style="font-size:10px;color:#991b1b;background:#fee2e2;padding:1px 5px;border-radius:4px;margin-left:2px;">+1h</span></td>
+                        <td><span class="status-badge overdue">Delayed</span></td>
+                    </tr>
+                    <!-- ON TIME -->
+                    <tr onclick="navigateTo('trip-detail')" style="cursor:pointer;">
+                        <td><a href="#" onclick="navigateTo('trip-detail')">TRP-0142</a></td>
+                        <td>Mumbai→Delhi</td>
+                        <td>MH04AB1234</td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <span
+                                    style="width:22px;height:22px;background:linear-gradient(135deg,#4285f4,#34a853);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:700;">RK</span>
+                                Rajesh K.
+                            </div>
+                        </td>
+                        <td style="font-size:11px;color:#16a34a;">Mar 23, 6 AM</td>
+                        <td><span class="status-badge completed">On Time</span></td>
+                    </tr>
+                    <tr style="cursor:pointer;">
+                        <td><a href="#">TRP-0141</a></td>
+                        <td>Mumbai→Pune</td>
+                        <td>MH12EF9012</td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <span
+                                    style="width:22px;height:22px;background:linear-gradient(135deg,#e91e63,#9c27b0);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:700;">AV</span>
+                                Anita V.
+                            </div>
+                        </td>
+                        <td style="font-size:11px;color:#16a34a;">Today, 4 PM</td>
+                        <td><span class="status-badge completed">On Time</span></td>
+                    </tr>
+                    <tr style="cursor:pointer;">
+                        <td><a href="#">TRP-0139</a></td>
+                        <td>Pune→Bangalore</td>
+                        <td>KA01AL2010</td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <span
+                                    style="width:22px;height:22px;background:linear-gradient(135deg,#00bcd4,#009688);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:700;">AM</span>
+                                Arun M.
+                            </div>
+                        </td>
+                        <td style="font-size:11px;color:#16a34a;">Mar 23, 10 AM</td>
+                        <td><span class="status-badge completed">On Time</span></td>
+                    </tr>
+                    <tr style="cursor:pointer;">
+                        <td><a href="#">TRP-0137</a></td>
+                        <td>Ahmedabad→Mumbai</td>
+                        <td>GJ01XY8899</td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <span
+                                    style="width:22px;height:22px;background:linear-gradient(135deg,#673ab7,#3f51b5);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:700;">DK</span>
+                                Dinesh K.
+                            </div>
+                        </td>
+                        <td style="font-size:11px;color:#f59e0b;">Today, 8 PM</td>
+                        <td><span class="status-badge pending">Tight</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Maintenance Queue — replaces Utilization Trend -->
+    <div class="widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-tools" style="color:#f59e0b;margin-right:6px;"></i> Maintenance Queue (6)</h3>
+            <a href="#" onclick="navigateTo('work-orders')" class="btn btn-link">All Work Orders →</a>
+        </div>
+        <div class="widget-body" style="padding:8px 0;">
+            <div style="display:flex;flex-direction:column;gap:4px;">
+                <!-- Overdue (red border) -->
+                <div style="padding:8px 16px;border-left:4px solid #dc2626;margin:0 8px;border-radius:0 6px 6px 0;background:#fef2f2;display:flex;justify-content:space-between;align-items:center;">
+                    <div>
+                        <div style="font-size:12px;font-weight:600;color:#991b1b;">Oil Change — 12 days overdue</div>
+                        <div style="font-size:11px;color:#6b7280;">MH04AB1234 · <span style="color:#f59e0b;font-weight:500;">on trip TRP-0142</span></div>
+                    </div>
+                    <a href="#" onclick="navigateTo('work-order-create')" style="font-size:10px;font-weight:600;color:#dc2626;text-decoration:none;white-space:nowrap;">Schedule ↗</a>
+                </div>
+                <div style="padding:8px 16px;border-left:4px solid #dc2626;margin:0 8px;border-radius:0 6px 6px 0;background:#fef2f2;display:flex;justify-content:space-between;align-items:center;">
+                    <div>
+                        <div style="font-size:12px;font-weight:600;color:#991b1b;">Brake Pad Replace — 8 days overdue</div>
+                        <div style="font-size:11px;color:#6b7280;">MH04KL4567 · <span style="color:#16a34a;font-weight:500;">idle, available now</span></div>
+                    </div>
+                    <a href="#" onclick="navigateTo('work-order-create')" style="font-size:10px;font-weight:600;color:#dc2626;text-decoration:none;white-space:nowrap;">Schedule ↗</a>
+                </div>
+                <div style="padding:8px 16px;border-left:4px solid #dc2626;margin:0 8px;border-radius:0 6px 6px 0;background:#fef2f2;display:flex;justify-content:space-between;align-items:center;">
+                    <div>
+                        <div style="font-size:12px;font-weight:600;color:#991b1b;">Air Filter — 5 days overdue</div>
+                        <div style="font-size:11px;color:#6b7280;">MH04CD5678 · <span style="color:#f59e0b;font-weight:500;">on trip TRP-0140</span></div>
+                    </div>
+                    <a href="#" onclick="navigateTo('work-order-create')" style="font-size:10px;font-weight:600;color:#dc2626;text-decoration:none;white-space:nowrap;">Schedule ↗</a>
+                </div>
+                <div style="padding:8px 16px;border-left:4px solid #dc2626;margin:0 8px;border-radius:0 6px 6px 0;background:#fef2f2;display:flex;justify-content:space-between;align-items:center;">
+                    <div>
+                        <div style="font-size:12px;font-weight:600;color:#991b1b;">Coolant Flush — 3 days overdue</div>
+                        <div style="font-size:11px;color:#6b7280;">MH04XY5500 · <span style="color:#16a34a;font-weight:500;">idle, available now</span></div>
+                    </div>
+                    <a href="#" onclick="navigateTo('work-order-create')" style="font-size:10px;font-weight:600;color:#dc2626;text-decoration:none;white-space:nowrap;">Schedule ↗</a>
+                </div>
+                <!-- Due soon (amber border) -->
+                <div style="padding:8px 16px;border-left:4px solid #f59e0b;margin:0 8px;border-radius:0 6px 6px 0;background:#fffbeb;display:flex;justify-content:space-between;align-items:center;">
+                    <div>
+                        <div style="font-size:12px;font-weight:600;color:#92400e;">Tyre Rotation — due in 5 days</div>
+                        <div style="font-size:11px;color:#6b7280;">MH12EF9012 · <span style="color:#f59e0b;font-weight:500;">on trip TRP-0141</span></div>
+                    </div>
+                    <span style="font-size:10px;color:#92400e;font-weight:500;">5 days</span>
+                </div>
+                <!-- Scheduled (green border) -->
+                <div style="padding:8px 16px;border-left:4px solid #16a34a;margin:0 8px;border-radius:0 6px 6px 0;background:#f0fdf4;display:flex;justify-content:space-between;align-items:center;">
+                    <div>
+                        <div style="font-size:12px;font-weight:600;color:#166534;">Brake Inspection — scheduled Mar 28</div>
+                        <div style="font-size:11px;color:#6b7280;">KA01AL2010 · <span style="color:#f59e0b;font-weight:500;">on trip TRP-0139</span></div>
+                    </div>
+                    <span style="font-size:10px;color:#166534;font-weight:500;">6 days</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ╔════════════════════════════════════════════════════════════════╗
+     ║  ⛽ FUEL EFFICIENCY (Promoted) + 👤 DRIVER STATUS + RENEWALS  ║
+     ╚════════════════════════════════════════════════════════════════╝ -->
+<div style="display:grid;grid-template-columns:1.5fr 1fr;gap:16px;margin-bottom:16px;">
+    <!-- Fuel Efficiency — promoted & expanded -->
+    <div class="widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-gas-pump" style="color:#f59e0b;margin-right:6px;"></i> Fuel Efficiency</h3>
+            <span style="font-size:11px;color:var(--text-muted);">Fleet Avg: <strong style="color:#1f2937;">4.2 kmpl</strong> <span style="color:#16a34a;">↑ 0.3</span></span>
+        </div>
+        <div class="widget-body" style="padding:0;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Vehicle</th>
+                        <th>Model</th>
+                        <th>KMPL</th>
+                        <th style="min-width:120px;">vs Fleet Avg</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-weight:600;">MH04AB1234</td>
+                        <td style="font-size:11px;color:#6b7280;">Tata Prima 4928.S</td>
+                        <td style="font-weight:700;color:#16a34a;">5.2</td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <div style="width:80px;height:6px;background:#e5e7eb;border-radius:4px;">
+                                    <div style="width:100%;height:6px;background:linear-gradient(90deg,#22c55e,#16a34a);border-radius:4px;"></div>
+                                </div>
+                                <span style="color:#16a34a;font-size:11px;font-weight:600;">↑ 24%</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:600;">MH12EF9012</td>
+                        <td style="font-size:11px;color:#6b7280;">Ashok Leyland 3520</td>
+                        <td style="font-weight:700;color:#16a34a;">4.8</td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <div style="width:80px;height:6px;background:#e5e7eb;border-radius:4px;">
+                                    <div style="width:88%;height:6px;background:linear-gradient(90deg,#22c55e,#16a34a);border-radius:4px;"></div>
+                                </div>
+                                <span style="color:#16a34a;font-size:11px;font-weight:600;">↑ 14%</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:600;">MH04CD5678</td>
+                        <td style="font-size:11px;color:#6b7280;">BharatBenz 1617R</td>
+                        <td style="font-weight:700;color:#f59e0b;">3.9</td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <div style="width:80px;height:6px;background:#e5e7eb;border-radius:4px;">
+                                    <div style="width:70%;height:6px;background:linear-gradient(90deg,#fbbf24,#f59e0b);border-radius:4px;"></div>
+                                </div>
+                                <span style="color:#f59e0b;font-size:11px;font-weight:600;">↓ 7%</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr style="background:#fef2f2;">
+                        <td style="font-weight:600;color:#dc2626;">MH04KL4567</td>
+                        <td style="font-size:11px;color:#6b7280;">Eicher Pro 6037</td>
+                        <td style="font-weight:700;color:#dc2626;">3.1</td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <div style="width:80px;height:6px;background:#e5e7eb;border-radius:4px;">
+                                    <div style="width:48%;height:6px;background:linear-gradient(90deg,#f87171,#dc2626);border-radius:4px;"></div>
+                                </div>
+                                <span style="color:#dc2626;font-size:11px;font-weight:600;">↓ 26% ⚠</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- Insight strip — cross-data intelligence -->
+            <div style="background:linear-gradient(135deg,#fef2f2,#fff5f5);border-top:1px solid #fecaca;padding:10px 16px;display:flex;align-items:center;gap:10px;">
+                <div style="width:22px;height:22px;background:#dc2626;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <i class="fas fa-exclamation-circle" style="color:#fff;font-size:10px;"></i>
+                </div>
+                <div style="font-size:11px;color:#991b1b;line-height:1.5;">
+                    <strong>MH04KL4567</strong> is 26% below fleet avg — <strong>brake pad replacement 8 days overdue</strong>. Vehicle is idle. Recommend immediate workshop dispatch.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Driver Status (compact) + Upcoming Renewals (with trip cross-reference) -->
+    <div class="widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-id-card" style="color:#7c3aed;margin-right:6px;"></i> Status & Renewals</h3>
+        </div>
+        <div class="widget-body" style="padding:0;">
+            <!-- Driver Status — compact horizontal strip -->
+            <div style="padding:12px 16px;border-bottom:1px solid #e5e7eb;">
+                <div style="font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">DRIVER STATUS</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:#f0fdf4;border-radius:6px;">
+                        <span style="font-size:11px;"><span class="status-dot green"></span> On Trip</span>
+                        <span style="font-weight:700;color:#16a34a;font-size:13px;">14</span>
+                    </div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:#eff6ff;border-radius:6px;">
+                        <span style="font-size:11px;"><span class="status-dot blue"></span> Available</span>
+                        <span style="font-weight:700;color:#2563eb;font-size:13px;">6</span>
+                    </div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:#fffbeb;border-radius:6px;">
+                        <span style="font-size:11px;"><span class="status-dot yellow"></span> On Leave</span>
+                        <span style="font-weight:700;color:#f59e0b;font-size:13px;">2</span>
+                    </div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:#fef2f2;border-radius:6px;">
+                        <span style="font-size:11px;"><span class="status-dot red"></span> Off Duty</span>
+                        <span style="font-weight:700;color:#dc2626;font-size:13px;">1</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Upcoming Renewals — with trip cross-reference -->
+            <div style="padding:12px 16px;">
+                <div style="font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">UPCOMING RENEWALS</div>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                        <div>
+                            <div style="font-size:12px;font-weight:600;">RC — MH04AB1234</div>
+                            <div style="font-size:10px;color:#6b7280;">Vehicle is on <span style="color:#2563eb;font-weight:500;">TRP-0142</span></div>
+                        </div>
+                        <span class="status-badge overdue" style="font-size:10px;">3 days</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                        <div>
+                            <div style="font-size:12px;font-weight:600;">Insurance — MH12GH3456</div>
+                            <div style="font-size:10px;color:#6b7280;">Vehicle is on <span style="color:#2563eb;font-weight:500;">TRP-0138</span></div>
+                        </div>
+                        <span class="status-badge pending" style="font-size:10px;">12 days</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                        <div>
+                            <div style="font-size:12px;font-weight:600;">PUC — MH04CD5678</div>
+                            <div style="font-size:10px;color:#6b7280;">Vehicle is on <span style="color:#2563eb;font-weight:500;">TRP-0140</span></div>
+                        </div>
+                        <span class="status-badge pending" style="font-size:10px;">18 days</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

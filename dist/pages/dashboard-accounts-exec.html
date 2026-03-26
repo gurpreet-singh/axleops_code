@@ -1,0 +1,329 @@
+<!-- ═══════════════════════════════════════════════════════════════
+     ✏️ ACCOUNTS EXECUTIVE DASHBOARD
+     Dept: Finance | Goal: Daily entries, vouchers, reconciliation
+     Hierarchy: 🚨 Urgent → 📊 KPIs → 📋 Work Queue → ⚡ Actions
+     ═══════════════════════════════════════════════════════════════ -->
+
+<div class="page-header">
+    <h1>Accounts Work Queue <span class="learn-badge"><i class="fas fa-calculator" style="color:#EF4444;"></i>
+            Finance</span></h1>
+    <div class="page-header-actions">
+        <div class="filter-btn"><i class="fas fa-calendar-alt" style="margin-right:6px;"></i>Today ▾</div>
+        <button class="btn btn-primary" onclick="navigateTo('voucher-entry')"><i class="fas fa-plus"></i> New
+            Voucher</button>
+    </div>
+</div>
+
+<!-- ╔════════════════════════════════════════════════════════════════╗
+     ║  📦 TRIP MOVEMENT — Accounts View (3 boxes)                   ║
+     ╚════════════════════════════════════════════════════════════════╝ -->
+<div style="font-size:12px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;">Trip Movement</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;">
+    <!-- Consignment -->
+    <button onclick="openTripSlider('Consignment','accts')"
+        style="background:#F5F3FF;border:2px solid #DDD6FE;border-radius:16px;padding:20px 16px;cursor:pointer;text-align:left;transition:all .15s;display:block;"
+        onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(124,58,237,0.15)';"
+        onmouseleave="this.style.transform='none';this.style.boxShadow='none';">
+        <div style="font-size:26px;margin-bottom:10px;">📝</div>
+        <div style="font-size:28px;font-weight:800;color:#7C3AED;line-height:1;margin-bottom:4px;">1</div>
+        <div style="font-size:13px;font-weight:700;color:#1E293B;">Consignment</div>
+        <div style="font-size:11px;color:#64748B;margin-top:2px;">Awaiting dispatch</div>
+        <div style="margin-top:12px;font-size:11px;font-weight:700;color:#7C3AED;">View trips →</div>
+    </button>
+    <!-- In Transit -->
+    <button onclick="openTripSlider('In Transit','accts')"
+        style="background:#F0F9FF;border:2px solid #BAE6FD;border-radius:16px;padding:20px 16px;cursor:pointer;text-align:left;transition:all .15s;display:block;"
+        onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(14,165,233,0.15)';"
+        onmouseleave="this.style.transform='none';this.style.boxShadow='none';">
+        <div style="font-size:26px;margin-bottom:10px;">🚛</div>
+        <div style="font-size:28px;font-weight:800;color:#0EA5E9;line-height:1;margin-bottom:4px;">3</div>
+        <div style="font-size:13px;font-weight:700;color:#1E293B;">In Transit</div>
+        <div style="font-size:11px;color:#64748B;margin-top:2px;">Add advances</div>
+        <div style="margin-top:12px;font-size:11px;font-weight:700;color:#0EA5E9;">View trips →</div>
+    </button>
+    <!-- Delivered -->
+    <button onclick="openTripSlider('Delivered','accts')"
+        style="background:#F0FDF4;border:2px solid #A7F3D0;border-radius:16px;padding:20px 16px;cursor:pointer;text-align:left;transition:all .15s;display:block;"
+        onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(16,185,129,0.15)';"
+        onmouseleave="this.style.transform='none';this.style.boxShadow='none';">
+        <div style="font-size:26px;margin-bottom:10px;">✅</div>
+        <div style="font-size:28px;font-weight:800;color:#10B981;line-height:1;margin-bottom:4px;">1</div>
+        <div style="font-size:13px;font-weight:700;color:#1E293B;">Delivered</div>
+        <div style="font-size:11px;color:#64748B;margin-top:2px;">Create Trip Sheet</div>
+        <div style="margin-top:12px;font-size:11px;font-weight:700;color:#10B981;">View trips →</div>
+    </button>
+</div>
+
+<!-- ╔════════════════════════════════════════════════════════════════╗
+     ║  💰 BILL & COLLECT — Accounts View (3 boxes)                  ║
+     ╚════════════════════════════════════════════════════════════════╝ -->
+<div style="font-size:12px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;">Bill & Collect</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;">
+    <!-- Trip Sheet -->
+    <button onclick="openTripSlider('Trip Sheet','accts')"
+        style="background:#FFFBEB;border:2px solid #FCD34D;border-radius:16px;padding:20px 16px;cursor:pointer;text-align:left;transition:all .15s;display:block;"
+        onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(217,119,6,0.15)';"
+        onmouseleave="this.style.transform='none';this.style.boxShadow='none';">
+        <div style="font-size:26px;margin-bottom:10px;">🧾</div>
+        <div style="font-size:28px;font-weight:800;color:#D97706;line-height:1;margin-bottom:4px;">2</div>
+        <div style="font-size:13px;font-weight:700;color:#1E293B;">Trip Sheet</div>
+        <div style="font-size:11px;color:#64748B;margin-top:2px;">Raise freight bill</div>
+        <div style="margin-top:12px;font-size:11px;font-weight:700;color:#D97706;">View trips →</div>
+    </button>
+    <!-- Billed -->
+    <button onclick="openTripSlider('Billed','accts')"
+        style="background:#EEF2FF;border:2px solid #A5B4FC;border-radius:16px;padding:20px 16px;cursor:pointer;text-align:left;transition:all .15s;display:block;"
+        onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(99,102,241,0.15)';"
+        onmouseleave="this.style.transform='none';this.style.boxShadow='none';">
+        <div style="font-size:26px;margin-bottom:10px;">📄</div>
+        <div style="font-size:28px;font-weight:800;color:#6366F1;line-height:1;margin-bottom:4px;">3</div>
+        <div style="font-size:13px;font-weight:700;color:#1E293B;">Billed</div>
+        <div style="font-size:11px;color:#64748B;margin-top:2px;">Collect payment</div>
+        <div style="margin-top:12px;font-size:11px;font-weight:700;color:#6366F1;">View trips →</div>
+    </button>
+    <!-- Paid & Closed -->
+    <button onclick="openTripSlider('Paid','accts')"
+        style="background:#DCFCE7;border:2px solid #86EFAC;border-radius:16px;padding:20px 16px;cursor:pointer;text-align:left;transition:all .15s;display:block;"
+        onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(22,163,74,0.15)';"
+        onmouseleave="this.style.transform='none';this.style.boxShadow='none';">
+        <div style="font-size:26px;margin-bottom:10px;">💰</div>
+        <div style="font-size:28px;font-weight:800;color:#16A34A;line-height:1;margin-bottom:4px;">3</div>
+        <div style="font-size:13px;font-weight:700;color:#1E293B;">Paid & Closed</div>
+        <div style="font-size:11px;color:#64748B;margin-top:2px;">Fully settled</div>
+        <div style="margin-top:12px;font-size:11px;font-weight:700;color:#16A34A;">View trips →</div>
+    </button>
+</div>
+
+<!-- 🚨 URGENT -->
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:20px;">
+    <div onclick="navigateTo('voucher-entry')"
+        style="cursor:pointer;background:linear-gradient(135deg,#fef2f2,#fff);border:1px solid #fecaca;border-radius:12px;padding:14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <div
+                style="width:28px;height:28px;background:#dc2626;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-edit" style="color:#fff;font-size:12px;"></i>
+            </div>
+            <span
+                style="font-size:11px;font-weight:700;color:#991b1b;text-transform:uppercase;letter-spacing:0.5px;">UNPOSTED
+                VOUCHERS</span>
+        </div>
+        <div style="font-size:28px;font-weight:800;color:#dc2626;">6</div>
+        <div style="font-size:11px;color:#6b7280;margin-top:2px;">Need posting to ledger</div>
+        <div style="font-size:10px;color:#dc2626;margin-top:4px;">3 from yesterday ⚠</div>
+    </div>
+
+    <div onclick="navigateTo('day-book')"
+        style="cursor:pointer;background:linear-gradient(135deg,#fffbeb,#fff);border:1px solid #fed7aa;border-radius:12px;padding:14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <div
+                style="width:28px;height:28px;background:#f59e0b;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-sync" style="color:#fff;font-size:12px;"></i>
+            </div>
+            <span
+                style="font-size:11px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:0.5px;">UNRECONCILED</span>
+        </div>
+        <div style="font-size:28px;font-weight:800;color:#f59e0b;">8</div>
+        <div style="font-size:11px;color:#6b7280;margin-top:2px;">Bank entries to match</div>
+        <div style="font-size:10px;color:#92400e;margin-top:4px;">₹2,34,500 unmatched</div>
+    </div>
+
+    <div onclick="navigateTo('fuel-history')"
+        style="cursor:pointer;background:linear-gradient(135deg,#fffbeb,#fff);border:1px solid #fed7aa;border-radius:12px;padding:14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <div
+                style="width:28px;height:28px;background:#f59e0b;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-gas-pump" style="color:#fff;font-size:12px;"></i>
+            </div>
+            <span
+                style="font-size:11px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:0.5px;">PENDING
+                FUEL</span>
+        </div>
+        <div style="font-size:28px;font-weight:800;color:#f59e0b;">4</div>
+        <div style="font-size:11px;color:#6b7280;margin-top:2px;">Fuel entries w/o receipt</div>
+        <div style="font-size:10px;color:#92400e;margin-top:4px;">Follow up with drivers</div>
+    </div>
+
+    <div onclick="navigateTo('expense-history')"
+        style="cursor:pointer;background:linear-gradient(135deg,#eff6ff,#fff);border:1px solid #bfdbfe;border-radius:12px;padding:14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <div
+                style="width:28px;height:28px;background:#2563eb;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+                <i class="fas fa-receipt" style="color:#fff;font-size:12px;"></i>
+            </div>
+            <span
+                style="font-size:11px;font-weight:700;color:#1e40af;text-transform:uppercase;letter-spacing:0.5px;">EXPENSE
+                CLAIMS</span>
+        </div>
+        <div style="font-size:28px;font-weight:800;color:#2563eb;">5</div>
+        <div style="font-size:11px;color:#6b7280;margin-top:2px;">Claims to process</div>
+        <div style="font-size:10px;color:#2563eb;margin-top:4px;">Total: ₹38,400</div>
+    </div>
+</div>
+
+<!-- 📊 KPIs -->
+<div class="stats-row" style="grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;">
+    <div class="stat-card" style="border-top:3px solid #16a34a;">
+        <div class="stat-label">Today's Entries</div>
+        <div class="stat-value text-green" style="font-size:22px;">12</div>
+        <div style="font-size:10px;color:var(--text-muted);">₹4,56,800 total value</div>
+    </div>
+    <div class="stat-card" style="border-top:3px solid #dc2626;">
+        <div class="stat-label">Pending Vouchers</div>
+        <div class="stat-value text-red" style="font-size:22px;">6</div>
+        <div style="font-size:10px;color:#dc2626;">3 are overdue</div>
+    </div>
+    <div class="stat-card" style="border-top:3px solid #f59e0b;">
+        <div class="stat-label">Reconciliation</div>
+        <div class="stat-value text-yellow" style="font-size:22px;">78%</div>
+        <div style="font-size:10px;color:var(--text-muted);">8 items remaining</div>
+    </div>
+    <div class="stat-card" style="border-top:3px solid #2563eb;">
+        <div class="stat-label">Invoices Draft</div>
+        <div class="stat-value text-blue" style="font-size:22px;">3</div>
+        <div style="font-size:10px;color:var(--text-muted);">Ready to send</div>
+    </div>
+</div>
+
+<!-- Daily Work Queue + Recent Entries -->
+<div class="dashboard-grid two-col" style="margin-bottom:16px;">
+    <div class="widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-tasks" style="color:#EF4444;margin-right:6px;"></i> Today's Work Queue</h3>
+        </div>
+        <div class="widget-body" style="padding:12px 16px;">
+            <div style="display:flex;flex-direction:column;gap:8px;">
+                <div
+                    style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:#fef2f2;border-radius:6px;border-left:3px solid #dc2626;">
+                    <input type="checkbox" style="width:16px;height:16px;">
+                    <div style="flex:1;">
+                        <div style="font-size:12px;font-weight:600;">Post 6 pending vouchers to ledger</div>
+                        <div style="font-size:10px;color:#dc2626;">3 from yesterday — overdue</div>
+                    </div>
+                    <span style="font-size:10px;font-weight:600;color:#dc2626;">HIGH</span>
+                </div>
+                <div
+                    style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:#fffbeb;border-radius:6px;border-left:3px solid #f59e0b;">
+                    <input type="checkbox" style="width:16px;height:16px;">
+                    <div style="flex:1;">
+                        <div style="font-size:12px;font-weight:600;">Reconcile 8 bank entries</div>
+                        <div style="font-size:10px;color:#92400e;">₹2,34,500 unmatched</div>
+                    </div>
+                    <span style="font-size:10px;font-weight:600;color:#f59e0b;">MEDIUM</span>
+                </div>
+                <div
+                    style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:#fffbeb;border-radius:6px;border-left:3px solid #f59e0b;">
+                    <input type="checkbox" style="width:16px;height:16px;">
+                    <div style="flex:1;">
+                        <div style="font-size:12px;font-weight:600;">Collect 4 fuel receipts from drivers</div>
+                        <div style="font-size:10px;color:#92400e;">Follow up via SMS/call</div>
+                    </div>
+                    <span style="font-size:10px;font-weight:600;color:#f59e0b;">MEDIUM</span>
+                </div>
+                <div
+                    style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:#eff6ff;border-radius:6px;border-left:3px solid #2563eb;">
+                    <input type="checkbox" style="width:16px;height:16px;">
+                    <div style="flex:1;">
+                        <div style="font-size:12px;font-weight:600;">Process 5 expense claims (₹38,400)</div>
+                        <div style="font-size:10px;color:#1e40af;">Verify receipts and enter</div>
+                    </div>
+                    <span style="font-size:10px;font-weight:600;color:#2563eb;">NORMAL</span>
+                </div>
+                <div
+                    style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:#f0fdf4;border-radius:6px;border-left:3px solid #16a34a;">
+                    <input type="checkbox" style="width:16px;height:16px;">
+                    <div style="flex:1;">
+                        <div style="font-size:12px;font-weight:600;">Send 3 draft invoices to clients</div>
+                        <div style="font-size:10px;color:#166534;">Reliance, HUL, Tata Steel</div>
+                    </div>
+                    <span style="font-size:10px;font-weight:600;color:#16a34a;">LOW</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Entries -->
+    <div class="widget">
+        <div class="widget-header">
+            <h3><i class="fas fa-history" style="color:#059669;margin-right:6px;"></i> Recent Entries Today</h3>
+            <a href="#" onclick="navigateTo('day-book')" class="btn btn-link">Day Book →</a>
+        </div>
+        <div class="widget-body" style="padding:0;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Type</th>
+                        <th>Particulars</th>
+                        <th style="text-align:right;">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-size:11px;color:#6b7280;">11:42 AM</td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#e0f2fe;color:#0369a1;border-radius:4px;">Receipt</span>
+                        </td>
+                        <td style="font-size:12px;">Payment from Tata Steel (INV-075)</td>
+                        <td style="text-align:right;font-weight:600;color:#16a34a;">₹3,39,840</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:11px;color:#6b7280;">10:15 AM</td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#fef3c7;color:#92400e;border-radius:4px;">Payment</span>
+                        </td>
+                        <td style="font-size:12px;">Fuel — MH04AB1234 (diesel)</td>
+                        <td style="text-align:right;font-weight:600;color:#dc2626;">₹12,450</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:11px;color:#6b7280;">09:30 AM</td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#fef3c7;color:#92400e;border-radius:4px;">Payment</span>
+                        </td>
+                        <td style="font-size:12px;">Toll charges — TRP-0142</td>
+                        <td style="text-align:right;font-weight:600;color:#dc2626;">₹3,800</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:11px;color:#6b7280;">09:00 AM</td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#ede9fe;color:#7c3aed;border-radius:4px;">Journal</span>
+                        </td>
+                        <td style="font-size:12px;">Driver advance — Vikram S</td>
+                        <td style="text-align:right;font-weight:600;">₹8,000</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:11px;color:#6b7280;">08:30 AM</td>
+                        <td><span
+                                style="font-size:10px;padding:2px 6px;background:#e0f2fe;color:#0369a1;border-radius:4px;">Receipt</span>
+                        </td>
+                        <td style="font-size:12px;">Payment from Asian Paints (INV-076)</td>
+                        <td style="text-align:right;font-weight:600;color:#16a34a;">₹1,25,000</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+    <button onclick="navigateTo('voucher-entry')"
+        style="padding:14px;border:1px solid #e5e7eb;border-radius:10px;background:#fff;cursor:pointer;text-align:center;">
+        <i class="fas fa-edit" style="font-size:18px;color:#EF4444;display:block;margin-bottom:6px;"></i>
+        <span style="font-size:12px;font-weight:600;">New Voucher</span>
+    </button>
+    <button onclick="navigateTo('invoices')"
+        style="padding:14px;border:1px solid #e5e7eb;border-radius:10px;background:#fff;cursor:pointer;text-align:center;">
+        <i class="fas fa-file-invoice" style="font-size:18px;color:#2563eb;display:block;margin-bottom:6px;"></i>
+        <span style="font-size:12px;font-weight:600;">Add Invoice</span>
+    </button>
+    <button onclick="navigateTo('driver-ledger')"
+        style="padding:14px;border:1px solid #e5e7eb;border-radius:10px;background:#fff;cursor:pointer;text-align:center;">
+        <i class="fas fa-users" style="font-size:18px;color:#7c3aed;display:block;margin-bottom:6px;"></i>
+        <span style="font-size:12px;font-weight:600;">Driver Ledger</span>
+    </button>
+    <button onclick="navigateTo('day-book')"
+        style="padding:14px;border:1px solid #e5e7eb;border-radius:10px;background:#fff;cursor:pointer;text-align:center;">
+        <i class="fas fa-book" style="font-size:18px;color:#059669;display:block;margin-bottom:6px;"></i>
+        <span style="font-size:12px;font-weight:600;">Day Book</span>
+    </button>
+</div>

@@ -6,8 +6,6 @@
 > **Last Updated**: March 2026
 > **Pages**: 73 | **Departments**: 8 | **Roles**: 19 | **Guided Scenarios**: 4 | **Intelligence Modules**: 1 | **Organization Modules**: 3
 
----
-
 ## Table of Contents
 
 1. [Product Overview](#1-product-overview)
@@ -1480,20 +1478,16 @@ graph LR
     A --> D["Driver Ledger"]
     A --> E["Fuel & Energy"]
     A --> F["Vehicle Management"]
-
     F --> G["Maintenance"]
     G --> H["Parts & Inventory"]
     H --> I["Purchase Orders"]
     I --> J["Vendors"]
-
     F --> K["Compliance"]
     K --> L["Inspections"]
     L --> M["Issues"]
     M --> G
-
     C --> B
     D --> B
-
     N["Clients"] --> A
     N --> C
     O["Routes"] --> A
