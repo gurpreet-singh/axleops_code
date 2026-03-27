@@ -25,6 +25,10 @@ import BillCollectPage from './pages/accounting/BillCollectPage';
 // ─── Contacts / Drivers ───────────────────────────────────
 import ContactsPage from './pages/contacts/ContactsPage';
 
+// ─── Accounts ─────────────────────────────────────────────
+import AccountGroupsPage from './pages/accounts/AccountGroupsPage';
+import LedgerAccountsPage from './pages/accounts/LedgerAccountsPage';
+
 // ─── MRO / Maintenance ────────────────────────────────────
 import WorkOrdersPage from './pages/mro/WorkOrdersPage';
 
@@ -87,7 +91,11 @@ export default function App() {
         {/* ─── Contacts / Drivers ──────────────────────── */}
         <Route path="/drivers" element={<ContactsPage />} />
         <Route path="/employees" element={<PlaceholderPage title="Employees" icon="fas fa-users" />} />
-        <Route path="/accounts-list" element={<PlaceholderPage title="Accounts" icon="fas fa-address-book" />} />
+        <Route path="/accounts-list" element={<Navigate to="/accounts/ledgers" replace />} />
+
+        {/* ─── Accounts (Groups + Ledgers) ──────────────── */}
+        <Route path="/accounts/groups" element={<AccountGroupsPage />} />
+        <Route path="/accounts/ledgers" element={<LedgerAccountsPage />} />
         <Route path="/driver-ledger" element={<PlaceholderPage title="Driver Ledger" icon="fas fa-book" />} />
 
         {/* ─── Expense History ─────────────────────────── */}

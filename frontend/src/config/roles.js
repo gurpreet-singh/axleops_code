@@ -164,6 +164,8 @@ export function pageToPath(page) {
     'contacts': '/drivers',
     'employees': '/employees',
     'accounts-list': '/accounts-list',
+    'account-groups': '/accounts/groups',
+    'ledger-accounts': '/accounts/ledgers',
     'driver-ledger': '/driver-ledger',
     'smart-recommendations': '/intelligence/recommendations',
     'behavioral-losses': '/intelligence/behavioral-losses',
@@ -258,7 +260,8 @@ export const ROLE_MENUS = {
         { label: 'Clients', page: 'clients' },
         { label: 'Drivers', page: 'contacts' },
         { label: 'Employees', page: 'employees' },
-        { label: 'Accounts', page: 'accounts-list' },
+        { label: 'Account Groups', page: 'account-groups' },
+        { label: 'Ledger Accounts', page: 'ledger-accounts' },
       ]
     },
     {
@@ -342,7 +345,8 @@ export const ROLE_MENUS = {
         { label: 'Clients', page: 'clients' },
         { label: 'Drivers', page: 'contacts' },
         { label: 'Employees', page: 'employees' },
-        { label: 'Accounts', page: 'accounts-list' },
+        { label: 'Account Groups', page: 'account-groups' },
+        { label: 'Ledger Accounts', page: 'ledger-accounts' },
       ]
     },
     {
@@ -409,7 +413,8 @@ export const ROLE_MENUS = {
         { label: 'Clients', page: 'clients' },
         { label: 'Drivers', page: 'contacts' },
         { label: 'Employees', page: 'employees' },
-        { label: 'Accounts', page: 'accounts-list' },
+        { label: 'Account Groups', page: 'account-groups' },
+        { label: 'Ledger Accounts', page: 'ledger-accounts' },
       ]
     },
     {
@@ -458,7 +463,8 @@ export const ROLE_MENUS = {
         { label: 'Clients', page: 'clients' },
         { label: 'Drivers', page: 'contacts' },
         { label: 'Employees', page: 'employees' },
-        { label: 'Accounts', page: 'accounts-list' },
+        { label: 'Account Groups', page: 'account-groups' },
+        { label: 'Ledger Accounts', page: 'ledger-accounts' },
       ]
     },
     {
@@ -538,7 +544,8 @@ export const ROLE_MENUS = {
         { label: 'Clients', page: 'clients' },
         { label: 'Drivers', page: 'contacts' },
         { label: 'Employees', page: 'employees' },
-        { label: 'Accounts', page: 'accounts-list' },
+        { label: 'Account Groups', page: 'account-groups' },
+        { label: 'Ledger Accounts', page: 'ledger-accounts' },
       ]
     },
     {
@@ -584,7 +591,8 @@ export const ROLE_MENUS = {
         { label: 'Clients', page: 'clients' },
         { label: 'Drivers', page: 'contacts' },
         { label: 'Employees', page: 'employees' },
-        { label: 'Accounts', page: 'accounts-list' },
+        { label: 'Account Groups', page: 'account-groups' },
+        { label: 'Ledger Accounts', page: 'ledger-accounts' },
       ]
     },
     { type: 'item', icon: 'fas fa-truck', label: 'Expense History', page: 'expense-history' },
@@ -732,7 +740,8 @@ export const ROLE_MENUS = {
         { label: 'Clients', page: 'clients' },
         { label: 'Drivers', page: 'contacts' },
         { label: 'Employees', page: 'employees' },
-        { label: 'Accounts', page: 'accounts-list' },
+        { label: 'Account Groups', page: 'account-groups' },
+        { label: 'Ledger Accounts', page: 'ledger-accounts' },
       ]
     },
     {

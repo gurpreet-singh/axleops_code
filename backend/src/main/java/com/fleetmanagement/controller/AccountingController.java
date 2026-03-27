@@ -1,6 +1,6 @@
 package com.fleetmanagement.controller;
 
-import com.fleetmanagement.dto.response.LedgerResponse;
+import com.fleetmanagement.dto.response.LedgerAccountResponse;
 import com.fleetmanagement.dto.response.VoucherResponse;
 import com.fleetmanagement.dto.response.ProfitLossResponse;
 import com.fleetmanagement.service.AccountingService;
@@ -24,7 +24,7 @@ public class AccountingController {
     private final AccountingService accountingService;
 
     @GetMapping("/ledgers")
-    public ResponseEntity<List<LedgerResponse>> getAllLedgers() {
+    public ResponseEntity<List<LedgerAccountResponse>> getAllLedgers() {
         return ResponseEntity.ok(accountingService.getAllLedgers());
     }
 

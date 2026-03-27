@@ -22,11 +22,11 @@ public class Voucher extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "debit_ledger_id", nullable = false)
-    private Ledger debitLedger;
+    private LedgerAccount debitLedger;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "credit_ledger_id", nullable = false)
-    private Ledger creditLedger;
+    private LedgerAccount creditLedger;
 
     @Column(nullable = false)
     private java.math.BigDecimal amount;

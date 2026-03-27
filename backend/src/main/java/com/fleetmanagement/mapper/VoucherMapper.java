@@ -8,9 +8,9 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface VoucherMapper {
     @Mapping(source = "debitLedger.id", target = "debitLedgerId")
-    @Mapping(source = "debitLedger.name", target = "debitLedgerName")
+    @Mapping(source = "debitLedger.accountHead", target = "debitLedgerName")
     @Mapping(source = "creditLedger.id", target = "creditLedgerId")
-    @Mapping(source = "creditLedger.name", target = "creditLedgerName")
+    @Mapping(source = "creditLedger.accountHead", target = "creditLedgerName")
     @Mapping(source = "trip.id", target = "tripId")
     @Mapping(source = "trip.tripNumber", target = "tripNumber")
     VoucherResponse toResponse(Voucher voucher);

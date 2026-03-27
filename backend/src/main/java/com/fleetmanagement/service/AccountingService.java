@@ -1,16 +1,16 @@
 package com.fleetmanagement.service;
 
-import com.fleetmanagement.dto.response.LedgerResponse;
+import com.fleetmanagement.dto.response.LedgerAccountResponse;
 import com.fleetmanagement.dto.request.CreateVoucherRequest;
 import com.fleetmanagement.dto.response.VoucherResponse;
 import com.fleetmanagement.dto.response.ProfitLossResponse;
-import com.fleetmanagement.entity.Ledger;
+import com.fleetmanagement.entity.LedgerAccount;
 import com.fleetmanagement.entity.Voucher;
 import com.fleetmanagement.entity.Branch;
 import com.fleetmanagement.entity.Trip;
-import com.fleetmanagement.mapper.LedgerMapper;
+import com.fleetmanagement.mapper.LedgerAccountMapper;
 import com.fleetmanagement.mapper.VoucherMapper;
-import com.fleetmanagement.repository.LedgerRepository;
+import com.fleetmanagement.repository.LedgerAccountRepository;
 import com.fleetmanagement.repository.VoucherRepository;
 import com.fleetmanagement.repository.BranchRepository;
 import com.fleetmanagement.repository.TripRepository;
@@ -29,24 +29,27 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class AccountingService {
 
-    private final LedgerRepository ledgerRepository;
+    private final LedgerAccountRepository ledgerAccountRepository;
     private final VoucherRepository voucherRepository;
     private final BranchRepository branchRepository;
     private final TripRepository tripRepository;
-    private final LedgerMapper ledgerMapper;
+    private final LedgerAccountMapper ledgerAccountMapper;
     private final VoucherMapper voucherMapper;
 
-    public List<LedgerResponse> getAllLedgers() {
-        return ledgerRepository.findAll().stream()
-                .map(ledgerMapper::toResponse)
+    public List<LedgerAccountResponse> getAllLedgers() {
+        UUID tenantId = com.fleetmanagement.config.TenantContext.get();
+        return ledgerAccountRepository.findByTenantId(tenantId).stream()
+                .map(ledgerAccountMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
     @Transactional
     public VoucherResponse createVoucher(CreateVoucherRequest req) {
         UUID tenantId = com.fleetmanagement.config.TenantContext.get();
-        Ledger dr = ledgerRepository.findById(req.getDebitLedgerId()).orElseThrow(() -> new RuntimeException("Dr ledger not found"));
-        Ledger cr = ledgerRepository.findById(req.getCreditLedgerId()).orElseThrow(() -> new RuntimeException("Cr ledger not found"));
+        LedgerAccount dr = ledgerAccountRepository.findById(req.getDebitLedgerId())
+                .orElseThrow(() -> new RuntimeException("Debit ledger account not found"));
+        LedgerAccount cr = ledgerAccountRepository.findById(req.getCreditLedgerId())
+                .orElseThrow(() -> new RuntimeException("Credit ledger account not found"));
 
         Voucher voucher = new Voucher();
         voucher.setTenantId(tenantId);
