@@ -28,12 +28,14 @@ export default function RoutesPage() {
 
   const openNewRoute = () => openSlider({
     title: 'Add New Route',
+    subtitle: 'Define a new route',
     content: <RouteCreateContent onSave={refresh} />,
     width: '52vw',
   });
 
   const openDetail = (rt) => openSlider({
-    title: `${rt.route} — ${rt.client}`,
+    title: rt.route,
+    subtitle: `${rt.client} • ${rt.vType}`,
     content: <RouteDetailContent rt={rt} onSave={refresh} />,
     width: '52vw',
   });

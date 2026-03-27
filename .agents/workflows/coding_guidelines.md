@@ -26,7 +26,11 @@ description: Coding guidelines and UI patterns for the AxleOps platform — MUST
 
 ## 2. Right-Side Slider Panel Pattern (CRITICAL)
 
-All slider-based views MUST follow the exact same structure. There are two slider types:
+All slider-based views MUST follow the exact same structure. The SliderPanel provides
+a **single dark gradient header** (title + optional subtitle + close button). Content
+components must NOT render their own dark header — that is now handled by the panel.
+
+There are two slider types:
 
 ### A. Detail Slider (View/Edit existing record)
 
@@ -34,7 +38,8 @@ Pattern matches: `TripDetailContent`, `RouteDetailContent`, `TenantDetailContent
 
 ```
 ┌─────────────────────────────────┐
-│ [Title]                    [X]  │  ← SliderPanel header (automatic)
+│ 🌑 DARK GRADIENT HEADER         │  ← SliderPanel (automatic, dark gradient)
+│  Title (white, 15px bold)  [X]  │     + subtitle (11px, #94A3B8)
 ├─────────────────────────────────┤
 │ .sl-action-bar                  │  ← Edit Details toggle + action buttons
 │  [Edit Details] [Print] [...]   │
@@ -71,11 +76,8 @@ Pattern matches: `RouteCreateContent`, `TripCreateContent`, `TenantCreateContent
 
 ```
 ┌─────────────────────────────────┐
-│ [Title]                    [X]  │  ← SliderPanel header (automatic)
-├─────────────────────────────────┤
-│ Dark gradient header            │  ← background: linear-gradient(135deg, #1E293B, #334155)
-│  NEW [ENTITY]                   │     10px uppercase label + 17px bold title
-│  Description text               │
+│ 🌑 DARK GRADIENT HEADER         │  ← SliderPanel (automatic, dark gradient)
+│  Title (white, 15px bold)  [X]  │     + subtitle (11px, #94A3B8)
 ├─────────────────────────────────┤
 │ Sticky action bar               │  ← position: sticky, top: 0, z-index: 10
 │  [✓ Create] [Cancel]           │     Green create button + Cancel
@@ -93,6 +95,12 @@ Pattern matches: `RouteCreateContent`, `TripCreateContent`, `TenantCreateContent
 │  └────────────────────────────┘│
 └─────────────────────────────────┘
 ```
+
+**IMPORTANT — No dark headers in content components!**
+The dark gradient header is rendered **exclusively** by `SliderPanel.jsx`.
+Content components (like RouteCreateContent, TripCreateContent, etc.) should
+**never** include a `<div>` with `background: linear-gradient(135deg, #1E293B...)`.
+Pass title/subtitle via `openSlider({ title, subtitle, ... })` instead.
 
 ### Reusable Components (defined in each slider file)
 
@@ -143,10 +151,11 @@ Renders as: uppercase label + input with blue focus ring
 ```jsx
 import useSliderStore from '../../stores/sliderStore';
 
-// Open
+// Open — ALWAYS pass title, optionally subtitle
 const { openSlider } = useSliderStore();
 openSlider({
   title: 'Record Name',
+  subtitle: 'Contextual info (e.g. client • vehicle)',  // optional, shows below title
   width: '580px',  // or '52vw' for wider sliders
   content: <DetailContent data={record} onRefresh={refresh} />,
 });

@@ -35,6 +35,7 @@ export default function TenantsPage() {
   const handleRowClick = (tenant) => {
     openSlider({
       title: tenant.name,
+      subtitle: `${tenant.city || ''} ${tenant.state || ''} • ${(tenant.status || 'active').toUpperCase()}`.trim(),
       width: '580px',
       content: <TenantDetailContent tenant={tenant} onRefresh={fetchTenants} />,
     });
@@ -43,6 +44,7 @@ export default function TenantsPage() {
   const handleAddTenant = () => {
     openSlider({
       title: 'Add New Tenant',
+      subtitle: 'Register a new tenant',
       width: '580px',
       content: <TenantCreateContent onSuccess={fetchTenants} />,
     });

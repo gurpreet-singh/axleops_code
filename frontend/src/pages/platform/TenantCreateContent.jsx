@@ -106,12 +106,6 @@ export default function TenantCreateContent({ onSuccess }) {
 
   return (
     <div>
-      {/* Dark Header — same as RouteCreateContent */}
-      <div style={{ padding: '16px 24px', background: 'linear-gradient(135deg, #1E293B 0%, #334155 100%)', color: '#fff' }}>
-        <div style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1.2, color: '#94A3B8', marginBottom: 4 }}>NEW TENANT</div>
-        <div style={{ fontSize: 17, fontWeight: 800, letterSpacing: -0.3 }}>Register a new tenant</div>
-      </div>
-
       {/* Action Bar — same as RouteCreateContent */}
       <div style={{ position: 'sticky', top: 0, zIndex: 10, display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', background: '#fff', borderBottom: '1px solid #E2E8F0', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
         <button onClick={handleSubmit} disabled={saving} style={{

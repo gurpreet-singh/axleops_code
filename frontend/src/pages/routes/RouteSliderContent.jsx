@@ -192,12 +192,6 @@ export function RouteCreateContent({ onSave }) {
 
   return (
     <div>
-      {/* Dark Header */}
-      <div style={{ padding: '16px 24px', background: 'linear-gradient(135deg, #1E293B 0%, #334155 100%)', color: '#fff' }}>
-        <div style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1.2, color: '#94A3B8', marginBottom: 4 }}>NEW ROUTE</div>
-        <div style={{ fontSize: 17, fontWeight: 800, letterSpacing: -0.3 }}>Define a new route</div>
-      </div>
-
       {/* Action Bar */}
       <div style={{ position: 'sticky', top: 0, zIndex: 10, display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', background: '#fff', borderBottom: '1px solid #E2E8F0', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
         <button onClick={handleSave} style={{
@@ -238,16 +232,6 @@ export function RouteDetailContent({ rt, onSave }) {
 
   return (
     <div>
-      {/* Dark Header with route info */}
-      <div style={{ padding: '16px 24px', background: 'linear-gradient(135deg, #1E293B 0%, #334155 100%)', color: '#fff' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-          <span style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1.2, color: '#94A3B8' }}>{rt.id}</span>
-          <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 8px', borderRadius: 6, background: statusColor + '20', color: statusColor, border: `1px solid ${statusColor}40` }}>{rt.status}</span>
-        </div>
-        <div style={{ fontSize: 17, fontWeight: 800, letterSpacing: -0.3 }}>{rt.route}</div>
-        <div style={{ fontSize: 12, color: '#94A3B8', marginTop: 2 }}>{rt.client} • {rt.vType}</div>
-      </div>
-
       {/* Action Bar */}
       <div style={{ position: 'sticky', top: 0, zIndex: 10, display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', background: '#fff', borderBottom: '1px solid #E2E8F0', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
         <button onClick={() => { if (isEditing) { handleSave(); } else { setIsEditing(true); } }}

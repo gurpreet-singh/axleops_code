@@ -222,20 +222,6 @@ export default function TripCreateContent({ onSave }) {
 
   return (
     <div>
-      {/* ─── Slider Header Title ─── */}
-      <div style={{
-        padding: '16px 24px',
-        background: 'linear-gradient(135deg, #1E293B 0%, #334155 100%)',
-        color: '#fff',
-      }}>
-        <div style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1.2, color: '#94A3B8', marginBottom: 4 }}>
-          NEW TRIP
-        </div>
-        <div style={{ fontSize: 17, fontWeight: 800, letterSpacing: -0.3 }}>
-          Create a new trip
-        </div>
-      </div>
-
       {/* ─── Action Bar ─── */}
       <div style={{
         position: 'sticky',

@@ -119,6 +119,7 @@ export default function TenantDetailContent({ tenant, onRefresh }) {
   const handleAddAdmin = () => {
     openSlider({
       title: `Add Admin — ${tenant.name}`,
+      subtitle: 'Adding system admin to this tenant',
       width: '480px',
       content: (
         <AddTenantAdminContent

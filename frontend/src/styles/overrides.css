@@ -305,31 +305,39 @@
   box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
 }
 
-/* Slider Header */
+/* Slider Header — Single dark gradient header for all sliders */
 .slider-header {
   padding: 16px 20px;
-  border-bottom: 1.5px solid #E2E8F0;
+  border-bottom: none;
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-shrink: 0;
-  background: #fff;
+  background: linear-gradient(135deg, #1E293B 0%, #334155 100%);
 }
 
 .slider-header h3 {
   font-size: 15px;
-  font-weight: 700;
-  color: #1E293B;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.2px;
+}
+
+.slider-header .slider-subtitle {
+  font-size: 11px;
+  color: #94A3B8;
+  margin-top: 2px;
+  font-weight: 500;
 }
 
 .slider-close-btn {
-  background: none;
-  border: none;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
   cursor: pointer;
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   color: #94A3B8;
   padding: 4px;
-  border-radius: 4px;
+  border-radius: 6px;
   transition: all 0.15s;
   width: 28px;
   height: 28px;
@@ -339,8 +347,8 @@
 }
 
 .slider-close-btn:hover {
-  color: #1E293B;
-  background: #F1F5F9;
+  color: #fff;
+  background: rgba(255,255,255,0.15);
 }
 
 /* Slider Action Bar */

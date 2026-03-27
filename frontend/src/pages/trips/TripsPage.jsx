@@ -40,7 +40,8 @@ export default function TripsPage() {
 
   const openNewTrip = () => {
     openSlider({
-      title: 'Add New Trip',
+      title: 'New Trip',
+      subtitle: 'Create a new trip',
       content: <TripCreateContent onSave={() => getTrips().then(setTrips)} />,
       width: '52vw',
     });
@@ -49,6 +50,7 @@ export default function TripsPage() {
   const openTripDetail = (trip) => {
     openSlider({
       title: `Trip ${trip.id}`,
+      subtitle: `${trip.origin} → ${trip.destination} • ${trip.client}`,
       content: <TripDetailContent trip={trip} />,
       width: '52vw',
     });
