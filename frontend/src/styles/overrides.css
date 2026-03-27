@@ -9,7 +9,12 @@
   overflow: hidden;
 }
 
-/* Fix: React Router links don't have the same styling */
+/* ===================================================
+   Sidebar — React NavLink Overrides
+   Match the demo app's sidebar exactly
+   =================================================== */
+
+/* Active nav-item (NavLink) */
 .sidebar .nav-item.active {
   background: var(--bg-sidebar-active);
 }
@@ -19,7 +24,129 @@
   color: var(--text-white);
 }
 
-/* Role Selector Page */
+/* NavLink removes default anchor styling */
+.sidebar a.nav-item {
+  text-decoration: none;
+  color: var(--text-sidebar);
+}
+
+.sidebar a.nav-item:hover {
+  text-decoration: none;
+  color: var(--text-white);
+}
+
+/* Group-active parent (when a child is active but group itself is just a toggle) */
+.sidebar .nav-item.group-active {
+  color: var(--text-white);
+}
+
+.sidebar .nav-item.group-active .nav-icon {
+  color: var(--primary);
+}
+
+/* Sub-nav children as NavLinks */
+.sub-nav a.nav-item {
+  text-decoration: none;
+  color: var(--text-sidebar);
+}
+
+.sub-nav a.nav-item:hover {
+  text-decoration: none;
+  color: var(--text-white);
+}
+
+.sub-nav a.nav-item.active {
+  background: rgba(26, 115, 232, 0.15);
+  color: var(--primary);
+}
+
+.sub-nav a.nav-item.active .nav-label {
+  color: var(--primary);
+}
+
+.sub-nav a.nav-item.active::before {
+  background: var(--primary);
+}
+
+/* ===================================================
+   Role Switch Button — Sidebar Footer
+   =================================================== */
+.role-switch-btn {
+  width: 100%;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #b0bec5;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.role-switch-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.role-switch-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.role-switch-info {
+  flex: 1;
+  text-align: left;
+}
+
+.role-switch-name {
+  font-weight: 500;
+  font-size: 0.78rem;
+}
+
+.role-switch-role {
+  font-size: 0.68rem;
+  opacity: 0.6;
+}
+
+.role-switch-icon {
+  font-size: 0.7rem;
+  opacity: 0.5;
+}
+
+/* ===================================================
+   Breadcrumb Bar
+   =================================================== */
+.breadcrumb-bar {
+  padding: 8px 24px 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.breadcrumb-text {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ===================================================
+   Role Selector Page
+   =================================================== */
 .role-selector-page {
   display: flex;
   flex-direction: column;
@@ -115,6 +242,7 @@
   font-size: 0.85rem;
   color: var(--text-primary);
   font-weight: 500;
+  font-family: inherit;
 }
 
 .role-btn:hover {
@@ -137,7 +265,9 @@
   margin-left: auto;
 }
 
-/* Dashboard Card Grid */
+/* ===================================================
+   Dashboard Card Grid
+   =================================================== */
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -145,6 +275,247 @@
   padding: 1.5rem;
 }
 
+/* ===================================================
+   Slider Panel — Match demo app theme
+   =================================================== */
+.slider-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 998;
+  transition: opacity 0.3s ease;
+}
+
+.slider-panel {
+  position: fixed;
+  top: 0;
+  height: 100vh;
+  background: #fff;
+  z-index: 999;
+  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.slider-panel.open {
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Slider Header */
+.slider-header {
+  padding: 16px 20px;
+  border-bottom: 1.5px solid #E2E8F0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+.slider-header h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1E293B;
+}
+
+.slider-close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: #94A3B8;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.15s;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slider-close-btn:hover {
+  color: #1E293B;
+  background: #F1F5F9;
+}
+
+/* Slider Action Bar */
+.sl-action-bar {
+  padding: 8px 20px;
+  border-bottom: 1px solid #E2E8F0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  background: #F8FAFC;
+}
+
+.sl-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid #E2E8F0;
+  border-radius: 6px;
+  background: #fff;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+
+.sl-action-btn:hover {
+  background: #F1F5F9;
+  border-color: #CBD5E1;
+  color: #1E293B;
+}
+
+.sl-action-btn i {
+  font-size: 10px;
+}
+
+.sl-edit-toggle-btn {
+  background: #EFF6FF;
+  color: #2563EB;
+  border-color: #BFDBFE;
+}
+
+.sl-edit-toggle-btn:hover {
+  background: #DBEAFE;
+}
+
+.sl-edit-toggle-btn.active {
+  background: #2563EB;
+  color: #fff;
+  border-color: #2563EB;
+}
+
+/* Slider Content */
+.slider-content {
+  flex: 1;
+  overflow: auto;
+  padding: 20px;
+}
+
+/* Slider Tabs */
+.slider-tabs {
+  display: flex;
+  border-bottom: 2px solid #E2E8F0;
+  padding: 0 20px;
+  flex-shrink: 0;
+}
+
+.slider-tab {
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #94A3B8;
+  cursor: pointer;
+  transition: all 0.15s;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  white-space: nowrap;
+}
+
+.slider-tab:hover {
+  color: #475569;
+}
+
+.slider-tab.active {
+  color: #1A73E8;
+  border-bottom-color: #1A73E8;
+  font-weight: 600;
+}
+
+/* Slider Data Rows */
+.sl-section {
+  margin-bottom: 16px;
+}
+
+.sl-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #94A3B8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 8px 0;
+  border-bottom: 1px solid #F1F5F9;
+  margin-bottom: 4px;
+}
+
+.sl-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 7px 0;
+  border-bottom: 1px solid #F8FAFC;
+  font-size: 13px;
+}
+
+.sl-row-label {
+  color: #94A3B8;
+  font-weight: 500;
+  font-size: 12px;
+  min-width: 140px;
+}
+
+.sl-row-value {
+  color: #1E293B;
+  font-weight: 600;
+  text-align: right;
+  flex: 1;
+}
+
+/* ===================================================
+   Page Content area
+   =================================================== */
+.page-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  scrollbar-width: thin;
+}
+
+.page-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.page-content::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+/* Placeholder card */
+.placeholder-card {
+  background: var(--bg-white);
+  border-radius: var(--border-radius-lg);
+  padding: 3rem 2rem;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-color);
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.placeholder-card i {
+  font-size: 2.5rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.placeholder-card h3 {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+/* Stat Cards */
 .stat-card {
   background: var(--bg-white);
   border-radius: var(--border-radius-lg);
@@ -181,33 +552,4 @@
 
 .stat-card .stat-change.negative {
   color: var(--status-overdue);
-}
-
-/* Page Content Area */
-.page-content {
-  padding: 1.5rem;
-}
-
-/* Placeholder card */
-.placeholder-card {
-  background: var(--bg-white);
-  border-radius: var(--border-radius-lg);
-  padding: 3rem 2rem;
-  box-shadow: var(--shadow-card);
-  border: 1px solid var(--border-color);
-  text-align: center;
-  color: var(--text-secondary);
-}
-
-.placeholder-card i {
-  font-size: 2.5rem;
-  color: var(--text-muted);
-  margin-bottom: 1rem;
-  opacity: 0.5;
-}
-
-.placeholder-card h3 {
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: var(--text-primary);
 }

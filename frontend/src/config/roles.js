@@ -1,6 +1,7 @@
 /* ===================================================
    AxleOps — RBAC Configuration (React Port)
    Ported from js/rbac.js — Departments, Roles, Menus
+   Full nested menu structure for all roles
    =================================================== */
 
 export const DEPARTMENTS = {
@@ -61,136 +62,717 @@ export const ROLES = {
   operator: {
     id: 'operator', label: 'Operations Executive', icon: 'fas fa-headset', color: '#059669',
     department: 'operations',
-    user: { name: 'Neha Patel', initials: 'NP', title: 'Operations Executive' },
-    description: 'Day-to-day trip operations, POD tracking, and status updates.',
-    kpis: ['Trips Today', 'POD Pending', 'Loading Queue']
+    user: { name: 'Rajesh Kumar', initials: 'RK', title: 'Operations Executive' },
+    description: 'Day-to-day trip dispatch, vehicle scheduling, driver coordination.',
+    kpis: ['Active Trips', 'Delayed Trips', 'Driver Availability', 'Pending Dispatches']
   },
   driver: {
-    id: 'driver', label: 'Driver', icon: 'fas fa-id-card', color: '#16A34A',
+    id: 'driver', label: 'Driver', icon: 'fas fa-id-card', color: '#047857',
     department: 'operations',
-    user: { name: 'Ramesh Yadav', initials: 'RY', title: 'Senior Driver' },
-    description: 'Trip execution, document submission & expense tracking.',
-    kpis: ['Active Trip', 'Trips This Month', 'Documents Pending']
+    user: { name: 'Ramesh Yadav', initials: 'RY', title: 'Driver — MH04AB1234' },
+    description: 'Trip execution, fuel & expense recording, POD uploads.',
+    kpis: ['Active Trip', 'Km Today', 'Fuel Entered', 'PODs Pending']
   },
   finance_controller: {
-    id: 'finance_controller', label: 'Finance Controller', icon: 'fas fa-chart-pie', color: '#DC2626',
+    id: 'finance_controller', label: 'Finance Controller', icon: 'fas fa-chart-line', color: '#B91C1C',
     department: 'finance',
-    user: { name: 'Ravi Mehta', initials: 'RM', title: 'Finance Controller' },
-    description: 'P&L oversight, revenue assurance, payment authorization.',
-    kpis: ['Revenue MTD', 'Outstanding AR', 'Profit Margin', 'Cash Flow']
+    user: { name: 'Anita Desai', initials: 'AD', title: 'Finance Controller' },
+    description: 'P&L oversight, payment approvals, cash flow monitoring.',
+    kpis: ['Net Cash Flow', 'Gross Margin', 'Approvals Pending', 'Budget Variance']
   },
   accounts_exec: {
-    id: 'accounts_exec', label: 'Accounts Executive', icon: 'fas fa-calculator', color: '#F59E0B',
+    id: 'accounts_exec', label: 'Accounts Executive', icon: 'fas fa-calculator', color: '#EF4444',
     department: 'finance',
-    user: { name: 'Sneha Iyer', initials: 'SI', title: 'Accounts Executive' },
-    description: 'Invoice generation, payment tracking, TDS/GST filing.',
-    kpis: ['Invoices Pending', 'Payments Due', 'GST Filing Status']
+    user: { name: 'Deepak Jain', initials: 'DJ', title: 'Accounts Executive' },
+    description: 'Voucher entry, expense recording, ledger management, daily accounting.',
+    kpis: ['Pending Vouchers', 'Unreconciled', "Today's Entries", 'Expense Claims']
   },
   shop_manager: {
-    id: 'shop_manager', label: 'Workshop Manager', icon: 'fas fa-warehouse', color: '#D97706',
+    id: 'shop_manager', label: 'Workshop Manager', icon: 'fas fa-tools', color: '#D97706',
     department: 'maintenance',
-    user: { name: 'Arun Deshmukh', initials: 'AD', title: 'Workshop Manager' },
+    user: { name: 'Tarun Mishra', initials: 'TM', title: 'Workshop Manager' },
     description: 'Work order management, mechanic scheduling & quality checks.',
-    kpis: ['Active WOs', 'TAT Score', 'Parts Pending', 'Fleet Health']
+    kpis: ['Open Work Orders', 'Avg Repair Time', 'Parts Stock', 'Overdue Services']
   },
   mechanic: {
-    id: 'mechanic', label: 'Mechanic', icon: 'fas fa-tools', color: '#92400E',
+    id: 'mechanic', label: 'Mechanic', icon: 'fas fa-wrench', color: '#B45309',
     department: 'maintenance',
-    user: { name: 'Sunil Kumar', initials: 'SK', title: 'Senior Mechanic' },
-    description: 'Diagnosis, repair execution & parts consumption logging.',
-    kpis: ['Assigned WOs', 'Completed Today', 'Pending Parts']
+    user: { name: 'Ravi Shankar', initials: 'RS', title: 'Senior Mechanic' },
+    description: 'Work order execution, findings reporting, time & parts logging.',
+    kpis: ['Assigned WOs', 'Completed Today', 'Avg Repair Time', 'Parts Requested']
   },
   inventory_manager: {
     id: 'inventory_manager', label: 'Inventory Manager', icon: 'fas fa-boxes-stacked', color: '#0891B2',
     department: 'inventory',
-    user: { name: 'Meera Nair', initials: 'MN', title: 'Inventory Manager' },
-    description: 'Stock levels, reorder points, vendor management & PO lifecycle.',
-    kpis: ['Stock Value', 'Low Stock Items', 'Open POs', 'Vendor Count']
+    user: { name: 'Govind Thakur', initials: 'GT', title: 'Store Manager' },
+    description: 'Parts stock, reordering, consumption tracking, vendor coordination.',
+    kpis: ['Low Stock Items', 'Pending POs', 'Monthly Consumption', 'Stock Value']
   },
   admin: {
-    id: 'admin', label: 'System Admin', icon: 'fas fa-user-shield', color: '#374151',
+    id: 'admin', label: 'Super Admin', icon: 'fas fa-shield-alt', color: '#374151',
     department: 'admin',
-    user: { name: 'Deepak Joshi', initials: 'DJ', title: 'System Administrator' },
-    description: 'User management, branch setup, integration config & audit logs.',
-    kpis: ['Active Users', 'Branches', 'Integrations', 'System Health']
+    user: { name: 'Amit Mehta', initials: 'AM', title: 'System Administrator' },
+    description: 'Full system access — users, roles, configurations, integrations.',
+    kpis: ['Active Users', 'System Health', 'Data Integrity', 'Audit Logs']
   },
 };
 
-// Role-specific navigation menus
+/* ======================================================
+   Role-Based Menus — Full nested structure from demo app
+   Menu items use type: 'item' (flat) or 'group' (nested)
+   Page names map to route paths via pageToPath()
+   ====================================================== */
+
+// Helper: converts demo page names to React Router paths
+export function pageToPath(page) {
+  const map = {
+    'dashboard': '/dashboard',
+    'owner-morning-briefing': '/morning-briefing',
+    'active-trips': '/trips/active',
+    'archived-trips': '/trips/settled',
+    'trip-archive-search': '/trips/archived',
+    'trips': '/trips',
+    'trip-create': '/trips/create',
+    'trip-settlement': '/trips/settlement',
+    'routes': '/routes',
+    'bill-collect': '/billing',
+    'invoices': '/invoices',
+    'payment-receipts': '/payment-receipts',
+    'aging-analysis': '/aging-analysis',
+    'client-bill-master': '/billing/create',
+    'vehicle-list': '/fleet',
+    'vehicle-types': '/fleet/types',
+    'vehicle-assignments': '/fleet/assignments',
+    'vehicle-detail': '/fleet/detail',
+    'vehicle-new': '/fleet/new',
+    'meter-history': '/fleet/meter-history',
+    'expense-history': '/expense-history',
+    'equipment': '/equipment',
+    'clients': '/clients',
+    'contacts': '/drivers',
+    'employees': '/employees',
+    'accounts-list': '/accounts-list',
+    'driver-ledger': '/driver-ledger',
+    'smart-recommendations': '/intelligence/recommendations',
+    'behavioral-losses': '/intelligence/behavioral-losses',
+    'customer-service-levels': '/intelligence/service-levels',
+    'alert-analytics': '/intelligence/alert-analytics',
+    'trip-alerts': '/alerts/command-center',
+    'alerting-rules': '/alerts/rules',
+    'escalation-matrix': '/alerts/escalation',
+    'chart-of-accounts': '/accounting/chart-of-accounts',
+    'account-ledger': '/accounting/ledger',
+    'voucher-entry': '/accounting/voucher-entry',
+    'day-book': '/accounting/day-book',
+    'trial-balance': '/accounting/trial-balance',
+    'export-center': '/accounting/export-center',
+    'profit-loss': '/reports/profit-loss',
+    'balance-sheet': '/reports/balance-sheet',
+    'cash-flow': '/reports/cash-flow',
+    'trip-profitability': '/reports/trip-profitability',
+    'insurance-spend': '/reports/insurance-spend',
+    'branches': '/org/branches',
+    'partners': '/org/partners',
+    'inventory-intelligence': '/inventory/intelligence',
+    'workshop-forecast': '/workshop/forecast',
+    'vendor-capital': '/workshop/vendor-capital',
+    'reports': '/reports',
+    'settings': '/settings',
+    'inspections': '/inspections',
+    'reminders': '/reminders',
+    'service-history': '/service/history',
+    'work-orders': '/service/work-orders',
+    'work-order-board': '/service/work-order-board',
+    'service-tasks': '/service/tasks',
+    'service-programs': '/service/programs',
+    'shop-directory': '/service/shop-directory',
+    'vendors': '/vendors',
+    'parts-list': '/inventory/parts',
+    'purchase-orders': '/inventory/purchase-orders',
+    'fuel-history': '/fuel/history',
+    'charging-history': '/fuel/charging',
+    'places': '/places',
+    'documents': '/documents',
+    'user-management': '/admin/users',
+    'vehicle-compliance': '/compliance/vehicles',
+    'driver-mobile': '/driver-app',
+    'workflow-templates': '/workflow-templates',
+  };
+  return map[page] || `/${page}`;
+}
+
 export const ROLE_MENUS = {
   owner: [
-    { id: 'dashboard', label: 'Dashboard', icon: 'fas fa-chart-line', path: '/dashboard' },
-    { id: 'trips', label: 'Trip Management', icon: 'fas fa-route', path: '/trips' },
-    { id: 'fleet', label: 'Fleet', icon: 'fas fa-truck-moving', path: '/fleet' },
-    { id: 'clients', label: 'Clients', icon: 'fas fa-building', path: '/clients' },
-    { id: 'routes', label: 'Routes', icon: 'fas fa-map-marked-alt', path: '/routes' },
-    { id: 'drivers', label: 'Drivers', icon: 'fas fa-id-card', path: '/drivers' },
-    { id: 'bill_collect', label: 'Bill & Collect', icon: 'fas fa-file-invoice-dollar', path: '/billing' },
-    { id: 'accounting', label: 'Accounting', icon: 'fas fa-rupee-sign', path: '/accounting' },
-    { id: 'mro', label: 'MRO', icon: 'fas fa-wrench', path: '/mro' },
-    { id: 'inventory', label: 'Parts & Inventory', icon: 'fas fa-boxes-stacked', path: '/inventory' },
-    { id: 'reports', label: 'Reports', icon: 'fas fa-chart-bar', path: '/reports' },
-    { id: 'settings', label: 'Settings', icon: 'fas fa-cog', path: '/settings' },
+    { type: 'item', icon: 'fas fa-th-large', label: 'Dashboard', page: 'dashboard' },
+    { type: 'item', icon: 'fas fa-mobile-alt', label: 'Morning Briefing', page: 'owner-morning-briefing' },
+    {
+      type: 'group', icon: 'fas fa-route', label: 'Trip Management', id: 'sub-trips', children: [
+        { label: 'Active Trips', page: 'active-trips' },
+        { label: 'Settled Trips', page: 'archived-trips' },
+        { label: 'Archived Trips', page: 'trip-archive-search' },
+        { label: 'Routes', page: 'routes' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-file-invoice-dollar', label: 'Bill & Collect', id: 'sub-bill-collect', children: [
+        { label: 'Bill & Collect', page: 'bill-collect' },
+        { label: 'Invoices', page: 'invoices' },
+        { label: 'Payment Receipts', page: 'payment-receipts' },
+        { label: 'Aging Analysis', page: 'aging-analysis' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-truck', label: 'Vehicles', id: 'sub-vehicles', children: [
+        { label: 'Vehicle List', page: 'vehicle-list' },
+        { label: 'Vehicle Types', page: 'vehicle-types' },
+        { label: 'Vehicle Assignments', page: 'vehicle-assignments' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-users-cog', label: 'Accounts & Users', id: 'sub-accounts-users', children: [
+        { label: 'Clients', page: 'clients' },
+        { label: 'Drivers', page: 'contacts' },
+        { label: 'Employees', page: 'employees' },
+        { label: 'Accounts', page: 'accounts-list' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-lightbulb', label: 'Strategy & Insights', id: 'sub-strategy', children: [
+        { label: 'Smart Recommendations', page: 'smart-recommendations' },
+        { label: 'Behavioral Losses', page: 'behavioral-losses' },
+        { label: 'Customer Service Levels', page: 'customer-service-levels' },
+        { label: 'Alert Analytics', page: 'alert-analytics' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-bell', label: 'Alert & Monitoring', id: 'sub-intelligence', children: [
+        { label: 'Command Center', page: 'trip-alerts' },
+        { label: 'Alert Rules', page: 'alerting-rules' },
+        { label: 'Escalation Matrix', page: 'escalation-matrix' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-book', label: 'Ledgers & Vouchers', id: 'sub-accounting', children: [
+        { label: 'Chart of Accounts', page: 'chart-of-accounts' },
+        { label: 'Account Ledger', page: 'account-ledger' },
+        { label: 'Voucher Entry', page: 'voucher-entry' },
+        { label: 'Day Book', page: 'day-book' },
+        { label: 'Trial Balance', page: 'trial-balance' },
+        { label: 'Export Center', page: 'export-center' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-chart-pie', label: 'Financial Reports', id: 'sub-finreports', children: [
+        { label: 'Profit & Loss', page: 'profit-loss' },
+        { label: 'Balance Sheet', page: 'balance-sheet' },
+        { label: 'Cash Flow', page: 'cash-flow' },
+        { label: 'Trip Profitability', page: 'trip-profitability' },
+        { label: 'Insurance Spend', page: 'insurance-spend' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-sitemap', label: 'Organization', id: 'sub-org', children: [
+        { label: 'Branches', page: 'branches' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-calendar-alt', label: 'Workshop Planning', id: 'sub-workshop', children: [
+        { label: 'Inventory Intelligence', page: 'inventory-intelligence' },
+        { label: 'Forecast & Capacity', page: 'workshop-forecast' },
+        { label: 'Vendor Capital', page: 'vendor-capital' },
+      ]
+    },
+    { type: 'item', icon: 'fas fa-chart-bar', label: 'Reports', page: 'reports' },
+    { type: 'item', icon: 'fas fa-cog', label: 'Settings', page: 'settings' },
   ],
+
   branch_manager: [
-    { id: 'dashboard', label: 'Dashboard', icon: 'fas fa-chart-line', path: '/dashboard' },
-    { id: 'trips', label: 'Trip Management', icon: 'fas fa-route', path: '/trips' },
-    { id: 'fleet', label: 'Fleet', icon: 'fas fa-truck-moving', path: '/fleet' },
-    { id: 'clients', label: 'Clients', icon: 'fas fa-building', path: '/clients' },
-    { id: 'routes', label: 'Routes', icon: 'fas fa-map-marked-alt', path: '/routes' },
-    { id: 'drivers', label: 'Drivers', icon: 'fas fa-id-card', path: '/drivers' },
-    { id: 'bill_collect', label: 'Bill & Collect', icon: 'fas fa-file-invoice-dollar', path: '/billing' },
-    { id: 'mro', label: 'MRO', icon: 'fas fa-wrench', path: '/mro' },
-    { id: 'reports', label: 'Reports', icon: 'fas fa-chart-bar', path: '/reports' },
+    { type: 'item', icon: 'fas fa-th-large', label: 'Dashboard', page: 'dashboard' },
+    {
+      type: 'group', icon: 'fas fa-route', label: 'Trip Management', id: 'sub-trips', children: [
+        { label: 'Trip Dashboard', page: 'trips' },
+        { label: 'Active Trips', page: 'active-trips' },
+        { label: 'Settled Trips', page: 'archived-trips' },
+        { label: 'Archived Trips', page: 'trip-archive-search' },
+        { label: 'Routes', page: 'routes' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-file-invoice-dollar', label: 'Bill & Collect', id: 'sub-bill-collect', children: [
+        { label: 'Bill & Collect', page: 'bill-collect' },
+        { label: 'Create Bill', page: 'client-bill-master' },
+        { label: 'Invoices', page: 'invoices' },
+        { label: 'Payment Receipts', page: 'payment-receipts' },
+        { label: 'Aging Analysis', page: 'aging-analysis' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-truck', label: 'Vehicles', id: 'sub-vehicles', children: [
+        { label: 'Vehicle List', page: 'vehicle-list' },
+        { label: 'Vehicle Assignments', page: 'vehicle-assignments' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-users-cog', label: 'Accounts & Users', id: 'sub-accounts-users', children: [
+        { label: 'Clients', page: 'clients' },
+        { label: 'Drivers', page: 'contacts' },
+        { label: 'Employees', page: 'employees' },
+        { label: 'Accounts', page: 'accounts-list' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-bell', label: 'Alert & Monitoring', id: 'sub-intelligence', children: [
+        { label: 'Command Center', page: 'trip-alerts' },
+        { label: 'Alert Rules', page: 'alerting-rules' },
+        { label: 'Analytics', page: 'alert-analytics' },
+        { label: 'Escalation Matrix', page: 'escalation-matrix' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-book', label: 'Ledgers', id: 'sub-accounting', children: [
+        { label: 'Account Ledger', page: 'account-ledger' },
+        { label: 'Day Book', page: 'day-book' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-chart-pie', label: 'Financial Reports', id: 'sub-finreports', children: [
+        { label: 'Branch P&L', page: 'profit-loss' },
+        { label: 'Trip Profitability', page: 'trip-profitability' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-wrench', label: 'Maintenance', id: 'sub-service', children: [
+        { label: 'Work Orders', page: 'work-orders' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-shield-alt', label: 'Compliance', id: 'sub-compliance', children: [
+        { label: 'Vehicle Compliance', page: 'vehicle-compliance' },
+      ]
+    },
+    { type: 'item', icon: 'fas fa-chart-bar', label: 'Reports', page: 'reports' },
   ],
+
   fleet_manager: [
-    { id: 'dashboard', label: 'Dashboard', icon: 'fas fa-chart-line', path: '/dashboard' },
-    { id: 'trips', label: 'Trip Management', icon: 'fas fa-route', path: '/trips' },
-    { id: 'fleet', label: 'Fleet', icon: 'fas fa-truck-moving', path: '/fleet' },
-    { id: 'routes', label: 'Routes', icon: 'fas fa-map-marked-alt', path: '/routes' },
-    { id: 'drivers', label: 'Drivers', icon: 'fas fa-id-card', path: '/drivers' },
+    { type: 'item', icon: 'fas fa-th-large', label: 'Dashboard', page: 'dashboard' },
+    {
+      type: 'group', icon: 'fas fa-route', label: 'Trip Management', id: 'sub-trips', children: [
+        { label: 'Active Trips', page: 'active-trips' },
+        { label: 'Settled Trips', page: 'archived-trips' },
+        { label: 'Archived Trips', page: 'trip-archive-search' },
+        { label: 'Routes', page: 'routes' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-file-invoice-dollar', label: 'Bill & Collect', id: 'sub-bill-collect', children: [
+        { label: 'Bill & Collect', page: 'bill-collect' },
+        { label: 'Invoices', page: 'invoices' },
+        { label: 'Payment Receipts', page: 'payment-receipts' },
+        { label: 'Aging Analysis', page: 'aging-analysis' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-truck', label: 'Vehicles', id: 'sub-vehicles', children: [
+        { label: 'Vehicle List', page: 'vehicle-list' },
+        { label: 'Vehicle Types', page: 'vehicle-types' },
+        { label: 'Vehicle Assignments', page: 'vehicle-assignments' },
+      ]
+    },
+    { type: 'item', icon: 'fas fa-cogs', label: 'Equipment', page: 'equipment' },
+    {
+      type: 'group', icon: 'fas fa-users-cog', label: 'Accounts & Users', id: 'sub-accounts-users', children: [
+        { label: 'Clients', page: 'clients' },
+        { label: 'Drivers', page: 'contacts' },
+        { label: 'Employees', page: 'employees' },
+        { label: 'Accounts', page: 'accounts-list' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-clipboard-check', label: 'Inspections', id: 'sub-inspections', children: [
+        { label: 'Inspection History', page: 'inspections' },
+      ]
+    },
+    { type: 'item', icon: 'fas fa-bell', label: 'Reminders', page: 'reminders' },
+    {
+      type: 'group', icon: 'fas fa-bell', label: 'Alert & Monitoring', id: 'sub-intelligence', children: [
+        { label: 'Command Center', page: 'trip-alerts' },
+        { label: 'Alert Rules', page: 'alerting-rules' },
+        { label: 'Analytics', page: 'alert-analytics' },
+        { label: 'Escalation Matrix', page: 'escalation-matrix' },
+      ]
+    },
+    { type: 'item', icon: 'fas fa-chart-bar', label: 'Reports', page: 'reports' },
   ],
+
   operator: [
-    { id: 'dashboard', label: 'Dashboard', icon: 'fas fa-chart-line', path: '/dashboard' },
-    { id: 'trips', label: 'Trip Management', icon: 'fas fa-route', path: '/trips' },
-    { id: 'fleet', label: 'Fleet', icon: 'fas fa-truck-moving', path: '/fleet' },
-    { id: 'drivers', label: 'Drivers', icon: 'fas fa-id-card', path: '/drivers' },
+    { type: 'item', icon: 'fas fa-th-large', label: 'Dashboard', page: 'dashboard' },
+    {
+      type: 'group', icon: 'fas fa-route', label: 'Trip Management', id: 'sub-trips', children: [
+        { label: 'Active Trips', page: 'active-trips' },
+        { label: 'Settled Trips', page: 'archived-trips' },
+        { label: 'Archived Trips', page: 'trip-archive-search' },
+        { label: 'Routes', page: 'routes' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-file-invoice-dollar', label: 'Bill & Collect', id: 'sub-bill-collect', children: [
+        { label: 'Bill & Collect', page: 'bill-collect' },
+        { label: 'Invoices', page: 'invoices' },
+        { label: 'Payment Receipts', page: 'payment-receipts' },
+        { label: 'Aging Analysis', page: 'aging-analysis' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-truck', label: 'Vehicles', id: 'sub-vehicles', children: [
+        { label: 'Vehicle List', page: 'vehicle-list' },
+        { label: 'Vehicle Assignments', page: 'vehicle-assignments' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-users-cog', label: 'Accounts & Users', id: 'sub-accounts-users', children: [
+        { label: 'Clients', page: 'clients' },
+        { label: 'Drivers', page: 'contacts' },
+        { label: 'Employees', page: 'employees' },
+        { label: 'Accounts', page: 'accounts-list' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-bell', label: 'Alert & Monitoring', id: 'sub-intelligence', children: [
+        { label: 'Command Center', page: 'trip-alerts' },
+        { label: 'Alert Rules', page: 'alerting-rules' },
+        { label: 'Analytics', page: 'alert-analytics' },
+        { label: 'Escalation Matrix', page: 'escalation-matrix' },
+      ]
+    },
   ],
+
   driver: [
-    { id: 'dashboard', label: 'Dashboard', icon: 'fas fa-chart-line', path: '/dashboard' },
-    { id: 'trips', label: 'My Trips', icon: 'fas fa-route', path: '/trips' },
+    { type: 'item', icon: 'fas fa-th-large', label: 'Dashboard', page: 'dashboard' },
+    {
+      type: 'group', icon: 'fas fa-route', label: 'My Trips', id: 'sub-trips', children: [
+        { label: 'Active Trips', page: 'active-trips' },
+        { label: 'Settled Trips', page: 'archived-trips' },
+        { label: 'Archived Trips', page: 'trip-archive-search' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-truck', label: 'My Vehicle', id: 'sub-vehicles', children: [
+        { label: 'Vehicle Details', page: 'vehicle-detail' },
+        { label: 'Service History', page: 'service-history' },
+        { label: 'Inspections', page: 'inspections' },
+      ]
+    },
+    { type: 'item', icon: 'fas fa-receipt', label: 'Expenses', page: 'expense-history' },
+    {
+      type: 'group', icon: 'fas fa-bell', label: 'Alert & Monitoring', id: 'sub-intelligence', children: [
+        { label: 'Command Center', page: 'trip-alerts' },
+        { label: 'Alert Rules', page: 'alerting-rules' },
+        { label: 'Analytics', page: 'alert-analytics' },
+        { label: 'Escalation Matrix', page: 'escalation-matrix' },
+      ]
+    },
   ],
+
   finance_controller: [
-    { id: 'dashboard', label: 'Dashboard', icon: 'fas fa-chart-line', path: '/dashboard' },
-    { id: 'bill_collect', label: 'Bill & Collect', icon: 'fas fa-file-invoice-dollar', path: '/billing' },
-    { id: 'accounting', label: 'Accounting', icon: 'fas fa-rupee-sign', path: '/accounting' },
-    { id: 'reports', label: 'Reports', icon: 'fas fa-chart-bar', path: '/reports' },
+    { type: 'item', icon: 'fas fa-th-large', label: 'Dashboard', page: 'dashboard' },
+    {
+      type: 'group', icon: 'fas fa-route', label: 'Trip Management', id: 'sub-trips', children: [
+        { label: 'Active Trips', page: 'active-trips' },
+        { label: 'Settled Trips', page: 'archived-trips' },
+        { label: 'Archived Trips', page: 'trip-archive-search' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-file-invoice-dollar', label: 'Bill & Collect', id: 'sub-bill-collect', children: [
+        { label: 'Bill & Collect', page: 'bill-collect' },
+        { label: 'Invoices', page: 'invoices' },
+        { label: 'Payment Receipts', page: 'payment-receipts' },
+        { label: 'Aging Analysis', page: 'aging-analysis' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-book', label: 'Ledgers & Vouchers', id: 'sub-accounting', children: [
+        { label: 'Chart of Accounts', page: 'chart-of-accounts' },
+        { label: 'Account Ledger', page: 'account-ledger' },
+        { label: 'Voucher Entry', page: 'voucher-entry' },
+        { label: 'Day Book', page: 'day-book' },
+        { label: 'Trial Balance', page: 'trial-balance' },
+        { label: 'Export Center', page: 'export-center' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-chart-pie', label: 'Financial Reports', id: 'sub-finreports', children: [
+        { label: 'Profit & Loss', page: 'profit-loss' },
+        { label: 'Balance Sheet', page: 'balance-sheet' },
+        { label: 'Cash Flow', page: 'cash-flow' },
+        { label: 'Trip Profitability', page: 'trip-profitability' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-users-cog', label: 'Accounts & Users', id: 'sub-accounts-users', children: [
+        { label: 'Clients', page: 'clients' },
+        { label: 'Drivers', page: 'contacts' },
+        { label: 'Employees', page: 'employees' },
+        { label: 'Accounts', page: 'accounts-list' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-bell', label: 'Alert & Monitoring', id: 'sub-intelligence', children: [
+        { label: 'Command Center', page: 'trip-alerts' },
+        { label: 'Alert Rules', page: 'alerting-rules' },
+        { label: 'Analytics', page: 'alert-analytics' },
+        { label: 'Escalation Matrix', page: 'escalation-matrix' },
+      ]
+    },
+    { type: 'item', icon: 'fas fa-store', label: 'Vendors', page: 'vendors' },
+    { type: 'item', icon: 'fas fa-chart-bar', label: 'Reports', page: 'reports' },
   ],
+
   accounts_exec: [
-    { id: 'dashboard', label: 'Dashboard', icon: 'fas fa-chart-line', path: '/dashboard' },
-    { id: 'bill_collect', label: 'Bill & Collect', icon: 'fas fa-file-invoice-dollar', path: '/billing' },
-    { id: 'accounting', label: 'Accounting', icon: 'fas fa-rupee-sign', path: '/accounting' },
+    { type: 'item', icon: 'fas fa-th-large', label: 'Dashboard', page: 'dashboard' },
+    {
+      type: 'group', icon: 'fas fa-route', label: 'Trip Management', id: 'sub-trips', children: [
+        { label: 'Active Trips', page: 'active-trips' },
+        { label: 'Settled Trips', page: 'archived-trips' },
+        { label: 'Archived Trips', page: 'trip-archive-search' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-file-invoice-dollar', label: 'Bill & Collect', id: 'sub-bill-collect', children: [
+        { label: 'Bill & Collect', page: 'bill-collect' },
+        { label: 'Invoices', page: 'invoices' },
+        { label: 'Payment Receipts', page: 'payment-receipts' },
+        { label: 'Aging Analysis', page: 'aging-analysis' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-book', label: 'Ledgers & Vouchers', id: 'sub-accounting', children: [
+        { label: 'Chart of Accounts', page: 'chart-of-accounts' },
+        { label: 'Account Ledger', page: 'account-ledger' },
+        { label: 'Voucher Entry', page: 'voucher-entry' },
+        { label: 'Day Book', page: 'day-book' },
+        { label: 'Trial Balance', page: 'trial-balance' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-users-cog', label: 'Accounts & Users', id: 'sub-accounts-users', children: [
+        { label: 'Clients', page: 'clients' },
+        { label: 'Drivers', page: 'contacts' },
+        { label: 'Employees', page: 'employees' },
+        { label: 'Accounts', page: 'accounts-list' },
+      ]
+    },
+    { type: 'item', icon: 'fas fa-truck', label: 'Expense History', page: 'expense-history' },
+    {
+      type: 'group', icon: 'fas fa-bell', label: 'Alert & Monitoring', id: 'sub-intelligence', children: [
+        { label: 'Command Center', page: 'trip-alerts' },
+        { label: 'Alert Rules', page: 'alerting-rules' },
+        { label: 'Analytics', page: 'alert-analytics' },
+        { label: 'Escalation Matrix', page: 'escalation-matrix' },
+      ]
+    },
+    { type: 'item', icon: 'fas fa-store', label: 'Vendors', page: 'vendors' },
   ],
+
   shop_manager: [
-    { id: 'dashboard', label: 'Dashboard', icon: 'fas fa-chart-line', path: '/dashboard' },
-    { id: 'mro', label: 'MRO', icon: 'fas fa-wrench', path: '/mro' },
-    { id: 'fleet', label: 'Fleet', icon: 'fas fa-truck-moving', path: '/fleet' },
-    { id: 'inventory', label: 'Parts & Inventory', icon: 'fas fa-boxes-stacked', path: '/inventory' },
+    { type: 'item', icon: 'fas fa-th-large', label: 'Dashboard', page: 'dashboard' },
+    {
+      type: 'group', icon: 'fas fa-wrench', label: 'Service', id: 'sub-service', children: [
+        { label: 'Work Order Board', page: 'work-order-board' },
+        { label: 'Work Orders', page: 'work-orders' },
+        { label: 'Service History', page: 'service-history' },
+        { label: 'Service Tasks', page: 'service-tasks' },
+        { label: 'Service Programs', page: 'service-programs' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-truck', label: 'Vehicles', id: 'sub-vehicles', children: [
+        { label: 'Vehicle List', page: 'vehicle-list' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-clipboard-check', label: 'Inspections', id: 'sub-inspections', children: [
+        { label: 'Inspection History', page: 'inspections' },
+      ]
+    },
+    { type: 'item', icon: 'fas fa-bell', label: 'Reminders', page: 'reminders' },
+    {
+      type: 'group', icon: 'fas fa-boxes-stacked', label: 'Parts & Inventory', id: 'sub-parts', children: [
+        { label: 'Inventory Intelligence', page: 'inventory-intelligence' },
+        { label: 'Parts List', page: 'parts-list' },
+        { label: 'Purchase Orders', page: 'purchase-orders' },
+      ]
+    },
+    { type: 'item', icon: 'fas fa-store', label: 'Vendors', page: 'vendors' },
+    { type: 'item', icon: 'fas fa-store', label: 'Shop Directory', page: 'shop-directory' },
+    {
+      type: 'group', icon: 'fas fa-calendar-alt', label: 'Workshop', id: 'sub-workshop', children: [
+        { label: 'Forecast & Capacity', page: 'workshop-forecast' },
+        { label: 'Vendor Capital', page: 'vendor-capital' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-bell', label: 'Alert & Monitoring', id: 'sub-intelligence', children: [
+        { label: 'Command Center', page: 'trip-alerts' },
+        { label: 'Alert Rules', page: 'alerting-rules' },
+        { label: 'Analytics', page: 'alert-analytics' },
+        { label: 'Escalation Matrix', page: 'escalation-matrix' },
+      ]
+    },
   ],
+
   mechanic: [
-    { id: 'dashboard', label: 'Dashboard', icon: 'fas fa-chart-line', path: '/dashboard' },
-    { id: 'mro', label: 'My Work Orders', icon: 'fas fa-wrench', path: '/mro' },
-    { id: 'inventory', label: 'Parts', icon: 'fas fa-boxes-stacked', path: '/inventory' },
+    { type: 'item', icon: 'fas fa-th-large', label: 'Dashboard', page: 'dashboard' },
+    {
+      type: 'group', icon: 'fas fa-wrench', label: 'My Work', id: 'sub-service', children: [
+        { label: 'Work Orders', page: 'work-orders' },
+        { label: 'Service Tasks', page: 'service-tasks' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-clipboard-check', label: 'Inspections', id: 'sub-inspections', children: [
+        { label: 'Inspections', page: 'inspections' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-boxes-stacked', label: 'Parts', id: 'sub-parts', children: [
+        { label: 'Parts List', page: 'parts-list' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-bell', label: 'Alert & Monitoring', id: 'sub-intelligence', children: [
+        { label: 'Command Center', page: 'trip-alerts' },
+        { label: 'Alert Rules', page: 'alerting-rules' },
+        { label: 'Analytics', page: 'alert-analytics' },
+        { label: 'Escalation Matrix', page: 'escalation-matrix' },
+      ]
+    },
   ],
+
   inventory_manager: [
-    { id: 'dashboard', label: 'Dashboard', icon: 'fas fa-chart-line', path: '/dashboard' },
-    { id: 'inventory', label: 'Parts & Inventory', icon: 'fas fa-boxes-stacked', path: '/inventory' },
-    { id: 'mro', label: 'Purchase Orders', icon: 'fas fa-file-alt', path: '/procurement' },
+    { type: 'item', icon: 'fas fa-th-large', label: 'Dashboard', page: 'dashboard' },
+    {
+      type: 'group', icon: 'fas fa-boxes-stacked', label: 'Inventory', id: 'sub-parts', children: [
+        { label: 'Inventory Intelligence', page: 'inventory-intelligence' },
+        { label: 'Parts List', page: 'parts-list' },
+        { label: 'Purchase Orders', page: 'purchase-orders' },
+      ]
+    },
+    { type: 'item', icon: 'fas fa-store', label: 'Vendors', page: 'vendors' },
+    { type: 'item', icon: 'fas fa-hand-holding-usd', label: 'Vendor Capital', page: 'vendor-capital' },
+    {
+      type: 'group', icon: 'fas fa-wrench', label: 'Workshop', id: 'sub-service', children: [
+        { label: 'Work Orders', page: 'work-orders' },
+      ]
+    },
+    { type: 'item', icon: 'fas fa-truck', label: 'Expense History', page: 'expense-history' },
+    {
+      type: 'group', icon: 'fas fa-bell', label: 'Alert & Monitoring', id: 'sub-intelligence', children: [
+        { label: 'Command Center', page: 'trip-alerts' },
+        { label: 'Alert Rules', page: 'alerting-rules' },
+        { label: 'Analytics', page: 'alert-analytics' },
+        { label: 'Escalation Matrix', page: 'escalation-matrix' },
+      ]
+    },
   ],
+
   admin: [
-    { id: 'dashboard', label: 'Dashboard', icon: 'fas fa-chart-line', path: '/dashboard' },
-    { id: 'users', label: 'User Management', icon: 'fas fa-users-cog', path: '/users' },
-    { id: 'branches', label: 'Branches', icon: 'fas fa-code-branch', path: '/branches' },
-    { id: 'settings', label: 'Settings', icon: 'fas fa-cog', path: '/settings' },
+    { type: 'item', icon: 'fas fa-th-large', label: 'Dashboard', page: 'dashboard' },
+    {
+      type: 'group', icon: 'fas fa-route', label: 'Trip Management', id: 'sub-trips', children: [
+        { label: 'Active Trips', page: 'active-trips' },
+        { label: 'Settled Trips', page: 'archived-trips' },
+        { label: 'Archived Trips', page: 'trip-archive-search' },
+        { label: 'Routes', page: 'routes' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-file-invoice-dollar', label: 'Bill & Collect', id: 'sub-bill-collect', children: [
+        { label: 'Bill & Collect', page: 'bill-collect' },
+        { label: 'Invoices', page: 'invoices' },
+        { label: 'Payment Receipts', page: 'payment-receipts' },
+        { label: 'Aging Analysis', page: 'aging-analysis' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-truck', label: 'Vehicles', id: 'sub-vehicles', children: [
+        { label: 'Vehicle List', page: 'vehicle-list' },
+        { label: 'Vehicle Types', page: 'vehicle-types' },
+        { label: 'Vehicle Assignments', page: 'vehicle-assignments' },
+      ]
+    },
+    { type: 'item', icon: 'fas fa-cogs', label: 'Equipment', page: 'equipment' },
+    {
+      type: 'group', icon: 'fas fa-users-cog', label: 'Accounts & Users', id: 'sub-accounts-users', children: [
+        { label: 'Clients', page: 'clients' },
+        { label: 'Drivers', page: 'contacts' },
+        { label: 'Employees', page: 'employees' },
+        { label: 'Accounts', page: 'accounts-list' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-clipboard-check', label: 'Inspections', id: 'sub-inspections', children: [
+        { label: 'Inspection History', page: 'inspections' },
+      ]
+    },
+    { type: 'item', icon: 'fas fa-bell', label: 'Reminders', page: 'reminders' },
+    {
+      type: 'group', icon: 'fas fa-wrench', label: 'Service', id: 'sub-service', children: [
+        { label: 'Work Order Board', page: 'work-order-board' },
+        { label: 'Service History', page: 'service-history' },
+        { label: 'Work Orders', page: 'work-orders' },
+        { label: 'Service Tasks', page: 'service-tasks' },
+        { label: 'Service Programs', page: 'service-programs' },
+        { label: 'Shop Directory', page: 'shop-directory' },
+      ]
+    },
+    { type: 'item', icon: 'fas fa-store', label: 'Vendors', page: 'vendors' },
+    {
+      type: 'group', icon: 'fas fa-boxes-stacked', label: 'Parts & Inventory', id: 'sub-parts', children: [
+        { label: 'Inventory Intelligence', page: 'inventory-intelligence' },
+        { label: 'Parts List', page: 'parts-list' },
+        { label: 'Purchase Orders', page: 'purchase-orders' },
+      ]
+    },
+    { type: 'item', icon: 'fas fa-chart-bar', label: 'Reports', page: 'reports' },
+    {
+      type: 'group', icon: 'fas fa-book', label: 'Ledgers & Vouchers', id: 'sub-accounting', children: [
+        { label: 'Chart of Accounts', page: 'chart-of-accounts' },
+        { label: 'Account Ledger', page: 'account-ledger' },
+        { label: 'Voucher Entry', page: 'voucher-entry' },
+        { label: 'Day Book', page: 'day-book' },
+        { label: 'Trial Balance', page: 'trial-balance' },
+        { label: 'Export Center', page: 'export-center' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-chart-pie', label: 'Financial Reports', id: 'sub-finreports', children: [
+        { label: 'Profit & Loss', page: 'profit-loss' },
+        { label: 'Balance Sheet', page: 'balance-sheet' },
+        { label: 'Cash Flow', page: 'cash-flow' },
+        { label: 'Trip Profitability', page: 'trip-profitability' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-bell', label: 'Alert & Monitoring', id: 'sub-intelligence', children: [
+        { label: 'Command Center', page: 'trip-alerts' },
+        { label: 'Alert Rules', page: 'alerting-rules' },
+        { label: 'Analytics', page: 'alert-analytics' },
+        { label: 'Escalation Matrix', page: 'escalation-matrix' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-sitemap', label: 'Organization', id: 'sub-org', children: [
+        { label: 'Branches', page: 'branches' },
+      ]
+    },
+    {
+      type: 'group', icon: 'fas fa-calendar-alt', label: 'Workshop Planning', id: 'sub-workshop', children: [
+        { label: 'Forecast & Capacity', page: 'workshop-forecast' },
+        { label: 'Vendor Capital', page: 'vendor-capital' },
+      ]
+    },
+    { type: 'item', icon: 'fas fa-users-cog', label: 'User Management', page: 'user-management' },
+    { type: 'item', icon: 'fas fa-cog', label: 'Settings', page: 'settings' },
   ],
 };

@@ -3,7 +3,7 @@ import { ROLES, ROLE_MENUS } from '../config/roles';
 
 const useAuthStore = create((set, get) => ({
   currentRole: null,
-  menuItems: [],
+  menuItems: [],      // Full nested menu (groups + items)
 
   setRole: (roleId) => {
     const role = ROLES[roleId];

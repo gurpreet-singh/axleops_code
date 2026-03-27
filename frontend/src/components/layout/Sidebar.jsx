@@ -1,86 +1,115 @@
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import useAuthStore from '../../stores/authStore';
+import { pageToPath } from '../../config/roles';
 
 export default function Sidebar() {
   const { currentRole, menuItems } = useAuthStore();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [expanded, setExpanded] = useState({});
+
+  // Auto-expand group that contains the current path
+  useEffect(() => {
+    if (!menuItems) return;
+    const newExpanded = {};
+    menuItems.forEach((item) => {
+      if (item.type === 'group' && item.children) {
+        const isActive = item.children.some(
+          (child) => pageToPath(child.page) === location.pathname
+        );
+        if (isActive) newExpanded[item.id] = true;
+      }
+    });
+    setExpanded((prev) => ({ ...prev, ...newExpanded }));
+  }, [location.pathname, menuItems]);
 
   if (!currentRole) return null;
 
+  const toggleGroup = (id) => {
+    setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
   return (
     <aside className="sidebar">
-      {/* Logo */}
-      <div className="sidebar-logo" onClick={() => navigate('/dashboard')}>
-        <div className="logo-icon">
-          <i className="fas fa-truck-moving"></i>
+      {/* Brand */}
+      <div className="sidebar-brand" onClick={() => navigate('/dashboard')}>
+        <div className="brand-icon">
+          {currentRole.user.initials}
         </div>
-        <div className="logo-text">
-          <span className="logo-name">AxleOps</span>
-          <span className="logo-tagline">Fleet Platform</span>
+        <div className="brand-info">
+          <span className="brand-name">Goodwill Transport</span>
+          <span className="brand-sub">{currentRole.user.name}</span>
         </div>
       </div>
 
       {/* Navigation */}
       <nav className="sidebar-nav">
-        {menuItems.map((item) => (
-          <NavLink
-            key={item.id}
-            to={item.path}
-            className={({ isActive }) =>
-              `nav-item${isActive ? ' active' : ''}`
-            }
-          >
-            <i className={`nav-icon ${item.icon}`}></i>
-            <span className="nav-label">{item.label}</span>
-          </NavLink>
-        ))}
+        {menuItems.map((item, idx) => {
+          if (item.type === 'group') {
+            const isExpanded = expanded[item.id];
+            const isGroupActive = item.children?.some(
+              (child) => pageToPath(child.page) === location.pathname
+            );
+            return (
+              <div key={item.id || idx}>
+                {/* Group header */}
+                <div
+                  className={`nav-item${isExpanded ? ' expanded' : ''}${isGroupActive ? ' group-active' : ''}`}
+                  onClick={() => toggleGroup(item.id)}
+                >
+                  <span className="nav-icon"><i className={item.icon}></i></span>
+                  <span className="nav-label">{item.label}</span>
+                  <span className="nav-arrow">&#9654;</span>
+                </div>
+                {/* Sub-nav */}
+                <div className={`sub-nav${isExpanded ? ' open' : ''}`}>
+                  {item.children?.map((child, ci) => (
+                    <NavLink
+                      key={ci}
+                      to={pageToPath(child.page)}
+                      className={({ isActive }) =>
+                        `nav-item${isActive ? ' active' : ''}`
+                      }
+                    >
+                      <span className="nav-label">{child.label}</span>
+                    </NavLink>
+                  ))}
+                </div>
+              </div>
+            );
+          }
+
+          // Flat item
+          return (
+            <NavLink
+              key={item.page || idx}
+              to={pageToPath(item.page)}
+              className={({ isActive }) =>
+                `nav-item${isActive ? ' active' : ''}`
+              }
+            >
+              <span className="nav-icon"><i className={item.icon}></i></span>
+              <span className="nav-label">{item.label}</span>
+            </NavLink>
+          );
+        })}
       </nav>
 
-      {/* Role Switcher */}
-      <div className="sidebar-footer" style={{
-        padding: '12px 16px',
-        borderTop: '1px solid rgba(255,255,255,0.08)',
-        marginTop: 'auto',
-      }}>
+      {/* Role Switcher Footer */}
+      <div className="sidebar-footer">
         <button
           onClick={() => navigate('/')}
-          style={{
-            width: '100%',
-            padding: '8px 12px',
-            background: 'rgba(255,255,255,0.06)',
-            border: '1px solid rgba(255,255,255,0.1)',
-            borderRadius: '8px',
-            color: '#b0bec5',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            fontSize: '0.78rem',
-            transition: 'all 0.2s',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(255,255,255,0.12)';
-            e.currentTarget.style.color = '#fff';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
-            e.currentTarget.style.color = '#b0bec5';
-          }}
+          className="role-switch-btn"
         >
-          <div style={{
-            width: 28, height: 28,
-            borderRadius: '50%',
-            background: currentRole.color,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '0.7rem', fontWeight: 600, color: '#fff',
-          }}>
+          <div className="role-switch-avatar" style={{ background: currentRole.color }}>
             {currentRole.user.initials}
           </div>
-          <div style={{ flex: 1, textAlign: 'left' }}>
-            <div style={{ fontWeight: 500 }}>{currentRole.user.name}</div>
-            <div style={{ fontSize: '0.68rem', opacity: 0.6 }}>{currentRole.label}</div>
+          <div className="role-switch-info">
+            <div className="role-switch-name">{currentRole.user.name}</div>
+            <div className="role-switch-role">{currentRole.label}</div>
           </div>
-          <i className="fas fa-exchange-alt" style={{ fontSize: '0.7rem', opacity: 0.5 }}></i>
+          <i className="fas fa-exchange-alt role-switch-icon"></i>
         </button>
       </div>
     </aside>
