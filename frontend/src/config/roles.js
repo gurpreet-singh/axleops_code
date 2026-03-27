@@ -5,6 +5,11 @@
    =================================================== */
 
 export const DEPARTMENTS = {
+  platform: {
+    id: 'platform', label: 'Platform Management', icon: 'fas fa-globe', color: '#7C3AED',
+    description: 'Multi-tenant platform administration & client onboarding',
+    roles: ['platform_admin']
+  },
   executive: {
     id: 'executive', label: 'Executive', icon: 'fas fa-crown', color: '#8B5CF6',
     description: 'Strategic decisions & business growth',
@@ -38,6 +43,13 @@ export const DEPARTMENTS = {
 };
 
 export const ROLES = {
+  platform_admin: {
+    id: 'platform_admin', label: 'Platform Admin', icon: 'fas fa-globe', color: '#7C3AED',
+    department: 'platform',
+    user: { name: 'Platform Admin', initials: 'PA', title: 'Platform Administrator' },
+    description: 'Full access to all platform tenants. Create & manage transport companies, assign system admins.',
+    kpis: ['Total Tenants', 'Active Companies', 'Total Users', 'System Health']
+  },
   owner: {
     id: 'owner', label: 'Owner / Director', icon: 'fas fa-crown', color: '#8B5CF6',
     department: 'executive',
@@ -197,11 +209,24 @@ export function pageToPath(page) {
     'vehicle-compliance': '/compliance/vehicles',
     'driver-mobile': '/driver-app',
     'workflow-templates': '/workflow-templates',
+    'platform-tenants': '/platform/tenants',
+    'platform-users': '/platform/users',
+    'platform-settings': '/platform/settings',
   };
   return map[page] || `/${page}`;
 }
 
 export const ROLE_MENUS = {
+  platform_admin: [
+    { type: 'item', icon: 'fas fa-th-large', label: 'Dashboard', page: 'dashboard' },
+    {
+      type: 'group', icon: 'fas fa-building', label: 'Tenant Management', id: 'sub-tenants', children: [
+        { label: 'All Tenants', page: 'platform-tenants' },
+      ]
+    },
+    { type: 'item', icon: 'fas fa-cog', label: 'Platform Settings', page: 'platform-settings' },
+  ],
+
   owner: [
     { type: 'item', icon: 'fas fa-th-large', label: 'Dashboard', page: 'dashboard' },
     { type: 'item', icon: 'fas fa-mobile-alt', label: 'Morning Briefing', page: 'owner-morning-briefing' },

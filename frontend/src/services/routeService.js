@@ -21,10 +21,41 @@ export const TEMPLATE_COLORS = {
   Hazmat:       { bg: '#FEF3F2', color: '#B42318' },
 };
 
+// Map backend API response fields → frontend field names
+function mapApiRoute(r) {
+  // If the record already has 'route' field (local JSON format), return as-is
+  if (r.route) return r;
+  return {
+    ...r,
+    route: r.name || `${r.origin} → ${r.destination}`,
+    dist: r.distanceKm || r.dist || 0,
+    estTime: r.estimatedHours || r.estTime || 0,
+    toll: r.tollCost || r.toll || 0,
+    dest: r.destination || r.dest || '',
+    origin: r.origin || '',
+    originPin: r.originPin || '',
+    destPin: r.destPin || '',
+    via: r.via || '',
+    client: r.client || r.clientName || '—',
+    vType: r.vType || r.vehicleType || '—',
+    template: r.template || 'Standard',
+    branch: r.branch || 'Global',
+    billingType: r.billingType || '',
+    slaHrs: r.slaHours || r.slaHrs || 0,
+    payTerms: r.paymentTerms || r.payTerms || '',
+    status: r.status || 'Active',
+    trips: r.trips || 0,
+    tripsMtd: r.tripsMtd || 0,
+    onTime: r.onTime || null,
+    avgMargin: r.avgMargin || null,
+    avgProfit: r.avgProfit || 0,
+  };
+}
+
 export async function getRoutes() {
   try {
     const { data } = await api.get('/routes');
-    return data;
+    return (data || []).map(mapApiRoute);
   } catch {
     console.warn('[routeService] API unavailable, using local JSON');
     return routesJson;
@@ -34,7 +65,7 @@ export async function getRoutes() {
 export async function getRouteById(id) {
   try {
     const { data } = await api.get(`/routes/${id}`);
-    return data;
+    return mapApiRoute(data);
   } catch {
     return routesJson.find(r => r.id === id) || null;
   }

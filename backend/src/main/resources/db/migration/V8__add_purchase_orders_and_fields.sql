@@ -3,7 +3,7 @@
 -- ============================================
 
 CREATE TABLE IF NOT EXISTS purchase_orders (
-    id              UUID DEFAULT RANDOM_UUID() NOT NULL PRIMARY KEY,
+    id              UUID DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY,
     po_number       VARCHAR(100) NOT NULL UNIQUE,
     vendor_name     VARCHAR(255) NOT NULL,
     order_date      DATE,

@@ -16,7 +16,7 @@ CREATE TABLE tenants (
 
 -- For this setup we will inject a default tenant to all existing tables.
 INSERT INTO tenants (id, name, trade_name, gstin, pan, city, state, status) VALUES
-('t1111111-1111-1111-1111-111111111111', 'Goodwill Transport Pvt. Ltd.', 'Goodwill Transport', '27AABCU9603R1ZM', 'AABCU9603R', 'Mumbai', 'Maharashtra', 'ACTIVE');
+('e1111111-1111-1111-1111-111111111111', 'Goodwill Transport Pvt. Ltd.', 'Goodwill Transport', '27AABCU9603R1ZM', 'AABCU9603R', 'Mumbai', 'Maharashtra', 'ACTIVE');
 
 -- Roles
 CREATE TABLE roles (
@@ -62,26 +62,26 @@ CREATE TABLE user_branch_roles (
 
 -- Seed Roles
 INSERT INTO roles (id, role_key, label, department, branch_scope, description) VALUES
-('r1111111-1111-1111-1111-111111111111', 'OWNER', 'Owner / Director', 'executive', 'ALL', 'Full P&L visibility'),
-('r2222222-2222-2222-2222-222222222222', 'BRANCH_MANAGER', 'Branch Manager', 'executive', 'OWN', 'Cross-department authority within branch'),
-('r3333333-3333-3333-3333-333333333333', 'FLEET_MANAGER', 'Fleet Manager', 'operations', 'OWN', 'Vehicle allocation'),
-('r4444444-4444-4444-4444-444444444444', 'FINANCE_CONTROLLER', 'Finance Controller', 'finance', 'ALL', 'P&L oversight');
+('aa111111-1111-1111-1111-111111111111', 'OWNER', 'Owner / Director', 'executive', 'ALL', 'Full P&L visibility'),
+('aa222222-2222-2222-2222-222222222222', 'BRANCH_MANAGER', 'Branch Manager', 'executive', 'OWN', 'Cross-department authority within branch'),
+('aa333333-3333-3333-3333-333333333333', 'FLEET_MANAGER', 'Fleet Manager', 'operations', 'OWN', 'Vehicle allocation'),
+('aa444444-4444-4444-4444-444444444444', 'FINANCE_CONTROLLER', 'Finance Controller', 'finance', 'ALL', 'P&L oversight');
 
 -- Seed Authorities (Subset)
 INSERT INTO authorities (id, authority_key, module, description) VALUES
-('a1111111-1111-1111-1111-111111111111', 'TRIP_VIEW', 'TRIP', 'View trip list and detail'),
-('a2222222-2222-2222-2222-222222222222', 'TRIP_CREATE', 'TRIP', 'Create new trips'),
-('a3333333-3333-3333-3333-333333333333', 'INVOICE_VIEW', 'INVOICE', 'View invoices');
+('ab111111-1111-1111-1111-111111111111', 'TRIP_VIEW', 'TRIP', 'View trip list and detail'),
+('ab222222-2222-2222-2222-222222222222', 'TRIP_CREATE', 'TRIP', 'Create new trips'),
+('ab333333-3333-3333-3333-333333333333', 'INVOICE_VIEW', 'INVOICE', 'View invoices');
 
 -- Assign authorities to OWNER
 INSERT INTO role_authorities (role_id, authority_id) VALUES
-('r1111111-1111-1111-1111-111111111111', 'a1111111-1111-1111-1111-111111111111'),
-('r1111111-1111-1111-1111-111111111111', 'a2222222-2222-2222-2222-222222222222'),
-('r1111111-1111-1111-1111-111111111111', 'a3333333-3333-3333-3333-333333333333');
+('aa111111-1111-1111-1111-111111111111', 'ab111111-1111-1111-1111-111111111111'),
+('aa111111-1111-1111-1111-111111111111', 'ab222222-2222-2222-2222-222222222222'),
+('aa111111-1111-1111-1111-111111111111', 'ab333333-3333-3333-3333-333333333333');
 
 -- Link existing user to branch and role
 INSERT INTO user_branch_roles (id, user_id, branch_id, role_id, is_primary) VALUES
-('ubr11111-1111-1111-1111-111111111111', 'u1111111-1111-1111-1111-111111111111', 'b1111111-1111-1111-1111-111111111111', 'r1111111-1111-1111-1111-111111111111', TRUE);
+('cb111111-1111-1111-1111-111111111111', 'a1000001-0001-0001-0001-000000000001', 'b1111111-1111-1111-1111-111111111111', 'aa111111-1111-1111-1111-111111111111', TRUE);
 
 -- Update all existing core tables to have tenant_id (Tenant isolation)
 ALTER TABLE branches ADD COLUMN tenant_id UUID REFERENCES tenants(id);
@@ -100,17 +100,17 @@ ALTER TABLE work_orders ADD COLUMN tenant_id UUID REFERENCES tenants(id);
 ALTER TABLE parts ADD COLUMN tenant_id UUID REFERENCES tenants(id);
 
 -- Set default tenant for existing seed data
-UPDATE branches SET tenant_id = 't1111111-1111-1111-1111-111111111111';
-UPDATE users SET tenant_id = 't1111111-1111-1111-1111-111111111111';
-UPDATE clients SET tenant_id = 't1111111-1111-1111-1111-111111111111';
-UPDATE vehicle_types SET tenant_id = 't1111111-1111-1111-1111-111111111111';
-UPDATE contacts SET tenant_id = 't1111111-1111-1111-1111-111111111111';
-UPDATE vehicles SET tenant_id = 't1111111-1111-1111-1111-111111111111';
-UPDATE routes SET tenant_id = 't1111111-1111-1111-1111-111111111111';
-UPDATE route_contracts SET tenant_id = 't1111111-1111-1111-1111-111111111111';
-UPDATE trips SET tenant_id = 't1111111-1111-1111-1111-111111111111';
-UPDATE ledgers SET tenant_id = 't1111111-1111-1111-1111-111111111111';
-UPDATE vouchers SET tenant_id = 't1111111-1111-1111-1111-111111111111';
-UPDATE invoices SET tenant_id = 't1111111-1111-1111-1111-111111111111';
-UPDATE work_orders SET tenant_id = 't1111111-1111-1111-1111-111111111111';
-UPDATE parts SET tenant_id = 't1111111-1111-1111-1111-111111111111';
+UPDATE branches SET tenant_id = 'e1111111-1111-1111-1111-111111111111';
+UPDATE users SET tenant_id = 'e1111111-1111-1111-1111-111111111111';
+UPDATE clients SET tenant_id = 'e1111111-1111-1111-1111-111111111111';
+UPDATE vehicle_types SET tenant_id = 'e1111111-1111-1111-1111-111111111111';
+UPDATE contacts SET tenant_id = 'e1111111-1111-1111-1111-111111111111';
+UPDATE vehicles SET tenant_id = 'e1111111-1111-1111-1111-111111111111';
+UPDATE routes SET tenant_id = 'e1111111-1111-1111-1111-111111111111';
+UPDATE route_contracts SET tenant_id = 'e1111111-1111-1111-1111-111111111111';
+UPDATE trips SET tenant_id = 'e1111111-1111-1111-1111-111111111111';
+UPDATE ledgers SET tenant_id = 'e1111111-1111-1111-1111-111111111111';
+UPDATE vouchers SET tenant_id = 'e1111111-1111-1111-1111-111111111111';
+UPDATE invoices SET tenant_id = 'e1111111-1111-1111-1111-111111111111';
+UPDATE work_orders SET tenant_id = 'e1111111-1111-1111-1111-111111111111';
+UPDATE parts SET tenant_id = 'e1111111-1111-1111-1111-111111111111';

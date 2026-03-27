@@ -5,6 +5,9 @@ import RoleSelector from './pages/RoleSelector';
 import Dashboard from './pages/Dashboard';
 import PlaceholderPage from './pages/PlaceholderPage';
 
+// ─── Platform Admin ──────────────────────────────────────
+import TenantsPage from './pages/platform/TenantsPage';
+
 // ─── Trip Management ──────────────────────────────────────
 import TripsPage from './pages/trips/TripsPage';
 import ActiveTripsPage from './pages/trips/ActiveTripsPage';
@@ -168,6 +171,11 @@ export default function App() {
         {/* ─── Admin ───────────────────────────────────── */}
         <Route path="/admin/users" element={<PlaceholderPage title="User Management" icon="fas fa-users-cog" />} />
         <Route path="/settings" element={<PlaceholderPage title="Settings" icon="fas fa-cog" />} />
+
+        {/* ─── Platform Admin ──────────────────────────── */}
+        <Route path="/platform/tenants" element={<TenantsPage />} />
+        <Route path="/platform/users" element={<PlaceholderPage title="Platform Users" icon="fas fa-users" />} />
+        <Route path="/platform/settings" element={<PlaceholderPage title="Platform Settings" icon="fas fa-cog" />} />
 
         {/* Legacy compatibility */}
         <Route path="/mro" element={<WorkOrdersPage />} />

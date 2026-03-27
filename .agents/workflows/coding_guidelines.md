@@ -1,0 +1,262 @@
+---
+description: Coding guidelines and UI patterns for the AxleOps platform — MUST be read before implementing any feature
+---
+
+# AxleOps Coding Guidelines
+
+> **IMPORTANT**: Read this file before implementing any feature. These patterns MUST be followed for consistency.
+
+---
+
+## 1. Database & Schema Management
+
+### DDL Auto Update is ON
+- `spring.jpa.hibernate.ddl-auto=update` is enabled in both default and postgres profiles
+- **Do NOT create Flyway migration scripts for schema changes** — Hibernate auto-syncs entity changes to PostgreSQL on startup
+- When adding/modifying entities, just update the Java `@Entity` class — schema updates automatically
+- Existing migration files in `db/migration/` are **seed data only** (INSERT statements)
+- Use `INSERT ... ON CONFLICT (id) DO NOTHING` for PostgreSQL-compatible idempotent inserts
+- **Never use** H2-specific functions (`RANDOM_UUID()`, `MERGE INTO`)
+
+### PostgreSQL is Primary
+- Always develop against PostgreSQL: `SPRING_PROFILES_ACTIVE=postgres ./gradlew bootRun`
+- H2 is for integration tests only
+
+---
+
+## 2. Right-Side Slider Panel Pattern (CRITICAL)
+
+All slider-based views MUST follow the exact same structure. There are two slider types:
+
+### A. Detail Slider (View/Edit existing record)
+
+Pattern matches: `TripDetailContent`, `RouteDetailContent`, `TenantDetailContent`
+
+```
+┌─────────────────────────────────┐
+│ [Title]                    [X]  │  ← SliderPanel header (automatic)
+├─────────────────────────────────┤
+│ .sl-action-bar                  │  ← Edit Details toggle + action buttons
+│  [Edit Details] [Print] [...]   │
+├─────────────────────────────────┤
+│ Status badges + ID              │  ← Status row (12px 20px padding)
+├─────────────────────────────────┤
+│ .slider-tabs                    │  ← Tabs (Overview, Users, etc.)
+│  [Tab1] [Tab2] [Tab3]          │
+├─────────────────────────────────┤
+│ Tab Content (padding: 20px)     │
+│                                 │
+│  ┌─ Section ──────────────────┐│
+│  │ SECTION HEADER (icon+title)││
+│  │ Field grid (1fr 1fr)       ││
+│  │ Read-only: Field component ││
+│  │ Editing: FormField component│
+│  └────────────────────────────┘│
+│                                 │
+│  ┌─ Section ──────────────────┐│
+│  │ ...                        ││
+│  └────────────────────────────┘│
+└─────────────────────────────────┘
+```
+
+**Key elements:**
+- Action bar uses `.sl-action-bar` CSS class
+- Edit toggle uses `.sl-action-btn .sl-edit-toggle-btn` with `.active` state
+- Tabs use `.slider-tabs` and `.slider-tab` / `.slider-tab.active`
+- Content toggles between `<Field>` (read-only) and `<FormField>` (editing) based on `isEditing` state
+
+### B. Create Slider (New record form)
+
+Pattern matches: `RouteCreateContent`, `TripCreateContent`, `TenantCreateContent`
+
+```
+┌─────────────────────────────────┐
+│ [Title]                    [X]  │  ← SliderPanel header (automatic)
+├─────────────────────────────────┤
+│ Dark gradient header            │  ← background: linear-gradient(135deg, #1E293B, #334155)
+│  NEW [ENTITY]                   │     10px uppercase label + 17px bold title
+│  Description text               │
+├─────────────────────────────────┤
+│ Sticky action bar               │  ← position: sticky, top: 0, z-index: 10
+│  [✓ Create] [Cancel]           │     Green create button + Cancel
+├─────────────────────────────────┤
+│ Form content (20px padding)     │
+│                                 │
+│  ┌─ Section (color-coded) ────┐│  ← 1.5px border, 14px radius
+│  │ EMOJI SECTION TITLE        ││  ← gradient headerBg, accent color
+│  │ FormField grid (1fr 1fr)   ││
+│  └────────────────────────────┘│
+│                                 │
+│  ┌─ Section (different color) ┐│
+│  │ ℹ Info banner (optional)   ││  ← Yellow info box
+│  │ FormField grid             ││
+│  └────────────────────────────┘│
+└─────────────────────────────────┘
+```
+
+### Reusable Components (defined in each slider file)
+
+#### `Field` — Read-only display
+```jsx
+<Field label="Company Name" value={data.name} />
+<Field label="GSTIN" value={data.gstin} mono />  // monospace font
+```
+Renders as: uppercase label + bordered box with value (background: #F8FAFC)
+
+#### `FormField` — Editable input
+```jsx
+<FormField label="Company Name" value={form.name} onChange={set('name')} required />
+<FormField label="Type" value={form.type} onChange={set('type')} options={OPTIONS} />
+```
+Renders as: uppercase label + input with blue focus ring
+
+#### `Section` — Collapsible card wrapper
+```jsx
+<Section title="Details" icon="fas fa-info-circle" iconColor="#7C3AED"
+  borderColor="#C4B5FD" headerBg="#F5F3FF">
+  {/* content */}
+</Section>
+```
+
+**Section color themes:**
+| Theme | borderColor | headerBg | accentColor |
+|-------|-------------|----------|-------------|
+| Purple | #C4B5FD | #F5F3FF / linear-gradient(135deg, #F5F3FF, #EDE9FE) | #6D28D9 |
+| Blue | #BAE6FD | #F0F9FF / linear-gradient(135deg, #F0F9FF, #E0F2FE) | #0369A1 |
+| Green | #A7F3D0 | #F0FDF4 | #059669 |
+| Orange | #FDBA74 | linear-gradient(135deg, #FFF7ED, #FFEDD5) | #9A3412 |
+| Red | #FECACA | linear-gradient(135deg, #FEF2F2, #FFE4E6) | #DC2626 |
+| Gray | #E2E8F0 | #F8FAFC | #64748B |
+
+### CSS Classes to Use (from overrides.css)
+- `.sl-action-bar` — action bar below header
+- `.sl-action-btn` — individual action button
+- `.sl-edit-toggle-btn` / `.sl-edit-toggle-btn.active` — edit/save toggle
+- `.slider-tabs` — tab container
+- `.slider-tab` / `.slider-tab.active` — individual tab
+- `.sl-section` — section wrapper for simple key-value groups
+- `.sl-section-title` — section heading
+- `.sl-row` — label-value row
+- `.sl-row-label` + `.sl-row-value` — label and value spans
+
+### Slider Store Usage
+```jsx
+import useSliderStore from '../../stores/sliderStore';
+
+// Open
+const { openSlider } = useSliderStore();
+openSlider({
+  title: 'Record Name',
+  width: '580px',  // or '52vw' for wider sliders
+  content: <DetailContent data={record} onRefresh={refresh} />,
+});
+
+// Close (inside slider content)
+const { closeSlider } = useSliderStore();
+closeSlider();
+```
+
+---
+
+## 3. Backend Patterns (Spring Boot)
+
+### Entity Pattern
+```java
+@Entity @Table(name = "entities")
+@Data @NoArgsConstructor @AllArgsConstructor @Builder
+public class MyEntity {
+    @Id @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+    // fields...
+    @Column(name = "tenant_id")
+    private UUID tenantId;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    @PrePersist void onCreate() { createdAt = updatedAt = LocalDateTime.now(); }
+    @PreUpdate void onUpdate() { updatedAt = LocalDateTime.now(); }
+}
+```
+
+### Service Pattern
+```java
+@Service @Transactional
+public class MyService {
+    private final MyRepository repo;
+    private final MyMapper mapper;
+    // constructor injection...
+}
+```
+
+### DTO Pattern
+- Request: `Create{Entity}Request.java`
+- Response: `{Entity}Response.java`
+- Use MapStruct mapper: `@Mapper(componentModel = "spring")`
+
+### API Naming
+- Base path: `/api/v1/` (set via context-path)
+- CRUD: `GET /entities`, `GET /entities/{id}`, `POST /entities`, `PUT /entities/{id}`, `DELETE /entities/{id}`
+- Platform endpoints: `/platform/tenants`, `/platform/tenants/{id}/users`, etc.
+
+---
+
+## 4. Frontend Patterns (React + Vite)
+
+### File Organization
+```
+src/pages/{module}/
+  {Entity}Page.jsx          ← List page with table + stats
+  {Entity}SliderContent.jsx  ← Detail + Create slider components
+  # Or split into:
+  {Entity}DetailContent.jsx  ← Detail slider
+  {Entity}CreateContent.jsx  ← Create slider
+```
+
+### API Service Pattern
+```javascript
+// src/services/{module}Service.js
+import api from './api';
+export default {
+  getAll: () => api.get('/entities'),
+  getById: (id) => api.get(`/entities/${id}`),
+  create: (data) => api.post('/entities', data),
+  update: (id, data) => api.put(`/entities/${id}`, data),
+  delete: (id) => api.delete(`/entities/${id}`),
+};
+```
+
+### Page Pattern (List pages)
+```jsx
+export default function EntitiesPage() {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const { openSlider } = useSliderStore();
+
+  // fetch, filter, handleRowClick, handleAdd...
+
+  return (
+    <div>
+      <div className="page-header">...</div>
+      <div className="stats-row">...</div>
+      <div className="table-container">...</div>
+    </div>
+  );
+}
+```
+
+### Key CSS Classes for List Pages
+- `.page-header` + `.page-header-actions` — page title + buttons
+- `.stats-row` + `.stat-card` — stats overview
+- `.table-container` + `.table-toolbar` — table wrapper
+- `.search-input` — search field
+- `.btn .btn-primary` / `.btn .btn-secondary` — buttons
+- `.pagination-info` — showing X of Y
+
+---
+
+## 5. Multi-Tenancy Rules
+
+- **Platform Admins** (`platform_admins` table) ≠ **Tenant Users** (`users` table) — NEVER mix
+- All business entities have `tenant_id` column
+- Gobind Transport (`e9999999-...`) = primary test tenant
+- All UUIDs must use valid hex characters only (0-9, a-f)
