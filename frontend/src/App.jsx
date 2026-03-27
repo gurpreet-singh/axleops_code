@@ -56,7 +56,7 @@ export default function App() {
         <Route path="/trips/active" element={<ActiveTripsPage />} />
         <Route path="/trips/settled" element={<PlaceholderPage title="Settled Trips" icon="fas fa-check-circle" />} />
         <Route path="/trips/archived" element={<PlaceholderPage title="Archived Trips" icon="fas fa-archive" />} />
-        <Route path="/trips/create" element={<PlaceholderPage title="Create Trip" icon="fas fa-plus-circle" />} />
+        <Route path="/trips/create" element={<Navigate to="/trips" replace />} />
         <Route path="/trips/settlement" element={<PlaceholderPage title="Trip Settlement" icon="fas fa-handshake" />} />
 
         {/* ─── Fleet ───────────────────────────────────── */}

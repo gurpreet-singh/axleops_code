@@ -1,14 +1,14 @@
 import { useState, useEffect, useMemo } from 'react';
 import { getTrips, TRIP_STATE_COLORS } from '../../services/tripService';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import useSliderStore from '../../stores/sliderStore';
+import { TripCreateContent, TripDetailContent } from './TripSliderContent';
 
 export default function ActiveTripsPage() {
   const [trips, setTrips] = useState([]);
   const [filter, setFilter] = useState('all');
   const [search, setSearch] = useState('');
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
   const { openSlider } = useSliderStore();
 
   useEffect(() => { getTrips().then(setTrips); }, []);
@@ -26,12 +26,28 @@ export default function ActiveTripsPage() {
 
   const FILTERS = ['all', 'Created', 'In Transit', 'Completed'];
 
+  const openNewTrip = () => {
+    openSlider({
+      title: 'Add New Trip',
+      content: <TripCreateContent onSave={() => getTrips().then(setTrips)} />,
+      width: '52vw',
+    });
+  };
+
+  const openTripDetail = (trip) => {
+    openSlider({
+      title: `Trip ${trip.id}`,
+      content: <TripDetailContent trip={trip} />,
+      width: '52vw',
+    });
+  };
+
   return (
     <div className="page-content">
       <div className="page-header">
         <h1>Active Trips <span className="learn-badge"><i className="fas fa-route" style={{ color: '#059669' }}></i> Operations</span></h1>
         <div className="page-header-actions">
-          <button className="btn btn-primary" onClick={() => navigate('/trips/create')}><i className="fas fa-plus"></i> New Trip</button>
+          <button className="btn btn-primary" onClick={openNewTrip}><i className="fas fa-plus"></i> New Trip</button>
         </div>
       </div>
 
@@ -65,7 +81,7 @@ export default function ActiveTripsPage() {
             <div key={t.id} style={{ display: 'grid', gridTemplateColumns: '90px 90px 1.2fr 1fr 1fr 100px 80px 60px', padding: '14px 18px', borderBottom: '1px solid #F1F5F9', alignItems: 'center', cursor: 'pointer', transition: 'all .1s' }}
               onMouseEnter={e => e.currentTarget.style.background = '#F8FAFC'}
               onMouseLeave={e => e.currentTarget.style.background = '#fff'}
-              onClick={() => openSlider({ title: `Trip ${t.id}`, content: <TripRow trip={t} />, width: '50vw' })}>
+              onClick={() => openTripDetail(t)}>
               <div style={{ fontSize: 12, color: '#94A3B8', fontFamily: 'monospace' }}>{t.id}</div>
               <div style={{ fontSize: 12, color: '#475569', fontFamily: 'monospace' }}>{t.lr}</div>
               <div style={{ fontSize: 13, fontWeight: 700, color: '#1E293B' }}>{t.origin} → {t.destination}</div>
@@ -82,21 +98,6 @@ export default function ActiveTripsPage() {
             </div>
           );
         })}
-      </div>
-    </div>
-  );
-}
-
-function TripRow({ trip }) {
-  return (
-    <div style={{ padding: 20 }}>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-        {[['Trip ID', trip.id], ['LR No.', trip.lr], ['Client', trip.client], ['Freight', `₹${(trip.freight||0).toLocaleString()}`], ['Origin', trip.origin], ['Destination', trip.destination], ['Vehicle', trip.vehicle || 'Unassigned'], ['Driver', trip.driver || 'Unassigned'], ['Start Date', trip.startDate], ['ETA', trip.eta]].map(([l, v]) => (
-          <div key={l}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: 0.6, marginBottom: 5 }}>{l}</div>
-            <div style={{ border: '1.5px solid #F1F5F9', borderRadius: 10, padding: '10px 12px', fontSize: 13, color: '#1E293B', background: '#F8FAFC', fontWeight: 600, minHeight: 42, display: 'flex', alignItems: 'center' }}>{v}</div>
-          </div>
-        ))}
       </div>
     </div>
   );

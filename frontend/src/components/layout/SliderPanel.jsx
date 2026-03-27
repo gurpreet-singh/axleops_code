@@ -33,10 +33,11 @@ export default function SliderPanel() {
         </div>
 
         {/* Slider Content */}
-        <div className="slider-content">
+        <div className="slider-content" style={{ padding: 0 }}>
           {content}
         </div>
       </div>
     </>
   );
 }
+

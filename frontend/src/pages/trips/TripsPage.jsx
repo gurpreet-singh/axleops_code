@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getTrips, TRIP_STATE_COLORS } from '../../services/tripService';
 import useSliderStore from '../../stores/sliderStore';
+import { TripCreateContent, TripDetailContent } from './TripSliderContent';
 
 const STATUS_META = [
   { key: 'Created', icon: '📝', label: 'Created', sub: 'Assign vehicle + driver', color: '#7C3AED' },
@@ -37,11 +38,19 @@ export default function TripsPage() {
     return counts;
   }, [trips]);
 
+  const openNewTrip = () => {
+    openSlider({
+      title: 'Add New Trip',
+      content: <TripCreateContent onSave={() => getTrips().then(setTrips)} />,
+      width: '52vw',
+    });
+  };
+
   const openTripDetail = (trip) => {
     openSlider({
       title: `Trip ${trip.id}`,
       content: <TripDetailContent trip={trip} />,
-      width: '50vw',
+      width: '52vw',
     });
   };
 
@@ -51,7 +60,7 @@ export default function TripsPage() {
       <div className="page-header">
         <h1>Trip Dashboard <span className="learn-badge"><i className="fas fa-route" style={{ color: '#059669' }}></i> TMS</span></h1>
         <div className="page-header-actions">
-          <button className="btn btn-primary" onClick={() => navigate('/trips/create')}>
+          <button className="btn btn-primary" onClick={openNewTrip}>
             <i className="fas fa-plus"></i> New Trip
           </button>
         </div>
@@ -115,42 +124,6 @@ export default function TripsPage() {
             </div>
           );
         })}
-      </div>
-    </div>
-  );
-}
-
-/* ─── Trip Detail Slider Content ─── */
-function TripDetailContent({ trip }) {
-  const sc = TRIP_STATE_COLORS[trip.status] || {};
-  return (
-    <div>
-      <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap' }}>
-        <span style={{ background: sc.mid, color: sc.text, border: `1px solid ${sc.border}`, fontSize: 11, fontWeight: 700, padding: '4px 10px', borderRadius: 12 }}>{trip.status}</span>
-        {trip.delayed && <span style={{ background: '#FEE2E2', color: '#991B1B', fontSize: 11, fontWeight: 700, padding: '4px 10px', borderRadius: 12 }}>⚠ Delayed</span>}
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 20 }}>
-        <Field label="Trip ID" value={trip.id} />
-        <Field label="LR Number" value={trip.lr} />
-        <Field label="Client" value={trip.client} />
-        <Field label="Freight" value={`₹${(trip.freight || 0).toLocaleString()}`} mono />
-        <Field label="Origin" value={trip.origin} />
-        <Field label="Destination" value={trip.destination} />
-        <Field label="Vehicle" value={trip.vehicle || 'Unassigned'} />
-        <Field label="Driver" value={trip.driver || 'Unassigned'} />
-        <Field label="Start Date" value={trip.startDate} />
-        <Field label="ETA" value={trip.eta} />
-      </div>
-    </div>
-  );
-}
-
-function Field({ label, value, mono }) {
-  return (
-    <div>
-      <div style={{ fontSize: 11, fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: 0.6, marginBottom: 5 }}>{label}</div>
-      <div style={{ width: '100%', border: '1.5px solid #F1F5F9', borderRadius: 10, padding: '10px 12px', fontSize: 13, color: '#1E293B', background: '#F8FAFC', fontFamily: mono ? "'JetBrains Mono', monospace" : 'inherit', fontWeight: 600, minHeight: 42, display: 'flex', alignItems: 'center' }}>
-        {value || <span style={{ color: '#CBD5E1' }}>—</span>}
       </div>
     </div>
   );
