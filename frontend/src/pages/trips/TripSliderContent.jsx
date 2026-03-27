@@ -2,6 +2,9 @@ import { useState, useEffect, useMemo } from 'react';
 import { TRIP_STATE_COLORS } from '../../services/tripService';
 import useSliderStore from '../../stores/sliderStore';
 
+// Re-export TripCreateContent from the dedicated module
+export { default as TripCreateContent } from './TripCreateContent';
+
 // ═══════════════════════════════════════════════════════════
 // Shared read-only field
 // ═══════════════════════════════════════════════════════════
@@ -86,17 +89,8 @@ function InfoRow({ label, value, highlight, highlightColor }) {
 
 
 // ═══════════════════════════════════════════════════════════════
-// MOCK DATA for selects
+// MOCK DATA for detail view selects (edit mode)
 // ═══════════════════════════════════════════════════════════════
-const MOCK_CLIENTS = ['', 'Reliance Industries', 'Tata Steel', 'Hindustan Unilever', 'ITC Limited', 'Adani Ports', 'Mahindra Logistics', 'Asian Paints', 'Larsen & Toubro'];
-const MOCK_BRANCHES = ['Mumbai HQ (Primary)', 'Delhi NCR', 'Ahmedabad', 'Pune', 'Chennai'];
-const MOCK_ROUTES = [
-  { value: '', label: 'Select route...' },
-  { value: 'mumbai-delhi-ma', label: 'Mumbai → Delhi (JNPT) — Multi-Axle · 1,380 km' },
-  { value: 'mumbai-delhi-2a', label: 'Mumbai → Delhi — 2-Axle · 1,380 km' },
-  { value: 'mumbai-ahmedabad', label: 'Mumbai → Ahmedabad — Tanker · 530 km' },
-  { value: 'mumbai-chennai', label: 'Mumbai → Chennai — Multi-Axle · 1,340 km' },
-];
 const MOCK_VEHICLES = [
   { value: '', label: 'Select vehicle...' },
   { value: 'MH04AB1234', label: 'MH04AB1234 — 2022 Tata Signa 4825.T (Available)' },
@@ -109,218 +103,6 @@ const MOCK_DRIVERS = [
   { value: 'vikram', label: 'Vikram Singh — HMV · ⭐ 4.5 (Available)' },
   { value: 'deepak', label: 'Deepak Patel — HMV · ⭐ 4.6 (On Trip)' },
 ];
-
-
-// ═══════════════════════════════════════════════════════════════
-// CREATE TRIP SLIDER CONTENT
-// ═══════════════════════════════════════════════════════════════
-export function TripCreateContent({ onSave }) {
-  const { closeSlider } = useSliderStore();
-
-  const [form, setForm] = useState({
-    client: '', branch: 'Mumbai HQ (Primary)', route: '', vehicle: '', driver: '',
-    scheduledStart: '', lrNumber: '', cargoWeight: '', cargoDesc: '', consignmentValue: '',
-  });
-
-  const set = (key) => (val) => setForm(f => ({ ...f, [key]: val }));
-
-  // Route meta (mock)
-  const routeMeta = form.route === 'mumbai-delhi-ma' ? {
-    distance: '1,380 km', highway: 'NH48 → NH44', duration: '22–26 hrs', sla: '26 hours',
-    contractId: 'RC-2024-0017', tripsMtd: '14/20', tollEst: '₹8,400', dieselEst: '300L',
-    driverAllowance: '₹2,500', loadUnload: '₹1,500', misc: '₹1,200',
-    totalExpenses: '₹40,400', rate: '₹34.15/km', revenue: '₹47,127', profit: '₹6,727 (14.3%)',
-  } : null;
-
-  const handleSave = () => {
-    onSave?.();
-    closeSlider();
-  };
-
-  return (
-    <div>
-      {/* Action Bar */}
-      <div className="sl-action-bar" style={{ position: 'sticky', top: 0, zIndex: 2, padding: '10px 20px', gap: 8 }}>
-        <button className="sl-action-btn" onClick={closeSlider} style={{ marginRight: 'auto' }}>
-          <i className="fas fa-times"></i> Cancel
-        </button>
-        <button className="sl-action-btn" onClick={handleSave}
-          style={{ background: '#059669', color: '#fff', border: '1px solid #059669', fontWeight: 700 }}>
-          <i className="fas fa-check"></i> Save Trip
-        </button>
-      </div>
-
-      {/* Content */}
-      <div style={{ padding: 20 }}>
-        {/* ── 1. Client & Branch ── */}
-        <Section title="Client & Branch" icon="fas fa-building" iconColor="#1A73E8" borderColor="#BAE6FD" headerBg="#F0F9FF">
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-            <FormField label="Client" value={form.client} onChange={set('client')} required
-              options={MOCK_CLIENTS.map(c => ({ value: c, label: c || 'Select client...' }))} />
-            <FormField label="Branch" value={form.branch} onChange={set('branch')} required
-              options={MOCK_BRANCHES.map(b => ({ value: b, label: b }))}
-            />
-          </div>
-        </Section>
-
-        {/* ── 2. Route, Vehicle & Driver ── */}
-        <Section title="Route, Vehicle & Driver" icon="fas fa-route" iconColor="#059669" borderColor="#A7F3D0" headerBg="#F0FDF4">
-          {/* Filter banner */}
-          {form.client && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', background: '#E6F4EA', borderRadius: 8, marginBottom: 12, fontSize: 12, color: '#137333' }}>
-              <i className="fas fa-filter" style={{ fontSize: 10 }}></i>
-              Showing routes filtered to <strong style={{ margin: '0 3px' }}>{form.client}</strong>
-            </div>
-          )}
-
-          <FormField label="Route" value={form.route} onChange={set('route')} required options={MOCK_ROUTES} />
-
-          {/* Route meta cards */}
-          {routeMeta && (
-            <>
-              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', margin: '10px 0 8px' }}>
-                <span style={{ fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 10, background: '#DCFCE7', color: '#16A34A' }}>Contract #{routeMeta.contractId}</span>
-                <span style={{ fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 10, background: '#FEF3C7', color: '#92400E' }}>{routeMeta.tripsMtd} MTD</span>
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginBottom: 14 }}>
-                {[['Distance', routeMeta.distance], ['Highway', routeMeta.highway], ['Est. Duration', routeMeta.duration], ['SLA Deadline', routeMeta.sla]].map(([l, v]) => (
-                  <div key={l} style={{ background: '#F0FDF4', borderRadius: 8, padding: '8px 10px' }}>
-                    <div style={{ fontSize: 10, color: '#6B7280', marginBottom: 1 }}>{l}</div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: l === 'SLA Deadline' ? '#16A34A' : '#1E293B' }}>{v}</div>
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-
-          <div style={{ borderTop: '1px solid #E2E8F0', margin: '12px 0' }}></div>
-
-          {/* Vehicle type auto-determined banner */}
-          {routeMeta && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', background: '#EFF6FF', borderRadius: 8, marginBottom: 12, fontSize: 12, color: '#1A73E8' }}>
-              <i className="fas fa-info-circle" style={{ fontSize: 10 }}></i>
-              Vehicle type <strong style={{ margin: '0 3px' }}>Multi-Axle Truck</strong> auto-determined from route.
-            </div>
-          )}
-
-          <FormField label="Vehicle" value={form.vehicle} onChange={set('vehicle')} required options={MOCK_VEHICLES}
-            badge={routeMeta ? 'Filtered: Multi-Axle + Mumbai HQ' : null} badgeColor="#FEF3C7" />
-          <div style={{ height: 10 }}></div>
-          <FormField label="Driver" value={form.driver} onChange={set('driver')} required options={MOCK_DRIVERS}
-            info="Filtered by HMV license" />
-
-          <div style={{ borderTop: '1px solid #E2E8F0', margin: '14px 0' }}></div>
-
-          {/* Schedule */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-            <FormField label="Scheduled Start" value={form.scheduledStart} onChange={set('scheduledStart')} type="datetime-local" required />
-            <FormField label="Expected Delivery" value="" disabled
-              badge={routeMeta ? `Auto from SLA: ${routeMeta.sla}` : null} badgeColor="#DCFCE7"
-              placeholder="Auto-calculated" />
-          </div>
-
-          {/* SLA & Delivery Terms */}
-          {routeMeta && (
-            <div style={{ padding: 14, background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 8, marginTop: 14 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: '#92400E', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 10 }}>
-                <i className="fas fa-hourglass-half" style={{ marginRight: 4 }}></i> SLA & Delivery Terms
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                <div>
-                  <div style={{ fontSize: 10, color: '#92400E' }}>SLA Deadline</div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: '#D97706' }}>26 hours</div>
-                  <div style={{ fontSize: 10, color: '#6B7280' }}>From route contract RC-2024-0017</div>
-                </div>
-                <div>
-                  <div style={{ fontSize: 10, color: '#92400E' }}>Penalty Clause</div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: '#1F2937' }}>₹500/hr after SLA breach</div>
-                  <div style={{ fontSize: 10, color: '#6B7280' }}>Max cap: ₹12,000</div>
-                </div>
-                <div>
-                  <div style={{ fontSize: 10, color: '#92400E' }}>Loading Window</div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: '#1F2937' }}>2 hours (free detention)</div>
-                </div>
-                <div>
-                  <div style={{ fontSize: 10, color: '#92400E' }}>Unloading Window</div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: '#1F2937' }}>3 hours (free detention)</div>
-                </div>
-              </div>
-            </div>
-          )}
-        </Section>
-
-        {/* ── 3. Consignment Details ── */}
-        <Section title="Consignment Details" icon="fas fa-box" iconColor="#7C3AED" borderColor="#C4B5FD" headerBg="#F5F3FF">
-          <FormField label="LR Number" value={form.lrNumber} onChange={set('lrNumber')} required
-            placeholder="LR-GWT-2024-XXXXX" info="Primary transport document identifier — auto-generated or enter manually"
-            badge="Mandatory" badgeColor="#FEE2E2" />
-          <div style={{ height: 10 }}></div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
-            <FormField label="Cargo Weight (MT)" value={form.cargoWeight} onChange={set('cargoWeight')} type="number" placeholder="e.g. 28" />
-            <FormField label="Cargo Description" value={form.cargoDesc} onChange={set('cargoDesc')} placeholder="e.g. FMCG Goods" />
-            <FormField label="Consignment Value (₹)" value={form.consignmentValue} onChange={set('consignmentValue')} type="number" placeholder="e.g. 850000" />
-          </div>
-        </Section>
-
-        {/* ── 4. Financial Preview ── */}
-        {routeMeta && (
-          <Section title="Financial Preview" icon="fas fa-chart-pie" iconColor="#16A34A" borderColor="#BBF7D0" headerBg="#F0FDF4">
-            <div style={{ fontSize: 11, color: '#94A3B8', marginBottom: 10 }}>
-              <i className="fas fa-info-circle" style={{ marginRight: 3 }}></i>
-              Cost data pulled from Route. Revenue data pulled from Route Contract.
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-              <InfoRow label="Diesel (Est.)" value={routeMeta.dieselEst} />
-              <InfoRow label="Toll (Multi-Axle)" value={routeMeta.tollEst} />
-              <InfoRow label="Driver Allowance" value={routeMeta.driverAllowance} />
-              <InfoRow label="Loading/Unloading" value={routeMeta.loadUnload} />
-              <InfoRow label="Misc" value={routeMeta.misc} />
-              <div style={{ background: '#F8FAFC', padding: '8px 0', borderRadius: 8, marginTop: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                <span style={{ fontSize: 12, fontWeight: 600, color: '#475569', paddingLeft: 4 }}>Total Expected Expenses</span>
-                <span style={{ fontSize: 13, fontWeight: 700, color: '#1E293B', paddingRight: 4 }}>{routeMeta.totalExpenses}</span>
-              </div>
-              <div style={{ background: '#EFF6FF', padding: '8px 0', borderRadius: 8, marginTop: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                <span style={{ fontSize: 12, fontWeight: 600, color: '#475569', paddingLeft: 4 }}>Est. Revenue <span style={{ fontSize: 10, color: '#94A3B8', fontWeight: 400 }}>({routeMeta.rate} × 1,380 km)</span></span>
-                <span style={{ fontSize: 13, fontWeight: 700, color: '#1A73E8', paddingRight: 4 }}>{routeMeta.revenue}</span>
-              </div>
-              <div style={{ background: '#F0FDF4', padding: '8px 0', borderRadius: 8, marginTop: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                <span style={{ fontSize: 13, fontWeight: 700, color: '#1E293B', paddingLeft: 4 }}>Est. Profit</span>
-                <span style={{ fontSize: 15, fontWeight: 700, color: '#16A34A', paddingRight: 4 }}>{routeMeta.profit}</span>
-              </div>
-            </div>
-
-            {/* Margin warning */}
-            <div style={{ marginTop: 12, padding: '8px 12px', background: '#FEF7E0', border: '1px solid #FDE68A', borderRadius: 6, fontSize: 11, color: '#B06000' }}>
-              <i className="fas fa-exclamation-triangle" style={{ marginRight: 4 }}></i>
-              <strong>Margin ⚠:</strong> 14.3% is below Route Contract minimum floor of 18%. Consider optimizing costs.
-            </div>
-          </Section>
-        )}
-
-        {/* ── Trip Summary (review) ── */}
-        {(form.client || form.route || form.vehicle) && (
-          <Section title="Trip Summary" icon="fas fa-clipboard-check" iconColor="#059669" borderColor="#A7F3D0" headerBg="#ECFDF5">
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
-              {[
-                ['Client', form.client],
-                ['Route', MOCK_ROUTES.find(r => r.value === form.route)?.label?.split('—')[0] || '—'],
-                ['Vehicle', form.vehicle || '—'],
-                ['Driver', MOCK_DRIVERS.find(d => d.value === form.driver)?.label?.split('—')[0] || '—'],
-                ['Cargo', form.cargoWeight ? `${form.cargoWeight} MT` : '—'],
-                ['LR Number', form.lrNumber || '—'],
-              ].map(([l, v]) => (
-                <div key={l} style={{ background: '#F0FDF4', borderRadius: 8, padding: '8px 10px' }}>
-                  <div style={{ fontSize: 10, color: '#6B7280', marginBottom: 1 }}>{l}</div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: '#1E293B' }}>{v}</div>
-                </div>
-              ))}
-            </div>
-          </Section>
-        )}
-      </div>
-    </div>
-  );
-}
 
 
 // ═══════════════════════════════════════════════════════════════
