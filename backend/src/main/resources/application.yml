@@ -80,10 +80,10 @@ spring:
       on-profile: postgres
 
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/axleops}
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5433/axleops}
     driver-class-name: org.postgresql.Driver
-    username: ${DATABASE_USER:axleops}
-    password: ${DATABASE_PASSWORD:axleops}
+    username: ${DATABASE_USER:postgres}
+    password: ${DATABASE_PASSWORD:}
 
   h2:
     console:
@@ -93,3 +93,7 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
+
+  # Flyway OFF during rapid development — use seed_script.sql manually
+  flyway:
+    enabled: false

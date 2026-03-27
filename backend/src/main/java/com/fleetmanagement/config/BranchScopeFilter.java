@@ -21,7 +21,7 @@ public class BranchScopeFilter extends OncePerRequestFilter {
 
         // --- MULTI-TENANCY ---
         // Hardcoded demo tenant — valid UUID for dev mode
-        TenantContext.set(null);
+        TenantContext.set(UUID.fromString("e1111111-1111-1111-1111-111111111111"));
 
 
         // --- BRANCH SCOPING ---

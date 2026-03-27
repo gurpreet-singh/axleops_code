@@ -4,10 +4,13 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Master reference table for account groups (~20 rows).
+ * Master reference table for account groups (~25 rows, max 3 levels deep).
  * Denormalised name/nature are copied onto LedgerAccount for zero-join reads.
- * Rarely changes — only joined during master data edits.
+ * Supports Tally-style hierarchy for automatic P&L / Balance Sheet roll-up.
  */
 @Entity
 @Table(name = "account_groups")
@@ -18,9 +21,9 @@ public class AccountGroup extends BaseEntity {
     @Column(nullable = false)
     private String name; // e.g. "SUNDRY DEBTORS"
 
-    @Column(nullable = false, length = 20)
+    @Column(length = 20)
     @Enumerated(EnumType.STRING)
-    private GroupNature nature; // ASSET, LIABILITY, INCOME, EXPENSE
+    private GroupNature nature; // ASSET, LIABILITY, INCOME, EXPENSE (null = Primary root)
 
     @Column(name = "default_account_type", length = 30)
     @Enumerated(EnumType.STRING)
@@ -29,6 +32,10 @@ public class AccountGroup extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_group_id")
     private AccountGroup parentGroup;
+
+    /** Walk the tree downward — children of this group */
+    @OneToMany(mappedBy = "parentGroup", fetch = FetchType.LAZY)
+    private List<AccountGroup> children = new ArrayList<>();
 
     @Column(name = "tally_group_name")
     private String tallyGroupName;
