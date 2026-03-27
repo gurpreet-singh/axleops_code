@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { getRoutes, ROUTE_STATUS_COLORS, TEMPLATE_COLORS } from '../../services/routeService';
 import useSliderStore from '../../stores/sliderStore';
+import { RouteCreateContent, RouteDetailContent } from './RouteSliderContent';
 
 const INR = n => '₹' + Number(n).toLocaleString('en-IN');
 
@@ -11,7 +12,8 @@ export default function RoutesPage() {
   const [vtF, setVtF] = useState('all');
   const { openSlider } = useSliderStore();
 
-  useEffect(() => { getRoutes().then(setRoutes); }, []);
+  const refresh = () => getRoutes().then(setRoutes);
+  useEffect(() => { refresh(); }, []);
 
   const clients = useMemo(() => [...new Set(routes.map(r => r.client))].sort(), [routes]);
   const vTypes = useMemo(() => [...new Set(routes.map(r => r.vType))].sort(), [routes]);
@@ -24,10 +26,16 @@ export default function RoutesPage() {
     );
   }, [routes, search, clientF, vtF]);
 
+  const openNewRoute = () => openSlider({
+    title: 'Add New Route',
+    content: <RouteCreateContent onSave={refresh} />,
+    width: '52vw',
+  });
+
   const openDetail = (rt) => openSlider({
     title: `${rt.route} — ${rt.client}`,
-    content: <RouteDetail rt={rt} />,
-    width: '50vw',
+    content: <RouteDetailContent rt={rt} onSave={refresh} />,
+    width: '52vw',
   });
 
   return (
@@ -36,7 +44,7 @@ export default function RoutesPage() {
         <h1>Route Management</h1>
         <div className="page-header-actions">
           <button className="btn btn-secondary"><i className="fas fa-file-export"></i> Export</button>
-          <button className="btn btn-primary"><i className="fas fa-plus"></i> Add Route</button>
+          <button className="btn btn-primary" onClick={openNewRoute}><i className="fas fa-plus"></i> Add Route</button>
         </div>
       </div>
 
@@ -84,46 +92,6 @@ export default function RoutesPage() {
             </div>
           );
         })}
-      </div>
-    </div>
-  );
-}
-
-function RouteDetail({ rt }) {
-  return (
-    <div style={{ padding: 20 }}>
-      <div style={{ border: '1.5px solid #BAE6FD', borderRadius: 12, marginBottom: 14, overflow: 'hidden' }}>
-        <div style={{ background: '#F0F9FF', padding: '10px 14px', borderBottom: '1px solid #BAE6FD', display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: 14 }}>🛣️</span>
-          <span style={{ fontSize: 12, fontWeight: 800, color: '#1E293B', textTransform: 'uppercase', letterSpacing: 0.5 }}>Route Details</span>
-        </div>
-        <div style={{ padding: 14 }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-            {[['Client', rt.client], ['Vehicle Type', rt.vType], ['Origin', rt.origin], ['Origin Pin', rt.originPin], ['Destination', rt.dest], ['Dest Pin', rt.destPin], ['Via Highway', rt.via], ['Distance', `${rt.dist.toLocaleString()} km`], ['Est. Duration', `${rt.estTime} hrs`], ['Branch', rt.branch]].map(([l, v]) => (
-              <div key={l}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: 0.6, marginBottom: 5 }}>{l}</div>
-                <div style={{ border: '1.5px solid #F1F5F9', borderRadius: 10, padding: '10px 12px', fontSize: 13, color: '#1E293B', background: '#F8FAFC', fontWeight: 600 }}>{v || '—'}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div style={{ border: '1.5px solid #C4B5FD', borderRadius: 12, overflow: 'hidden' }}>
-        <div style={{ background: '#F5F3FF', padding: '10px 14px', borderBottom: '1px solid #C4B5FD', display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: 14 }}>📝</span>
-          <span style={{ fontSize: 12, fontWeight: 800, color: '#1E293B', textTransform: 'uppercase', letterSpacing: 0.5 }}>Route Contract</span>
-        </div>
-        <div style={{ padding: 14 }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
-            {[['Billing Type', rt.billingType], ['SLA', `${rt.slaHrs} hrs`], ['Payment Terms', rt.payTerms], ['Trips MTD', `${rt.tripsMtd} / ${rt.trips}`], ['On-Time %', rt.onTime ? `${rt.onTime}%` : '—'], ['Avg Margin', rt.avgMargin ? `${rt.avgMargin}%` : '—']].map(([l, v]) => (
-              <div key={l}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: 0.6, marginBottom: 5 }}>{l}</div>
-                <div style={{ border: '1.5px solid #F1F5F9', borderRadius: 10, padding: '10px 12px', fontSize: 13, color: '#1E293B', background: '#F8FAFC', fontWeight: 600 }}>{v}</div>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     </div>
   );
