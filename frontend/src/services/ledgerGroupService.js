@@ -1,12 +1,12 @@
 import api from './api';
 
-const accountGroupService = {
+const ledgerGroupService = {
   getAll: () => api.get('/accounting/ledgers').then(r => r.data).catch(() => []),
-  // Dedicated account group endpoints
-  getAllGroups: () => api.get('/account-groups').catch(() => ({ data: [] })),
-  create: (data) => api.post('/account-groups', data),
-  update: (id, data) => api.put(`/account-groups/${id}`, data),
-  delete: (id) => api.delete(`/account-groups/${id}`),
+  // Dedicated ledger group endpoints
+  getAllGroups: () => api.get('/ledger-groups').catch(() => ({ data: [] })),
+  create: (data) => api.post('/ledger-groups', data),
+  update: (id, data) => api.put(`/ledger-groups/${id}`, data),
+  delete: (id) => api.delete(`/ledger-groups/${id}`),
 };
 
 // Helper constants
@@ -34,4 +34,4 @@ export const NATURE_COLORS = {
   EXPENSE:   { bg: '#FFFBEB', color: '#D97706', border: '#FDE68A' },
 };
 
-export default accountGroupService;
+export default ledgerGroupService;

@@ -1,10 +1,10 @@
 package com.fleetmanagement.service;
 
 import com.fleetmanagement.config.TenantContext;
-import com.fleetmanagement.dto.response.AccountGroupResponse;
-import com.fleetmanagement.entity.AccountGroup;
-import com.fleetmanagement.mapper.AccountGroupMapper;
-import com.fleetmanagement.repository.AccountGroupRepository;
+import com.fleetmanagement.dto.response.LedgerGroupResponse;
+import com.fleetmanagement.entity.LedgerGroup;
+import com.fleetmanagement.mapper.LedgerGroupMapper;
+import com.fleetmanagement.repository.LedgerGroupRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,36 +17,36 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class AccountGroupService {
+public class LedgerGroupService {
 
-    private final AccountGroupRepository repository;
-    private final AccountGroupMapper mapper;
+    private final LedgerGroupRepository repository;
+    private final LedgerGroupMapper mapper;
 
-    public List<AccountGroupResponse> getAll() {
+    public List<LedgerGroupResponse> getAll() {
         UUID tenantId = TenantContext.get();
         return repository.findByTenantId(tenantId).stream()
                 .map(mapper::toResponse)
                 .collect(Collectors.toList());
     }
 
-    public AccountGroupResponse getById(UUID id) {
-        AccountGroup group = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("AccountGroup not found: " + id));
+    public LedgerGroupResponse getById(UUID id) {
+        LedgerGroup group = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("LedgerGroup not found: " + id));
         return mapper.toResponse(group);
     }
 
     @Transactional
-    public AccountGroupResponse create(Map<String, Object> req) {
+    public LedgerGroupResponse create(Map<String, Object> req) {
         UUID tenantId = TenantContext.get();
 
-        AccountGroup group = new AccountGroup();
+        LedgerGroup group = new LedgerGroup();
         group.setTenantId(tenantId);
         group.setName((String) req.get("name"));
-        group.setNature(AccountGroup.GroupNature.valueOf((String) req.get("nature")));
+        group.setNature(LedgerGroup.GroupNature.valueOf((String) req.get("nature")));
 
         String defaultAccountType = (String) req.get("defaultAccountType");
         if (defaultAccountType != null && !defaultAccountType.isEmpty()) {
-            group.setDefaultAccountType(AccountGroup.AccountType.valueOf(defaultAccountType));
+            group.setDefaultAccountType(LedgerGroup.AccountType.valueOf(defaultAccountType));
         }
 
         String tallyGroupName = (String) req.get("tallyGroupName");
@@ -54,7 +54,7 @@ public class AccountGroupService {
 
         String parentGroupId = (String) req.get("parentGroupId");
         if (parentGroupId != null && !parentGroupId.isEmpty()) {
-            AccountGroup parent = repository.findById(UUID.fromString(parentGroupId))
+            LedgerGroup parent = repository.findById(UUID.fromString(parentGroupId))
                     .orElseThrow(() -> new RuntimeException("Parent group not found"));
             group.setParentGroup(parent);
         }
@@ -62,21 +62,21 @@ public class AccountGroupService {
         Boolean systemGroup = (Boolean) req.get("systemGroup");
         group.setSystemGroup(systemGroup != null && systemGroup);
 
-        AccountGroup saved = repository.save(group);
+        LedgerGroup saved = repository.save(group);
         return mapper.toResponse(saved);
     }
 
     @Transactional
-    public AccountGroupResponse update(UUID id, Map<String, Object> req) {
-        AccountGroup group = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("AccountGroup not found: " + id));
+    public LedgerGroupResponse update(UUID id, Map<String, Object> req) {
+        LedgerGroup group = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("LedgerGroup not found: " + id));
 
         group.setName((String) req.get("name"));
-        group.setNature(AccountGroup.GroupNature.valueOf((String) req.get("nature")));
+        group.setNature(LedgerGroup.GroupNature.valueOf((String) req.get("nature")));
 
         String defaultAccountType = (String) req.get("defaultAccountType");
         if (defaultAccountType != null && !defaultAccountType.isEmpty()) {
-            group.setDefaultAccountType(AccountGroup.AccountType.valueOf(defaultAccountType));
+            group.setDefaultAccountType(LedgerGroup.AccountType.valueOf(defaultAccountType));
         } else {
             group.setDefaultAccountType(null);
         }
@@ -85,7 +85,7 @@ public class AccountGroupService {
 
         String parentGroupId = (String) req.get("parentGroupId");
         if (parentGroupId != null && !parentGroupId.isEmpty()) {
-            AccountGroup parent = repository.findById(UUID.fromString(parentGroupId))
+            LedgerGroup parent = repository.findById(UUID.fromString(parentGroupId))
                     .orElseThrow(() -> new RuntimeException("Parent group not found"));
             group.setParentGroup(parent);
         } else {
@@ -95,7 +95,7 @@ public class AccountGroupService {
         Boolean systemGroup = (Boolean) req.get("systemGroup");
         group.setSystemGroup(systemGroup != null && systemGroup);
 
-        AccountGroup saved = repository.save(group);
+        LedgerGroup saved = repository.save(group);
         return mapper.toResponse(saved);
     }
 

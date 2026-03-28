@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import ledgerAccountService, { ACCOUNT_TYPE_COLORS } from '../../services/ledgerAccountService';
-import accountGroupService from '../../services/accountGroupService';
+import ledgerGroupService from '../../services/ledgerGroupService';
 import useSliderStore from '../../stores/sliderStore';
 import { LedgerAccountCreateContent, LedgerAccountDetailContent } from './LedgerAccountSliderContent';
 
@@ -19,7 +19,7 @@ export default function LedgerAccountsPage() {
     setLoading(true);
     Promise.all([
       ledgerAccountService.getAll(),
-      accountGroupService.getAllGroups().then(r => r.data || []).catch(() => []),
+      ledgerGroupService.getAllGroups().then(r => r.data || []).catch(() => []),
     ]).then(([accts, grps]) => {
       setAccounts(accts);
       setGroups(grps);

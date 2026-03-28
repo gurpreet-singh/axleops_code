@@ -153,7 +153,7 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
             <FormField label="Account Head" value={form.accountHead} onChange={set('accountHead')} required placeholder="e.g. Nashik To Chakan" full />
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
-            <FormField label="Account Group" value={form.accountGroupId} onChange={set('accountGroupId')} required options={groupOptions} />
+            <FormField label="Ledger Group" value={form.accountGroupId} onChange={set('accountGroupId')} required options={groupOptions} />
             <FormField label="Account Type" value={form.accountType} onChange={set('accountType')} required options={ACCOUNT_TYPE_OPTIONS} />
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
@@ -370,7 +370,7 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
                   <FormField label="Account Head" value={form.accountHead} onChange={set('accountHead')} required full />
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
-                  <FormField label="Account Group" value={form.accountGroupId} onChange={set('accountGroupId')} options={groupOptions} />
+                  <FormField label="Ledger Group" value={form.accountGroupId} onChange={set('accountGroupId')} options={groupOptions} />
                   <FormField label="Account Type" value={form.accountType} onChange={set('accountType')} options={ACCOUNT_TYPE_OPTIONS} />
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
@@ -390,7 +390,7 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
               <Section title="Identity" emoji="🏷️" borderColor="#BAE6FD" headerBg="linear-gradient(135deg, #F0F9FF, #E0F2FE)" accentColor="#0369A1">
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                   <ReadField label="Account Head" value={account.accountHead} />
-                  <ReadField label="Account Group" value={account.accountGroup} />
+                  <ReadField label="Ledger Group" value={account.accountGroup} />
                   <ReadField label="Group Nature" value={account.groupNature} />
                   <ReadField label="Account Type" value={account.accountType?.replace(/_/g, ' ')} />
                   <ReadField label="Tally Name" value={account.tallyName} />

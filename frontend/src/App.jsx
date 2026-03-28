@@ -26,7 +26,7 @@ import BillCollectPage from './pages/accounting/BillCollectPage';
 import ContactsPage from './pages/contacts/ContactsPage';
 
 // ─── Accounts ─────────────────────────────────────────────
-import AccountGroupsPage from './pages/accounts/AccountGroupsPage';
+import LedgerGroupsPage from './pages/accounts/LedgerGroupsPage';
 import LedgerAccountsPage from './pages/accounts/LedgerAccountsPage';
 
 // ─── MRO / Maintenance ────────────────────────────────────
@@ -94,7 +94,7 @@ export default function App() {
         <Route path="/accounts-list" element={<Navigate to="/accounts/ledgers" replace />} />
 
         {/* ─── Accounts (Groups + Ledgers) ──────────────── */}
-        <Route path="/accounts/groups" element={<AccountGroupsPage />} />
+        <Route path="/accounts/groups" element={<LedgerGroupsPage />} />
         <Route path="/accounts/ledgers" element={<LedgerAccountsPage />} />
         <Route path="/driver-ledger" element={<PlaceholderPage title="Driver Ledger" icon="fas fa-book" />} />
 

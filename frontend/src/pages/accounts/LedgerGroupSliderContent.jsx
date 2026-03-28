@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import useSliderStore from '../../stores/sliderStore';
-import accountGroupService, { GROUP_NATURES, ACCOUNT_TYPES, NATURE_COLORS } from '../../services/accountGroupService';
+import ledgerGroupService, { GROUP_NATURES, ACCOUNT_TYPES, NATURE_COLORS } from '../../services/ledgerGroupService';
 
 // ═══════════════════════════════════════════════════════════════
 // Reusable Form Components (same pattern as RouteSliderContent)
@@ -65,7 +65,7 @@ function Section({ title, emoji, borderColor, headerBg, accentColor, children })
 // CREATE SLIDER
 // ═══════════════════════════════════════════════════════════════
 
-export function AccountGroupCreateContent({ onSave, groups }) {
+export function LedgerGroupCreateContent({ onSave, groups }) {
   const { closeSlider } = useSliderStore();
   const [form, setForm] = useState({
     name: '', nature: '', defaultAccountType: '',
@@ -78,7 +78,7 @@ export function AccountGroupCreateContent({ onSave, groups }) {
     if (!form.name || !form.nature) return;
     setSaving(true);
     try {
-      await accountGroupService.create({
+      await ledgerGroupService.create({
         name: form.name,
         nature: form.nature,
         defaultAccountType: form.defaultAccountType || null,
@@ -89,7 +89,7 @@ export function AccountGroupCreateContent({ onSave, groups }) {
       onSave?.();
       closeSlider();
     } catch (err) {
-      console.error('Failed to create account group:', err);
+      console.error('Failed to create ledger group:', err);
     } finally {
       setSaving(false);
     }
@@ -161,7 +161,7 @@ export function AccountGroupCreateContent({ onSave, groups }) {
 // DETAIL SLIDER
 // ═══════════════════════════════════════════════════════════════
 
-export function AccountGroupDetailContent({ group, onSave, groups }) {
+export function LedgerGroupDetailContent({ group, onSave, groups }) {
   const { closeSlider } = useSliderStore();
   const [isEditing, setIsEditing] = useState(false);
   const [form, setForm] = useState({
@@ -184,7 +184,7 @@ export function AccountGroupDetailContent({ group, onSave, groups }) {
 
   const handleSave = async () => {
     try {
-      await accountGroupService.update(group.id, {
+      await ledgerGroupService.update(group.id, {
         name: form.name,
         nature: form.nature,
         defaultAccountType: form.defaultAccountType || null,

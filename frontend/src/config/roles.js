@@ -260,7 +260,7 @@ export const ROLE_MENUS = {
         { label: 'Clients', page: 'clients' },
         { label: 'Drivers', page: 'contacts' },
         { label: 'Employees', page: 'employees' },
-        { label: 'Account Groups', page: 'account-groups' },
+        { label: 'Ledger Groups', page: 'account-groups' },
         { label: 'Ledger Accounts', page: 'ledger-accounts' },
       ]
     },
@@ -345,7 +345,7 @@ export const ROLE_MENUS = {
         { label: 'Clients', page: 'clients' },
         { label: 'Drivers', page: 'contacts' },
         { label: 'Employees', page: 'employees' },
-        { label: 'Account Groups', page: 'account-groups' },
+        { label: 'Ledger Groups', page: 'account-groups' },
         { label: 'Ledger Accounts', page: 'ledger-accounts' },
       ]
     },
@@ -413,7 +413,7 @@ export const ROLE_MENUS = {
         { label: 'Clients', page: 'clients' },
         { label: 'Drivers', page: 'contacts' },
         { label: 'Employees', page: 'employees' },
-        { label: 'Account Groups', page: 'account-groups' },
+        { label: 'Ledger Groups', page: 'account-groups' },
         { label: 'Ledger Accounts', page: 'ledger-accounts' },
       ]
     },
@@ -463,7 +463,7 @@ export const ROLE_MENUS = {
         { label: 'Clients', page: 'clients' },
         { label: 'Drivers', page: 'contacts' },
         { label: 'Employees', page: 'employees' },
-        { label: 'Account Groups', page: 'account-groups' },
+        { label: 'Ledger Groups', page: 'account-groups' },
         { label: 'Ledger Accounts', page: 'ledger-accounts' },
       ]
     },
@@ -544,7 +544,7 @@ export const ROLE_MENUS = {
         { label: 'Clients', page: 'clients' },
         { label: 'Drivers', page: 'contacts' },
         { label: 'Employees', page: 'employees' },
-        { label: 'Account Groups', page: 'account-groups' },
+        { label: 'Ledger Groups', page: 'account-groups' },
         { label: 'Ledger Accounts', page: 'ledger-accounts' },
       ]
     },
@@ -591,7 +591,7 @@ export const ROLE_MENUS = {
         { label: 'Clients', page: 'clients' },
         { label: 'Drivers', page: 'contacts' },
         { label: 'Employees', page: 'employees' },
-        { label: 'Account Groups', page: 'account-groups' },
+        { label: 'Ledger Groups', page: 'account-groups' },
         { label: 'Ledger Accounts', page: 'ledger-accounts' },
       ]
     },
@@ -740,7 +740,7 @@ export const ROLE_MENUS = {
         { label: 'Clients', page: 'clients' },
         { label: 'Drivers', page: 'contacts' },
         { label: 'Employees', page: 'employees' },
-        { label: 'Account Groups', page: 'account-groups' },
+        { label: 'Ledger Groups', page: 'account-groups' },
         { label: 'Ledger Accounts', page: 'ledger-accounts' },
       ]
     },

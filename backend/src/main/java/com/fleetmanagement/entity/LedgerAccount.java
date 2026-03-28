@@ -47,16 +47,16 @@ public class LedgerAccount extends BaseEntity {
     @Column(name = "name_on_dashboard")
     private String nameOnDashboard;
 
-    /** Denormalised from AccountGroup — e.g. "SUNDRY DEBTORS" */
+    /** Denormalised from LedgerGroup — e.g. "SUNDRY DEBTORS" */
     @Column(name = "account_group")
     private String accountGroup;
 
-    /** FK to AccountGroup — only for group master edits */
+    /** FK to LedgerGroup — only for group master edits */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_group_id")
-    private AccountGroup accountGroupRef;
+    private LedgerGroup accountGroupRef;
 
-    /** Denormalised from AccountGroup — "ASSET" / "LIABILITY" / "INCOME" / "EXPENSE" */
+    /** Denormalised from LedgerGroup — "ASSET" / "LIABILITY" / "INCOME" / "EXPENSE" */
     @Column(name = "group_nature", length = 20)
     private String groupNature;
 

@@ -14,7 +14,7 @@ import java.util.*;
 /**
  * The recursive computation engine — this is the "Tally-level power" feature.
  * 
- * Uses PostgreSQL WITH RECURSIVE to walk the AccountGroup tree and aggregate
+ * Uses PostgreSQL WITH RECURSIVE to walk the LedgerGroup tree and aggregate
  * voucher amounts across all child groups + their ledger accounts.
  * 
  * Key operations:
@@ -48,9 +48,9 @@ public class ReportingService {
 
         String sql = """
             WITH RECURSIVE group_tree AS (
-                SELECT id FROM account_groups WHERE id = :rootGroupId AND tenant_id = :tenantId
+                SELECT id FROM ledger_groups WHERE id = :rootGroupId AND tenant_id = :tenantId
                 UNION ALL
-                SELECT ag.id FROM account_groups ag
+                SELECT ag.id FROM ledger_groups ag
                 JOIN group_tree gt ON ag.parent_group_id = gt.id
             )
             SELECT
@@ -99,14 +99,14 @@ public class ReportingService {
         String sql = """
             WITH RECURSIVE 
             income_tree AS (
-                SELECT id FROM account_groups WHERE nature = 'INCOME' AND parent_group_id IS NULL AND tenant_id = :tenantId
+                SELECT id FROM ledger_groups WHERE nature = 'INCOME' AND parent_group_id IS NULL AND tenant_id = :tenantId
                 UNION ALL
-                SELECT ag.id FROM account_groups ag JOIN income_tree it ON ag.parent_group_id = it.id
+                SELECT ag.id FROM ledger_groups ag JOIN income_tree it ON ag.parent_group_id = it.id
             ),
             expense_tree AS (
-                SELECT id FROM account_groups WHERE nature = 'EXPENSE' AND parent_group_id IS NULL AND tenant_id = :tenantId
+                SELECT id FROM ledger_groups WHERE nature = 'EXPENSE' AND parent_group_id IS NULL AND tenant_id = :tenantId
                 UNION ALL
-                SELECT ag.id FROM account_groups ag JOIN expense_tree et ON ag.parent_group_id = et.id
+                SELECT ag.id FROM ledger_groups ag JOIN expense_tree et ON ag.parent_group_id = et.id
             )
             SELECT
                 (SELECT COALESCE(SUM(v.amount), 0) FROM vouchers v
@@ -158,14 +158,14 @@ public class ReportingService {
         String sql = """
             WITH RECURSIVE 
             asset_tree AS (
-                SELECT id FROM account_groups WHERE nature = 'ASSET' AND parent_group_id IS NULL AND tenant_id = :tenantId
+                SELECT id FROM ledger_groups WHERE nature = 'ASSET' AND parent_group_id IS NULL AND tenant_id = :tenantId
                 UNION ALL
-                SELECT ag.id FROM account_groups ag JOIN asset_tree at2 ON ag.parent_group_id = at2.id
+                SELECT ag.id FROM ledger_groups ag JOIN asset_tree at2 ON ag.parent_group_id = at2.id
             ),
             liability_tree AS (
-                SELECT id FROM account_groups WHERE nature = 'LIABILITY' AND parent_group_id IS NULL AND tenant_id = :tenantId
+                SELECT id FROM ledger_groups WHERE nature = 'LIABILITY' AND parent_group_id IS NULL AND tenant_id = :tenantId
                 UNION ALL
-                SELECT ag.id FROM account_groups ag JOIN liability_tree lt ON ag.parent_group_id = lt.id
+                SELECT ag.id FROM ledger_groups ag JOIN liability_tree lt ON ag.parent_group_id = lt.id
             )
             SELECT
                 -- Asset total = opening balances + net debit movements
@@ -212,7 +212,7 @@ public class ReportingService {
 
         // First, get the direct children of the root group
         String childrenSql = """
-            SELECT id, name, nature FROM account_groups 
+            SELECT id, name, nature FROM ledger_groups 
             WHERE parent_group_id = :rootGroupId AND tenant_id = :tenantId
             ORDER BY name
             """;

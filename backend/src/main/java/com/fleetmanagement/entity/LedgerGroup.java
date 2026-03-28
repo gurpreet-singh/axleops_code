@@ -8,15 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Master reference table for account groups (~25 rows, max 3 levels deep).
+ * Master reference table for ledger groups (~25 rows, max 3 levels deep).
  * Denormalised name/nature are copied onto LedgerAccount for zero-join reads.
  * Supports Tally-style hierarchy for automatic P&L / Balance Sheet roll-up.
  */
 @Entity
-@Table(name = "account_groups")
+@Table(name = "ledger_groups")
 @Getter
 @Setter
-public class AccountGroup extends BaseEntity {
+public class LedgerGroup extends BaseEntity {
 
     @Column(nullable = false)
     private String name; // e.g. "SUNDRY DEBTORS"
@@ -31,11 +31,11 @@ public class AccountGroup extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_group_id")
-    private AccountGroup parentGroup;
+    private LedgerGroup parentGroup;
 
     /** Walk the tree downward — children of this group */
     @OneToMany(mappedBy = "parentGroup", fetch = FetchType.LAZY)
-    private List<AccountGroup> children = new ArrayList<>();
+    private List<LedgerGroup> children = new ArrayList<>();
 
     @Column(name = "tally_group_name")
     private String tallyGroupName;

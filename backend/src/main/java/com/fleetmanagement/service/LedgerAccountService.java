@@ -3,11 +3,11 @@ package com.fleetmanagement.service;
 import com.fleetmanagement.config.TenantContext;
 import com.fleetmanagement.dto.request.CreateLedgerAccountRequest;
 import com.fleetmanagement.dto.response.LedgerAccountResponse;
-import com.fleetmanagement.entity.AccountGroup;
+import com.fleetmanagement.entity.LedgerGroup;
 import com.fleetmanagement.entity.Company;
 import com.fleetmanagement.entity.LedgerAccount;
 import com.fleetmanagement.mapper.LedgerAccountMapper;
-import com.fleetmanagement.repository.AccountGroupRepository;
+import com.fleetmanagement.repository.LedgerGroupRepository;
 import com.fleetmanagement.repository.CompanyRepository;
 import com.fleetmanagement.repository.LedgerAccountRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class LedgerAccountService {
 
     private final LedgerAccountRepository ledgerAccountRepository;
-    private final AccountGroupRepository accountGroupRepository;
+    private final LedgerGroupRepository ledgerGroupRepository;
     private final CompanyRepository companyRepository;
     private final LedgerAccountMapper mapper;
 
@@ -73,8 +73,8 @@ public class LedgerAccountService {
     public LedgerAccountResponse create(CreateLedgerAccountRequest req) {
         UUID tenantId = TenantContext.get();
 
-        AccountGroup group = accountGroupRepository.findById(req.getAccountGroupId())
-                .orElseThrow(() -> new RuntimeException("AccountGroup not found: " + req.getAccountGroupId()));
+        LedgerGroup group = ledgerGroupRepository.findById(req.getAccountGroupId())
+                .orElseThrow(() -> new RuntimeException("LedgerGroup not found: " + req.getAccountGroupId()));
 
         LedgerAccount account = new LedgerAccount();
         account.setTenantId(tenantId);
@@ -166,8 +166,8 @@ public class LedgerAccountService {
         account.setNameOnDashboard(req.getNameOnDashboard());
 
         if (req.getAccountGroupId() != null) {
-            AccountGroup group = accountGroupRepository.findById(req.getAccountGroupId())
-                    .orElseThrow(() -> new RuntimeException("AccountGroup not found"));
+            LedgerGroup group = ledgerGroupRepository.findById(req.getAccountGroupId())
+                    .orElseThrow(() -> new RuntimeException("LedgerGroup not found"));
             account.setAccountGroup(group.getName());
             account.setAccountGroupRef(group);
             account.setGroupNature(group.getNature().name());

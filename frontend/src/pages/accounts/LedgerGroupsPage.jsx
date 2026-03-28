@@ -1,9 +1,9 @@
 import { useState, useEffect, useMemo } from 'react';
-import accountGroupService, { NATURE_COLORS } from '../../services/accountGroupService';
+import ledgerGroupService, { NATURE_COLORS } from '../../services/ledgerGroupService';
 import useSliderStore from '../../stores/sliderStore';
-import { AccountGroupCreateContent, AccountGroupDetailContent } from './AccountGroupSliderContent';
+import { LedgerGroupCreateContent, LedgerGroupDetailContent } from './LedgerGroupSliderContent';
 
-export default function AccountGroupsPage() {
+export default function LedgerGroupsPage() {
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -12,7 +12,7 @@ export default function AccountGroupsPage() {
 
   const refresh = () => {
     setLoading(true);
-    accountGroupService.getAllGroups()
+    ledgerGroupService.getAllGroups()
       .then(res => setGroups(res.data || []))
       .catch(() => setGroups([]))
       .finally(() => setLoading(false));
@@ -37,23 +37,23 @@ export default function AccountGroupsPage() {
   }), [groups]);
 
   const openNewGroup = () => openSlider({
-    title: 'Add Account Group',
-    subtitle: 'Define a new account group',
-    content: <AccountGroupCreateContent onSave={refresh} groups={groups} />,
+    title: 'Add Ledger Group',
+    subtitle: 'Define a new ledger group',
+    content: <LedgerGroupCreateContent onSave={refresh} groups={groups} />,
     width: '520px',
   });
 
   const openDetail = (group) => openSlider({
     title: group.name,
     subtitle: `${group.nature} • ${group.systemGroup ? 'System' : 'Custom'}`,
-    content: <AccountGroupDetailContent group={group} onSave={refresh} groups={groups} />,
+    content: <LedgerGroupDetailContent group={group} onSave={refresh} groups={groups} />,
     width: '520px',
   });
 
   return (
     <div className="page-content">
       <div className="page-header">
-        <h1>Account Groups</h1>
+        <h1>Ledger Groups</h1>
         <div className="page-header-actions">
           <button className="btn btn-secondary"><i className="fas fa-file-export"></i> Export</button>
           <button className="btn btn-primary" onClick={openNewGroup}><i className="fas fa-plus"></i> Add Group</button>
@@ -111,7 +111,7 @@ export default function AccountGroupsPage() {
         ) : filtered.length === 0 ? (
           <div style={{ textAlign: 'center', padding: 40, color: '#94A3B8' }}>
             <div style={{ fontSize: 28, marginBottom: 8 }}>📂</div>
-            <div style={{ fontSize: 13, fontWeight: 600 }}>{groups.length === 0 ? 'No account groups yet' : 'No groups match your filter'}</div>
+            <div style={{ fontSize: 13, fontWeight: 600 }}>{groups.length === 0 ? 'No ledger groups yet' : 'No groups match your filter'}</div>
             {groups.length === 0 && <div style={{ fontSize: 12, color: '#CBD5E1', marginTop: 4 }}>Click "Add Group" to create one</div>}
           </div>
         ) : filtered.map(g => {
