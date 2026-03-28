@@ -49,18 +49,10 @@ public class LedgerAccount extends BaseEntity {
     @Column(name = "print_name")
     private String printName;
 
-    /** Denormalised from LedgerGroup — e.g. "SUNDRY DEBTORS" */
-    @Column(name = "account_group")
-    private String accountGroup;
-
-    /** FK to LedgerGroup — only for group master edits */
+    /** FK to LedgerGroup */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_group_id")
     private LedgerGroup accountGroupRef;
-
-    /** Denormalised from LedgerGroup — "ASSET" / "LIABILITY" / "INCOME" / "EXPENSE" */
-    @Column(name = "group_nature", length = 20)
-    private String groupNature;
 
     /** Specific business type — e.g. FUEL_PUMP, CLIENT, BANK_ACCOUNT */
     @Column(name = "account_type", length = 40)
@@ -208,13 +200,6 @@ public class LedgerAccount extends BaseEntity {
     /** CIN number — e.g. "L63000MH2007PLC173466" */
     @Column(name = "cin_number")
     private String cinNumber;
-
-    @Column(name = "last_year_revenue", precision = 15, scale = 2)
-    private BigDecimal lastYearRevenue;
-
-    /** Distance from base/office in km */
-    @Column(name = "distance", precision = 10, scale = 2)
-    private BigDecimal distance;
 
     @Column(name = "default_shipped_to_code")
     private String defaultShippedToCode;

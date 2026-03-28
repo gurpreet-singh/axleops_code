@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-28T19:02:22+0530",
+    date = "2026-03-28T20:39:58+0530",
     comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.45.0.v20260224-0835, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -27,13 +27,12 @@ public class LedgerAccountMapperImpl implements LedgerAccountMapper {
         ledgerAccountResponse.setCompanyId( entityCompanyId( entity ) );
         ledgerAccountResponse.setCompanyName( entity.getLegalName() );
         ledgerAccountResponse.setAccountGroupId( entityAccountGroupRefId( entity ) );
+        ledgerAccountResponse.setAccountGroup( entityAccountGroupRefName( entity ) );
         ledgerAccountResponse.setId( entity.getId() );
         ledgerAccountResponse.setAccountHead( entity.getAccountHead() );
         ledgerAccountResponse.setTallyName( entity.getTallyName() );
         ledgerAccountResponse.setNameOnDashboard( entity.getNameOnDashboard() );
         ledgerAccountResponse.setPrintName( entity.getPrintName() );
-        ledgerAccountResponse.setAccountGroup( entity.getAccountGroup() );
-        ledgerAccountResponse.setGroupNature( entity.getGroupNature() );
         if ( entity.getAccountType() != null ) {
             ledgerAccountResponse.setAccountType( entity.getAccountType().name() );
         }
@@ -78,9 +77,9 @@ public class LedgerAccountMapperImpl implements LedgerAccountMapper {
         ledgerAccountResponse.setShippingContactPerson( entity.getShippingContactPerson() );
         ledgerAccountResponse.setShippingDesignation( entity.getShippingDesignation() );
         ledgerAccountResponse.setCinNumber( entity.getCinNumber() );
-        ledgerAccountResponse.setLastYearRevenue( entity.getLastYearRevenue() );
-        ledgerAccountResponse.setDistance( entity.getDistance() );
         ledgerAccountResponse.setDefaultShippedToCode( entity.getDefaultShippedToCode() );
+
+        ledgerAccountResponse.setGroupNature( entity.getAccountGroupRef() != null ? entity.getAccountGroupRef().getNature().name() : null );
 
         return ledgerAccountResponse;
     }
@@ -99,5 +98,13 @@ public class LedgerAccountMapperImpl implements LedgerAccountMapper {
             return null;
         }
         return accountGroupRef.getId();
+    }
+
+    private String entityAccountGroupRefName(LedgerAccount ledgerAccount) {
+        LedgerGroup accountGroupRef = ledgerAccount.getAccountGroupRef();
+        if ( accountGroupRef == null ) {
+            return null;
+        }
+        return accountGroupRef.getName();
     }
 }

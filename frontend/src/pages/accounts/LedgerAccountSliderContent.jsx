@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useSliderStore from '../../stores/sliderStore';
 import useEnumStore, { getAccountTypeColor, isPartyAccountType } from '../../stores/enumStore';
 import ledgerAccountService from '../../services/ledgerAccountService';
@@ -45,7 +45,7 @@ function isGroupPartyType(groupId, groups) {
 // ═══════════════════════════════════════════════════════════════
 
 export function LedgerAccountCreateContent({ onSave, groups }) {
-  const { getOptionsWithPlaceholder, loaded: enumsLoaded, getLabel } = useEnumStore();
+  const { getOptionsWithPlaceholder, loaded: enumsLoaded, getLabel, fetchEnums } = useEnumStore();
   const { closeSlider } = useSliderStore();
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
@@ -59,7 +59,7 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
     shippedToSameAsBilling: true,
     shippingAddress: '', shippingCity: '', shippingState: '', shippingStateCode: '', shippingCountry: '', shippingPinCode: '',
     shippingPhone: '', shippingMobile: '', shippingEmail: '', shippingContactPerson: '', shippingDesignation: '',
-    cinNumber: '', lastYearRevenue: '', distance: '', defaultShippedToCode: '',
+    cinNumber: '', defaultShippedToCode: '',
   });
   const set = (key) => (val) => setForm(f => ({ ...f, [key]: val }));
 
@@ -80,8 +80,6 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
         // accountType is sent directly — selected by user
         accountType: form.accountType || null,
         openingBalance: form.openingBalance ? parseFloat(form.openingBalance) : 0,
-        lastYearRevenue: form.lastYearRevenue ? parseFloat(form.lastYearRevenue) : null,
-        distance: form.distance ? parseFloat(form.distance) : null,
         tcsApplicable: form.tcsApplicable || null,
         debitCredit: form.debitCredit || null,
       });
@@ -94,7 +92,8 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
     }
   };
 
-  // Guard: don't render form until enums are loaded
+  // Guard: don't render form until enums are loaded — retry if needed
+  useEffect(() => { if (!enumsLoaded) fetchEnums(); }, [enumsLoaded, fetchEnums]);
   if (!enumsLoaded) return <EnumLoadingSpinner />;
 
   return (
@@ -166,10 +165,13 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
               <FormField label="GSTIN" value={form.gstin} onChange={set('gstin')} placeholder="e.g. 27AAFCM2530H1ZO" />
-              <FormField label="Vendor Code" value={form.ourVendorCode} onChange={set('ourVendorCode')} placeholder="Our vendor code" />
+              <FormField label="CIN Number" value={form.cinNumber} onChange={set('cinNumber')} placeholder="e.g. L63000MH2007PLC173466" />
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14, marginBottom: 14 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
+              <FormField label="Vendor Code" value={form.ourVendorCode} onChange={set('ourVendorCode')} placeholder="Our vendor code" />
               <FormField label="TCS Applicable" value={form.tcsApplicable} onChange={set('tcsApplicable')} options={getOptionsWithPlaceholder('tcsApplicability', 'Not Applicable')} />
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
               <FormField label="Payment Terms" value={form.paymentTerms} onChange={set('paymentTerms')} placeholder="e.g. 30 days" />
               <FormField label="Tally Payment Terms" value={form.tallyPaymentTerms} onChange={set('tallyPaymentTerms')} placeholder="Tally terms" />
             </div>
@@ -237,14 +239,7 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
           )}
         </Section>
 
-        {/* Other Information */}
-        <Section title="Other Information" emoji="📋" borderColor="#E2E8F0" headerBg="linear-gradient(135deg, #F8FAFC, #F1F5F9)" accentColor="#64748B" collapsible defaultCollapsed={!isPartyType}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14, marginBottom: 14 }}>
-            <FormField label="CIN Number" value={form.cinNumber} onChange={set('cinNumber')} placeholder="e.g. L63000MH2007PLC173466" />
-            <FormField label="Last Year Revenue (₹)" value={form.lastYearRevenue} onChange={set('lastYearRevenue')} type="number" placeholder="0.00" />
-            <FormField label="Distance (km)" value={form.distance} onChange={set('distance')} type="number" placeholder="e.g. 150" />
-          </div>
-        </Section>
+
 
 
       </div>
@@ -254,19 +249,16 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
 
 
 // ═══════════════════════════════════════════════════════════════
-// DETAIL SLIDER
-// ═══════════════════════════════════════════════════════════════
-
 export function LedgerAccountDetailContent({ account, onSave, groups }) {
   const { closeSlider } = useSliderStore();
-  const { getOptionsWithPlaceholder, loaded: enumsLoaded, getLabel } = useEnumStore();
+  const { getOptionsWithPlaceholder, loaded: enumsLoaded, getLabel, fetchEnums } = useEnumStore();
   const [isEditing, setIsEditing] = useState(false);
-  const [activeTab, setActiveTab] = useState('overview');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [form, setForm] = useState({ ...account });
   const set = (key) => (val) => setForm(f => ({ ...f, [key]: val }));
 
-  const tc = getAccountTypeColor(account.accountType);
+
+
   const isPartyType = isPartyAccountType(account.accountType);
 
   const groupOptions = [
@@ -274,16 +266,12 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
     ...groups.map(g => ({ value: g.id, label: `${g.name} (${g.nature})` }))
   ];
 
-
   const handleSave = async () => {
     try {
       await ledgerAccountService.update(account.id, {
         ...form,
-        // accountType is sent directly
         accountType: form.accountType || null,
         openingBalance: form.openingBalance ? parseFloat(form.openingBalance) : 0,
-        lastYearRevenue: form.lastYearRevenue ? parseFloat(form.lastYearRevenue) : null,
-        distance: form.distance ? parseFloat(form.distance) : null,
         tcsApplicable: form.tcsApplicable || null,
         debitCredit: form.debitCredit || null,
       });
@@ -294,14 +282,8 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
     }
   };
 
-  const tabs = [
-    { id: 'overview', label: 'Overview' },
-    ...(isPartyType ? [{ id: 'party', label: 'Party Details' }] : []),
-    { id: 'address', label: 'Address' },
-    { id: 'other', label: 'Other Info' },
-  ];
-
-  // Guard: don't render form until enums are loaded
+  // Guard: don't render form until enums are loaded — retry if needed
+  useEffect(() => { if (!enumsLoaded) fetchEnums(); }, [enumsLoaded, fetchEnums]);
   if (!enumsLoaded) return <EnumLoadingSpinner />;
 
   return (
@@ -325,16 +307,6 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
         <button className="sl-delete-btn" onClick={() => setShowDeleteModal(true)}>
           <i className="fas fa-recycle"></i> Delete
         </button>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: tc.bg, color: tc.color, border: `1px solid ${tc.border}`, fontSize: 10, fontWeight: 700, padding: '4px 12px', borderRadius: 20 }}>
-          {getLabel('ledgerAccountType', account.accountType)}
-        </span>
-        {account.active ? (
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: '#F0FDF4', color: '#16A34A', border: '1px solid #BBF7D0', fontSize: 10, fontWeight: 700, padding: '4px 10px', borderRadius: 20 }}>
-            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#16A34A' }}></span>Active
-          </span>
-        ) : (
-          <span style={{ fontSize: 10, fontWeight: 700, color: '#94A3B8', padding: '4px 10px', border: '1px solid #E2E8F0', borderRadius: 20, background: '#F8FAFC' }}>Inactive</span>
-        )}
       </div>
 
       {/* Balance summary */}
@@ -349,77 +321,65 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="slider-tabs" style={{ padding: '0 20px', borderBottom: '1px solid #E2E8F0' }}>
-        {tabs.map(t => (
-          <button key={t.id} className={`slider-tab${activeTab === t.id ? ' active' : ''}`}
-            onClick={() => setActiveTab(t.id)}
-            style={{ background: 'none', border: 'none', padding: '10px 16px', fontSize: 12, fontWeight: 600, color: activeTab === t.id ? '#1A73E8' : '#64748B', borderBottom: activeTab === t.id ? '2px solid #1A73E8' : '2px solid transparent', cursor: 'pointer', transition: 'all 0.15s' }}>
-            {t.label}
-          </button>
-        ))}
-      </div>
-
       <div style={{ padding: '20px 20px 40px' }}>
-        {/* OVERVIEW TAB */}
-        {activeTab === 'overview' && (
-          isEditing ? (
-            <>
-              <Section title="Identity" emoji="🏷️" borderColor="#BAE6FD" headerBg="linear-gradient(135deg, #F0F9FF, #E0F2FE)" accentColor="#0369A1">
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
-                  <FormField label="Account Head" value={form.accountHead} onChange={set('accountHead')} required full />
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
-                  <FormField label="Ledger Group" value={form.accountGroupId} onChange={set('accountGroupId')} options={groupOptions} />
-                  {/* Account Type — editable dropdown */}
-                  <FormField label="Account Type" value={form.accountType} onChange={set('accountType')} options={getOptionsWithPlaceholder('ledgerAccountType', 'Select account type')} />
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
-                  <FormField label="Tally Name" value={form.tallyName} onChange={set('tallyName')} />
-                  <FormField label="Print Name" value={form.printName} onChange={set('printName')} />
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
-                  <FormField label="Dashboard Name" value={form.nameOnDashboard} onChange={set('nameOnDashboard')} />
-                  <FormField label="Default Shipped To Code" value={form.defaultShippedToCode} onChange={set('defaultShippedToCode')} />
-                </div>
-              </Section>
-              <Section title="Financials" emoji="💰" borderColor="#A7F3D0" headerBg="linear-gradient(135deg, #F0FDF4, #DCFCE7)" accentColor="#059669">
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
-                  <FormField label="Opening Balance" value={form.openingBalance} onChange={set('openingBalance')} type="number" />
-                  <FormField label="Debit / Credit" value={form.debitCredit} onChange={set('debitCredit')} options={[{ value: 'DEBIT', label: 'Debit' }, { value: 'CREDIT', label: 'Credit' }]} />
-                  <FormField label="Currency" value={form.currency} onChange={set('currency')} />
-                </div>
-              </Section>
-            </>
-          ) : (
-            <>
-              <Section title="Identity" emoji="🏷️" borderColor="#BAE6FD" headerBg="linear-gradient(135deg, #F0F9FF, #E0F2FE)" accentColor="#0369A1">
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                  <ReadField label="Account Head" value={account.accountHead} />
-                  <ReadField label="Ledger Group" value={account.accountGroup} />
-                  <ReadField label="Group Nature" value={account.groupNature} />
-                  <ReadField label="Account Type" value={getLabel('ledgerAccountType', account.accountType)} />
-                  <ReadField label="Tally Name" value={account.tallyName} />
-                  <ReadField label="Print Name" value={account.printName} />
-                  <ReadField label="Dashboard Name" value={account.nameOnDashboard} />
-                  <ReadField label="Default Shipped To Code" value={account.defaultShippedToCode} />
-                </div>
-              </Section>
-              <Section title="Financials" emoji="💰" borderColor="#A7F3D0" headerBg="linear-gradient(135deg, #F0FDF4, #DCFCE7)" accentColor="#059669">
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                  <ReadField label="Opening Balance" value={INR(account.openingBalance)} mono />
-                  <ReadField label="Debit / Credit" value={account.debitCredit?.replace(/_/g, ' ') || 'Debit'} />
-                  <ReadField label="Current Balance" value={INR(account.currentBalance)} mono />
-                  <ReadField label="Currency" value={account.currency} />
-                  <ReadField label="Status" value={account.active ? '✅ Active' : '❌ Inactive'} />
-                </div>
-              </Section>
-            </>
-          )
+
+        {/* ── IDENTITY ─────────────────────────────────────────── */}
+        {isEditing ? (
+          <Section title="Identity" emoji="🏷️" borderColor="#BAE6FD" headerBg="linear-gradient(135deg, #F0F9FF, #E0F2FE)" accentColor="#0369A1">
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
+              <FormField label="Account Head" value={form.accountHead} onChange={set('accountHead')} required full />
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
+              <FormField label="Ledger Group" value={form.accountGroupId} onChange={set('accountGroupId')} options={groupOptions} />
+              <FormField label="Account Type" value={form.accountType} onChange={set('accountType')} options={getOptionsWithPlaceholder('ledgerAccountType', 'Select account type')} />
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
+              <FormField label="Tally Name" value={form.tallyName} onChange={set('tallyName')} />
+              <FormField label="Print Name" value={form.printName} onChange={set('printName')} />
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+              <FormField label="Dashboard Name" value={form.nameOnDashboard} onChange={set('nameOnDashboard')} />
+              <FormField label="Default Shipped To Code" value={form.defaultShippedToCode} onChange={set('defaultShippedToCode')} />
+            </div>
+          </Section>
+        ) : (
+          <Section title="Identity" emoji="🏷️" borderColor="#BAE6FD" headerBg="linear-gradient(135deg, #F0F9FF, #E0F2FE)" accentColor="#0369A1">
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              <ReadField label="Account Head" value={account.accountHead} />
+              <ReadField label="Ledger Group" value={account.accountGroup} />
+              <ReadField label="Group Nature" value={account.groupNature} />
+              <ReadField label="Account Type" value={getLabel('ledgerAccountType', account.accountType)} />
+              <ReadField label="Tally Name" value={account.tallyName} />
+              <ReadField label="Print Name" value={account.printName} />
+              <ReadField label="Dashboard Name" value={account.nameOnDashboard} />
+              <ReadField label="Default Shipped To Code" value={account.defaultShippedToCode} />
+            </div>
+          </Section>
         )}
 
-        {/* PARTY TAB */}
-        {activeTab === 'party' && (
+        {/* ── FINANCIALS ───────────────────────────────────────── */}
+        {isEditing ? (
+          <Section title="Financials" emoji="💰" borderColor="#A7F3D0" headerBg="linear-gradient(135deg, #F0FDF4, #DCFCE7)" accentColor="#059669">
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
+              <FormField label="Opening Balance" value={form.openingBalance} onChange={set('openingBalance')} type="number" />
+              <FormField label="Debit / Credit" value={form.debitCredit} onChange={set('debitCredit')} options={[{ value: 'DEBIT', label: 'Debit' }, { value: 'CREDIT', label: 'Credit' }]} />
+              <FormField label="Currency" value={form.currency} onChange={set('currency')} />
+            </div>
+          </Section>
+        ) : (
+          <Section title="Financials" emoji="💰" borderColor="#A7F3D0" headerBg="linear-gradient(135deg, #F0FDF4, #DCFCE7)" accentColor="#059669">
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              <ReadField label="Opening Balance" value={INR(account.openingBalance)} mono />
+              <ReadField label="Debit / Credit" value={account.debitCredit?.replace(/_/g, ' ') || 'Debit'} />
+              <ReadField label="Current Balance" value={INR(account.currentBalance)} mono />
+              <ReadField label="Currency" value={account.currency} />
+              <ReadField label="Status" value={account.active ? '✅ Active' : '❌ Inactive'} />
+            </div>
+          </Section>
+        )}
+
+        {/* ── PARTY DATA (only for party-type accounts) ────────── */}
+        {isPartyType && (
           isEditing ? (
             <Section title="Party Data" emoji="🏢" borderColor="#C4B5FD" headerBg="linear-gradient(135deg, #F5F3FF, #EDE9FE)" accentColor="#6D28D9">
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
@@ -428,10 +388,13 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
                 <FormField label="GSTIN" value={form.gstin} onChange={set('gstin')} />
-                <FormField label="Vendor Code" value={form.ourVendorCode} onChange={set('ourVendorCode')} />
+                <FormField label="CIN Number" value={form.cinNumber} onChange={set('cinNumber')} />
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
+                <FormField label="Vendor Code" value={form.ourVendorCode} onChange={set('ourVendorCode')} />
                 <FormField label="TCS" value={form.tcsApplicable} onChange={set('tcsApplicable')} options={getOptionsWithPlaceholder('tcsApplicability', 'Not Applicable')} />
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                 <FormField label="Payment Terms" value={form.paymentTerms} onChange={set('paymentTerms')} />
                 <FormField label="Tally Terms" value={form.tallyPaymentTerms} onChange={set('tallyPaymentTerms')} />
               </div>
@@ -442,104 +405,78 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
                 <ReadField label="Legal Name" value={account.legalName} />
                 <ReadField label="PAN Number" value={account.panNumber} mono />
                 <ReadField label="GSTIN" value={account.gstin} mono />
+                <ReadField label="CIN Number" value={account.cinNumber} mono />
                 <ReadField label="Vendor Code" value={account.ourVendorCode} mono />
                 <ReadField label="TCS Applicable" value={account.tcsApplicable?.replace(/_/g, ' ') || 'Not Applicable'} />
                 <ReadField label="Payment Terms" value={account.paymentTerms} />
                 <ReadField label="Tally Terms" value={account.tallyPaymentTerms} />
-
               </div>
             </Section>
           )
         )}
 
-        {/* ADDRESS TAB */}
-        {activeTab === 'address' && (
-          isEditing ? (
-            <>
-              <Section title="Billing Address" emoji="📍" borderColor="#FDBA74" headerBg="linear-gradient(135deg, #FFF7ED, #FFEDD5)" accentColor="#9A3412">
-                <FormField label="Address" value={form.billingAddress} onChange={set('billingAddress')} textarea full />
-                <div style={{ height: 14 }}></div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
-                  <FormField label="City" value={form.city} onChange={set('city')} />
-                  <FormField label="State" value={form.state} onChange={set('state')} />
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14, marginBottom: 14 }}>
-                  <FormField label="State Code" value={form.stateCode} onChange={set('stateCode')} />
-                  <FormField label="Country" value={form.country} onChange={set('country')} />
-                  <FormField label="PIN" value={form.pinCode} onChange={set('pinCode')} />
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14, marginBottom: 14 }}>
-                  <FormField label="Phone" value={form.phone} onChange={set('phone')} />
-                  <FormField label="Mobile" value={form.mobile} onChange={set('mobile')} />
-                  <FormField label="Email" value={form.email} onChange={set('email')} />
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
-                  <FormField label="Website" value={form.website} onChange={set('website')} />
-                  <FormField label="Contact Person" value={form.contactPerson} onChange={set('contactPerson')} />
-                  <FormField label="Designation" value={form.designation} onChange={set('designation')} />
-                </div>
-              </Section>
-            </>
-          ) : (
-            <>
-              <Section title="Billing Address" emoji="📍" borderColor="#FDBA74" headerBg="linear-gradient(135deg, #FFF7ED, #FFEDD5)" accentColor="#9A3412">
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                  <div style={{ gridColumn: '1 / -1' }}><ReadField label="Full Address" value={account.billingAddress} /></div>
-                  <ReadField label="City" value={account.city} />
-                  <ReadField label="State" value={account.state} />
-                  <ReadField label="State Code" value={account.stateCode} mono />
-                  <ReadField label="Country" value={account.country} />
-                  <ReadField label="PIN Code" value={account.pinCode} mono />
-                  <ReadField label="Phone" value={account.phone} />
-                  <ReadField label="Mobile" value={account.mobile} />
-                  <ReadField label="Email" value={account.email} />
-                  <ReadField label="Website" value={account.website} />
-                  <ReadField label="Contact Person" value={account.contactPerson} />
-                  <ReadField label="Designation" value={account.designation} />
-                </div>
-              </Section>
-              {!account.shippedToSameAsBilling && (
-                <Section title="Shipping Address" emoji="🚚" borderColor="#FECACA" headerBg="linear-gradient(135deg, #FEF2F2, #FFE4E6)" accentColor="#DC2626">
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                    <div style={{ gridColumn: '1 / -1' }}><ReadField label="Shipping Address" value={account.shippingAddress} /></div>
-                    <ReadField label="City" value={account.shippingCity} />
-                    <ReadField label="State" value={account.shippingState} />
-                    <ReadField label="State Code" value={account.shippingStateCode} mono />
-                    <ReadField label="Country" value={account.shippingCountry} />
-                    <ReadField label="PIN" value={account.shippingPinCode} mono />
-                    <ReadField label="Phone" value={account.shippingPhone} />
-                    <ReadField label="Mobile" value={account.shippingMobile} />
-                    <ReadField label="Email" value={account.shippingEmail} />
-                    <ReadField label="Contact Person" value={account.shippingContactPerson} />
-                    <ReadField label="Designation" value={account.shippingDesignation} />
-                  </div>
-                </Section>
-              )}
-            </>
-          )
+        {/* ── BILLING ADDRESS ──────────────────────────────────── */}
+        {isEditing ? (
+          <Section title="Billing Address" emoji="📍" borderColor="#FDBA74" headerBg="linear-gradient(135deg, #FFF7ED, #FFEDD5)" accentColor="#9A3412">
+            <FormField label="Address" value={form.billingAddress} onChange={set('billingAddress')} textarea full />
+            <div style={{ height: 14 }}></div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
+              <FormField label="City" value={form.city} onChange={set('city')} />
+              <FormField label="State" value={form.state} onChange={set('state')} />
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14, marginBottom: 14 }}>
+              <FormField label="State Code" value={form.stateCode} onChange={set('stateCode')} />
+              <FormField label="Country" value={form.country} onChange={set('country')} />
+              <FormField label="PIN" value={form.pinCode} onChange={set('pinCode')} />
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14, marginBottom: 14 }}>
+              <FormField label="Phone" value={form.phone} onChange={set('phone')} />
+              <FormField label="Mobile" value={form.mobile} onChange={set('mobile')} />
+              <FormField label="Email" value={form.email} onChange={set('email')} />
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
+              <FormField label="Website" value={form.website} onChange={set('website')} />
+              <FormField label="Contact Person" value={form.contactPerson} onChange={set('contactPerson')} />
+              <FormField label="Designation" value={form.designation} onChange={set('designation')} />
+            </div>
+          </Section>
+        ) : (
+          <Section title="Billing Address" emoji="📍" borderColor="#FDBA74" headerBg="linear-gradient(135deg, #FFF7ED, #FFEDD5)" accentColor="#9A3412">
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              <div style={{ gridColumn: '1 / -1' }}><ReadField label="Full Address" value={account.billingAddress} /></div>
+              <ReadField label="City" value={account.city} />
+              <ReadField label="State" value={account.state} />
+              <ReadField label="State Code" value={account.stateCode} mono />
+              <ReadField label="Country" value={account.country} />
+              <ReadField label="PIN Code" value={account.pinCode} mono />
+              <ReadField label="Phone" value={account.phone} />
+              <ReadField label="Mobile" value={account.mobile} />
+              <ReadField label="Email" value={account.email} />
+              <ReadField label="Website" value={account.website} />
+              <ReadField label="Contact Person" value={account.contactPerson} />
+              <ReadField label="Designation" value={account.designation} />
+            </div>
+          </Section>
         )}
 
-        {/* OTHER INFO TAB */}
-        {activeTab === 'other' && (
-          isEditing ? (
-            <Section title="Other Information" emoji="📋" borderColor="#E2E8F0" headerBg="linear-gradient(135deg, #F8FAFC, #F1F5F9)" accentColor="#64748B">
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
-                <FormField label="CIN Number" value={form.cinNumber} onChange={set('cinNumber')} />
-                <FormField label="Last Year Revenue (₹)" value={form.lastYearRevenue} onChange={set('lastYearRevenue')} type="number" />
-                <FormField label="Distance (km)" value={form.distance} onChange={set('distance')} type="number" />
-              </div>
-            </Section>
-          ) : (
-            <Section title="Other Information" emoji="📋" borderColor="#E2E8F0" headerBg="linear-gradient(135deg, #F8FAFC, #F1F5F9)" accentColor="#64748B">
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                <ReadField label="CIN Number" value={account.cinNumber} mono />
-                <ReadField label="Last Year Revenue" value={INR(account.lastYearRevenue)} mono />
-                <ReadField label="Distance" value={account.distance ? `${account.distance} km` : null} />
-              </div>
-            </Section>
-          )
+        {/* ── SHIPPING ADDRESS (only if different from billing) ── */}
+        {!account.shippedToSameAsBilling && !isEditing && (
+          <Section title="Shipping Address" emoji="🚚" borderColor="#FECACA" headerBg="linear-gradient(135deg, #FEF2F2, #FFE4E6)" accentColor="#DC2626">
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              <div style={{ gridColumn: '1 / -1' }}><ReadField label="Shipping Address" value={account.shippingAddress} /></div>
+              <ReadField label="City" value={account.shippingCity} />
+              <ReadField label="State" value={account.shippingState} />
+              <ReadField label="State Code" value={account.shippingStateCode} mono />
+              <ReadField label="Country" value={account.shippingCountry} />
+              <ReadField label="PIN" value={account.shippingPinCode} mono />
+              <ReadField label="Phone" value={account.shippingPhone} />
+              <ReadField label="Mobile" value={account.shippingMobile} />
+              <ReadField label="Email" value={account.shippingEmail} />
+              <ReadField label="Contact Person" value={account.shippingContactPerson} />
+              <ReadField label="Designation" value={account.shippingDesignation} />
+            </div>
+          </Section>
         )}
-
 
       </div>
 

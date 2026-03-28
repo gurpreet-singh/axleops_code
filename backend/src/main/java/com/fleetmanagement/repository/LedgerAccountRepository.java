@@ -30,8 +30,8 @@ public interface LedgerAccountRepository extends JpaRepository<LedgerAccount, UU
     @Query("SELECT la FROM LedgerAccount la WHERE la.tenantId = :tenantId AND la.active = true AND la.accountType = :accountType")
     List<LedgerAccount> findActiveByAccountType(@Param("tenantId") UUID tenantId, @Param("accountType") LedgerAccountType accountType);
 
-    @Query("SELECT la FROM LedgerAccount la WHERE la.tenantId = :tenantId AND la.groupNature = :nature AND la.active = true")
-    List<LedgerAccount> findByGroupNature(@Param("tenantId") UUID tenantId, @Param("nature") String nature);
+    @Query("SELECT la FROM LedgerAccount la WHERE la.tenantId = :tenantId AND la.accountGroupRef.nature = :nature AND la.active = true")
+    List<LedgerAccount> findByGroupNature(@Param("tenantId") UUID tenantId, @Param("nature") com.fleetmanagement.entity.LedgerGroup.GroupNature nature);
 
     /**
      * Cascade update: when Company master data changes, propagate to all LedgerAccount rows.

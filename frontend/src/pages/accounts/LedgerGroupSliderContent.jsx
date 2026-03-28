@@ -136,7 +136,8 @@ export function LedgerGroupDetailContent({ group, onSave, groups }) {
   });
   const set = (key) => (val) => setForm(f => ({ ...f, [key]: val }));
 
-  const nc = NATURE_COLORS[group.nature] || { bg: '#F8FAFC', color: '#475569', border: '#E2E8F0' };
+
+
   const parentName = groups.find(g => g.id === group.parentGroupId)?.name;
 
   const parentOptions = [
@@ -181,13 +182,6 @@ export function LedgerGroupDetailContent({ group, onSave, groups }) {
         <button className="sl-delete-btn" onClick={() => setShowDeleteModal(true)}>
           <i className="fas fa-recycle"></i> Delete
         </button>
-        <span style={{
-          display: 'inline-flex', alignItems: 'center', gap: 4,
-          background: nc.bg, color: nc.color, border: `1px solid ${nc.border}`,
-          fontSize: 10, fontWeight: 700, padding: '4px 12px', borderRadius: 20,
-        }}>
-          {group.nature}
-        </span>
       </div>
 
       <div style={{ padding: '20px 20px 40px' }}>

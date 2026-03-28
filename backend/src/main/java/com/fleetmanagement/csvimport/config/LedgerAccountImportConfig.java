@@ -35,16 +35,11 @@ public class LedgerAccountImportConfig {
                                 .exampleValue("ABC Transport Co.").exampleValue2("State Bank of India")
                                 .build(),
                         ImportFieldDefinition.builder()
-                                .fieldName("accountGroup").displayName("Account Group").dataType(ImportDataType.STRING)
-                                .aliases(List.of("Group Name", "Ledger Group", "Group"))
+                                .fieldName("accountGroupRef").displayName("Account Group").dataType(ImportDataType.STRING)
+                                .foreignKeyEntity("LedgerGroup").foreignKeyLookupField("name")
+                                .aliases(List.of("Group Name", "Ledger Group", "Group", "Account Group"))
                                 .exampleValue("Sundry Debtors").exampleValue2("Bank Accounts")
-                                .helpText("Name of the ledger group this account belongs to")
-                                .build(),
-                        ImportFieldDefinition.builder()
-                                .fieldName("groupNature").displayName("Group Nature").dataType(ImportDataType.ENUM)
-                                .enumValues(List.of("ASSET", "LIABILITY", "INCOME", "EXPENSE"))
-                                .aliases(List.of("Nature", "Account Nature"))
-                                .exampleValue("ASSET").exampleValue2("EXPENSE")
+                                .helpText("Name of the ledger group this account belongs to (looked up by name)")
                                 .build(),
                         ImportFieldDefinition.builder()
                                 .fieldName("accountType").displayName("Account Type").dataType(ImportDataType.ENUM)

@@ -68,7 +68,5 @@ public class LedgerAccountResponse {
 
     // Other
     private String cinNumber;
-    private BigDecimal lastYearRevenue;
-    private BigDecimal distance;
     private String defaultShippedToCode;
 }

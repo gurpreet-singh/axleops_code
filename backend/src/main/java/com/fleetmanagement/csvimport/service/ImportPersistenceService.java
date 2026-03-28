@@ -158,6 +158,21 @@ public class ImportPersistenceService {
                 String value = data.get(fieldDef.getFieldName());
                 if (value == null || value.trim().isEmpty()) continue;
 
+                // FK resolution: look up linked entity by name (tenant-scoped)
+                if (fieldDef.getForeignKeyEntity() != null && fieldDef.getForeignKeyLookupField() != null) {
+                    Object fkEntity = resolveForeignKey(
+                            fieldDef.getForeignKeyEntity(),
+                            fieldDef.getForeignKeyLookupField(),
+                            value.trim(), tenantId);
+                    if (fkEntity != null) {
+                        setFieldValue(entity, fieldDef.getFieldName(), fkEntity);
+                    } else {
+                        log.warn("FK lookup failed for {}='{}' — no matching {} found for tenant",
+                                fieldDef.getFieldName(), value.trim(), fieldDef.getForeignKeyEntity());
+                    }
+                    continue;
+                }
+
                 Object convertedValue = convertValue(value, fieldDef, config.getEntityClass());
                 if (convertedValue != null) {
                     setFieldValue(entity, fieldDef.getFieldName(), convertedValue);
@@ -167,6 +182,25 @@ public class ImportPersistenceService {
             return entity;
         } catch (Exception e) {
             throw new RuntimeException("Failed to create entity: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Generic FK resolution: find an entity by a lookup field, always scoped to tenantId.
+     * Uses JPQL: SELECT e FROM {Entity} e WHERE LOWER(e.{lookupField}) = :val AND e.tenantId = :tenantId
+     */
+    private Object resolveForeignKey(String entityName, String lookupField, String lookupValue, UUID tenantId) {
+        try {
+            String jpql = "SELECT e FROM " + entityName + " e WHERE LOWER(e." + lookupField + ") = :val AND e.tenantId = :tenantId";
+            @SuppressWarnings("unchecked")
+            List<Object> results = entityManager.createQuery(jpql)
+                    .setParameter("val", lookupValue.toLowerCase())
+                    .setParameter("tenantId", tenantId)
+                    .getResultList();
+            return results.isEmpty() ? null : results.get(0);
+        } catch (Exception e) {
+            log.warn("FK resolution error for {}.{}: {}", entityName, lookupField, e.getMessage());
+            return null;
         }
     }
 
@@ -271,6 +305,17 @@ public class ImportPersistenceService {
         for (ImportFieldDefinition fieldDef : config.getFields()) {
             String value = row.getData().get(fieldDef.getFieldName());
             if (value != null && !value.trim().isEmpty()) {
+                // FK resolution for overwrites too
+                if (fieldDef.getForeignKeyEntity() != null && fieldDef.getForeignKeyLookupField() != null) {
+                    Object fkEntity = resolveForeignKey(
+                            fieldDef.getForeignKeyEntity(),
+                            fieldDef.getForeignKeyLookupField(),
+                            value.trim(), tenantId);
+                    if (fkEntity != null) {
+                        setFieldValue(existing, fieldDef.getFieldName(), fkEntity);
+                    }
+                    continue;
+                }
                 Object converted = convertValue(value, fieldDef, config.getEntityClass());
                 if (converted != null) {
                     setFieldValue(existing, fieldDef.getFieldName(), converted);

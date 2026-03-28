@@ -77,9 +77,7 @@ public class LedgerAccountService {
         account.setTallyName(req.getTallyName());
         account.setNameOnDashboard(req.getNameOnDashboard());
         account.setPrintName(req.getPrintName());
-        account.setAccountGroup(group.getName());
         account.setAccountGroupRef(group);
-        account.setGroupNature(group.getNature().name());
         // accountType — persisted directly, selected by user
         if (req.getAccountType() != null && !req.getAccountType().isEmpty()) {
             account.setAccountType(LedgerAccountType.valueOf(req.getAccountType()));
@@ -145,8 +143,6 @@ public class LedgerAccountService {
 
         // Other
         account.setCinNumber(req.getCinNumber());
-        account.setLastYearRevenue(req.getLastYearRevenue());
-        account.setDistance(req.getDistance());
         account.setDefaultShippedToCode(req.getDefaultShippedToCode());
 
         LedgerAccount saved = ledgerAccountRepository.save(account);
@@ -167,9 +163,7 @@ public class LedgerAccountService {
         if (req.getAccountGroupId() != null) {
             LedgerGroup group = ledgerGroupRepository.findByIdAndTenantId(req.getAccountGroupId(), tenantId)
                     .orElseThrow(() -> new ResourceNotFoundException("LedgerGroup", req.getAccountGroupId()));
-            account.setAccountGroup(group.getName());
             account.setAccountGroupRef(group);
-            account.setGroupNature(group.getNature().name());
         }
 
         // accountType — update if provided
@@ -220,8 +214,6 @@ public class LedgerAccountService {
 
         // Other
         account.setCinNumber(req.getCinNumber());
-        account.setLastYearRevenue(req.getLastYearRevenue());
-        account.setDistance(req.getDistance());
         account.setDefaultShippedToCode(req.getDefaultShippedToCode());
 
         LedgerAccount saved = ledgerAccountRepository.save(account);

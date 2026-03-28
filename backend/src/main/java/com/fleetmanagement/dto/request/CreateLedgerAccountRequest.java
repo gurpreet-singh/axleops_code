@@ -65,7 +65,5 @@ public class CreateLedgerAccountRequest {
 
     // Other
     private String cinNumber;
-    private BigDecimal lastYearRevenue;
-    private BigDecimal distance;
     private String defaultShippedToCode;
 }
