@@ -47,6 +47,20 @@ public class LedgerAccountImportConfig {
                                 .exampleValue("ASSET").exampleValue2("EXPENSE")
                                 .build(),
                         ImportFieldDefinition.builder()
+                                .fieldName("accountType").displayName("Account Type").dataType(ImportDataType.ENUM)
+                                .enumValues(List.of(
+                                        "CLIENT", "VENDOR", "FUEL_PUMP",
+                                        "BANK_ACCOUNT", "CASH_ACCOUNT", "FUEL_CARD",
+                                        "FASTAG_ACCOUNT", "CORPORATE_EXPENSE_CARD",
+                                        "TAX_DUTY", "CAPITAL_ACCOUNT", "INTERNAL_TRANSFER",
+                                        "EXPENSE", "INCOME", "FIXED_ASSET"
+                                ))
+                                .enumCaseInsensitive(true)
+                                .aliases(List.of("Account Type", "Ledger Account Type", "Type", "Sub Type"))
+                                .exampleValue("CLIENT").exampleValue2("FUEL_PUMP")
+                                .helpText("Operational behaviour type: CLIENT, VENDOR, FUEL_PUMP, BANK_ACCOUNT, etc.")
+                                .build(),
+                        ImportFieldDefinition.builder()
                                 .fieldName("panNumber").displayName("PAN").dataType(ImportDataType.PAN)
                                 .regexPattern("[A-Z]{5}[0-9]{4}[A-Z]").regexErrorMessage("Invalid PAN format (expected: ABCDE1234F)")
                                 .aliases(List.of("PAN Number", "PAN No", "PAN Card"))

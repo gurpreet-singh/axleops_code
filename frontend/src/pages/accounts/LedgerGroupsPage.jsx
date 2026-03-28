@@ -102,7 +102,7 @@ export default function LedgerGroupsPage() {
       {/* Table */}
       <div style={{ background: '#fff', border: '1.5px solid #E2E8F0', borderRadius: 16, overflow: 'hidden' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1.2fr 1fr 60px', padding: '12px 18px', background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', fontSize: 11, fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: 0.5 }}>
-          <span>Group Name</span><span>Nature</span><span>Default Sub Type</span><span>Tally Name</span><span></span>
+          <span>Group Name</span><span>Nature</span><span>Group Type</span><span>Tally Name</span><span></span>
         </div>
         {loading ? (
           <div style={{ textAlign: 'center', padding: 40, color: '#94A3B8' }}>
@@ -131,7 +131,7 @@ export default function LedgerGroupsPage() {
                   {g.nature}
                 </span>
               </div>
-              <div style={{ fontSize: 12, color: '#475569', fontWeight: 500 }}>{getLabel('accountSubType', g.defaultAccountSubType)}</div>
+              <div style={{ fontSize: 12, color: '#475569', fontWeight: 500 }}>{getLabel('ledgerGroupType', g.groupType)}</div>
               <div style={{ fontSize: 12, color: '#64748B', fontFamily: "'JetBrains Mono', monospace", fontWeight: 500 }}>{g.tallyGroupName || '—'}</div>
               <div style={{ fontSize: 11, color: '#94A3B8', fontWeight: 700, textAlign: 'right' }}>Open →</div>
             </div>

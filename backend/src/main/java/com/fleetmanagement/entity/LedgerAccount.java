@@ -49,10 +49,6 @@ public class LedgerAccount extends BaseEntity {
     @Column(name = "print_name")
     private String printName;
 
-    /** Whether this account is visible on the dashboard */
-    @Column(name = "show_on_dashboard", nullable = false)
-    private boolean showOnDashboard = false;
-
     /** Denormalised from LedgerGroup — e.g. "SUNDRY DEBTORS" */
     @Column(name = "account_group")
     private String accountGroup;
@@ -66,10 +62,10 @@ public class LedgerAccount extends BaseEntity {
     @Column(name = "group_nature", length = 20)
     private String groupNature;
 
-    /**
-     * Account sub type — now derived from the LedgerGroup at read time.
-     * NOT persisted on this entity. Use accountGroupRef.getDefaultAccountSubType().
-     */
+    /** Specific business type — e.g. FUEL_PUMP, CLIENT, BANK_ACCOUNT */
+    @Column(name = "account_type", length = 40)
+    @Enumerated(EnumType.STRING)
+    private LedgerAccountType accountType;
 
     // ═══════════════════════════════════════════════════════════════
     // FINANCIALS (EVERY ACCOUNT)
@@ -94,7 +90,7 @@ public class LedgerAccount extends BaseEntity {
     private boolean active = true;
 
     // ═══════════════════════════════════════════════════════════════
-    // PARTY DATA (ONLY WHEN accountSubType = PARTY)
+    // PARTY DATA (ONLY WHEN accountType is a party type)
     // Embedded, not joined. Company master is the source of truth.
     // ═══════════════════════════════════════════════════════════════
 
@@ -127,10 +123,6 @@ public class LedgerAccount extends BaseEntity {
 
     @Column(name = "tally_payment_terms")
     private String tallyPaymentTerms;
-    /** Whether this is a fuel pump account (used in diesel vouchers) */
-    @Column(name = "pump_account", nullable = false)
-    private boolean pumpAccount = false;
-
 
 
     // ═══════════════════════════════════════════════════════════════

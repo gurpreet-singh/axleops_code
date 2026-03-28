@@ -16,10 +16,9 @@ public class CreateLedgerAccountRequest {
     private String tallyName;
     private String nameOnDashboard;
     private String printName;
-    private boolean showOnDashboard;
     @NotNull
     private UUID accountGroupId;
-    // accountSubType is derived from LedgerGroup.defaultAccountSubType — not sent by caller
+    private String accountType; // LedgerAccountType enum value — selected by the user
 
     // Financials
     private BigDecimal openingBalance;
@@ -35,7 +34,6 @@ public class CreateLedgerAccountRequest {
     private String tcsApplicable;
     private String paymentTerms;
     private String tallyPaymentTerms;
-    private boolean pumpAccount;
 
     // Address
     private String billingAddress;

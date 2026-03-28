@@ -3,6 +3,7 @@ package com.fleetmanagement.service;
 import com.fleetmanagement.config.ResourceNotFoundException;
 import com.fleetmanagement.config.TenantContext;
 import com.fleetmanagement.dto.response.LedgerGroupResponse;
+import com.fleetmanagement.entity.LedgerGroupType;
 import com.fleetmanagement.entity.LedgerGroup;
 import com.fleetmanagement.mapper.LedgerGroupMapper;
 import com.fleetmanagement.repository.LedgerGroupRepository;
@@ -46,9 +47,9 @@ public class LedgerGroupService {
         group.setName((String) req.get("name"));
         group.setNature(LedgerGroup.GroupNature.valueOf((String) req.get("nature")));
 
-        String defaultAccountSubType = (String) req.get("defaultAccountSubType");
-        if (defaultAccountSubType != null && !defaultAccountSubType.isEmpty()) {
-            group.setDefaultAccountSubType(LedgerGroup.AccountSubType.valueOf(defaultAccountSubType));
+        String groupType = (String) req.get("groupType");
+        if (groupType != null && !groupType.isEmpty()) {
+            group.setGroupType(LedgerGroupType.valueOf(groupType));
         }
 
         String tallyGroupName = (String) req.get("tallyGroupName");
@@ -74,11 +75,11 @@ public class LedgerGroupService {
         group.setName((String) req.get("name"));
         group.setNature(LedgerGroup.GroupNature.valueOf((String) req.get("nature")));
 
-        String defaultAccountSubType = (String) req.get("defaultAccountSubType");
-        if (defaultAccountSubType != null && !defaultAccountSubType.isEmpty()) {
-            group.setDefaultAccountSubType(LedgerGroup.AccountSubType.valueOf(defaultAccountSubType));
+        String groupType = (String) req.get("groupType");
+        if (groupType != null && !groupType.isEmpty()) {
+            group.setGroupType(LedgerGroupType.valueOf(groupType));
         } else {
-            group.setDefaultAccountSubType(null);
+            group.setGroupType(null);
         }
 
         group.setTallyGroupName((String) req.get("tallyGroupName"));

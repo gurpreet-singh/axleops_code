@@ -8,7 +8,7 @@ import lombok.Data;
  * <p>
  * Designed for internationalisation:
  * - key:          the persisted value (e.g. "PARTY")
- * - labelKey:     an i18n message key (e.g. "enum.account_sub_type.party")
+ * - labelKey:     an i18n message key (e.g. "enum.ledger_account_type.oem_client")
  * - defaultLabel: the English fallback rendered when no translation is available
  */
 @Data

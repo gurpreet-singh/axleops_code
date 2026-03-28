@@ -5,6 +5,7 @@ import com.fleetmanagement.config.TenantContext;
 import com.fleetmanagement.dto.request.CreateLedgerAccountRequest;
 import com.fleetmanagement.dto.response.LedgerAccountResponse;
 import com.fleetmanagement.entity.LedgerGroup;
+import com.fleetmanagement.entity.LedgerAccountType;
 import com.fleetmanagement.entity.Company;
 import com.fleetmanagement.entity.LedgerAccount;
 import com.fleetmanagement.mapper.LedgerAccountMapper;
@@ -76,11 +77,13 @@ public class LedgerAccountService {
         account.setTallyName(req.getTallyName());
         account.setNameOnDashboard(req.getNameOnDashboard());
         account.setPrintName(req.getPrintName());
-        account.setShowOnDashboard(req.isShowOnDashboard());
         account.setAccountGroup(group.getName());
         account.setAccountGroupRef(group);
         account.setGroupNature(group.getNature().name());
-        // accountSubType is derived from accountGroupRef.defaultAccountSubType — not stored on this entity
+        // accountType — persisted directly, selected by user
+        if (req.getAccountType() != null && !req.getAccountType().isEmpty()) {
+            account.setAccountType(LedgerAccountType.valueOf(req.getAccountType()));
+        }
 
         // Financials
         account.setOpeningBalance(req.getOpeningBalance() != null ? req.getOpeningBalance() : BigDecimal.ZERO);
@@ -111,7 +114,6 @@ public class LedgerAccountService {
         }
         account.setPaymentTerms(req.getPaymentTerms());
         account.setTallyPaymentTerms(req.getTallyPaymentTerms());
-        account.setPumpAccount(req.isPumpAccount());
 
         // Address
         account.setBillingAddress(req.getBillingAddress());
@@ -161,7 +163,6 @@ public class LedgerAccountService {
         account.setTallyName(req.getTallyName());
         account.setNameOnDashboard(req.getNameOnDashboard());
         account.setPrintName(req.getPrintName());
-        account.setShowOnDashboard(req.isShowOnDashboard());
 
         if (req.getAccountGroupId() != null) {
             LedgerGroup group = ledgerGroupRepository.findByIdAndTenantId(req.getAccountGroupId(), tenantId)
@@ -169,6 +170,11 @@ public class LedgerAccountService {
             account.setAccountGroup(group.getName());
             account.setAccountGroupRef(group);
             account.setGroupNature(group.getNature().name());
+        }
+
+        // accountType — update if provided
+        if (req.getAccountType() != null && !req.getAccountType().isEmpty()) {
+            account.setAccountType(LedgerAccountType.valueOf(req.getAccountType()));
         }
 
         account.setGstin(req.getGstin());
@@ -183,7 +189,6 @@ public class LedgerAccountService {
         }
         account.setPaymentTerms(req.getPaymentTerms());
         account.setTallyPaymentTerms(req.getTallyPaymentTerms());
-        account.setPumpAccount(req.isPumpAccount());
 
         // Address
         account.setBillingAddress(req.getBillingAddress());

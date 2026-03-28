@@ -15,11 +15,10 @@ public class LedgerAccountResponse {
     private String tallyName;
     private String nameOnDashboard;
     private String printName;
-    private boolean showOnDashboard;
     private String accountGroup;
     private UUID accountGroupId;
     private String groupNature;
-    private String accountSubType;
+    private String accountType;
 
     // Financials
     private BigDecimal openingBalance;
@@ -38,7 +37,6 @@ public class LedgerAccountResponse {
     private String tcsApplicable;
     private String paymentTerms;
     private String tallyPaymentTerms;
-    private boolean pumpAccount;
 
     // Address
     private String billingAddress;

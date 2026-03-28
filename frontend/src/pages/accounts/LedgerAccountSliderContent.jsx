@@ -1,6 +1,6 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import useSliderStore from '../../stores/sliderStore';
-import useEnumStore, { ACCOUNT_SUB_TYPE_COLORS } from '../../stores/enumStore';
+import useEnumStore, { getAccountTypeColor, isPartyAccountType } from '../../stores/enumStore';
 import ledgerAccountService from '../../services/ledgerAccountService';
 import DeleteConfirmModal from '../../components/common/DeleteConfirmModal';
 import { FormField, Section } from '../../components/common/FormField';
@@ -31,17 +31,12 @@ function EnumLoadingSpinner() {
 }
 
 /**
- * Derive the accountSubType label from the selected group.
- * Returns { value, label } or null if no group selected.
+ * Check if the selected group is a PARTY type (drives which form sections to show).
  */
-function getDerivedSubType(groupId, groups, getLabel) {
-  if (!groupId) return null;
+function isGroupPartyType(groupId, groups) {
+  if (!groupId) return false;
   const group = groups.find(g => g.id === groupId);
-  if (!group || !group.defaultAccountSubType) return null;
-  return {
-    value: group.defaultAccountSubType,
-    label: getLabel('accountSubType', group.defaultAccountSubType),
-  };
+  return group?.groupType === 'PARTY';
 }
 
 
@@ -55,10 +50,10 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
     accountHead: '', tallyName: '', nameOnDashboard: '', printName: '',
-    showOnDashboard: false, accountGroupId: '',
+    accountGroupId: '', accountType: '',
     openingBalance: '', debitCredit: 'DEBIT', currency: 'INR',
     panNumber: '', gstin: '', legalName: '', ourVendorCode: '',
-    tcsApplicable: '', paymentTerms: '', tallyPaymentTerms: '', pumpAccount: false,
+    tcsApplicable: '', paymentTerms: '', tallyPaymentTerms: '',
     billingAddress: '', city: '', state: '', stateCode: '', country: 'India', pinCode: '',
     phone: '', mobile: '', email: '', contactPerson: '', designation: '', website: '',
     shippedToSameAsBilling: true,
@@ -73,12 +68,8 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
     ...groups.map(g => ({ value: g.id, label: `${g.name} (${g.nature})` }))
   ];
 
-  // Derive accountSubType from the selected group
-  const derivedSubType = useMemo(
-    () => getDerivedSubType(form.accountGroupId, groups, getLabel),
-    [form.accountGroupId, groups, getLabel]
-  );
-  const isPartyType = derivedSubType?.value === 'PARTY';
+  // Determine if party form sections should show based on group type
+  const isPartyType = isGroupPartyType(form.accountGroupId, groups);
 
   const handleSave = async () => {
     if (!form.accountHead || !form.accountGroupId) return;
@@ -86,7 +77,8 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
     try {
       await ledgerAccountService.create({
         ...form,
-        // accountSubType is NOT sent — it's derived from the group on the backend
+        // accountType is sent directly — selected by user
+        accountType: form.accountType || null,
         openingBalance: form.openingBalance ? parseFloat(form.openingBalance) : 0,
         lastYearRevenue: form.lastYearRevenue ? parseFloat(form.lastYearRevenue) : null,
         distance: form.distance ? parseFloat(form.distance) : null,
@@ -139,34 +131,7 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
             <FormField label="Ledger Group" value={form.accountGroupId} onChange={set('accountGroupId')} required options={groupOptions} />
-            {/* Account Sub Type — derived, read-only */}
-            <div>
-              <div style={{ fontSize: 10, fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 }}>
-                ACCOUNT SUB TYPE
-                <span style={{ marginLeft: 6, fontSize: 9, fontWeight: 600, color: '#94A3B8', fontStyle: 'italic' }}>(from group)</span>
-              </div>
-              {derivedSubType ? (() => {
-                const tc = ACCOUNT_SUB_TYPE_COLORS[derivedSubType.value] || ACCOUNT_SUB_TYPE_COLORS.GENERAL;
-                return (
-                  <div style={{
-                    border: `1.5px solid ${tc.border}`, borderRadius: 10, padding: '10px 12px',
-                    fontSize: 13, fontWeight: 700, color: tc.color, background: tc.bg,
-                    minHeight: 42, display: 'flex', alignItems: 'center', gap: 6,
-                  }}>
-                    <i className="fas fa-lock" style={{ fontSize: 9, opacity: 0.6 }}></i>
-                    {derivedSubType.label}
-                  </div>
-                );
-              })() : (
-                <div style={{
-                  border: '1.5px solid #E2E8F0', borderRadius: 10, padding: '10px 12px',
-                  fontSize: 12, color: '#94A3B8', background: '#F8FAFC', minHeight: 42,
-                  display: 'flex', alignItems: 'center', fontStyle: 'italic',
-                }}>
-                  Select a group first
-                </div>
-              )}
-            </div>
+            <FormField label="Account Type" value={form.accountType} onChange={set('accountType')} options={getOptionsWithPlaceholder('ledgerAccountType', 'Select account type')} />
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
             <FormField label="Tally Name" value={form.tallyName} onChange={set('tallyName')} placeholder="Override for Tally sync" />
@@ -175,12 +140,7 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
           <div style={{ height: 14 }}></div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
             <FormField label="Dashboard Name" value={form.nameOnDashboard} onChange={set('nameOnDashboard')} placeholder="Display override" />
-            <FormField label="Show on Dashboard" value={form.showOnDashboard} onChange={set('showOnDashboard')} options={[{ value: true, label: 'Yes' }, { value: false, label: 'No' }]} />
-          </div>
-          <div style={{ height: 14 }}></div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
             <FormField label="Default Shipped To Code" value={form.defaultShippedToCode} onChange={set('defaultShippedToCode')} placeholder="Default ship-to account" />
-            <FormField label="Is Pump Account" value={form.pumpAccount} onChange={set('pumpAccount')} options={[{ value: true, label: 'Yes' }, { value: false, label: 'No' }]} />
           </div>
         </Section>
 
@@ -306,25 +266,21 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
   const [form, setForm] = useState({ ...account });
   const set = (key) => (val) => setForm(f => ({ ...f, [key]: val }));
 
-  const tc = ACCOUNT_SUB_TYPE_COLORS[account.accountSubType] || ACCOUNT_SUB_TYPE_COLORS.GENERAL;
-  const isPartyType = account.accountSubType === 'PARTY';
+  const tc = getAccountTypeColor(account.accountType);
+  const isPartyType = isPartyAccountType(account.accountType);
 
   const groupOptions = [
     { value: '', label: 'Select group' },
     ...groups.map(g => ({ value: g.id, label: `${g.name} (${g.nature})` }))
   ];
 
-  // Derive accountSubType from the selected group in edit mode
-  const editDerivedSubType = useMemo(
-    () => getDerivedSubType(form.accountGroupId, groups, getLabel),
-    [form.accountGroupId, groups, getLabel]
-  );
 
   const handleSave = async () => {
     try {
       await ledgerAccountService.update(account.id, {
         ...form,
-        // accountSubType is NOT sent — derived from group on the backend
+        // accountType is sent directly
+        accountType: form.accountType || null,
         openingBalance: form.openingBalance ? parseFloat(form.openingBalance) : 0,
         lastYearRevenue: form.lastYearRevenue ? parseFloat(form.lastYearRevenue) : null,
         distance: form.distance ? parseFloat(form.distance) : null,
@@ -348,28 +304,6 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
   // Guard: don't render form until enums are loaded
   if (!enumsLoaded) return <EnumLoadingSpinner />;
 
-  /** Read-only sub-type chip used in both view and edit modes */
-  const SubTypeReadOnly = ({ subTypeValue }) => {
-    const stc = ACCOUNT_SUB_TYPE_COLORS[subTypeValue] || ACCOUNT_SUB_TYPE_COLORS.GENERAL;
-    const label = getLabel('accountSubType', subTypeValue);
-    return (
-      <div>
-        <div style={{ fontSize: 10, fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 }}>
-          ACCOUNT SUB TYPE
-          <span style={{ marginLeft: 6, fontSize: 9, fontWeight: 600, color: '#94A3B8', fontStyle: 'italic' }}>(from group)</span>
-        </div>
-        <div style={{
-          border: `1.5px solid ${stc.border}`, borderRadius: 10, padding: '10px 12px',
-          fontSize: 13, fontWeight: 700, color: stc.color, background: stc.bg,
-          minHeight: 42, display: 'flex', alignItems: 'center', gap: 6,
-        }}>
-          <i className="fas fa-lock" style={{ fontSize: 9, opacity: 0.6 }}></i>
-          {label}
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div>
       {/* Action Bar */}
@@ -392,7 +326,7 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
           <i className="fas fa-recycle"></i> Delete
         </button>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: tc.bg, color: tc.color, border: `1px solid ${tc.border}`, fontSize: 10, fontWeight: 700, padding: '4px 12px', borderRadius: 20 }}>
-          {account.accountSubType?.replace(/_/g, ' ')}
+          {getLabel('ledgerAccountType', account.accountType)}
         </span>
         {account.active ? (
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: '#F0FDF4', color: '#16A34A', border: '1px solid #BBF7D0', fontSize: 10, fontWeight: 700, padding: '4px 10px', borderRadius: 20 }}>
@@ -437,8 +371,8 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
                   <FormField label="Ledger Group" value={form.accountGroupId} onChange={set('accountGroupId')} options={groupOptions} />
-                  {/* Account Sub Type — derived, read-only even in edit mode */}
-                  <SubTypeReadOnly subTypeValue={editDerivedSubType?.value || account.accountSubType} />
+                  {/* Account Type — editable dropdown */}
+                  <FormField label="Account Type" value={form.accountType} onChange={set('accountType')} options={getOptionsWithPlaceholder('ledgerAccountType', 'Select account type')} />
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
                   <FormField label="Tally Name" value={form.tallyName} onChange={set('tallyName')} />
@@ -446,11 +380,7 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
                   <FormField label="Dashboard Name" value={form.nameOnDashboard} onChange={set('nameOnDashboard')} />
-                  <FormField label="Show on Dashboard" value={form.showOnDashboard} onChange={set('showOnDashboard')} options={[{ value: true, label: 'Yes' }, { value: false, label: 'No' }]} />
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                   <FormField label="Default Shipped To Code" value={form.defaultShippedToCode} onChange={set('defaultShippedToCode')} />
-                  <FormField label="Is Pump Account" value={form.pumpAccount} onChange={set('pumpAccount')} options={[{ value: true, label: 'Yes' }, { value: false, label: 'No' }]} />
                 </div>
               </Section>
               <Section title="Financials" emoji="💰" borderColor="#A7F3D0" headerBg="linear-gradient(135deg, #F0FDF4, #DCFCE7)" accentColor="#059669">
@@ -468,13 +398,11 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
                   <ReadField label="Account Head" value={account.accountHead} />
                   <ReadField label="Ledger Group" value={account.accountGroup} />
                   <ReadField label="Group Nature" value={account.groupNature} />
-                  <ReadField label="Account Sub Type" value={account.accountSubType?.replace(/_/g, ' ')} />
+                  <ReadField label="Account Type" value={getLabel('ledgerAccountType', account.accountType)} />
                   <ReadField label="Tally Name" value={account.tallyName} />
                   <ReadField label="Print Name" value={account.printName} />
                   <ReadField label="Dashboard Name" value={account.nameOnDashboard} />
-                  <ReadField label="Show on Dashboard" value={account.showOnDashboard ? 'Yes' : 'No'} />
                   <ReadField label="Default Shipped To Code" value={account.defaultShippedToCode} />
-                  <ReadField label="Is Pump Account" value={account.pumpAccount ? 'Yes' : 'No'} />
                 </div>
               </Section>
               <Section title="Financials" emoji="💰" borderColor="#A7F3D0" headerBg="linear-gradient(135deg, #F0FDF4, #DCFCE7)" accentColor="#059669">
