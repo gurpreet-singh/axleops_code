@@ -55,19 +55,7 @@ public class LedgerAccountService {
                 .collect(Collectors.toList());
     }
 
-    public List<LedgerAccountResponse> getFuelVendors() {
-        UUID tenantId = TenantContext.get();
-        return ledgerAccountRepository.findFuelVendors(tenantId).stream()
-                .map(mapper::toResponse)
-                .collect(Collectors.toList());
-    }
 
-    public List<LedgerAccountResponse> getRouteAccounts(UUID companyId, String origin, String destination) {
-        UUID tenantId = TenantContext.get();
-        return ledgerAccountRepository.findRouteAccounts(tenantId, companyId, origin, destination).stream()
-                .map(mapper::toResponse)
-                .collect(Collectors.toList());
-    }
 
     @Transactional
     public LedgerAccountResponse create(CreateLedgerAccountRequest req) {
@@ -114,7 +102,6 @@ public class LedgerAccountService {
         }
         account.setPaymentTerms(req.getPaymentTerms());
         account.setTallyPaymentTerms(req.getTallyPaymentTerms());
-        account.setPumpAccount(req.isPumpAccount());
 
         // Address
         account.setBillingAddress(req.getBillingAddress());
@@ -141,10 +128,7 @@ public class LedgerAccountService {
         account.setShippingContactPerson(req.getShippingContactPerson());
         account.setShippingDesignation(req.getShippingDesignation());
 
-        // Route data
-        account.setOriginCity(req.getOriginCity());
-        account.setDestinationCity(req.getDestinationCity());
-        account.setDistanceKm(req.getDistanceKm());
+
 
         // Other
         account.setCinNumber(req.getCinNumber());
@@ -183,7 +167,6 @@ public class LedgerAccountService {
         }
         account.setPaymentTerms(req.getPaymentTerms());
         account.setTallyPaymentTerms(req.getTallyPaymentTerms());
-        account.setPumpAccount(req.isPumpAccount());
 
         // Address
         account.setBillingAddress(req.getBillingAddress());
@@ -210,10 +193,7 @@ public class LedgerAccountService {
         account.setShippingContactPerson(req.getShippingContactPerson());
         account.setShippingDesignation(req.getShippingDesignation());
 
-        // Route data
-        account.setOriginCity(req.getOriginCity());
-        account.setDestinationCity(req.getDestinationCity());
-        account.setDistanceKm(req.getDistanceKm());
+
 
         // Other
         account.setCinNumber(req.getCinNumber());

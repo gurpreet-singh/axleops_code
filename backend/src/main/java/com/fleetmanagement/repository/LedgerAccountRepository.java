@@ -24,11 +24,11 @@ public interface LedgerAccountRepository extends JpaRepository<LedgerAccount, UU
     @Query("SELECT la FROM LedgerAccount la WHERE la.tenantId = :tenantId AND la.active = true AND la.accountType = :accountType")
     List<LedgerAccount> findActiveByType(@Param("tenantId") UUID tenantId, @Param("accountType") LedgerAccount.AccountType accountType);
 
-    @Query("SELECT la FROM LedgerAccount la WHERE la.tenantId = :tenantId AND la.active = true AND la.pumpAccount = true")
-    List<LedgerAccount> findFuelVendors(@Param("tenantId") UUID tenantId);
 
-    @Query("SELECT la FROM LedgerAccount la WHERE la.tenantId = :tenantId AND la.company.id = :companyId AND la.originCity = :origin AND la.destinationCity = :dest AND la.accountType = 'PARTY_ROUTE' AND la.active = true")
-    List<LedgerAccount> findRouteAccounts(@Param("tenantId") UUID tenantId, @Param("companyId") UUID companyId, @Param("origin") String origin, @Param("dest") String dest);
+
+
+
+
 
     @Query("SELECT la FROM LedgerAccount la WHERE la.tenantId = :tenantId AND la.groupNature = :nature AND la.active = true")
     List<LedgerAccount> findByGroupNature(@Param("tenantId") UUID tenantId, @Param("nature") String nature);

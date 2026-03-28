@@ -11,8 +11,11 @@ const api = axios.create({
 // Request interceptor — inject auth token & branch header
 api.interceptors.request.use(
   (config) => {
-    // Demo token — will be replaced with real JWT from auth flow
-    config.headers['Authorization'] = 'Bearer demo-token';
+    // Inject real JWT token from localStorage
+    const token = localStorage.getItem('axleops-token');
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
 
     // Inject branch scope header if set
     const branchId = sessionStorage.getItem('axleops-branch');
@@ -30,8 +33,13 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Redirect to login when implemented
-      console.warn('Unauthorized — redirect to login');
+      // Token is invalid or expired — clear auth and redirect to login
+      const currentPath = window.location.pathname;
+      if (currentPath !== '/login') {
+        localStorage.removeItem('axleops-token');
+        localStorage.removeItem('axleops-user');
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

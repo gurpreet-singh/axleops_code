@@ -4,7 +4,7 @@ import useAuthStore from '../../stores/authStore';
 import { pageToPath } from '../../config/roles';
 
 export default function Sidebar() {
-  const { currentRole, menuItems } = useAuthStore();
+  const { currentRole, menuItems, user, logout } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
   const [expanded, setExpanded] = useState({});
@@ -30,16 +30,30 @@ export default function Sidebar() {
     setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login');
+  };
+
+  // Use real authenticated user info
+  const userName = user
+    ? `${user.firstName} ${user.lastName}`
+    : currentRole.user.name;
+  const userInitials = user
+    ? `${user.firstName[0]}${user.lastName[0]}`
+    : currentRole.user.initials;
+  const tenantName = user?.tenantName || 'Preet Transport';
+
   return (
     <aside className="sidebar">
       {/* Brand */}
       <div className="sidebar-brand" onClick={() => navigate('/dashboard')}>
         <div className="brand-icon">
-          {currentRole.user.initials}
+          {userInitials}
         </div>
         <div className="brand-info">
-          <span className="brand-name">Goodwill Transport</span>
-          <span className="brand-sub">{currentRole.user.name}</span>
+          <span className="brand-name">{tenantName}</span>
+          <span className="brand-sub">{userName}</span>
         </div>
       </div>
 
@@ -103,10 +117,10 @@ export default function Sidebar() {
           className="role-switch-btn"
         >
           <div className="role-switch-avatar" style={{ background: currentRole.color }}>
-            {currentRole.user.initials}
+            {userInitials}
           </div>
           <div className="role-switch-info">
-            <div className="role-switch-name">{currentRole.user.name}</div>
+            <div className="role-switch-name">{userName}</div>
             <div className="role-switch-role">{currentRole.label}</div>
           </div>
           <i className="fas fa-exchange-alt role-switch-icon"></i>

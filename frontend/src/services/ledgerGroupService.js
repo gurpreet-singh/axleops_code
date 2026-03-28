@@ -20,7 +20,6 @@ export const GROUP_NATURES = [
 
 export const ACCOUNT_TYPES = [
   { value: '', label: 'Select type' },
-  { value: 'PARTY_ROUTE', label: 'Party Route' },
   { value: 'PARTY_GENERAL', label: 'Party General' },
   { value: 'BANK', label: 'Bank' },
   { value: 'DRIVER_CASH', label: 'Driver Cash' },

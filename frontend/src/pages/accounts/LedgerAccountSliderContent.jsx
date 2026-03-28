@@ -81,13 +81,12 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
     accountGroupId: '', accountType: '',
     openingBalance: '', currency: 'INR',
     panNumber: '', gstin: '', legalName: '', ourVendorCode: '',
-    tcsApplicable: '', paymentTerms: '', tallyPaymentTerms: '', pumpAccount: false,
+    tcsApplicable: '', paymentTerms: '', tallyPaymentTerms: '',
     billingAddress: '', city: '', state: '', stateCode: '', country: 'India', pinCode: '',
     phone: '', mobile: '', email: '', contactPerson: '', designation: '',
     shippedToSameAsBilling: true,
     shippingAddress: '', shippingCity: '', shippingState: '', shippingStateCode: '', shippingCountry: '', shippingPinCode: '',
     shippingPhone: '', shippingContactPerson: '', shippingDesignation: '',
-    originCity: '', destinationCity: '', distanceKm: '',
     cinNumber: '', lastYearRevenue: '', defaultShippedToCode: '',
   });
   const set = (key) => (val) => setForm(f => ({ ...f, [key]: val }));
@@ -104,7 +103,6 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
       await ledgerAccountService.create({
         ...form,
         openingBalance: form.openingBalance ? parseFloat(form.openingBalance) : 0,
-        distanceKm: form.distanceKm ? parseFloat(form.distanceKm) : null,
         lastYearRevenue: form.lastYearRevenue ? parseFloat(form.lastYearRevenue) : null,
         tcsApplicable: form.tcsApplicable || null,
       });
@@ -117,8 +115,7 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
     }
   };
 
-  const isPartyType = form.accountType === 'PARTY_ROUTE' || form.accountType === 'PARTY_GENERAL';
-  const isRouteType = form.accountType === 'PARTY_ROUTE';
+  const isPartyType = form.accountType === 'PARTY_GENERAL';
 
   return (
     <div>
@@ -190,13 +187,7 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
               <FormField label="Payment Terms" value={form.paymentTerms} onChange={set('paymentTerms')} placeholder="e.g. 30 days" />
               <FormField label="Tally Payment Terms" value={form.tallyPaymentTerms} onChange={set('tallyPaymentTerms')} placeholder="Tally terms" />
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 8 }}>
-              <input type="checkbox" checked={form.pumpAccount} onChange={e => set('pumpAccount')(e.target.checked)} style={{ width: 16, height: 16, cursor: 'pointer' }} />
-              <div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: '#DC2626' }}>Fuel Vendor (Pump Account)</div>
-                <div style={{ fontSize: 10, color: '#B91C1C' }}>Mark this if the account is a fuel pump / vendor</div>
-              </div>
-            </div>
+
           </Section>
         )}
 
@@ -248,16 +239,7 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
           )}
         </Section>
 
-        {/* Route Data — only for PARTY_ROUTE */}
-        {isRouteType && (
-          <Section title="Route Data" emoji="🗺️" borderColor="#BAE6FD" headerBg="linear-gradient(135deg, #F0F9FF, #E0F2FE)" accentColor="#0369A1">
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
-              <FormField label="Origin City" value={form.originCity} onChange={set('originCity')} placeholder="e.g. Nashik" />
-              <FormField label="Destination City" value={form.destinationCity} onChange={set('destinationCity')} placeholder="e.g. Chakan" />
-              <FormField label="Distance (KM)" value={form.distanceKm} onChange={set('distanceKm')} type="number" placeholder="e.g. 85" />
-            </div>
-          </Section>
-        )}
+
       </div>
     </div>
   );
@@ -276,8 +258,7 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
   const set = (key) => (val) => setForm(f => ({ ...f, [key]: val }));
 
   const tc = ACCOUNT_TYPE_COLORS[account.accountType] || ACCOUNT_TYPE_COLORS.GENERAL;
-  const isPartyType = account.accountType === 'PARTY_ROUTE' || account.accountType === 'PARTY_GENERAL';
-  const isRouteType = account.accountType === 'PARTY_ROUTE';
+  const isPartyType = account.accountType === 'PARTY_GENERAL';
 
   const groupOptions = [
     { value: '', label: 'Select group' },
@@ -289,7 +270,6 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
       await ledgerAccountService.update(account.id, {
         ...form,
         openingBalance: form.openingBalance ? parseFloat(form.openingBalance) : 0,
-        distanceKm: form.distanceKm ? parseFloat(form.distanceKm) : null,
         lastYearRevenue: form.lastYearRevenue ? parseFloat(form.lastYearRevenue) : null,
         tcsApplicable: form.tcsApplicable || null,
       });
@@ -304,7 +284,6 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
     { id: 'overview', label: 'Overview' },
     ...(isPartyType ? [{ id: 'party', label: 'Party Details' }] : []),
     { id: 'address', label: 'Address' },
-    ...(isRouteType ? [{ id: 'route', label: 'Route' }] : []),
   ];
 
   return (
@@ -437,7 +416,7 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
                 <ReadField label="TCS Applicable" value={account.tcsApplicable?.replace(/_/g, ' ') || 'Not Applicable'} />
                 <ReadField label="Payment Terms" value={account.paymentTerms} />
                 <ReadField label="Tally Terms" value={account.tallyPaymentTerms} />
-                <ReadField label="Pump Account" value={account.pumpAccount ? '⛽ Yes' : 'No'} />
+
               </div>
             </Section>
           )
@@ -498,26 +477,7 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
           )
         )}
 
-        {/* ROUTE TAB */}
-        {activeTab === 'route' && (
-          isEditing ? (
-            <Section title="Route Data" emoji="🗺️" borderColor="#BAE6FD" headerBg="linear-gradient(135deg, #F0F9FF, #E0F2FE)" accentColor="#0369A1">
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
-                <FormField label="Origin City" value={form.originCity} onChange={set('originCity')} />
-                <FormField label="Destination City" value={form.destinationCity} onChange={set('destinationCity')} />
-                <FormField label="Distance (KM)" value={form.distanceKm} onChange={set('distanceKm')} type="number" />
-              </div>
-            </Section>
-          ) : (
-            <Section title="Route Data" emoji="🗺️" borderColor="#BAE6FD" headerBg="linear-gradient(135deg, #F0F9FF, #E0F2FE)" accentColor="#0369A1">
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
-                <ReadField label="Origin City" value={account.originCity} />
-                <ReadField label="Destination City" value={account.destinationCity} />
-                <ReadField label="Distance" value={account.distanceKm ? `${account.distanceKm} km` : '—'} />
-              </div>
-            </Section>
-          )
-        )}
+
       </div>
     </div>
   );

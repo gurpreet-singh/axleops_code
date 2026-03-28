@@ -33,7 +33,6 @@ public class CreateLedgerAccountRequest {
     private String tcsApplicable;
     private String paymentTerms;
     private String tallyPaymentTerms;
-    private boolean pumpAccount;
 
     // Address
     private String billingAddress;
@@ -60,10 +59,6 @@ public class CreateLedgerAccountRequest {
     private String shippingContactPerson;
     private String shippingDesignation;
 
-    // Route data
-    private String originCity;
-    private String destinationCity;
-    private BigDecimal distanceKm;
 
     // Other
     private String cinNumber;

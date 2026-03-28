@@ -38,18 +38,11 @@ public class LedgerAccountController {
         return ResponseEntity.ok(ledgerAccountService.getByCompany(companyId));
     }
 
-    @GetMapping("/fuel-vendors")
-    public ResponseEntity<List<LedgerAccountResponse>> getFuelVendors() {
-        return ResponseEntity.ok(ledgerAccountService.getFuelVendors());
-    }
 
-    @GetMapping("/route-accounts")
-    public ResponseEntity<List<LedgerAccountResponse>> getRouteAccounts(
-            @RequestParam UUID companyId,
-            @RequestParam String origin,
-            @RequestParam String destination) {
-        return ResponseEntity.ok(ledgerAccountService.getRouteAccounts(companyId, origin, destination));
-    }
+
+
+
+
 
     @PostMapping
     public ResponseEntity<LedgerAccountResponse> create(@Valid @RequestBody CreateLedgerAccountRequest request) {

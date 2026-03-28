@@ -38,7 +38,8 @@ INSERT INTO roles (id, role_key, label, department, branch_scope, description, c
   ('aa222222-2222-2222-2222-222222222222', 'BRANCH_MANAGER',     'Branch Manager',     'executive',  'OWN', 'Cross-department authority within branch',   NOW(), NOW()),
   ('aa333333-3333-3333-3333-333333333333', 'FLEET_MANAGER',      'Fleet Manager',      'operations', 'OWN', 'Vehicle allocation',                        NOW(), NOW()),
   ('aa444444-4444-4444-4444-444444444444', 'FINANCE_CONTROLLER', 'Finance Controller', 'finance',    'ALL', 'P&L oversight',                             NOW(), NOW()),
-  ('a0000002-0000-4000-a000-000000000001', 'PLATFORM_ADMIN',     'Platform Admin',     'platform',   'ALL', 'Full access to all tenants',                 NOW(), NOW())
+  ('a0000002-0000-4000-a000-000000000001', 'PLATFORM_ADMIN',     'Platform Admin',     'platform',   'ALL', 'Full access to all tenants',                 NOW(), NOW()),
+  ('aa555555-5555-5555-5555-555555555555', 'SYSTEM_ADMIN',       'System Administrator','admin',     'ALL', 'Full system access — users, roles, configs', NOW(), NOW())
 ON CONFLICT (id) DO NOTHING;
 
 
@@ -60,11 +61,11 @@ ON CONFLICT DO NOTHING;
 -- ─── USERS ───────────────────────────────────────────────────────────────────
 
 INSERT INTO users (id, tenant_id, first_name, last_name, email, password, role, title, branch_id, created_at, updated_at) VALUES
-  ('ae999999-9999-9999-9999-999999999999', 'e9999999-9999-9999-9999-999999999999', 'Gurpreet', 'Singh',  'gurpreet_gt', 'gurpreet_gt', 'OWNER', 'Managing Director',  'b9999999-9999-9999-9999-999999999999', NOW(), NOW())
+  ('ae999999-9999-9999-9999-999999999999', 'e9999999-9999-9999-9999-999999999999', 'Gurpreet', 'Singh',  'gurpreet_gt', 'gurpreet_gt', 'SYSTEM_ADMIN', 'System Administrator',  'b9999999-9999-9999-9999-999999999999', NOW(), NOW())
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO user_branch_roles (id, user_id, branch_id, role_id, is_primary) VALUES
-  ('cb999999-9999-9999-9999-999999999999', 'ae999999-9999-9999-9999-999999999999', 'b9999999-9999-9999-9999-999999999999', 'aa111111-1111-1111-1111-111111111111', TRUE)
+  ('cb999999-9999-9999-9999-999999999999', 'ae999999-9999-9999-9999-999999999999', 'b9999999-9999-9999-9999-999999999999', 'aa555555-5555-5555-5555-555555555555', TRUE)
 ON CONFLICT (id) DO NOTHING;
 
 

@@ -4,6 +4,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -12,6 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Branch scoping filter — reads the branch header and sets BranchSecurityContext.
+ * TenantContext is now set by JwtAuthFilter from the authenticated user's session.
+ */
 @Component
 public class BranchScopeFilter extends OncePerRequestFilter {
 
@@ -19,17 +24,16 @@ public class BranchScopeFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        // --- MULTI-TENANCY ---
-        // Hardcoded demo tenant — valid UUID for dev mode
-        TenantContext.set(UUID.fromString("e1111111-1111-1111-1111-111111111111"));
-
-
         // --- BRANCH SCOPING ---
         String requestedBranch = request.getHeader("X-AxleOps-Branch");
 
         List<UUID> resolvedBranches = new ArrayList<>();
         if (requestedBranch != null && !requestedBranch.isEmpty()) {
-            resolvedBranches.add(UUID.fromString(requestedBranch));
+            try {
+                resolvedBranches.add(UUID.fromString(requestedBranch));
+            } catch (IllegalArgumentException e) {
+                // Invalid UUID — skip
+            }
         }
 
         BranchSecurityContext.set(resolvedBranches);
@@ -38,7 +42,12 @@ public class BranchScopeFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } finally {
             BranchSecurityContext.clear();
-            TenantContext.clear();
         }
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+        return path.equals("/auth/login");
     }
 }

@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import useAuthStore from './stores/authStore';
 import AppLayout from './components/layout/AppLayout';
+import LoginPage from './pages/LoginPage';
 import RoleSelector from './pages/RoleSelector';
 import Dashboard from './pages/Dashboard';
 import PlaceholderPage from './pages/PlaceholderPage';
@@ -36,8 +37,21 @@ import WorkOrdersPage from './pages/mro/WorkOrdersPage';
 import PartsListPage from './pages/inventory/PartsListPage';
 import PurchaseOrdersPage from './pages/inventory/PurchaseOrdersPage';
 
-function ProtectedRoute({ children }) {
-  const { currentRole } = useAuthStore();
+/**
+ * Requires authentication — redirects to /login if not authenticated.
+ */
+function RequireAuth({ children }) {
+  const { isAuthenticated } = useAuthStore();
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  return children;
+}
+
+/**
+ * Requires a role to be selected — redirects to role selector if no role chosen.
+ */
+function RequireRole({ children }) {
+  const { isAuthenticated, currentRole } = useAuthStore();
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
   if (!currentRole) return <Navigate to="/" replace />;
   return children;
 }
@@ -45,15 +59,25 @@ function ProtectedRoute({ children }) {
 export default function App() {
   return (
     <Routes>
-      {/* Public — Role Selector */}
-      <Route path="/" element={<RoleSelector />} />
+      {/* Public — Login */}
+      <Route path="/login" element={<LoginPage />} />
 
-      {/* Protected — App Shell */}
+      {/* Authenticated — Role Selector */}
+      <Route
+        path="/"
+        element={
+          <RequireAuth>
+            <RoleSelector />
+          </RequireAuth>
+        }
+      />
+
+      {/* Authenticated + Role Selected — App Shell */}
       <Route
         element={
-          <ProtectedRoute>
+          <RequireRole>
             <AppLayout />
-          </ProtectedRoute>
+          </RequireRole>
         }
       >
         <Route path="/dashboard" element={<Dashboard />} />

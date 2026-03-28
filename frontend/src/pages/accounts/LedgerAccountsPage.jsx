@@ -44,7 +44,6 @@ export default function LedgerAccountsPage() {
   const stats = useMemo(() => ({
     total: accounts.length,
     active: accounts.filter(a => a.active).length,
-    partyRoute: accounts.filter(a => a.accountType === 'PARTY_ROUTE').length,
     partyGeneral: accounts.filter(a => a.accountType === 'PARTY_GENERAL').length,
     bank: accounts.filter(a => a.accountType === 'BANK').length,
     totalBalance: accounts.reduce((s, a) => s + (a.currentBalance || 0), 0),
@@ -74,12 +73,10 @@ export default function LedgerAccountsPage() {
         </div>
       </div>
 
-      {/* Stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 10, marginBottom: 16 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 10, marginBottom: 16 }}>
         {[
           { label: 'Total', value: stats.total, icon: 'fas fa-book', color: '#475569', bg: '#F8FAFC', border: '#E2E8F0' },
           { label: 'Active', value: stats.active, icon: 'fas fa-check-circle', color: '#16A34A', bg: '#F0FDF4', border: '#BBF7D0' },
-          { label: 'Party Route', value: stats.partyRoute, icon: 'fas fa-route', ...ACCOUNT_TYPE_COLORS.PARTY_ROUTE },
           { label: 'Party General', value: stats.partyGeneral, icon: 'fas fa-building', ...ACCOUNT_TYPE_COLORS.PARTY_GENERAL },
           { label: 'Bank', value: stats.bank, icon: 'fas fa-university', ...ACCOUNT_TYPE_COLORS.BANK },
           { label: 'Net Balance', value: INR(stats.totalBalance), icon: 'fas fa-rupee-sign', color: '#D97706', bg: '#FFFBEB', border: '#FDE68A' },
@@ -103,7 +100,6 @@ export default function LedgerAccountsPage() {
       <div style={{ background: '#fff', border: '1.5px solid #E2E8F0', borderRadius: 14, padding: '14px 18px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
         <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)} style={{ border: '1.5px solid #E2E8F0', borderRadius: 10, padding: '8px 14px', fontSize: 13, color: '#1E293B', outline: 'none', fontFamily: 'inherit', cursor: 'pointer' }}>
           <option value="all">All Types</option>
-          <option value="PARTY_ROUTE">Party Route</option>
           <option value="PARTY_GENERAL">Party General</option>
           <option value="BANK">Bank</option>
           <option value="DRIVER_CASH">Driver Cash</option>
@@ -149,7 +145,6 @@ export default function LedgerAccountsPage() {
                 <div style={{ fontSize: 13, fontWeight: 700, color: '#1E293B' }}>{a.accountHead}</div>
                 <div style={{ fontSize: 11, color: '#94A3B8' }}>
                   {a.legalName && a.legalName !== a.accountHead ? a.legalName : ''}
-                  {a.originCity && a.destinationCity ? `${a.originCity} → ${a.destinationCity}` : ''}
                 </div>
               </div>
               <div style={{ fontSize: 12, color: '#475569', fontWeight: 500 }}>{a.accountGroup || '—'}</div>

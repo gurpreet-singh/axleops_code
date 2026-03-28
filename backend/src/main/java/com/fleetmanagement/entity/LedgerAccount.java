@@ -23,7 +23,6 @@ import java.math.BigDecimal;
     @Index(name = "idx_la_account_type", columnList = "account_type"),
     @Index(name = "idx_la_account_group_id", columnList = "account_group_id"),
     @Index(name = "idx_la_is_active", columnList = "is_active"),
-    @Index(name = "idx_la_origin_dest", columnList = "origin_city, destination_city"),
     @Index(name = "idx_la_gstin", columnList = "gstin"),
     @Index(name = "idx_la_tenant_active", columnList = "tenant_id, is_active")
 })
@@ -117,9 +116,7 @@ public class LedgerAccount extends BaseEntity {
     @Column(name = "tally_payment_terms")
     private String tallyPaymentTerms;
 
-    /** Fuel vendor flag — replaces the old FUEL PUMPS group hack */
-    @Column(name = "is_pump_account", nullable = false)
-    private boolean pumpAccount = false;
+
 
     // ═══════════════════════════════════════════════════════════════
     // ADDRESS (EMBEDDED — used by invoices, e-way bills, e-invoices)
@@ -187,20 +184,7 @@ public class LedgerAccount extends BaseEntity {
     @Column(name = "shipping_designation")
     private String shippingDesignation;
 
-    // ═══════════════════════════════════════════════════════════════
-    // ROUTE DATA (ONLY WHEN account_type = PARTY_ROUTE)
-    // ═══════════════════════════════════════════════════════════════
 
-    /** e.g. "Nashik" — extracted, searchable */
-    @Column(name = "origin_city")
-    private String originCity;
-
-    /** e.g. "Chakan" */
-    @Column(name = "destination_city")
-    private String destinationCity;
-
-    @Column(name = "distance_km", precision = 10, scale = 2)
-    private BigDecimal distanceKm;
 
     // ═══════════════════════════════════════════════════════════════
     // OTHER (SPECIAL ACCOUNT TYPES)
@@ -221,7 +205,7 @@ public class LedgerAccount extends BaseEntity {
     // ═══════════════════════════════════════════════════════════════
 
     public enum AccountType {
-        PARTY_ROUTE, PARTY_GENERAL, BANK, DRIVER_CASH, GENERAL
+        PARTY_GENERAL, BANK, DRIVER_CASH, GENERAL
     }
 
     public enum TcsApplicability {

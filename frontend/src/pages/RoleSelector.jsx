@@ -4,11 +4,16 @@ import { DEPARTMENTS, ROLES } from '../config/roles';
 
 export default function RoleSelector() {
   const navigate = useNavigate();
-  const setRole = useAuthStore((s) => s.setRole);
+  const { setRole, user, logout } = useAuthStore();
 
   const handleSelectRole = (roleId) => {
     setRole(roleId);
     navigate('/dashboard');
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login');
   };
 
   // Filter to visible departments only
@@ -36,6 +41,46 @@ export default function RoleSelector() {
             }}>FLEET MANAGEMENT PLATFORM</span>
           </div>
         </div>
+
+        {/* Authenticated user info */}
+        {user && (
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            gap: 10, marginBottom: 8,
+          }}>
+            <div style={{
+              width: 32, height: 32, borderRadius: 8,
+              background: 'linear-gradient(135deg, #6366F1, #4F46E5)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: '#fff', fontSize: 12, fontWeight: 700,
+            }}>
+              {user.firstName?.[0]}{user.lastName?.[0]}
+            </div>
+            <span style={{ fontSize: 14, color: '#cbd5e1', fontWeight: 500 }}>
+              {user.firstName} {user.lastName}
+            </span>
+            <span style={{
+              fontSize: 11, color: '#64748b',
+              background: 'rgba(100,116,139,0.15)',
+              padding: '3px 8px', borderRadius: 6,
+            }}>
+              {user.tenantName || 'Preet Transport'}
+            </span>
+            <button
+              onClick={handleLogout}
+              style={{
+                background: 'none', border: '1px solid rgba(148,163,184,0.2)',
+                color: '#94a3b8', borderRadius: 6, padding: '4px 10px',
+                fontSize: 11, cursor: 'pointer', marginLeft: 4,
+              }}
+              title="Sign out"
+            >
+              <i className="fas fa-sign-out-alt" style={{ marginRight: 4 }} />
+              Sign out
+            </button>
+          </div>
+        )}
+
         <p className="subtitle" style={{ maxWidth: 500, margin: '0 auto' }}>
           Select your role to access your personalized dashboard and tools.
         </p>
@@ -66,7 +111,9 @@ export default function RoleSelector() {
                   >
                     <i className={role.icon} style={{ color: role.color }}></i>
                     <span>{role.label}</span>
-                    <span className="role-meta">{role.user.name}</span>
+                    <span className="role-meta">
+                      {user ? `${user.firstName} ${user.lastName}` : role.user.name}
+                    </span>
                   </button>
                 );
               })}
