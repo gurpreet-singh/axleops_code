@@ -10,7 +10,10 @@ import java.util.UUID;
 @Repository
 public interface FreightRateRepository extends JpaRepository<FreightRate, UUID> {
 
-    List<FreightRate> findByCompanyId(UUID companyId);
+    List<FreightRate> findByCompanyIdAndTenantId(UUID companyId, UUID tenantId);
 
-    List<FreightRate> findByCompanyIdAndOriginAndDestination(UUID companyId, String origin, String destination);
+    List<FreightRate> findByCompanyIdAndOriginAndDestinationAndTenantId(
+            UUID companyId, String origin, String destination, UUID tenantId);
+
+    List<FreightRate> findByTenantId(UUID tenantId);
 }

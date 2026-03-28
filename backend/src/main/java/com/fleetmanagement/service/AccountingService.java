@@ -1,5 +1,7 @@
 package com.fleetmanagement.service;
 
+import com.fleetmanagement.config.ResourceNotFoundException;
+import com.fleetmanagement.config.TenantContext;
 import com.fleetmanagement.dto.response.LedgerAccountResponse;
 import com.fleetmanagement.dto.request.CreateVoucherRequest;
 import com.fleetmanagement.dto.response.VoucherResponse;
@@ -37,7 +39,7 @@ public class AccountingService {
     private final VoucherMapper voucherMapper;
 
     public List<LedgerAccountResponse> getAllLedgers() {
-        UUID tenantId = com.fleetmanagement.config.TenantContext.get();
+        UUID tenantId = TenantContext.get();
         return ledgerAccountRepository.findByTenantId(tenantId).stream()
                 .map(ledgerAccountMapper::toResponse)
                 .collect(Collectors.toList());
@@ -45,11 +47,13 @@ public class AccountingService {
 
     @Transactional
     public VoucherResponse createVoucher(CreateVoucherRequest req) {
-        UUID tenantId = com.fleetmanagement.config.TenantContext.get();
-        LedgerAccount dr = ledgerAccountRepository.findById(req.getDebitLedgerId())
-                .orElseThrow(() -> new RuntimeException("Debit ledger account not found"));
-        LedgerAccount cr = ledgerAccountRepository.findById(req.getCreditLedgerId())
-                .orElseThrow(() -> new RuntimeException("Credit ledger account not found"));
+        UUID tenantId = TenantContext.get();
+
+        // Verify debit/credit ledger accounts belong to this tenant
+        LedgerAccount dr = ledgerAccountRepository.findByIdAndTenantId(req.getDebitLedgerId(), tenantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Debit LedgerAccount", req.getDebitLedgerId()));
+        LedgerAccount cr = ledgerAccountRepository.findByIdAndTenantId(req.getCreditLedgerId(), tenantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Credit LedgerAccount", req.getCreditLedgerId()));
 
         Voucher voucher = new Voucher();
         voucher.setTenantId(tenantId);
@@ -61,13 +65,19 @@ public class AccountingService {
         voucher.setAmount(req.getAmount());
         voucher.setNarration(req.getNarration());
 
+        // Verify branch belongs to this tenant
         if (req.getBranchId() != null) {
-            Branch branch = branchRepository.findById(req.getBranchId()).orElse(null);
+            Branch branch = branchRepository.findByTenantId(tenantId).stream()
+                    .filter(b -> b.getId().equals(req.getBranchId()))
+                    .findFirst()
+                    .orElse(null);
             voucher.setBranch(branch);
         }
 
+        // Verify trip belongs to this tenant
         if (req.getTripId() != null) {
-            Trip trip = tripRepository.findById(req.getTripId()).orElse(null);
+            Trip trip = tripRepository.findByIdAndTenantId(req.getTripId(), tenantId)
+                    .orElse(null);
             voucher.setTrip(trip);
         }
 
@@ -79,7 +89,7 @@ public class AccountingService {
         List<UUID> branchIds = BranchSecurityContext.get();
         if (branchIds == null || branchIds.isEmpty()) branchIds = null;
 
-        UUID tenantId = com.fleetmanagement.config.TenantContext.get();
+        UUID tenantId = TenantContext.get();
         return voucherRepository.findAllScoped(tenantId, branchIds).stream()
                 .map(voucherMapper::toResponse)
                 .collect(Collectors.toList());
@@ -88,7 +98,7 @@ public class AccountingService {
     public ProfitLossResponse getProfitLoss() {
         List<UUID> branchIds = BranchSecurityContext.get();
         if (branchIds == null || branchIds.isEmpty()) branchIds = null;
-        UUID tenantId = com.fleetmanagement.config.TenantContext.get();
+        UUID tenantId = TenantContext.get();
 
         List<VoucherResponse> vouchers = voucherRepository.findAllScoped(tenantId, branchIds).stream()
                 .map(voucherMapper::toResponse)

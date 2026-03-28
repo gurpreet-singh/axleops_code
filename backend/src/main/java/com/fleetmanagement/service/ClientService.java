@@ -1,5 +1,6 @@
 package com.fleetmanagement.service;
 
+import com.fleetmanagement.config.TenantContext;
 import com.fleetmanagement.dto.response.ClientResponse;
 import com.fleetmanagement.dto.response.InvoiceResponse;
 import com.fleetmanagement.mapper.ClientMapper;
@@ -26,20 +27,19 @@ public class ClientService {
     private final InvoiceMapper invoiceMapper;
 
     public List<ClientResponse> getAllClients() {
-        return clientRepository.findAll().stream()
+        UUID tenantId = TenantContext.get();
+        return clientRepository.findByTenantId(tenantId).stream()
                 .map(clientMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
     public List<InvoiceResponse> getAllInvoices() {
         List<UUID> branchIds = BranchSecurityContext.get();
-        // If branchIds is empty or null, we might want to return all or none based on global scope logic.
-        // For now, if empty, we query all.
         if (branchIds == null || branchIds.isEmpty()) {
             branchIds = null;
         }
 
-        UUID tenantId = com.fleetmanagement.config.TenantContext.get();
+        UUID tenantId = TenantContext.get();
         return invoiceRepository.findAllScoped(tenantId, branchIds).stream()
                 .map(invoiceMapper::toResponse)
                 .collect(Collectors.toList());

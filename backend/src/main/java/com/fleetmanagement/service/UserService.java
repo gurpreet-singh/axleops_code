@@ -1,5 +1,6 @@
 package com.fleetmanagement.service;
 
+import com.fleetmanagement.config.TenantContext;
 import com.fleetmanagement.dto.response.UserResponse;
 import com.fleetmanagement.mapper.UserMapper;
 import com.fleetmanagement.repository.UserRepository;
@@ -20,7 +21,8 @@ public class UserService {
     private final UserMapper userMapper;
 
     public List<UserResponse> getAllUsers() {
-        return userRepository.findAll().stream()
+        UUID tenantId = TenantContext.get();
+        return userRepository.findByTenantId(tenantId).stream()
                 .map(userMapper::toResponse)
                 .collect(Collectors.toList());
     }

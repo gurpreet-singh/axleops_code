@@ -1,5 +1,6 @@
 package com.fleetmanagement.service;
 
+import com.fleetmanagement.config.ResourceNotFoundException;
 import com.fleetmanagement.config.TenantContext;
 import com.fleetmanagement.dto.request.CreateLedgerAccountRequest;
 import com.fleetmanagement.dto.response.LedgerAccountResponse;
@@ -44,25 +45,28 @@ public class LedgerAccountService {
     }
 
     public LedgerAccountResponse getById(UUID id) {
-        LedgerAccount account = ledgerAccountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("LedgerAccount not found: " + id));
+        UUID tenantId = TenantContext.get();
+        LedgerAccount account = ledgerAccountRepository.findByIdAndTenantId(id, tenantId)
+                .orElseThrow(() -> new ResourceNotFoundException("LedgerAccount", id));
         return mapper.toResponse(account);
     }
 
     public List<LedgerAccountResponse> getByCompany(UUID companyId) {
-        return ledgerAccountRepository.findByCompanyId(companyId).stream()
+        // Verify the company belongs to this tenant first
+        UUID tenantId = TenantContext.get();
+        companyRepository.findByIdAndTenantId(companyId, tenantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Company", companyId));
+        return ledgerAccountRepository.findByCompanyIdAndTenantId(companyId, tenantId).stream()
                 .map(mapper::toResponse)
                 .collect(Collectors.toList());
     }
-
-
 
     @Transactional
     public LedgerAccountResponse create(CreateLedgerAccountRequest req) {
         UUID tenantId = TenantContext.get();
 
-        LedgerGroup group = ledgerGroupRepository.findById(req.getAccountGroupId())
-                .orElseThrow(() -> new RuntimeException("LedgerGroup not found: " + req.getAccountGroupId()));
+        LedgerGroup group = ledgerGroupRepository.findByIdAndTenantId(req.getAccountGroupId(), tenantId)
+                .orElseThrow(() -> new ResourceNotFoundException("LedgerGroup", req.getAccountGroupId()));
 
         LedgerAccount account = new LedgerAccount();
         account.setTenantId(tenantId);
@@ -83,8 +87,8 @@ public class LedgerAccountService {
 
         // Party data — denormalise from Company if provided
         if (req.getCompanyId() != null) {
-            Company company = companyRepository.findById(req.getCompanyId())
-                    .orElseThrow(() -> new RuntimeException("Company not found: " + req.getCompanyId()));
+            Company company = companyRepository.findByIdAndTenantId(req.getCompanyId(), tenantId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Company", req.getCompanyId()));
             account.setCompany(company);
             // Denormalise from company master
             account.setPanNumber(req.getPanNumber() != null ? req.getPanNumber() : company.getPanNumber());
@@ -128,8 +132,6 @@ public class LedgerAccountService {
         account.setShippingContactPerson(req.getShippingContactPerson());
         account.setShippingDesignation(req.getShippingDesignation());
 
-
-
         // Other
         account.setCinNumber(req.getCinNumber());
         account.setLastYearRevenue(req.getLastYearRevenue());
@@ -141,8 +143,9 @@ public class LedgerAccountService {
 
     @Transactional
     public LedgerAccountResponse update(UUID id, CreateLedgerAccountRequest req) {
-        LedgerAccount account = ledgerAccountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("LedgerAccount not found: " + id));
+        UUID tenantId = TenantContext.get();
+        LedgerAccount account = ledgerAccountRepository.findByIdAndTenantId(id, tenantId)
+                .orElseThrow(() -> new ResourceNotFoundException("LedgerAccount", id));
 
         // Update identity
         account.setAccountHead(req.getAccountHead());
@@ -150,8 +153,8 @@ public class LedgerAccountService {
         account.setNameOnDashboard(req.getNameOnDashboard());
 
         if (req.getAccountGroupId() != null) {
-            LedgerGroup group = ledgerGroupRepository.findById(req.getAccountGroupId())
-                    .orElseThrow(() -> new RuntimeException("LedgerGroup not found"));
+            LedgerGroup group = ledgerGroupRepository.findByIdAndTenantId(req.getAccountGroupId(), tenantId)
+                    .orElseThrow(() -> new ResourceNotFoundException("LedgerGroup", req.getAccountGroupId()));
             account.setAccountGroup(group.getName());
             account.setAccountGroupRef(group);
             account.setGroupNature(group.getNature().name());
@@ -193,8 +196,6 @@ public class LedgerAccountService {
         account.setShippingContactPerson(req.getShippingContactPerson());
         account.setShippingDesignation(req.getShippingDesignation());
 
-
-
         // Other
         account.setCinNumber(req.getCinNumber());
         account.setLastYearRevenue(req.getLastYearRevenue());
@@ -206,6 +207,9 @@ public class LedgerAccountService {
 
     @Transactional
     public void delete(UUID id) {
-        ledgerAccountRepository.deleteById(id);
+        UUID tenantId = TenantContext.get();
+        LedgerAccount account = ledgerAccountRepository.findByIdAndTenantId(id, tenantId)
+                .orElseThrow(() -> new ResourceNotFoundException("LedgerAccount", id));
+        ledgerAccountRepository.delete(account);
     }
 }

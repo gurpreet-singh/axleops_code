@@ -1,5 +1,7 @@
 package com.fleetmanagement.controller;
 
+import com.fleetmanagement.config.RequiresAuthority;
+import com.fleetmanagement.entity.Authority;
 import com.fleetmanagement.service.ReportingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -28,11 +30,8 @@ public class ReportingController {
 
     private final ReportingService reportingService;
 
-    /**
-     * Roll-up total for a group + all its descendants.
-     * Example: /reporting/roll-up?groupId=aa000000-...&from=2026-04-01&to=2026-03-31
-     */
     @GetMapping("/roll-up")
+    @RequiresAuthority(Authority.FINANCIAL_REPORT_READ)
     public ResponseEntity<Map<String, Object>> rollUp(
             @RequestParam UUID groupId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
@@ -40,33 +39,23 @@ public class ReportingController {
         return ResponseEntity.ok(reportingService.groupRollUp(groupId, from, to));
     }
 
-    /**
-     * Auto-generated P&L statement for a date range.
-     * Example: /reporting/profit-loss?from=2026-04-01&to=2027-03-31
-     */
     @GetMapping("/profit-loss")
+    @RequiresAuthority(Authority.FINANCIAL_REPORT_READ)
     public ResponseEntity<Map<String, Object>> profitAndLoss(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
         return ResponseEntity.ok(reportingService.profitAndLoss(from, to));
     }
 
-    /**
-     * Balance Sheet as-of a date.
-     * Example: /reporting/balance-sheet?asOf=2026-03-31
-     */
     @GetMapping("/balance-sheet")
+    @RequiresAuthority(Authority.FINANCIAL_REPORT_READ)
     public ResponseEntity<Map<String, Object>> balanceSheet(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate asOf) {
         return ResponseEntity.ok(reportingService.balanceSheet(asOf));
     }
 
-    /**
-     * Drill-down: breakdown of each direct child under a group.
-     * Example: /reporting/group-breakdown?groupId=aa000000-...&from=2026-04-01&to=2027-03-31
-     * Returns: [{ groupName: "Fuel", netAmount: 45000 }, { groupName: "Toll", netAmount: 12000 }, ...]
-     */
     @GetMapping("/group-breakdown")
+    @RequiresAuthority(Authority.FINANCIAL_REPORT_READ)
     public ResponseEntity<List<Map<String, Object>>> groupBreakdown(
             @RequestParam UUID groupId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
@@ -74,12 +63,8 @@ public class ReportingController {
         return ResponseEntity.ok(reportingService.groupBreakdown(groupId, from, to));
     }
 
-    /**
-     * Trip profitability — revenue vs expenses for a specific trip.
-     * Uses dimensional slicing (trip_id on voucher) + group nature classification.
-     * Example: /reporting/trip-profitability/10000000-0000-...
-     */
     @GetMapping("/trip-profitability/{tripId}")
+    @RequiresAuthority(Authority.FINANCIAL_REPORT_READ)
     public ResponseEntity<Map<String, Object>> tripProfitability(@PathVariable UUID tripId) {
         return ResponseEntity.ok(reportingService.tripProfitability(tripId));
     }

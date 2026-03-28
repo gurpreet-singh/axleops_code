@@ -1,5 +1,6 @@
 package com.fleetmanagement.service;
 
+import com.fleetmanagement.config.ResourceNotFoundException;
 import com.fleetmanagement.config.TenantContext;
 import com.fleetmanagement.dto.response.LedgerGroupResponse;
 import com.fleetmanagement.entity.LedgerGroup;
@@ -30,8 +31,9 @@ public class LedgerGroupService {
     }
 
     public LedgerGroupResponse getById(UUID id) {
-        LedgerGroup group = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("LedgerGroup not found: " + id));
+        UUID tenantId = TenantContext.get();
+        LedgerGroup group = repository.findByIdAndTenantId(id, tenantId)
+                .orElseThrow(() -> new ResourceNotFoundException("LedgerGroup", id));
         return mapper.toResponse(group);
     }
 
@@ -54,8 +56,8 @@ public class LedgerGroupService {
 
         String parentGroupId = (String) req.get("parentGroupId");
         if (parentGroupId != null && !parentGroupId.isEmpty()) {
-            LedgerGroup parent = repository.findById(UUID.fromString(parentGroupId))
-                    .orElseThrow(() -> new RuntimeException("Parent group not found"));
+            LedgerGroup parent = repository.findByIdAndTenantId(UUID.fromString(parentGroupId), tenantId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Parent LedgerGroup", parentGroupId));
             group.setParentGroup(parent);
         }
 
@@ -65,8 +67,9 @@ public class LedgerGroupService {
 
     @Transactional
     public LedgerGroupResponse update(UUID id, Map<String, Object> req) {
-        LedgerGroup group = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("LedgerGroup not found: " + id));
+        UUID tenantId = TenantContext.get();
+        LedgerGroup group = repository.findByIdAndTenantId(id, tenantId)
+                .orElseThrow(() -> new ResourceNotFoundException("LedgerGroup", id));
 
         group.setName((String) req.get("name"));
         group.setNature(LedgerGroup.GroupNature.valueOf((String) req.get("nature")));
@@ -82,8 +85,8 @@ public class LedgerGroupService {
 
         String parentGroupId = (String) req.get("parentGroupId");
         if (parentGroupId != null && !parentGroupId.isEmpty()) {
-            LedgerGroup parent = repository.findById(UUID.fromString(parentGroupId))
-                    .orElseThrow(() -> new RuntimeException("Parent group not found"));
+            LedgerGroup parent = repository.findByIdAndTenantId(UUID.fromString(parentGroupId), tenantId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Parent LedgerGroup", parentGroupId));
             group.setParentGroup(parent);
         } else {
             group.setParentGroup(null);
@@ -95,6 +98,9 @@ public class LedgerGroupService {
 
     @Transactional
     public void delete(UUID id) {
-        repository.deleteById(id);
+        UUID tenantId = TenantContext.get();
+        LedgerGroup group = repository.findByIdAndTenantId(id, tenantId)
+                .orElseThrow(() -> new ResourceNotFoundException("LedgerGroup", id));
+        repository.delete(group);
     }
 }

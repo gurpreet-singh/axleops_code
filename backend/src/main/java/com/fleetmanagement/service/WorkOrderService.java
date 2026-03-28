@@ -1,5 +1,7 @@
 package com.fleetmanagement.service;
 
+import com.fleetmanagement.config.ResourceNotFoundException;
+import com.fleetmanagement.config.TenantContext;
 import com.fleetmanagement.dto.response.WorkOrderResponse;
 import com.fleetmanagement.mapper.WorkOrderMapper;
 import com.fleetmanagement.repository.WorkOrderRepository;
@@ -20,14 +22,16 @@ public class WorkOrderService {
     private final WorkOrderMapper workOrderMapper;
 
     public List<WorkOrderResponse> getAllWorkOrders() {
-        return workOrderRepository.findAll().stream()
+        UUID tenantId = TenantContext.get();
+        return workOrderRepository.findByTenantId(tenantId).stream()
                 .map(workOrderMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
     public WorkOrderResponse getWorkOrderById(UUID id) {
-        return workOrderRepository.findById(id)
+        UUID tenantId = TenantContext.get();
+        return workOrderRepository.findByIdAndTenantId(id, tenantId)
                 .map(workOrderMapper::toResponse)
-                .orElseThrow(() -> new RuntimeException("WorkOrder not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("WorkOrder", id));
     }
 }

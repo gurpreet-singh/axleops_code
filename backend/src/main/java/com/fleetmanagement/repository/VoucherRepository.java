@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -16,4 +17,8 @@ public interface VoucherRepository extends JpaRepository<Voucher, UUID> {
            "(:branchIds IS NULL OR v.branch.id IN :branchIds) " +
            "ORDER BY v.date DESC")
     List<Voucher> findAllScoped(@Param("tenantId") UUID tenantId, @Param("branchIds") List<UUID> branchIds);
+
+    Optional<Voucher> findByIdAndTenantId(UUID id, UUID tenantId);
+
+    List<Voucher> findByTenantId(UUID tenantId);
 }

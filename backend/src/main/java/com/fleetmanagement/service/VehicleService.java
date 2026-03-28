@@ -1,5 +1,7 @@
 package com.fleetmanagement.service;
 
+import com.fleetmanagement.config.ResourceNotFoundException;
+import com.fleetmanagement.config.TenantContext;
 import com.fleetmanagement.dto.response.VehicleResponse;
 import com.fleetmanagement.mapper.VehicleMapper;
 import com.fleetmanagement.repository.VehicleRepository;
@@ -19,14 +21,16 @@ public class VehicleService {
     private final VehicleMapper vehicleMapper;
 
     public List<VehicleResponse> getAllVehicles() {
-        return vehicleRepository.findAll().stream()
+        UUID tenantId = TenantContext.get();
+        return vehicleRepository.findByTenantId(tenantId).stream()
                 .map(vehicleMapper::toResponse)
                 .toList();
     }
 
     public VehicleResponse getVehicleById(UUID id) {
-        return vehicleRepository.findById(id)
+        UUID tenantId = TenantContext.get();
+        return vehicleRepository.findByIdAndTenantId(id, tenantId)
                 .map(vehicleMapper::toResponse)
-                .orElseThrow(() -> new RuntimeException("Vehicle not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicle", id));
     }
 }

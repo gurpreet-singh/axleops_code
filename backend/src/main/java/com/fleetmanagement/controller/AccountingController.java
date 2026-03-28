@@ -1,8 +1,10 @@
 package com.fleetmanagement.controller;
 
+import com.fleetmanagement.config.RequiresAuthority;
 import com.fleetmanagement.dto.response.LedgerAccountResponse;
 import com.fleetmanagement.dto.response.VoucherResponse;
 import com.fleetmanagement.dto.response.ProfitLossResponse;
+import com.fleetmanagement.entity.Authority;
 import com.fleetmanagement.service.AccountingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,21 +26,25 @@ public class AccountingController {
     private final AccountingService accountingService;
 
     @GetMapping("/ledgers")
+    @RequiresAuthority(Authority.LEDGER_READ)
     public ResponseEntity<List<LedgerAccountResponse>> getAllLedgers() {
         return ResponseEntity.ok(accountingService.getAllLedgers());
     }
 
     @GetMapping("/vouchers")
+    @RequiresAuthority(Authority.LEDGER_READ)
     public ResponseEntity<List<VoucherResponse>> getAllVouchers() {
         return ResponseEntity.ok(accountingService.getAllVouchers());
     }
 
     @PostMapping("/vouchers")
+    @RequiresAuthority(Authority.LEDGER_CREATE)
     public ResponseEntity<VoucherResponse> createVoucher(@Valid @RequestBody CreateVoucherRequest request) {
         return ResponseEntity.ok(accountingService.createVoucher(request));
     }
 
     @GetMapping("/profit-loss")
+    @RequiresAuthority(Authority.FINANCIAL_REPORT_READ)
     public ResponseEntity<ProfitLossResponse> getProfitLoss() {
         return ResponseEntity.ok(accountingService.getProfitLoss());
     }

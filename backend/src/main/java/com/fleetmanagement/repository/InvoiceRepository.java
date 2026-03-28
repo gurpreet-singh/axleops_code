@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -16,4 +17,6 @@ public interface InvoiceRepository extends JpaRepository<Invoice, UUID> {
            "(:branchIds IS NULL OR i.branch.id IN :branchIds) " +
            "ORDER BY i.createdAt DESC")
     List<Invoice> findAllScoped(@Param("tenantId") UUID tenantId, @Param("branchIds") List<UUID> branchIds);
+
+    Optional<Invoice> findByIdAndTenantId(UUID id, UUID tenantId);
 }

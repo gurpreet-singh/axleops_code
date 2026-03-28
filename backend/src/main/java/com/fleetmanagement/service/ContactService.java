@@ -1,5 +1,7 @@
 package com.fleetmanagement.service;
 
+import com.fleetmanagement.config.ResourceNotFoundException;
+import com.fleetmanagement.config.TenantContext;
 import com.fleetmanagement.dto.response.ContactResponse;
 import com.fleetmanagement.mapper.ContactMapper;
 import com.fleetmanagement.repository.ContactRepository;
@@ -19,20 +21,23 @@ public class ContactService {
     private final ContactMapper contactMapper;
 
     public List<ContactResponse> getAllContacts() {
-        return contactRepository.findAll().stream()
+        UUID tenantId = TenantContext.get();
+        return contactRepository.findByTenantId(tenantId).stream()
                 .map(contactMapper::toResponse)
                 .toList();
     }
 
     public List<ContactResponse> getDrivers() {
-        return contactRepository.findByType("DRIVER").stream()
+        UUID tenantId = TenantContext.get();
+        return contactRepository.findByTenantIdAndType(tenantId, "DRIVER").stream()
                 .map(contactMapper::toResponse)
                 .toList();
     }
 
     public ContactResponse getContactById(UUID id) {
-        return contactRepository.findById(id)
+        UUID tenantId = TenantContext.get();
+        return contactRepository.findByIdAndTenantId(id, tenantId)
                 .map(contactMapper::toResponse)
-                .orElseThrow(() -> new RuntimeException("Contact not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Contact", id));
     }
 }

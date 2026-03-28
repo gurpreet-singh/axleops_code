@@ -15,5 +15,10 @@ public interface CompanyRepository extends JpaRepository<Company, UUID> {
 
     List<Company> findByTenantIdAndCompanyType(UUID tenantId, Company.CompanyType companyType);
 
-    Optional<Company> findByPanNumber(String panNumber);
+    Optional<Company> findByIdAndTenantId(UUID id, UUID tenantId);
+
+    /**
+     * Find by PAN — tenant-scoped to prevent cross-tenant lookups.
+     */
+    Optional<Company> findByPanNumberAndTenantId(String panNumber, UUID tenantId);
 }

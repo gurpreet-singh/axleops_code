@@ -1,5 +1,7 @@
 package com.fleetmanagement.service;
 
+import com.fleetmanagement.config.ResourceNotFoundException;
+import com.fleetmanagement.config.TenantContext;
 import com.fleetmanagement.dto.response.InvoiceResponse;
 import com.fleetmanagement.mapper.InvoiceMapper;
 import com.fleetmanagement.repository.InvoiceRepository;
@@ -19,14 +21,16 @@ public class InvoiceService {
     private final InvoiceMapper invoiceMapper;
 
     public List<InvoiceResponse> getAllInvoices() {
-        return invoiceRepository.findAll().stream()
+        UUID tenantId = TenantContext.get();
+        return invoiceRepository.findAllScoped(tenantId, null).stream()
                 .map(invoiceMapper::toResponse)
                 .toList();
     }
 
     public InvoiceResponse getInvoiceById(UUID id) {
-        return invoiceRepository.findById(id)
+        UUID tenantId = TenantContext.get();
+        return invoiceRepository.findByIdAndTenantId(id, tenantId)
                 .map(invoiceMapper::toResponse)
-                .orElseThrow(() -> new RuntimeException("Invoice not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Invoice", id));
     }
 }

@@ -1,6 +1,8 @@
 package com.fleetmanagement.controller;
 
+import com.fleetmanagement.config.RequiresAuthority;
 import com.fleetmanagement.dto.response.UserResponse;
+import com.fleetmanagement.entity.Authority;
 import com.fleetmanagement.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
+    @RequiresAuthority(Authority.USER_READ)
     public ResponseEntity<List<UserResponse>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }

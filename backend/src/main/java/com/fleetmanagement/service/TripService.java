@@ -1,6 +1,9 @@
 package com.fleetmanagement.service;
 
+import com.fleetmanagement.config.ResourceNotFoundException;
+import com.fleetmanagement.config.TenantContext;
 import com.fleetmanagement.dto.response.TripResponse;
+import com.fleetmanagement.entity.Trip;
 import com.fleetmanagement.mapper.TripMapper;
 import com.fleetmanagement.repository.TripRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,19 +22,24 @@ public class TripService {
     private final TripMapper tripMapper;
 
     public List<TripResponse> getAllTrips() {
-        return tripRepository.findAll().stream()
+        UUID tenantId = TenantContext.get();
+        return tripRepository.findByTenantId(tenantId).stream()
                 .map(tripMapper::toResponse)
                 .toList();
     }
 
     public TripResponse getTripById(UUID id) {
-        return tripRepository.findById(id)
+        UUID tenantId = TenantContext.get();
+        return tripRepository.findByIdAndTenantId(id, tenantId)
                 .map(tripMapper::toResponse)
-                .orElseThrow(() -> new RuntimeException("Trip not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Trip", id));
     }
 
     @Transactional
     public void delete(UUID id) {
-        tripRepository.deleteById(id);
+        UUID tenantId = TenantContext.get();
+        Trip trip = tripRepository.findByIdAndTenantId(id, tenantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Trip", id));
+        tripRepository.delete(trip);
     }
 }

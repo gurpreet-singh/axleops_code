@@ -1,5 +1,6 @@
 package com.fleetmanagement.service;
 
+import com.fleetmanagement.config.ResourceNotFoundException;
 import com.fleetmanagement.config.TenantContext;
 import com.fleetmanagement.dto.request.CreateCompanyRequest;
 import com.fleetmanagement.dto.response.CompanyResponse;
@@ -32,8 +33,9 @@ public class CompanyService {
     }
 
     public CompanyResponse getById(UUID id) {
-        Company company = companyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Company not found: " + id));
+        UUID tenantId = TenantContext.get();
+        Company company = companyRepository.findByIdAndTenantId(id, tenantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Company", id));
         return mapper.toResponse(company);
     }
 
@@ -67,8 +69,9 @@ public class CompanyService {
      */
     @Transactional
     public CompanyResponse update(UUID id, CreateCompanyRequest req) {
-        Company company = companyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Company not found: " + id));
+        UUID tenantId = TenantContext.get();
+        Company company = companyRepository.findByIdAndTenantId(id, tenantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Company", id));
 
         String oldLegalName = company.getLegalName();
         String oldPanNumber = company.getPanNumber();
@@ -94,9 +97,8 @@ public class CompanyService {
                 || (req.getPanNumber() != null && !req.getPanNumber().equals(oldPanNumber));
 
         if (legalNameChanged || panChanged) {
-            int updated = ledgerAccountRepository.cascadeCompanyUpdate(
-                    id, req.getLegalName(), req.getPanNumber());
-            // Log: "Cascaded update to {updated} ledger accounts for company {id}"
+            ledgerAccountRepository.cascadeCompanyUpdate(
+                    id, req.getLegalName(), req.getPanNumber(), tenantId);
         }
 
         return mapper.toResponse(saved);
@@ -104,6 +106,9 @@ public class CompanyService {
 
     @Transactional
     public void delete(UUID id) {
-        companyRepository.deleteById(id);
+        UUID tenantId = TenantContext.get();
+        Company company = companyRepository.findByIdAndTenantId(id, tenantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Company", id));
+        companyRepository.delete(company);
     }
 }

@@ -1,5 +1,7 @@
 package com.fleetmanagement.service;
 
+import com.fleetmanagement.config.ResourceNotFoundException;
+import com.fleetmanagement.config.TenantContext;
 import com.fleetmanagement.dto.response.PartResponse;
 import com.fleetmanagement.mapper.PartMapper;
 import com.fleetmanagement.repository.PartRepository;
@@ -19,14 +21,16 @@ public class PartService {
     private final PartMapper partMapper;
 
     public List<PartResponse> getAllParts() {
-        return partRepository.findAll().stream()
+        UUID tenantId = TenantContext.get();
+        return partRepository.findByTenantId(tenantId).stream()
                 .map(partMapper::toResponse)
                 .toList();
     }
 
     public PartResponse getPartById(UUID id) {
-        return partRepository.findById(id)
+        UUID tenantId = TenantContext.get();
+        return partRepository.findByIdAndTenantId(id, tenantId)
                 .map(partMapper::toResponse)
-                .orElseThrow(() -> new RuntimeException("Part not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Part", id));
     }
 }

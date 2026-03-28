@@ -1,6 +1,8 @@
 package com.fleetmanagement.controller;
 
+import com.fleetmanagement.config.RequiresAuthority;
 import com.fleetmanagement.dto.response.ContactResponse;
+import com.fleetmanagement.entity.Authority;
 import com.fleetmanagement.service.ContactService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ public class ContactController {
     private final ContactService contactService;
 
     @GetMapping
+    @RequiresAuthority(Authority.ORG_READ)
     public ResponseEntity<List<ContactResponse>> getAllContacts(
             @RequestParam(required = false) String type) {
         if ("Driver".equalsIgnoreCase(type) || "DRIVER".equals(type)) {
@@ -26,6 +29,7 @@ public class ContactController {
     }
 
     @GetMapping("/{id}")
+    @RequiresAuthority(Authority.ORG_READ)
     public ResponseEntity<ContactResponse> getContactById(@PathVariable UUID id) {
         return ResponseEntity.ok(contactService.getContactById(id));
     }

@@ -10,5 +10,7 @@ import java.util.UUID;
 @Repository
 public interface DispatchDetailRepository extends JpaRepository<DispatchDetail, UUID> {
 
-    List<DispatchDetail> findByCompanyId(UUID companyId);
+    List<DispatchDetail> findByCompanyIdAndTenantId(UUID companyId, UUID tenantId);
+
+    List<DispatchDetail> findByTenantId(UUID tenantId);
 }
