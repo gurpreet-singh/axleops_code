@@ -269,3 +269,28 @@ export default function EntitiesPage() {
 - All business entities have `tenant_id` column
 - Gobind Transport (`e9999999-...`) = primary test tenant
 - All UUIDs must use valid hex characters only (0-9, a-f)
+
+---
+
+## 6. UX Rule — Action Buttons at the Top (CRITICAL)
+
+**All actionable buttons MUST appear at the TOP of their view**, immediately after any heading/title.
+Users should **never** need to scroll down to find primary actions (Back, Next, Submit, Save, Import, etc.).
+
+### Rules:
+1. **Wizard steps**: Place the action bar (Back / Next / Save) directly below the step title, **before** the main content.
+2. **Form views**: Action buttons (Save, Cancel) go in a sticky header or right below the title — never at the bottom.
+3. **Responsive**: On all screen sizes, action buttons must remain visible at the top. Content scrolls beneath them.
+4. **No bottom footers for actions**: Do NOT use bottom-pinned footers or end-of-page action rows. Export/download links (secondary actions) may appear inline near the relevant data, but primary navigation and submission buttons stay at the top.
+
+### Pattern:
+```
+┌─────────────────────────────┐
+│ Step Title / Heading        │
+├─────────────────────────────┤
+│ [← Back] [Save]  [Next →]  │  ← Action bar (always visible, top)
+├─────────────────────────────┤
+│ Main content (scrollable)   │
+│ ...                         │
+└─────────────────────────────┘
+```

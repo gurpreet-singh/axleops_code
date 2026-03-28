@@ -20,7 +20,6 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "ledger_accounts", indexes = {
     @Index(name = "idx_la_company_id", columnList = "company_id"),
-    @Index(name = "idx_la_account_sub_type", columnList = "account_sub_type"),
     @Index(name = "idx_la_account_group_id", columnList = "account_group_id"),
     @Index(name = "idx_la_is_active", columnList = "is_active"),
     @Index(name = "idx_la_gstin", columnList = "gstin"),
@@ -46,6 +45,14 @@ public class LedgerAccount extends BaseEntity {
     @Column(name = "name_on_dashboard")
     private String nameOnDashboard;
 
+    /** Override name for printing on invoices / documents */
+    @Column(name = "print_name")
+    private String printName;
+
+    /** Whether this account is visible on the dashboard */
+    @Column(name = "show_on_dashboard", nullable = false)
+    private boolean showOnDashboard = false;
+
     /** Denormalised from LedgerGroup — e.g. "SUNDRY DEBTORS" */
     @Column(name = "account_group")
     private String accountGroup;
@@ -59,10 +66,10 @@ public class LedgerAccount extends BaseEntity {
     @Column(name = "group_nature", length = 20)
     private String groupNature;
 
-    /** Account sub type — drives UI forms and business logic */
-    @Column(name = "account_sub_type", nullable = false, length = 30)
-    @Enumerated(EnumType.STRING)
-    private AccountSubType accountSubType;
+    /**
+     * Account sub type — now derived from the LedgerGroup at read time.
+     * NOT persisted on this entity. Use accountGroupRef.getDefaultAccountSubType().
+     */
 
     // ═══════════════════════════════════════════════════════════════
     // FINANCIALS (EVERY ACCOUNT)
@@ -70,6 +77,11 @@ public class LedgerAccount extends BaseEntity {
 
     @Column(name = "opening_balance", precision = 15, scale = 2)
     private BigDecimal openingBalance = BigDecimal.ZERO;
+
+    /** Whether the opening balance is Debit or Credit */
+    @Column(name = "debit_credit", length = 10)
+    @Enumerated(EnumType.STRING)
+    private DebitCredit debitCredit = DebitCredit.DEBIT;
 
     /** Running balance — updated on every voucher post */
     @Column(name = "current_balance", precision = 15, scale = 2)
@@ -115,6 +127,9 @@ public class LedgerAccount extends BaseEntity {
 
     @Column(name = "tally_payment_terms")
     private String tallyPaymentTerms;
+    /** Whether this is a fuel pump account (used in diesel vouchers) */
+    @Column(name = "pump_account", nullable = false)
+    private boolean pumpAccount = false;
 
 
 
@@ -149,6 +164,8 @@ public class LedgerAccount extends BaseEntity {
 
     private String designation;
 
+    private String website;
+
     // ═══════════════════════════════════════════════════════════════
     // SHIPPING (EMBEDDED — for accounts with different ship-to)
     // ═══════════════════════════════════════════════════════════════
@@ -178,6 +195,12 @@ public class LedgerAccount extends BaseEntity {
     @Column(name = "shipping_phone")
     private String shippingPhone;
 
+    @Column(name = "shipping_mobile")
+    private String shippingMobile;
+
+    @Column(name = "shipping_email")
+    private String shippingEmail;
+
     @Column(name = "shipping_contact_person")
     private String shippingContactPerson;
 
@@ -197,6 +220,10 @@ public class LedgerAccount extends BaseEntity {
     @Column(name = "last_year_revenue", precision = 15, scale = 2)
     private BigDecimal lastYearRevenue;
 
+    /** Distance from base/office in km */
+    @Column(name = "distance", precision = 10, scale = 2)
+    private BigDecimal distance;
+
     @Column(name = "default_shipped_to_code")
     private String defaultShippedToCode;
 
@@ -204,15 +231,11 @@ public class LedgerAccount extends BaseEntity {
     // ENUMS
     // ═══════════════════════════════════════════════════════════════
 
-    /**
-     * Drives which UI form sections appear and what business logic applies.
-     * Shared enum with LedgerGroup.AccountSubType — same 5 values.
-     */
-    public enum AccountSubType {
-        PARTY, BANK, CASH, DUTIES_TAXES, GENERAL
-    }
-
     public enum TcsApplicability {
         NOT_APPLICABLE, TCS_ON_SALE, TCS_ON_PURCHASE
+    }
+
+    public enum DebitCredit {
+        DEBIT, CREDIT
     }
 }

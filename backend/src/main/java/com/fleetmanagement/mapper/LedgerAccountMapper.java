@@ -11,5 +11,7 @@ public interface LedgerAccountMapper {
     @Mapping(source = "company.id", target = "companyId")
     @Mapping(source = "legalName", target = "companyName")
     @Mapping(source = "accountGroupRef.id", target = "accountGroupId")
+    @Mapping(source = "accountGroupRef.defaultAccountSubType", target = "accountSubType")
     LedgerAccountResponse toResponse(LedgerAccount entity);
 }
+

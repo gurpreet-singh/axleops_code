@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import useSliderStore from '../../stores/sliderStore';
 import useEnumStore, { ACCOUNT_SUB_TYPE_COLORS } from '../../stores/enumStore';
 import ledgerAccountService from '../../services/ledgerAccountService';
@@ -19,27 +19,52 @@ function ReadField({ label, value, mono }) {
 
 const INR = n => n ? '₹' + Number(n).toLocaleString('en-IN') : '—';
 
+/** Spinner shown while enums are loading */
+function EnumLoadingSpinner() {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px 20px', color: '#64748B' }}>
+      <i className="fas fa-spinner fa-spin" style={{ fontSize: 24, marginBottom: 12, color: '#3B82F6' }}></i>
+      <div style={{ fontSize: 13, fontWeight: 600 }}>Loading configuration...</div>
+      <div style={{ fontSize: 11, color: '#94A3B8', marginTop: 4 }}>Enum values are being fetched</div>
+    </div>
+  );
+}
+
+/**
+ * Derive the accountSubType label from the selected group.
+ * Returns { value, label } or null if no group selected.
+ */
+function getDerivedSubType(groupId, groups, getLabel) {
+  if (!groupId) return null;
+  const group = groups.find(g => g.id === groupId);
+  if (!group || !group.defaultAccountSubType) return null;
+  return {
+    value: group.defaultAccountSubType,
+    label: getLabel('accountSubType', group.defaultAccountSubType),
+  };
+}
+
 
 // ═══════════════════════════════════════════════════════════════
 // CREATE SLIDER
 // ═══════════════════════════════════════════════════════════════
 
 export function LedgerAccountCreateContent({ onSave, groups }) {
-  const { getOptionsWithPlaceholder } = useEnumStore();
+  const { getOptionsWithPlaceholder, loaded: enumsLoaded, getLabel } = useEnumStore();
   const { closeSlider } = useSliderStore();
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
-    accountHead: '', tallyName: '', nameOnDashboard: '',
-    accountGroupId: '', accountSubType: '',
-    openingBalance: '', currency: 'INR',
+    accountHead: '', tallyName: '', nameOnDashboard: '', printName: '',
+    showOnDashboard: false, accountGroupId: '',
+    openingBalance: '', debitCredit: 'DEBIT', currency: 'INR',
     panNumber: '', gstin: '', legalName: '', ourVendorCode: '',
-    tcsApplicable: '', paymentTerms: '', tallyPaymentTerms: '',
+    tcsApplicable: '', paymentTerms: '', tallyPaymentTerms: '', pumpAccount: false,
     billingAddress: '', city: '', state: '', stateCode: '', country: 'India', pinCode: '',
-    phone: '', mobile: '', email: '', contactPerson: '', designation: '',
+    phone: '', mobile: '', email: '', contactPerson: '', designation: '', website: '',
     shippedToSameAsBilling: true,
     shippingAddress: '', shippingCity: '', shippingState: '', shippingStateCode: '', shippingCountry: '', shippingPinCode: '',
-    shippingPhone: '', shippingContactPerson: '', shippingDesignation: '',
-    cinNumber: '', lastYearRevenue: '', defaultShippedToCode: '',
+    shippingPhone: '', shippingMobile: '', shippingEmail: '', shippingContactPerson: '', shippingDesignation: '',
+    cinNumber: '', lastYearRevenue: '', distance: '', defaultShippedToCode: '',
   });
   const set = (key) => (val) => setForm(f => ({ ...f, [key]: val }));
 
@@ -48,15 +73,25 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
     ...groups.map(g => ({ value: g.id, label: `${g.name} (${g.nature})` }))
   ];
 
+  // Derive accountSubType from the selected group
+  const derivedSubType = useMemo(
+    () => getDerivedSubType(form.accountGroupId, groups, getLabel),
+    [form.accountGroupId, groups, getLabel]
+  );
+  const isPartyType = derivedSubType?.value === 'PARTY';
+
   const handleSave = async () => {
-    if (!form.accountHead || !form.accountGroupId || !form.accountSubType) return;
+    if (!form.accountHead || !form.accountGroupId) return;
     setSaving(true);
     try {
       await ledgerAccountService.create({
         ...form,
+        // accountSubType is NOT sent — it's derived from the group on the backend
         openingBalance: form.openingBalance ? parseFloat(form.openingBalance) : 0,
         lastYearRevenue: form.lastYearRevenue ? parseFloat(form.lastYearRevenue) : null,
+        distance: form.distance ? parseFloat(form.distance) : null,
         tcsApplicable: form.tcsApplicable || null,
+        debitCredit: form.debitCredit || null,
       });
       onSave?.();
       closeSlider();
@@ -67,13 +102,14 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
     }
   };
 
-  const isPartyType = form.accountSubType === 'PARTY';
+  // Guard: don't render form until enums are loaded
+  if (!enumsLoaded) return <EnumLoadingSpinner />;
 
   return (
     <div>
       {/* Sticky Action Bar */}
       <div style={{ position: 'sticky', top: 0, zIndex: 10, display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', background: '#fff', borderBottom: '1px solid #E2E8F0', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
-        <button onClick={handleSave} disabled={saving || !form.accountHead || !form.accountGroupId || !form.accountSubType}
+        <button onClick={handleSave} disabled={saving || !form.accountHead || !form.accountGroupId}
           style={{
             display: 'inline-flex', alignItems: 'center', gap: 5,
             border: '1.5px solid #059669', borderRadius: 8, padding: '8px 18px',
@@ -103,23 +139,61 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
             <FormField label="Ledger Group" value={form.accountGroupId} onChange={set('accountGroupId')} required options={groupOptions} />
-            <FormField label="Account Sub Type" value={form.accountSubType} onChange={set('accountSubType')} required options={getOptionsWithPlaceholder('accountSubType', 'Select sub type')} />
+            {/* Account Sub Type — derived, read-only */}
+            <div>
+              <div style={{ fontSize: 10, fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 }}>
+                ACCOUNT SUB TYPE
+                <span style={{ marginLeft: 6, fontSize: 9, fontWeight: 600, color: '#94A3B8', fontStyle: 'italic' }}>(from group)</span>
+              </div>
+              {derivedSubType ? (() => {
+                const tc = ACCOUNT_SUB_TYPE_COLORS[derivedSubType.value] || ACCOUNT_SUB_TYPE_COLORS.GENERAL;
+                return (
+                  <div style={{
+                    border: `1.5px solid ${tc.border}`, borderRadius: 10, padding: '10px 12px',
+                    fontSize: 13, fontWeight: 700, color: tc.color, background: tc.bg,
+                    minHeight: 42, display: 'flex', alignItems: 'center', gap: 6,
+                  }}>
+                    <i className="fas fa-lock" style={{ fontSize: 9, opacity: 0.6 }}></i>
+                    {derivedSubType.label}
+                  </div>
+                );
+              })() : (
+                <div style={{
+                  border: '1.5px solid #E2E8F0', borderRadius: 10, padding: '10px 12px',
+                  fontSize: 12, color: '#94A3B8', background: '#F8FAFC', minHeight: 42,
+                  display: 'flex', alignItems: 'center', fontStyle: 'italic',
+                }}>
+                  Select a group first
+                </div>
+              )}
+            </div>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
             <FormField label="Tally Name" value={form.tallyName} onChange={set('tallyName')} placeholder="Override for Tally sync" />
+            <FormField label="Print Name" value={form.printName} onChange={set('printName')} placeholder="Override for invoices" />
+          </div>
+          <div style={{ height: 14 }}></div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
             <FormField label="Dashboard Name" value={form.nameOnDashboard} onChange={set('nameOnDashboard')} placeholder="Display override" />
+            <FormField label="Show on Dashboard" value={form.showOnDashboard} onChange={set('showOnDashboard')} options={[{ value: true, label: 'Yes' }, { value: false, label: 'No' }]} />
+          </div>
+          <div style={{ height: 14 }}></div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+            <FormField label="Default Shipped To Code" value={form.defaultShippedToCode} onChange={set('defaultShippedToCode')} placeholder="Default ship-to account" />
+            <FormField label="Is Pump Account" value={form.pumpAccount} onChange={set('pumpAccount')} options={[{ value: true, label: 'Yes' }, { value: false, label: 'No' }]} />
           </div>
         </Section>
 
         {/* Financials */}
         <Section title="Financials" emoji="💰" borderColor="#A7F3D0" headerBg="linear-gradient(135deg, #F0FDF4, #DCFCE7)" accentColor="#059669">
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
             <FormField label="Opening Balance (₹)" value={form.openingBalance} onChange={set('openingBalance')} type="number" placeholder="0.00" />
+            <FormField label="Debit / Credit" value={form.debitCredit} onChange={set('debitCredit')} options={[{ value: 'DEBIT', label: 'Debit' }, { value: 'CREDIT', label: 'Credit' }]} />
             <FormField label="Currency" value={form.currency} onChange={set('currency')} options={[{ value: 'INR', label: 'INR — Indian Rupee' }, { value: 'USD', label: 'USD' }]} />
           </div>
         </Section>
 
-        {/* Party Data — only for PARTY_* types */}
+        {/* Party Data — only for PARTY type */}
         {isPartyType && (
           <Section title="Party Data" emoji="🏢" borderColor="#C4B5FD" headerBg="linear-gradient(135deg, #F5F3FF, #EDE9FE)" accentColor="#6D28D9">
             <div style={{ padding: '10px 14px', background: '#FEFCE8', border: '1px solid #FDE68A', borderRadius: 8, marginBottom: 14, fontSize: 12, color: '#92400E', display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -162,7 +236,11 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
             <FormField label="Email" value={form.email} onChange={set('email')} type="email" placeholder="email@company.com" />
+            <FormField label="Website" value={form.website} onChange={set('website')} placeholder="www.company.com" />
             <FormField label="Contact Person" value={form.contactPerson} onChange={set('contactPerson')} placeholder="Name" />
+          </div>
+          <div style={{ height: 14 }}></div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 14 }}>
             <FormField label="Designation" value={form.designation} onChange={set('designation')} placeholder="Title" />
           </div>
         </Section>
@@ -182,13 +260,30 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
                 <FormField label="Ship State" value={form.shippingState} onChange={set('shippingState')} placeholder="State" />
                 <FormField label="Ship State Code" value={form.shippingStateCode} onChange={set('shippingStateCode')} placeholder="Code" />
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14, marginBottom: 14 }}>
                 <FormField label="Ship Country" value={form.shippingCountry} onChange={set('shippingCountry')} />
                 <FormField label="Ship PIN" value={form.shippingPinCode} onChange={set('shippingPinCode')} placeholder="PIN" />
                 <FormField label="Ship Phone" value={form.shippingPhone} onChange={set('shippingPhone')} placeholder="Phone" />
               </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
+                <FormField label="Ship Mobile" value={form.shippingMobile} onChange={set('shippingMobile')} placeholder="Mobile" />
+                <FormField label="Ship Email" value={form.shippingEmail} onChange={set('shippingEmail')} type="email" placeholder="email@ship.com" />
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+                <FormField label="Ship Contact Person" value={form.shippingContactPerson} onChange={set('shippingContactPerson')} placeholder="Name" />
+                <FormField label="Ship Designation" value={form.shippingDesignation} onChange={set('shippingDesignation')} placeholder="Title" />
+              </div>
             </>
           )}
+        </Section>
+
+        {/* Other Information */}
+        <Section title="Other Information" emoji="📋" borderColor="#E2E8F0" headerBg="linear-gradient(135deg, #F8FAFC, #F1F5F9)" accentColor="#64748B" collapsible defaultCollapsed={!isPartyType}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14, marginBottom: 14 }}>
+            <FormField label="CIN Number" value={form.cinNumber} onChange={set('cinNumber')} placeholder="e.g. L63000MH2007PLC173466" />
+            <FormField label="Last Year Revenue (₹)" value={form.lastYearRevenue} onChange={set('lastYearRevenue')} type="number" placeholder="0.00" />
+            <FormField label="Distance (km)" value={form.distance} onChange={set('distance')} type="number" placeholder="e.g. 150" />
+          </div>
         </Section>
 
 
@@ -204,7 +299,7 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
 
 export function LedgerAccountDetailContent({ account, onSave, groups }) {
   const { closeSlider } = useSliderStore();
-  const { getOptionsWithPlaceholder } = useEnumStore();
+  const { getOptionsWithPlaceholder, loaded: enumsLoaded, getLabel } = useEnumStore();
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -219,13 +314,22 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
     ...groups.map(g => ({ value: g.id, label: `${g.name} (${g.nature})` }))
   ];
 
+  // Derive accountSubType from the selected group in edit mode
+  const editDerivedSubType = useMemo(
+    () => getDerivedSubType(form.accountGroupId, groups, getLabel),
+    [form.accountGroupId, groups, getLabel]
+  );
+
   const handleSave = async () => {
     try {
       await ledgerAccountService.update(account.id, {
         ...form,
+        // accountSubType is NOT sent — derived from group on the backend
         openingBalance: form.openingBalance ? parseFloat(form.openingBalance) : 0,
         lastYearRevenue: form.lastYearRevenue ? parseFloat(form.lastYearRevenue) : null,
+        distance: form.distance ? parseFloat(form.distance) : null,
         tcsApplicable: form.tcsApplicable || null,
+        debitCredit: form.debitCredit || null,
       });
       setIsEditing(false);
       onSave?.();
@@ -238,7 +342,33 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
     { id: 'overview', label: 'Overview' },
     ...(isPartyType ? [{ id: 'party', label: 'Party Details' }] : []),
     { id: 'address', label: 'Address' },
+    { id: 'other', label: 'Other Info' },
   ];
+
+  // Guard: don't render form until enums are loaded
+  if (!enumsLoaded) return <EnumLoadingSpinner />;
+
+  /** Read-only sub-type chip used in both view and edit modes */
+  const SubTypeReadOnly = ({ subTypeValue }) => {
+    const stc = ACCOUNT_SUB_TYPE_COLORS[subTypeValue] || ACCOUNT_SUB_TYPE_COLORS.GENERAL;
+    const label = getLabel('accountSubType', subTypeValue);
+    return (
+      <div>
+        <div style={{ fontSize: 10, fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 }}>
+          ACCOUNT SUB TYPE
+          <span style={{ marginLeft: 6, fontSize: 9, fontWeight: 600, color: '#94A3B8', fontStyle: 'italic' }}>(from group)</span>
+        </div>
+        <div style={{
+          border: `1.5px solid ${stc.border}`, borderRadius: 10, padding: '10px 12px',
+          fontSize: 13, fontWeight: 700, color: stc.color, background: stc.bg,
+          minHeight: 42, display: 'flex', alignItems: 'center', gap: 6,
+        }}>
+          <i className="fas fa-lock" style={{ fontSize: 9, opacity: 0.6 }}></i>
+          {label}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div>
@@ -307,16 +437,26 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
                   <FormField label="Ledger Group" value={form.accountGroupId} onChange={set('accountGroupId')} options={groupOptions} />
-                  <FormField label="Account Sub Type" value={form.accountSubType} onChange={set('accountSubType')} options={getOptionsWithPlaceholder('accountSubType', 'Select sub type')} />
+                  {/* Account Sub Type — derived, read-only even in edit mode */}
+                  <SubTypeReadOnly subTypeValue={editDerivedSubType?.value || account.accountSubType} />
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
+                  <FormField label="Tally Name" value={form.tallyName} onChange={set('tallyName')} />
+                  <FormField label="Print Name" value={form.printName} onChange={set('printName')} />
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
+                  <FormField label="Dashboard Name" value={form.nameOnDashboard} onChange={set('nameOnDashboard')} />
+                  <FormField label="Show on Dashboard" value={form.showOnDashboard} onChange={set('showOnDashboard')} options={[{ value: true, label: 'Yes' }, { value: false, label: 'No' }]} />
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-                  <FormField label="Tally Name" value={form.tallyName} onChange={set('tallyName')} />
-                  <FormField label="Dashboard Name" value={form.nameOnDashboard} onChange={set('nameOnDashboard')} />
+                  <FormField label="Default Shipped To Code" value={form.defaultShippedToCode} onChange={set('defaultShippedToCode')} />
+                  <FormField label="Is Pump Account" value={form.pumpAccount} onChange={set('pumpAccount')} options={[{ value: true, label: 'Yes' }, { value: false, label: 'No' }]} />
                 </div>
               </Section>
               <Section title="Financials" emoji="💰" borderColor="#A7F3D0" headerBg="linear-gradient(135deg, #F0FDF4, #DCFCE7)" accentColor="#059669">
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
                   <FormField label="Opening Balance" value={form.openingBalance} onChange={set('openingBalance')} type="number" />
+                  <FormField label="Debit / Credit" value={form.debitCredit} onChange={set('debitCredit')} options={[{ value: 'DEBIT', label: 'Debit' }, { value: 'CREDIT', label: 'Credit' }]} />
                   <FormField label="Currency" value={form.currency} onChange={set('currency')} />
                 </div>
               </Section>
@@ -330,12 +470,17 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
                   <ReadField label="Group Nature" value={account.groupNature} />
                   <ReadField label="Account Sub Type" value={account.accountSubType?.replace(/_/g, ' ')} />
                   <ReadField label="Tally Name" value={account.tallyName} />
+                  <ReadField label="Print Name" value={account.printName} />
                   <ReadField label="Dashboard Name" value={account.nameOnDashboard} />
+                  <ReadField label="Show on Dashboard" value={account.showOnDashboard ? 'Yes' : 'No'} />
+                  <ReadField label="Default Shipped To Code" value={account.defaultShippedToCode} />
+                  <ReadField label="Is Pump Account" value={account.pumpAccount ? 'Yes' : 'No'} />
                 </div>
               </Section>
               <Section title="Financials" emoji="💰" borderColor="#A7F3D0" headerBg="linear-gradient(135deg, #F0FDF4, #DCFCE7)" accentColor="#059669">
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                   <ReadField label="Opening Balance" value={INR(account.openingBalance)} mono />
+                  <ReadField label="Debit / Credit" value={account.debitCredit?.replace(/_/g, ' ') || 'Debit'} />
                   <ReadField label="Current Balance" value={INR(account.currentBalance)} mono />
                   <ReadField label="Currency" value={account.currency} />
                   <ReadField label="Status" value={account.active ? '✅ Active' : '❌ Inactive'} />
@@ -395,10 +540,15 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
                   <FormField label="Country" value={form.country} onChange={set('country')} />
                   <FormField label="PIN" value={form.pinCode} onChange={set('pinCode')} />
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14, marginBottom: 14 }}>
                   <FormField label="Phone" value={form.phone} onChange={set('phone')} />
                   <FormField label="Mobile" value={form.mobile} onChange={set('mobile')} />
                   <FormField label="Email" value={form.email} onChange={set('email')} />
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
+                  <FormField label="Website" value={form.website} onChange={set('website')} />
+                  <FormField label="Contact Person" value={form.contactPerson} onChange={set('contactPerson')} />
+                  <FormField label="Designation" value={form.designation} onChange={set('designation')} />
                 </div>
               </Section>
             </>
@@ -415,6 +565,7 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
                   <ReadField label="Phone" value={account.phone} />
                   <ReadField label="Mobile" value={account.mobile} />
                   <ReadField label="Email" value={account.email} />
+                  <ReadField label="Website" value={account.website} />
                   <ReadField label="Contact Person" value={account.contactPerson} />
                   <ReadField label="Designation" value={account.designation} />
                 </div>
@@ -426,11 +577,38 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
                     <ReadField label="City" value={account.shippingCity} />
                     <ReadField label="State" value={account.shippingState} />
                     <ReadField label="State Code" value={account.shippingStateCode} mono />
+                    <ReadField label="Country" value={account.shippingCountry} />
                     <ReadField label="PIN" value={account.shippingPinCode} mono />
+                    <ReadField label="Phone" value={account.shippingPhone} />
+                    <ReadField label="Mobile" value={account.shippingMobile} />
+                    <ReadField label="Email" value={account.shippingEmail} />
+                    <ReadField label="Contact Person" value={account.shippingContactPerson} />
+                    <ReadField label="Designation" value={account.shippingDesignation} />
                   </div>
                 </Section>
               )}
             </>
+          )
+        )}
+
+        {/* OTHER INFO TAB */}
+        {activeTab === 'other' && (
+          isEditing ? (
+            <Section title="Other Information" emoji="📋" borderColor="#E2E8F0" headerBg="linear-gradient(135deg, #F8FAFC, #F1F5F9)" accentColor="#64748B">
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
+                <FormField label="CIN Number" value={form.cinNumber} onChange={set('cinNumber')} />
+                <FormField label="Last Year Revenue (₹)" value={form.lastYearRevenue} onChange={set('lastYearRevenue')} type="number" />
+                <FormField label="Distance (km)" value={form.distance} onChange={set('distance')} type="number" />
+              </div>
+            </Section>
+          ) : (
+            <Section title="Other Information" emoji="📋" borderColor="#E2E8F0" headerBg="linear-gradient(135deg, #F8FAFC, #F1F5F9)" accentColor="#64748B">
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                <ReadField label="CIN Number" value={account.cinNumber} mono />
+                <ReadField label="Last Year Revenue" value={INR(account.lastYearRevenue)} mono />
+                <ReadField label="Distance" value={account.distance ? `${account.distance} km` : null} />
+              </div>
+            </Section>
           )
         )}
 

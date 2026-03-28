@@ -14,6 +14,8 @@ public class LedgerAccountResponse {
     private String accountHead;
     private String tallyName;
     private String nameOnDashboard;
+    private String printName;
+    private boolean showOnDashboard;
     private String accountGroup;
     private UUID accountGroupId;
     private String groupNature;
@@ -21,6 +23,7 @@ public class LedgerAccountResponse {
 
     // Financials
     private BigDecimal openingBalance;
+    private String debitCredit;
     private BigDecimal currentBalance;
     private String currency;
     private boolean active;
@@ -35,6 +38,7 @@ public class LedgerAccountResponse {
     private String tcsApplicable;
     private String paymentTerms;
     private String tallyPaymentTerms;
+    private boolean pumpAccount;
 
     // Address
     private String billingAddress;
@@ -48,6 +52,7 @@ public class LedgerAccountResponse {
     private String email;
     private String contactPerson;
     private String designation;
+    private String website;
 
     // Shipping
     private boolean shippedToSameAsBilling;
@@ -58,11 +63,14 @@ public class LedgerAccountResponse {
     private String shippingCountry;
     private String shippingPinCode;
     private String shippingPhone;
+    private String shippingMobile;
+    private String shippingEmail;
     private String shippingContactPerson;
     private String shippingDesignation;
 
     // Other
     private String cinNumber;
     private BigDecimal lastYearRevenue;
+    private BigDecimal distance;
     private String defaultShippedToCode;
 }

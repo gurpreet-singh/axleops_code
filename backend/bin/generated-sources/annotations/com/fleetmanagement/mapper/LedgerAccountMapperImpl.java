@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-28T09:56:08+0530",
+    date = "2026-03-28T14:40:45+0530",
     comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.45.0.v20260224-0835, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -27,16 +27,22 @@ public class LedgerAccountMapperImpl implements LedgerAccountMapper {
         ledgerAccountResponse.setCompanyId( entityCompanyId( entity ) );
         ledgerAccountResponse.setCompanyName( entity.getLegalName() );
         ledgerAccountResponse.setAccountGroupId( entityAccountGroupRefId( entity ) );
+        LedgerGroup.AccountSubType defaultAccountSubType = entityAccountGroupRefDefaultAccountSubType( entity );
+        if ( defaultAccountSubType != null ) {
+            ledgerAccountResponse.setAccountSubType( defaultAccountSubType.name() );
+        }
         ledgerAccountResponse.setId( entity.getId() );
         ledgerAccountResponse.setAccountHead( entity.getAccountHead() );
         ledgerAccountResponse.setTallyName( entity.getTallyName() );
         ledgerAccountResponse.setNameOnDashboard( entity.getNameOnDashboard() );
+        ledgerAccountResponse.setPrintName( entity.getPrintName() );
+        ledgerAccountResponse.setShowOnDashboard( entity.isShowOnDashboard() );
         ledgerAccountResponse.setAccountGroup( entity.getAccountGroup() );
         ledgerAccountResponse.setGroupNature( entity.getGroupNature() );
-        if ( entity.getAccountSubType() != null ) {
-            ledgerAccountResponse.setAccountSubType( entity.getAccountSubType().name() );
-        }
         ledgerAccountResponse.setOpeningBalance( entity.getOpeningBalance() );
+        if ( entity.getDebitCredit() != null ) {
+            ledgerAccountResponse.setDebitCredit( entity.getDebitCredit().name() );
+        }
         ledgerAccountResponse.setCurrentBalance( entity.getCurrentBalance() );
         ledgerAccountResponse.setCurrency( entity.getCurrency() );
         ledgerAccountResponse.setActive( entity.isActive() );
@@ -49,6 +55,7 @@ public class LedgerAccountMapperImpl implements LedgerAccountMapper {
         }
         ledgerAccountResponse.setPaymentTerms( entity.getPaymentTerms() );
         ledgerAccountResponse.setTallyPaymentTerms( entity.getTallyPaymentTerms() );
+        ledgerAccountResponse.setPumpAccount( entity.isPumpAccount() );
         ledgerAccountResponse.setBillingAddress( entity.getBillingAddress() );
         ledgerAccountResponse.setCity( entity.getCity() );
         ledgerAccountResponse.setState( entity.getState() );
@@ -60,6 +67,7 @@ public class LedgerAccountMapperImpl implements LedgerAccountMapper {
         ledgerAccountResponse.setEmail( entity.getEmail() );
         ledgerAccountResponse.setContactPerson( entity.getContactPerson() );
         ledgerAccountResponse.setDesignation( entity.getDesignation() );
+        ledgerAccountResponse.setWebsite( entity.getWebsite() );
         ledgerAccountResponse.setShippedToSameAsBilling( entity.isShippedToSameAsBilling() );
         ledgerAccountResponse.setShippingAddress( entity.getShippingAddress() );
         ledgerAccountResponse.setShippingCity( entity.getShippingCity() );
@@ -68,10 +76,13 @@ public class LedgerAccountMapperImpl implements LedgerAccountMapper {
         ledgerAccountResponse.setShippingCountry( entity.getShippingCountry() );
         ledgerAccountResponse.setShippingPinCode( entity.getShippingPinCode() );
         ledgerAccountResponse.setShippingPhone( entity.getShippingPhone() );
+        ledgerAccountResponse.setShippingMobile( entity.getShippingMobile() );
+        ledgerAccountResponse.setShippingEmail( entity.getShippingEmail() );
         ledgerAccountResponse.setShippingContactPerson( entity.getShippingContactPerson() );
         ledgerAccountResponse.setShippingDesignation( entity.getShippingDesignation() );
         ledgerAccountResponse.setCinNumber( entity.getCinNumber() );
         ledgerAccountResponse.setLastYearRevenue( entity.getLastYearRevenue() );
+        ledgerAccountResponse.setDistance( entity.getDistance() );
         ledgerAccountResponse.setDefaultShippedToCode( entity.getDefaultShippedToCode() );
 
         return ledgerAccountResponse;
@@ -91,5 +102,13 @@ public class LedgerAccountMapperImpl implements LedgerAccountMapper {
             return null;
         }
         return accountGroupRef.getId();
+    }
+
+    private LedgerGroup.AccountSubType entityAccountGroupRefDefaultAccountSubType(LedgerAccount ledgerAccount) {
+        LedgerGroup accountGroupRef = ledgerAccount.getAccountGroupRef();
+        if ( accountGroupRef == null ) {
+            return null;
+        }
+        return accountGroupRef.getDefaultAccountSubType();
     }
 }

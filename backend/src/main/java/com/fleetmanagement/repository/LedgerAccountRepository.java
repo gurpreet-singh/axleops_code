@@ -1,6 +1,7 @@
 package com.fleetmanagement.repository;
 
 import com.fleetmanagement.entity.LedgerAccount;
+import com.fleetmanagement.entity.LedgerGroup;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -26,8 +27,8 @@ public interface LedgerAccountRepository extends JpaRepository<LedgerAccount, UU
      */
     List<LedgerAccount> findByCompanyIdAndTenantId(UUID companyId, UUID tenantId);
 
-    @Query("SELECT la FROM LedgerAccount la WHERE la.tenantId = :tenantId AND la.active = true AND la.accountSubType = :subType")
-    List<LedgerAccount> findActiveBySubType(@Param("tenantId") UUID tenantId, @Param("subType") LedgerAccount.AccountSubType subType);
+    @Query("SELECT la FROM LedgerAccount la WHERE la.tenantId = :tenantId AND la.active = true AND la.accountGroupRef.defaultAccountSubType = :subType")
+    List<LedgerAccount> findActiveBySubType(@Param("tenantId") UUID tenantId, @Param("subType") LedgerGroup.AccountSubType subType);
 
     @Query("SELECT la FROM LedgerAccount la WHERE la.tenantId = :tenantId AND la.groupNature = :nature AND la.active = true")
     List<LedgerAccount> findByGroupNature(@Param("tenantId") UUID tenantId, @Param("nature") String nature);

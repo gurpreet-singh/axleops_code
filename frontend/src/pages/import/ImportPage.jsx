@@ -333,6 +333,21 @@ function StepEntitySelector({ entities, selected, onSelect, onDownloadSample, on
         <p>Select an entity type to begin importing data from a CSV file</p>
       </div>
 
+      <div className="wizard-actions">
+        <div className="wizard-actions-left">
+          {selected && (
+            <button className="import-btn outline small" onClick={onDownloadSample}>
+              <i className="fas fa-download" /> Download Sample CSV
+            </button>
+          )}
+        </div>
+        <div className="wizard-actions-right">
+          <button className="import-btn primary" onClick={onNext} disabled={!selected}>
+            Next: Upload CSV <i className="fas fa-arrow-right" />
+          </button>
+        </div>
+      </div>
+
       <div className="entity-grid">
         {entities.map(entity => (
           <div
@@ -372,21 +387,6 @@ function StepEntitySelector({ entities, selected, onSelect, onDownloadSample, on
           </div>
         </div>
       )}
-
-      <div className="wizard-footer">
-        <div className="wizard-footer-left">
-          {selected && (
-            <button className="import-btn outline small" onClick={onDownloadSample}>
-              <i className="fas fa-download" /> Download Sample CSV
-            </button>
-          )}
-        </div>
-        <div className="wizard-footer-right">
-          <button className="import-btn primary" onClick={onNext} disabled={!selected}>
-            Next: Upload CSV <i className="fas fa-arrow-right" />
-          </button>
-        </div>
-      </div>
     </>
   );
 }
@@ -436,6 +436,19 @@ function StepFileUploader({ entity, onUpload, loading, onBack }) {
         <p>Drag and drop your file or click to browse</p>
       </div>
 
+      <div className="wizard-actions">
+        <div className="wizard-actions-left">
+          <button className="import-btn outline" onClick={onBack}>
+            <i className="fas fa-arrow-left" /> Back
+          </button>
+        </div>
+        <div className="wizard-actions-right">
+          <button className="import-btn primary" onClick={handleUpload} disabled={!file || loading}>
+            {loading ? <><i className="fas fa-spinner fa-spin" /> Uploading...</> : <>Upload & Continue <i className="fas fa-arrow-right" /></>}
+          </button>
+        </div>
+      </div>
+
       <div
         className={`upload-dropzone ${dragging ? 'dragging' : ''}`}
         onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
@@ -463,19 +476,6 @@ function StepFileUploader({ entity, onUpload, loading, onBack }) {
             </div>
           </>
         )}
-      </div>
-
-      <div className="wizard-footer">
-        <div className="wizard-footer-left">
-          <button className="import-btn outline" onClick={onBack}>
-            <i className="fas fa-arrow-left" /> Back
-          </button>
-        </div>
-        <div className="wizard-footer-right">
-          <button className="import-btn primary" onClick={handleUpload} disabled={!file || loading}>
-            {loading ? <><i className="fas fa-spinner fa-spin" /> Uploading...</> : <>Upload & Continue <i className="fas fa-arrow-right" /></>}
-          </button>
-        </div>
       </div>
     </div>
   );
@@ -518,6 +518,22 @@ function StepColumnMapper({ uploadData, entity, mappings, onMappingsChange, dete
       <div className="entity-selector-header">
         <h2>Map CSV Columns to System Fields</h2>
         <p>Match your CSV column headers to the corresponding system fields</p>
+      </div>
+
+      <div className="wizard-actions">
+        <div className="wizard-actions-left">
+          <button className="import-btn outline" onClick={onBack}>
+            <i className="fas fa-arrow-left" /> Back
+          </button>
+          <button className="import-btn outline small" onClick={onSaveTemplate}>
+            <i className="fas fa-save" /> Save Template
+          </button>
+        </div>
+        <div className="wizard-actions-right">
+          <button className="import-btn primary" onClick={onApply} disabled={loading || unmappedRequired.length > 0}>
+            {loading ? <><i className="fas fa-spinner fa-spin" /> Validating...</> : <>Validate & Review <i className="fas fa-arrow-right" /></>}
+          </button>
+        </div>
       </div>
 
       {/* Template Banner */}
@@ -619,22 +635,6 @@ function StepColumnMapper({ uploadData, entity, mappings, onMappingsChange, dete
           Required fields not mapped: {unmappedRequired.map(f => f.displayName).join(', ')}
         </div>
       )}
-
-      <div className="wizard-footer">
-        <div className="wizard-footer-left">
-          <button className="import-btn outline" onClick={onBack}>
-            <i className="fas fa-arrow-left" /> Back
-          </button>
-          <button className="import-btn outline small" onClick={onSaveTemplate}>
-            <i className="fas fa-save" /> Save Template
-          </button>
-        </div>
-        <div className="wizard-footer-right">
-          <button className="import-btn primary" onClick={onApply} disabled={loading || unmappedRequired.length > 0}>
-            {loading ? <><i className="fas fa-spinner fa-spin" /> Validating...</> : <>Validate & Review <i className="fas fa-arrow-right" /></>}
-          </button>
-        </div>
-      </div>
     </div>
   );
 }
@@ -676,44 +676,59 @@ function StepValidationReview({ result, entity, onCellEdit, onExportErrors, onEx
 
   return (
     <div className="validation-container">
-      {/* Summary Cards */}
-      <div className="validation-summary">
-        <div className="summary-card valid">
-          <div className="summary-card-icon"><i className="fas fa-check" /></div>
-          <div className="summary-card-info">
-            <h4>{result.validCount}</h4>
-            <p>Ready to import</p>
-          </div>
+      {/* Action Bar — always at top */}
+      <div className="wizard-actions">
+        <div className="wizard-actions-left">
+          <button className="import-btn outline" onClick={onBack}>
+            <i className="fas fa-arrow-left" /> Back to Mapping
+          </button>
+          {!templateApplied && (
+            <button className="import-btn outline small" onClick={onSaveTemplate}>
+              <i className="fas fa-save" /> Save Mapping Template
+            </button>
+          )}
+          {result.errorCount > 0 && (
+            <button className="import-btn outline small" onClick={onExportErrors}>
+              <i className="fas fa-download" /> Export Errors
+            </button>
+          )}
+          {result.duplicateCount > 0 && (
+            <button className="import-btn outline small" onClick={onExportDuplicates}>
+              <i className="fas fa-download" /> Export Duplicates
+            </button>
+          )}
         </div>
-        <div className="summary-card errors">
-          <div className="summary-card-icon"><i className="fas fa-times" /></div>
-          <div className="summary-card-info">
-            <h4>{result.errorCount}</h4>
-            <p>Errors found</p>
-          </div>
-        </div>
-        <div className="summary-card duplicates">
-          <div className="summary-card-icon"><i className="fas fa-copy" /></div>
-          <div className="summary-card-info">
-            <h4>{result.duplicateCount}</h4>
-            <p>Duplicates</p>
-          </div>
+        <div className="wizard-actions-right">
+          {result.duplicateCount > 0 && (
+            <select value={duplicateStrategy} onChange={e => setDuplicateStrategy(e.target.value)}
+                    style={{ padding: '8px 12px', borderRadius: 8, border: '1.5px solid #E2E8F0', fontSize: 13, color: '#475569' }}>
+              <option value="SKIP">Skip duplicates</option>
+              <option value="OVERWRITE">Overwrite existing</option>
+              <option value="KEEP_BOTH">Import as new</option>
+            </select>
+          )}
+          <button className="import-btn success" onClick={() => onExecute(duplicateStrategy)} disabled={result.validCount === 0}>
+            <i className="fas fa-file-import" /> Import {result.validCount} Records
+          </button>
         </div>
       </div>
 
-      {/* Tabs */}
+      {/* Tabs — single source for counts */}
       <div className="validation-tabs">
         <button className={`validation-tab ${activeTab === 'valid' ? 'active' : ''}`} onClick={() => setActiveTab('valid')}>
-          <i className="fas fa-check-circle" /> Ready
+          <span className="tab-status-dot green" />
+          <i className="fas fa-check-circle" style={{ color: activeTab === 'valid' ? '#059669' : undefined }} /> Ready to Import
           <span className="tab-count green">{result.validCount}</span>
         </button>
         <button className={`validation-tab ${activeTab === 'errors' ? 'active' : ''}`} onClick={() => setActiveTab('errors')}>
-          <i className="fas fa-exclamation-circle" /> Errors
-          <span className="tab-count red">{result.errorCount}</span>
+          <span className={`tab-status-dot ${result.errorCount > 0 ? 'red' : 'gray'}`} />
+          <i className="fas fa-exclamation-triangle" style={{ color: activeTab === 'errors' ? '#DC2626' : undefined }} /> Errors
+          <span className={`tab-count ${result.errorCount > 0 ? 'red' : 'gray'}`}>{result.errorCount}</span>
         </button>
         <button className={`validation-tab ${activeTab === 'duplicates' ? 'active' : ''}`} onClick={() => setActiveTab('duplicates')}>
-          <i className="fas fa-copy" /> Duplicates
-          <span className="tab-count orange">{result.duplicateCount}</span>
+          <span className={`tab-status-dot ${result.duplicateCount > 0 ? 'orange' : 'gray'}`} />
+          <i className="fas fa-clone" style={{ color: activeTab === 'duplicates' ? '#D97706' : undefined }} /> Duplicates
+          <span className={`tab-count ${result.duplicateCount > 0 ? 'orange' : 'gray'}`}>{result.duplicateCount}</span>
         </button>
       </div>
 
@@ -779,51 +794,6 @@ function StepValidationReview({ result, entity, onCellEdit, onExportErrors, onEx
             ))}
           </tbody>
         </table>
-      </div>
-
-      {/* Export Actions */}
-      <div className="export-actions">
-        {result.errorCount > 0 && (
-          <button className="import-btn outline small" onClick={onExportErrors}>
-            <i className="fas fa-download" /> Download Error Rows
-          </button>
-        )}
-        {result.duplicateCount > 0 && (
-          <button className="import-btn outline small" onClick={onExportDuplicates}>
-            <i className="fas fa-download" /> Download Duplicates
-          </button>
-        )}
-      </div>
-
-      {/* Duplicate Strategy */}
-      {result.duplicateCount > 0 && (
-        <div style={{ marginTop: 16, padding: '12px 16px', background: '#FFF7ED', border: '1px solid #FDBA74', borderRadius: 10, display: 'flex', alignItems: 'center', gap: 12, fontSize: 13 }}>
-          <span style={{ fontWeight: 600, color: '#9A3412' }}>Duplicate handling:</span>
-          <select value={duplicateStrategy} onChange={e => setDuplicateStrategy(e.target.value)}
-                  style={{ padding: '6px 10px', borderRadius: 6, border: '1px solid #FDBA74', fontSize: 13 }}>
-            <option value="SKIP">Skip all duplicates</option>
-            <option value="OVERWRITE">Overwrite existing records</option>
-            <option value="KEEP_BOTH">Import as new records</option>
-          </select>
-        </div>
-      )}
-
-      <div className="wizard-footer">
-        <div className="wizard-footer-left">
-          <button className="import-btn outline" onClick={onBack}>
-            <i className="fas fa-arrow-left" /> Back to Mapping
-          </button>
-          {!templateApplied && (
-            <button className="import-btn outline small" onClick={onSaveTemplate}>
-              <i className="fas fa-save" /> Save Mapping Template
-            </button>
-          )}
-        </div>
-        <div className="wizard-footer-right">
-          <button className="import-btn success" onClick={() => onExecute(duplicateStrategy)} disabled={result.validCount === 0}>
-            <i className="fas fa-file-import" /> Import {result.validCount} Records
-          </button>
-        </div>
       </div>
     </div>
   );

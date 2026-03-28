@@ -15,13 +15,15 @@ public class CreateLedgerAccountRequest {
     private String accountHead;
     private String tallyName;
     private String nameOnDashboard;
+    private String printName;
+    private boolean showOnDashboard;
     @NotNull
     private UUID accountGroupId;
-    @NotBlank
-    private String accountSubType; // PARTY, BANK, CASH, DUTIES_TAXES, GENERAL
+    // accountSubType is derived from LedgerGroup.defaultAccountSubType — not sent by caller
 
     // Financials
     private BigDecimal openingBalance;
+    private String debitCredit;  // DEBIT or CREDIT
     private String currency;
 
     // Party data
@@ -33,6 +35,7 @@ public class CreateLedgerAccountRequest {
     private String tcsApplicable;
     private String paymentTerms;
     private String tallyPaymentTerms;
+    private boolean pumpAccount;
 
     // Address
     private String billingAddress;
@@ -46,6 +49,7 @@ public class CreateLedgerAccountRequest {
     private String email;
     private String contactPerson;
     private String designation;
+    private String website;
 
     // Shipping
     private boolean shippedToSameAsBilling = true;
@@ -56,11 +60,14 @@ public class CreateLedgerAccountRequest {
     private String shippingCountry;
     private String shippingPinCode;
     private String shippingPhone;
+    private String shippingMobile;
+    private String shippingEmail;
     private String shippingContactPerson;
     private String shippingDesignation;
 
     // Other
     private String cinNumber;
     private BigDecimal lastYearRevenue;
+    private BigDecimal distance;
     private String defaultShippedToCode;
 }

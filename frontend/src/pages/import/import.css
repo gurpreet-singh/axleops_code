@@ -618,89 +618,20 @@
   margin: 0 auto;
 }
 
-/* ─── Summary Bar ───────────────────────────────────────────── */
-.validation-summary {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.summary-card {
-  flex: 1;
-  padding: 16px 20px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.summary-card.valid {
-  background: linear-gradient(135deg, #F0FDF4, #DCFCE7);
-  border: 1px solid #86EFAC;
-}
-
-.summary-card.errors {
-  background: linear-gradient(135deg, #FEF2F2, #FFE4E6);
-  border: 1px solid #FECACA;
-}
-
-.summary-card.duplicates {
-  background: linear-gradient(135deg, #FFF7ED, #FFEDD5);
-  border: 1px solid #FDBA74;
-}
-
-.summary-card-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-}
-
-.summary-card.valid .summary-card-icon {
-  background: #10B981;
-  color: white;
-}
-
-.summary-card.errors .summary-card-icon {
-  background: #EF4444;
-  color: white;
-}
-
-.summary-card.duplicates .summary-card-icon {
-  background: #F59E0B;
-  color: white;
-}
-
-.summary-card-info h4 {
-  font-size: 22px;
-  font-weight: 700;
-  margin: 0;
-  color: #1E293B;
-}
-
-.summary-card-info p {
-  font-size: 12px;
-  color: #64748B;
-  margin: 2px 0 0;
-}
-
-/* ─── Validation Tabs ───────────────────────────────────────── */
+/* ─── Validation Tabs (enhanced — sole status indicator) ────── */
 .validation-tabs {
   display: flex;
   gap: 4px;
   margin-bottom: 16px;
   background: #F1F5F9;
-  border-radius: 10px;
-  padding: 4px;
+  border-radius: 12px;
+  padding: 5px;
 }
 
 .validation-tab {
   flex: 1;
-  padding: 10px 16px;
-  border-radius: 8px;
+  padding: 12px 18px;
+  border-radius: 10px;
   font-size: 13px;
   font-weight: 500;
   color: #64748B;
@@ -710,31 +641,54 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 8px;
   transition: all 0.2s ease;
 }
 
 .validation-tab:hover {
   color: #334155;
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .validation-tab.active {
   background: white;
   color: #1E293B;
   font-weight: 600;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
 }
 
+/* Status dot — pulsing indicator for non-zero counts */
+.tab-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.tab-status-dot.green { background: #10B981; }
+.tab-status-dot.red { background: #EF4444; animation: dotPulse 2s ease infinite; }
+.tab-status-dot.orange { background: #F59E0B; animation: dotPulse 2s ease infinite; }
+.tab-status-dot.gray { background: #CBD5E1; }
+
+@keyframes dotPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* Tab count badges */
 .validation-tab .tab-count {
   font-size: 11px;
   padding: 2px 8px;
   border-radius: 10px;
   font-weight: 700;
+  min-width: 24px;
+  text-align: center;
 }
 
-.validation-tab.active .tab-count.green { background: #DCFCE7; color: #059669; }
-.validation-tab.active .tab-count.red { background: #FFE4E6; color: #DC2626; }
-.validation-tab.active .tab-count.orange { background: #FFEDD5; color: #D97706; }
+.validation-tab .tab-count.green { background: #DCFCE7; color: #059669; }
+.validation-tab .tab-count.red { background: #FFE4E6; color: #DC2626; }
+.validation-tab .tab-count.orange { background: #FFEDD5; color: #D97706; }
+.validation-tab .tab-count.gray { background: #F1F5F9; color: #94A3B8; }
 
 /* ─── Data Table ────────────────────────────────────────────── */
 .validation-table-wrap {
@@ -1031,20 +985,27 @@
   border-radius: 6px;
 }
 
-/* ─── Wizard Footer ─────────────────────────────────────────── */
-.wizard-footer {
+/* ─── Wizard Action Bar (top, always visible) ──────────────── */
+.wizard-actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 28px;
-  padding-top: 20px;
-  border-top: 1px solid #E2E8F0;
+  margin-bottom: 20px;
+  padding: 14px 20px;
+  background: white;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  position: sticky;
+  top: 0;
+  z-index: 20;
 }
 
-.wizard-footer-left,
-.wizard-footer-right {
+.wizard-actions-left,
+.wizard-actions-right {
   display: flex;
   gap: 10px;
+  align-items: center;
 }
 
 /* ─── Save Template Modal ───────────────────────────────────── */
@@ -1140,6 +1101,6 @@
   }
   .import-step-connector { display: none; }
   .entity-grid { grid-template-columns: 1fr; }
-  .validation-summary { flex-direction: column; }
-  .wizard-footer { flex-direction: column; gap: 12px; }
+
+  .wizard-actions { flex-wrap: wrap; gap: 10px; }
 }

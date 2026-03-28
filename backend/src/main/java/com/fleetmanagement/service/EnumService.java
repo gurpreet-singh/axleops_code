@@ -5,6 +5,7 @@ import com.fleetmanagement.entity.Company;
 import com.fleetmanagement.entity.FreightRate;
 import com.fleetmanagement.entity.LedgerAccount;
 import com.fleetmanagement.entity.LedgerGroup;
+
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -35,7 +36,7 @@ public class EnumService {
 
         // ── Account Sub Types (shared by LedgerGroup + LedgerAccount) ──
         result.put("accountSubType", mapEnum("account_sub_type",
-                LedgerAccount.AccountSubType.values(),
+                LedgerGroup.AccountSubType.values(),
                 Map.of(
                         "PARTY", "Party",
                         "BANK", "Bank",
