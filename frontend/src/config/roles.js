@@ -1,127 +1,127 @@
 /* ===================================================
    AxleOps — RBAC Configuration (React Port)
-   Ported from js/rbac.js — Departments, Roles, Menus
-   Full nested menu structure for all roles
+   Aligned with backend enum-based Role & Authority system.
+   Role IDs match backend Role enum names exactly.
    =================================================== */
 
 export const DEPARTMENTS = {
   platform: {
     id: 'platform', label: 'Platform Management', icon: 'fas fa-globe', color: '#7C3AED',
     description: 'Multi-tenant platform administration & client onboarding',
-    roles: ['platform_admin']
+    roles: ['PLATFORM_ADMIN']
   },
   executive: {
     id: 'executive', label: 'Executive', icon: 'fas fa-crown', color: '#8B5CF6',
     description: 'Strategic decisions & business growth',
-    roles: ['owner', 'branch_manager']
+    roles: ['OWNER_DIRECTOR', 'BRANCH_MANAGER']
   },
   operations: {
     id: 'operations', label: 'Operations', icon: 'fas fa-route', color: '#059669',
     description: 'Trip planning, dispatch & execution',
-    roles: ['fleet_manager', 'operator', 'driver']
+    roles: ['FLEET_MANAGER', 'OPERATIONS_EXECUTIVE', 'DRIVER']
   },
   finance: {
     id: 'finance', label: 'Finance & Accounts', icon: 'fas fa-rupee-sign', color: '#DC2626',
     description: 'Money management, billing & collections',
-    roles: ['finance_controller', 'accounts_exec']
+    roles: ['FINANCE_CONTROLLER', 'ACCOUNTS_EXECUTIVE']
   },
   maintenance: {
     id: 'maintenance', label: 'Maintenance & Workshop', icon: 'fas fa-wrench', color: '#D97706',
     description: 'Vehicle health & repair management',
-    roles: ['shop_manager', 'mechanic']
+    roles: ['WORKSHOP_MANAGER', 'MECHANIC']
   },
   inventory: {
     id: 'inventory', label: 'Inventory & Procurement', icon: 'fas fa-boxes-stacked', color: '#0891B2',
     description: 'Parts stock control & vendor management',
-    roles: ['inventory_manager']
+    roles: ['INVENTORY_MANAGER']
   },
   admin: {
     id: 'admin', label: 'System Administration', icon: 'fas fa-server', color: '#374151',
     description: 'System config, users & integrations',
-    roles: ['admin']
+    roles: ['SUPER_ADMIN']
   },
 };
 
 export const ROLES = {
-  platform_admin: {
-    id: 'platform_admin', label: 'Platform Admin', icon: 'fas fa-globe', color: '#7C3AED',
+  PLATFORM_ADMIN: {
+    id: 'PLATFORM_ADMIN', label: 'Platform Admin', icon: 'fas fa-globe', color: '#7C3AED',
     department: 'platform',
     user: { name: 'Platform Admin', initials: 'PA', title: 'Platform Administrator' },
     description: 'Full access to all platform tenants. Create & manage transport companies, assign system admins.',
     kpis: ['Total Tenants', 'Active Companies', 'Total Users', 'System Health']
   },
-  owner: {
-    id: 'owner', label: 'Owner / Director', icon: 'fas fa-crown', color: '#8B5CF6',
+  OWNER_DIRECTOR: {
+    id: 'OWNER_DIRECTOR', label: 'Owner / Director', icon: 'fas fa-crown', color: '#8B5CF6',
     department: 'executive',
     user: { name: 'Priya Sharma', initials: 'PS', title: 'Managing Director' },
     description: 'Full visibility into P&L, revenue, fleet utilization, and strategic decisions.',
     kpis: ['Revenue', 'Net Profit', 'Fleet ROI', 'Client Growth']
   },
-  branch_manager: {
-    id: 'branch_manager', label: 'Branch Manager', icon: 'fas fa-building', color: '#0E7490',
+  BRANCH_MANAGER: {
+    id: 'BRANCH_MANAGER', label: 'Branch Manager', icon: 'fas fa-building', color: '#0E7490',
     department: 'executive',
     user: { name: 'Anand Kulkarni', initials: 'AK', title: 'Branch Manager — Pune' },
     description: 'Cross-department authority within a single branch.',
     kpis: ['Branch Revenue', 'Branch Profit', 'Branch Vehicles', 'Active Trips']
   },
-  fleet_manager: {
-    id: 'fleet_manager', label: 'Fleet Manager', icon: 'fas fa-truck-moving', color: '#2563EB',
+  FLEET_MANAGER: {
+    id: 'FLEET_MANAGER', label: 'Fleet Manager', icon: 'fas fa-truck-moving', color: '#2563EB',
     department: 'operations',
     user: { name: 'Vikram Singh', initials: 'VS', title: 'Fleet Manager' },
     description: 'Vehicle allocation, trip planning, driver assignment & dispatch.',
     kpis: ['Vehicle Utilization', 'On-Time Delivery', 'Trip Count', 'Idle Vehicles']
   },
-  operator: {
-    id: 'operator', label: 'Operations Executive', icon: 'fas fa-headset', color: '#059669',
+  OPERATIONS_EXECUTIVE: {
+    id: 'OPERATIONS_EXECUTIVE', label: 'Operations Executive', icon: 'fas fa-headset', color: '#059669',
     department: 'operations',
     user: { name: 'Rajesh Kumar', initials: 'RK', title: 'Operations Executive' },
     description: 'Day-to-day trip dispatch, vehicle scheduling, driver coordination.',
     kpis: ['Active Trips', 'Delayed Trips', 'Driver Availability', 'Pending Dispatches']
   },
-  driver: {
-    id: 'driver', label: 'Driver', icon: 'fas fa-id-card', color: '#047857',
+  DRIVER: {
+    id: 'DRIVER', label: 'Driver', icon: 'fas fa-id-card', color: '#047857',
     department: 'operations',
     user: { name: 'Ramesh Yadav', initials: 'RY', title: 'Driver — MH04AB1234' },
     description: 'Trip execution, fuel & expense recording, POD uploads.',
     kpis: ['Active Trip', 'Km Today', 'Fuel Entered', 'PODs Pending']
   },
-  finance_controller: {
-    id: 'finance_controller', label: 'Finance Controller', icon: 'fas fa-chart-line', color: '#B91C1C',
+  FINANCE_CONTROLLER: {
+    id: 'FINANCE_CONTROLLER', label: 'Finance Controller', icon: 'fas fa-chart-line', color: '#B91C1C',
     department: 'finance',
     user: { name: 'Anita Desai', initials: 'AD', title: 'Finance Controller' },
     description: 'P&L oversight, payment approvals, cash flow monitoring.',
     kpis: ['Net Cash Flow', 'Gross Margin', 'Approvals Pending', 'Budget Variance']
   },
-  accounts_exec: {
-    id: 'accounts_exec', label: 'Accounts Executive', icon: 'fas fa-calculator', color: '#EF4444',
+  ACCOUNTS_EXECUTIVE: {
+    id: 'ACCOUNTS_EXECUTIVE', label: 'Accounts Executive', icon: 'fas fa-calculator', color: '#EF4444',
     department: 'finance',
     user: { name: 'Deepak Jain', initials: 'DJ', title: 'Accounts Executive' },
     description: 'Voucher entry, expense recording, ledger management, daily accounting.',
     kpis: ['Pending Vouchers', 'Unreconciled', "Today's Entries", 'Expense Claims']
   },
-  shop_manager: {
-    id: 'shop_manager', label: 'Workshop Manager', icon: 'fas fa-tools', color: '#D97706',
+  WORKSHOP_MANAGER: {
+    id: 'WORKSHOP_MANAGER', label: 'Workshop Manager', icon: 'fas fa-tools', color: '#D97706',
     department: 'maintenance',
     user: { name: 'Tarun Mishra', initials: 'TM', title: 'Workshop Manager' },
     description: 'Work order management, mechanic scheduling & quality checks.',
     kpis: ['Open Work Orders', 'Avg Repair Time', 'Parts Stock', 'Overdue Services']
   },
-  mechanic: {
-    id: 'mechanic', label: 'Mechanic', icon: 'fas fa-wrench', color: '#B45309',
+  MECHANIC: {
+    id: 'MECHANIC', label: 'Mechanic', icon: 'fas fa-wrench', color: '#B45309',
     department: 'maintenance',
     user: { name: 'Ravi Shankar', initials: 'RS', title: 'Senior Mechanic' },
     description: 'Work order execution, findings reporting, time & parts logging.',
     kpis: ['Assigned WOs', 'Completed Today', 'Avg Repair Time', 'Parts Requested']
   },
-  inventory_manager: {
-    id: 'inventory_manager', label: 'Inventory Manager', icon: 'fas fa-boxes-stacked', color: '#0891B2',
+  INVENTORY_MANAGER: {
+    id: 'INVENTORY_MANAGER', label: 'Inventory Manager', icon: 'fas fa-boxes-stacked', color: '#0891B2',
     department: 'inventory',
     user: { name: 'Govind Thakur', initials: 'GT', title: 'Store Manager' },
     description: 'Parts stock, reordering, consumption tracking, vendor coordination.',
     kpis: ['Low Stock Items', 'Pending POs', 'Monthly Consumption', 'Stock Value']
   },
-  admin: {
-    id: 'admin', label: 'Super Admin', icon: 'fas fa-shield-alt', color: '#374151',
+  SUPER_ADMIN: {
+    id: 'SUPER_ADMIN', label: 'Super Admin', icon: 'fas fa-shield-alt', color: '#374151',
     department: 'admin',
     user: { name: 'Amit Mehta', initials: 'AM', title: 'System Administrator' },
     description: 'Full system access — users, roles, configurations, integrations.',
@@ -219,7 +219,7 @@ export function pageToPath(page) {
 }
 
 export const ROLE_MENUS = {
-  platform_admin: [
+  PLATFORM_ADMIN: [
     { type: 'item', icon: 'fas fa-th-large', label: 'Dashboard', page: 'dashboard' },
     {
       type: 'group', icon: 'fas fa-building', label: 'Tenant Management', id: 'sub-tenants', children: [
@@ -229,7 +229,7 @@ export const ROLE_MENUS = {
     { type: 'item', icon: 'fas fa-cog', label: 'Platform Settings', page: 'platform-settings' },
   ],
 
-  owner: [
+  OWNER_DIRECTOR: [
     { type: 'item', icon: 'fas fa-th-large', label: 'Dashboard', page: 'dashboard' },
     { type: 'item', icon: 'fas fa-mobile-alt', label: 'Morning Briefing', page: 'owner-morning-briefing' },
     {
@@ -314,7 +314,7 @@ export const ROLE_MENUS = {
     { type: 'item', icon: 'fas fa-cog', label: 'Settings', page: 'settings' },
   ],
 
-  branch_manager: [
+  BRANCH_MANAGER: [
     { type: 'item', icon: 'fas fa-th-large', label: 'Dashboard', page: 'dashboard' },
     {
       type: 'group', icon: 'fas fa-route', label: 'Trip Management', id: 'sub-trips', children: [
@@ -382,7 +382,7 @@ export const ROLE_MENUS = {
     { type: 'item', icon: 'fas fa-chart-bar', label: 'Reports', page: 'reports' },
   ],
 
-  fleet_manager: [
+  FLEET_MANAGER: [
     { type: 'item', icon: 'fas fa-th-large', label: 'Dashboard', page: 'dashboard' },
     {
       type: 'group', icon: 'fas fa-route', label: 'Trip Management', id: 'sub-trips', children: [
@@ -434,7 +434,7 @@ export const ROLE_MENUS = {
     { type: 'item', icon: 'fas fa-chart-bar', label: 'Reports', page: 'reports' },
   ],
 
-  operator: [
+  OPERATIONS_EXECUTIVE: [
     { type: 'item', icon: 'fas fa-th-large', label: 'Dashboard', page: 'dashboard' },
     {
       type: 'group', icon: 'fas fa-route', label: 'Trip Management', id: 'sub-trips', children: [
@@ -477,7 +477,7 @@ export const ROLE_MENUS = {
     },
   ],
 
-  driver: [
+  DRIVER: [
     { type: 'item', icon: 'fas fa-th-large', label: 'Dashboard', page: 'dashboard' },
     {
       type: 'group', icon: 'fas fa-route', label: 'My Trips', id: 'sub-trips', children: [
@@ -504,7 +504,7 @@ export const ROLE_MENUS = {
     },
   ],
 
-  finance_controller: [
+  FINANCE_CONTROLLER: [
     { type: 'item', icon: 'fas fa-th-large', label: 'Dashboard', page: 'dashboard' },
     {
       type: 'group', icon: 'fas fa-route', label: 'Trip Management', id: 'sub-trips', children: [
@@ -560,7 +560,7 @@ export const ROLE_MENUS = {
     { type: 'item', icon: 'fas fa-chart-bar', label: 'Reports', page: 'reports' },
   ],
 
-  accounts_exec: [
+  ACCOUNTS_EXECUTIVE: [
     { type: 'item', icon: 'fas fa-th-large', label: 'Dashboard', page: 'dashboard' },
     {
       type: 'group', icon: 'fas fa-route', label: 'Trip Management', id: 'sub-trips', children: [
@@ -607,7 +607,7 @@ export const ROLE_MENUS = {
     { type: 'item', icon: 'fas fa-store', label: 'Vendors', page: 'vendors' },
   ],
 
-  shop_manager: [
+  WORKSHOP_MANAGER: [
     { type: 'item', icon: 'fas fa-th-large', label: 'Dashboard', page: 'dashboard' },
     {
       type: 'group', icon: 'fas fa-wrench', label: 'Service', id: 'sub-service', children: [
@@ -654,7 +654,7 @@ export const ROLE_MENUS = {
     },
   ],
 
-  mechanic: [
+  MECHANIC: [
     { type: 'item', icon: 'fas fa-th-large', label: 'Dashboard', page: 'dashboard' },
     {
       type: 'group', icon: 'fas fa-wrench', label: 'My Work', id: 'sub-service', children: [
@@ -682,7 +682,7 @@ export const ROLE_MENUS = {
     },
   ],
 
-  inventory_manager: [
+  INVENTORY_MANAGER: [
     { type: 'item', icon: 'fas fa-th-large', label: 'Dashboard', page: 'dashboard' },
     {
       type: 'group', icon: 'fas fa-boxes-stacked', label: 'Inventory', id: 'sub-parts', children: [
@@ -709,7 +709,7 @@ export const ROLE_MENUS = {
     },
   ],
 
-  admin: [
+  SUPER_ADMIN: [
     { type: 'item', icon: 'fas fa-th-large', label: 'Dashboard', page: 'dashboard' },
     {
       type: 'group', icon: 'fas fa-route', label: 'Trip Management', id: 'sub-trips', children: [

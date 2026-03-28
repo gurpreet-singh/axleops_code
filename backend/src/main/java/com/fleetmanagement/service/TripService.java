@@ -29,4 +29,9 @@ public class TripService {
                 .map(tripMapper::toResponse)
                 .orElseThrow(() -> new RuntimeException("Trip not found: " + id));
     }
+
+    @Transactional
+    public void delete(UUID id) {
+        tripRepository.deleteById(id);
+    }
 }

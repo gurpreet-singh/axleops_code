@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
-import { TRIP_STATE_COLORS } from '../../services/tripService';
+import { TRIP_STATE_COLORS, deleteTrip } from '../../services/tripService';
 import useSliderStore from '../../stores/sliderStore';
+import DeleteConfirmModal from '../../components/common/DeleteConfirmModal';
+import { FormField } from '../../components/common/FormField';
 
 // Re-export TripCreateContent from the dedicated module
 export { default as TripCreateContent } from './TripCreateContent';
@@ -23,38 +25,6 @@ function Field({ label, value, mono, icon, badge, badgeColor, full }) {
   );
 }
 
-// ═══════════════════════════════════════════════════════════
-// Form field (editable)
-// ═══════════════════════════════════════════════════════════
-function FormField({ label, value, onChange, type = 'text', placeholder, required, options, disabled, info, badge, badgeColor, full, children }) {
-  const baseInput = {
-    width: '100%', border: '1.5px solid #E2E8F0', borderRadius: 10, padding: '9px 12px',
-    fontSize: 13, color: '#1E293B', fontFamily: 'inherit', fontWeight: 500, outline: 'none',
-    background: disabled ? '#F8FAFC' : '#fff',
-    transition: 'border-color 0.15s',
-  };
-
-  return (
-    <div style={full ? { gridColumn: '1 / -1' } : {}}>
-      <div style={{ fontSize: 11, fontWeight: 700, color: '#475569', marginBottom: 5, display: 'flex', alignItems: 'center', gap: 4 }}>
-        {label}{required && <span style={{ color: '#DC2626' }}>*</span>}
-        {badge && <span style={{ marginLeft: 4, fontSize: 9, fontWeight: 700, padding: '2px 6px', borderRadius: 4, background: badgeColor || '#E6F4EA', color: '#137333' }}>{badge}</span>}
-      </div>
-      {children ? children : options ? (
-        <select value={value} onChange={e => onChange?.(e.target.value)} style={{ ...baseInput, cursor: 'pointer' }} disabled={disabled}>
-          {options.map((o, i) => <option key={i} value={o.value ?? o}>{o.label ?? o}</option>)}
-        </select>
-      ) : (
-        <input type={type} value={value} onChange={e => onChange?.(e.target.value)} placeholder={placeholder} disabled={disabled}
-          style={baseInput}
-          onFocus={e => { e.target.style.borderColor = '#1A73E8'; }}
-          onBlur={e => { e.target.style.borderColor = '#E2E8F0'; }}
-        />
-      )}
-      {info && <div style={{ fontSize: 10, color: '#94A3B8', marginTop: 3 }}><i className="fas fa-info-circle" style={{ marginRight: 3 }}></i>{info}</div>}
-    </div>
-  );
-}
 
 // ═══════════════════════════════════════════════════════════
 // Section wrapper
@@ -109,9 +79,11 @@ const MOCK_DRIVERS = [
 // TRIP DETAIL SLIDER CONTENT (view / edit mode)
 // Used for Active, In-Transit, Delivered, Settled trips
 // ═══════════════════════════════════════════════════════════════
-export function TripDetailContent({ trip }) {
+export function TripDetailContent({ trip, onRefresh }) {
+  const { closeSlider } = useSliderStore();
   const [activeTab, setActiveTab] = useState('overview');
   const [isEditing, setIsEditing] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const sc = TRIP_STATE_COLORS[trip.status] || {};
 
   const TABS = [
@@ -173,6 +145,9 @@ export function TripDetailContent({ trip }) {
         <button className="sl-action-btn"><i className="fas fa-print"></i> Print</button>
         <div style={{ flex: 1 }}></div>
         {renderActions()}
+        <button className="sl-delete-btn" onClick={() => setShowDeleteModal(true)}>
+          <i className="fas fa-recycle"></i> Delete
+        </button>
       </div>
 
       {/* Status Badge Row */}
@@ -202,6 +177,18 @@ export function TripDetailContent({ trip }) {
         {activeTab === 'timeline' && <TimelineTab trip={trip} />}
         {activeTab === 'financials' && <FinancialsTab trip={trip} />}
       </div>
+
+      <DeleteConfirmModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={async () => {
+          await deleteTrip(trip.id);
+          closeSlider();
+          onRefresh?.();
+        }}
+        entityName={trip.id || trip.lr}
+        entityType="Trip"
+      />
     </div>
   );
 }

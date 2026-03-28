@@ -1,66 +1,7 @@
 import { useState } from 'react';
 import platformAdminService from '../../services/platformAdminService';
 import useSliderStore from '../../stores/sliderStore';
-
-// ═══════════════════════════════════════════════════════════
-// FormField — same reusable pattern as RouteSliderContent
-// ═══════════════════════════════════════════════════════════
-function FormField({ label, value, onChange, type = 'text', placeholder, required, options, disabled, info, full }) {
-  const baseInput = {
-    width: '100%', border: '1.5px solid #E2E8F0', borderRadius: 10, padding: '9px 12px',
-    fontSize: 13, color: '#1E293B', fontFamily: 'inherit', fontWeight: 500, outline: 'none',
-    background: disabled ? '#F8FAFC' : '#fff',
-    transition: 'border-color 0.15s, box-shadow 0.15s',
-  };
-
-  const focusStyle = (e) => { e.target.style.borderColor = '#1A73E8'; e.target.style.boxShadow = '0 0 0 3px rgba(26,115,232,0.08)'; };
-  const blurStyle = (e) => { e.target.style.borderColor = '#E2E8F0'; e.target.style.boxShadow = 'none'; };
-
-  return (
-    <div style={full ? { gridColumn: '1 / -1' } : {}}>
-      <div style={{ fontSize: 11, fontWeight: 700, color: '#475569', marginBottom: 5, display: 'flex', alignItems: 'center', gap: 4, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-        {label}
-        {required && <span style={{ color: '#DC2626', fontSize: 13 }}>*</span>}
-      </div>
-      {options ? (
-        <select value={value} onChange={e => onChange?.(e.target.value)}
-          style={{ ...baseInput, cursor: 'pointer', appearance: 'none', backgroundImage: `url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2394A3B8' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center', paddingRight: 32 }}
-          disabled={disabled}>
-          {options.map((o, i) => <option key={i} value={o.value ?? o}>{o.label ?? o}</option>)}
-        </select>
-      ) : (
-        <input type={type} value={value} onChange={e => onChange?.(e.target.value)} placeholder={placeholder} disabled={disabled}
-          style={baseInput}
-          onFocus={focusStyle} onBlur={blurStyle}
-        />
-      )}
-      {info && <div style={{ fontSize: 10, color: '#94A3B8', marginTop: 3 }}><i className="fas fa-info-circle" style={{ marginRight: 3 }}></i>{info}</div>}
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════
-// Section — same reusable pattern as RouteSliderContent
-// ═══════════════════════════════════════════════════════════
-function Section({ title, emoji, borderColor, headerBg, accentColor, children }) {
-  return (
-    <div style={{
-      border: `1.5px solid ${borderColor || '#E2E8F0'}`,
-      borderRadius: 14, marginBottom: 16, overflow: 'hidden',
-      background: '#fff', transition: 'box-shadow 0.2s',
-    }}>
-      <div style={{
-        background: headerBg || '#F8FAFC', padding: '12px 16px',
-        borderBottom: `1px solid ${borderColor || '#E2E8F0'}`,
-        display: 'flex', alignItems: 'center', gap: 8,
-      }}>
-        {emoji && <span style={{ fontSize: 14 }}>{emoji}</span>}
-        <span style={{ fontSize: 12, fontWeight: 800, color: accentColor || '#1E293B', textTransform: 'uppercase', letterSpacing: 0.6, flex: 1 }}>{title}</span>
-      </div>
-      <div style={{ padding: '16px 16px 18px' }}>{children}</div>
-    </div>
-  );
-}
+import { FormField, Section } from '../../components/common/FormField';
 
 // ═══════════════════════════════════════════════════════════
 // TENANT CREATE SLIDER CONTENT

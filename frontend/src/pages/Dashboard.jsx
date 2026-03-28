@@ -2,7 +2,7 @@ import useAuthStore from '../stores/authStore';
 
 // Mock KPI data per role
 const ROLE_KPI_DATA = {
-  owner: [
+  OWNER_DIRECTOR: [
     { label: 'Revenue (MTD)', value: '₹18.4L', change: '+12.3%', positive: true },
     { label: 'Net Profit', value: '₹4.2L', change: '+8.7%', positive: true },
     { label: 'Fleet Utilization', value: '84%', change: '+3.2%', positive: true },
@@ -12,13 +12,13 @@ const ROLE_KPI_DATA = {
     { label: 'Drivers Active', value: '89', change: '−1', positive: false },
     { label: 'Vehicles', value: '124', change: '0', positive: true },
   ],
-  fleet_manager: [
+  FLEET_MANAGER: [
     { label: 'Vehicle Utilization', value: '84%', change: '+3.2%', positive: true },
     { label: 'On-Time Delivery', value: '91%', change: '+1.5%', positive: true },
     { label: 'Active Trips', value: '47', change: '+5', positive: true },
     { label: 'Idle Vehicles', value: '12', change: '−3', positive: true },
   ],
-  finance_controller: [
+  FINANCE_CONTROLLER: [
     { label: 'Revenue (MTD)', value: '₹18.4L', change: '+12.3%', positive: true },
     { label: 'Outstanding AR', value: '₹7.8L', change: '+₹1.2L', positive: false },
     { label: 'Profit Margin', value: '22.8%', change: '+1.1%', positive: true },
@@ -31,7 +31,7 @@ export default function Dashboard() {
 
   if (!currentRole) return null;
 
-  const kpis = ROLE_KPI_DATA[currentRole.id] || ROLE_KPI_DATA.owner;
+  const kpis = ROLE_KPI_DATA[currentRole.id] || ROLE_KPI_DATA.OWNER_DIRECTOR;
 
   return (
     <div>

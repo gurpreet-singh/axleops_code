@@ -6,12 +6,13 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 /**
  * Manages user sessions in Redis.
- * Each session maps a JWT token to the user's context (userId, tenantId, role, branchId).
+ * Each session maps a JWT token to the user's context.
  */
 @Service
 public class RedisSessionService {
@@ -29,13 +30,16 @@ public class RedisSessionService {
 
     /**
      * Store a session in Redis keyed by the JWT token.
+     * Supports multi-role by storing roles as a comma-separated string.
      */
-    public void createSession(String token, UUID userId, UUID tenantId, String role, UUID branchId) {
+    public void createSession(String token, UUID userId, UUID tenantId,
+                              List<String> roles, UUID branchId, String type) {
         Map<String, String> sessionData = Map.of(
                 "userId", userId.toString(),
-                "tenantId", tenantId.toString(),
-                "role", role,
+                "tenantId", tenantId != null ? tenantId.toString() : "",
+                "roles", String.join(",", roles),
                 "branchId", branchId != null ? branchId.toString() : "",
+                "type", type,
                 "loginTime", String.valueOf(System.currentTimeMillis())
         );
 
@@ -48,7 +52,15 @@ public class RedisSessionService {
     }
 
     /**
-     * Retrieve session data from Redis. Returns null if session doesn't exist or is expired.
+     * Backward-compatible overload for single-role sessions.
+     */
+    public void createSession(String token, UUID userId, UUID tenantId,
+                              String role, UUID branchId) {
+        createSession(token, userId, tenantId, List.of(role), branchId, "TENANT");
+    }
+
+    /**
+     * Retrieve session data from Redis.
      */
     public Map<String, String> getSession(String token) {
         String json = redisTemplate.opsForValue().get(SESSION_PREFIX + token);

@@ -39,7 +39,7 @@ export default function ActiveTripsPage() {
     openSlider({
       title: `Trip ${trip.id}`,
       subtitle: `${trip.origin} → ${trip.destination} • ${trip.client}`,
-      content: <TripDetailContent trip={trip} />,
+      content: <TripDetailContent trip={trip} onRefresh={() => getTrips().then(setTrips)} />,
       width: '52vw',
     });
   };
@@ -54,7 +54,7 @@ export default function ActiveTripsPage() {
       </div>
 
       {/* Filter Bar */}
-      <div style={{ background: '#fff', border: '1.5px solid #E2E8F0', borderRadius: 14, padding: '14px 18px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+      <div className="ax-filter-bar">
         <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: '#E2E8F0', borderRadius: 10, padding: 3 }}>
           {FILTERS.map(f => (
             <button key={f} onClick={() => setFilter(f)}
@@ -64,7 +64,7 @@ export default function ActiveTripsPage() {
           ))}
         </div>
         <div style={{ flex: 1 }}></div>
-        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="🔍 Search trips..." style={{ border: '1.5px solid #E2E8F0', borderRadius: 10, padding: '8px 14px', fontSize: 13, color: '#1E293B', outline: 'none', width: 240, fontFamily: 'inherit' }} />
+        <input className="ax-filter-search" value={search} onChange={e => setSearch(e.target.value)} placeholder="🔍 Search trips..." />
       </div>
 
       {/* Table */}

@@ -1,7 +1,5 @@
 package com.fleetmanagement.config;
 
-import com.fleetmanagement.entity.User;
-import com.fleetmanagement.service.AuthService;
 import com.fleetmanagement.service.JwtService;
 import com.fleetmanagement.service.RedisSessionService;
 import jakarta.servlet.FilterChain;
@@ -10,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -17,33 +16,32 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 /**
  * JWT Authentication Filter — validates the Bearer token on every request.
- * 
- * Flow:
- * 1. Extract Bearer token from Authorization header
- * 2. Check session exists in Redis
- * 3. Validate JWT signature + expiry
- * 4. Set SecurityContext with authenticated user
- * 5. Set TenantContext from the session data
+ *
+ * <p>Supports two token types via the 'type' claim:</p>
+ * <ul>
+ *   <li>PLATFORM — grants ROLE_PLATFORM authority (platform admin endpoints)</li>
+ *   <li>TENANT — grants ROLE_TENANT + all fine-grained authorities from the token</li>
+ * </ul>
+ *
+ * <p>Authorities are embedded in the JWT at login time, so this filter never
+ * needs to hit the database to check permissions.</p>
  */
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final RedisSessionService redisSessionService;
-    private final AuthService authService;
 
     public JwtAuthFilter(JwtService jwtService,
-                         RedisSessionService redisSessionService,
-                         AuthService authService) {
+                         RedisSessionService redisSessionService) {
         this.jwtService = jwtService;
         this.redisSessionService = redisSessionService;
-        this.authService = authService;
     }
 
     @Override
@@ -74,38 +72,55 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 return;
             }
 
-            // 3. Extract user info from Redis session
-            Map<String, String> sessionData = redisSessionService.getSession(token);
-            if (sessionData == null) {
-                filterChain.doFilter(request, response);
-                return;
+            // 3. Extract claims from JWT (not from Redis — JWT is the source of truth)
+            String type = jwtService.extractType(token);
+            UUID userId = jwtService.extractUserId(token);
+
+            List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+
+            if ("PLATFORM".equals(type)) {
+                // Platform admin — coarse-grained authority only
+                grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_PLATFORM"));
+
+                // Set authentication with simple principal
+                UsernamePasswordAuthenticationToken authToken =
+                    new UsernamePasswordAuthenticationToken(
+                        userId.toString(), null, grantedAuthorities);
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+
+            } else if ("TENANT".equals(type)) {
+                // Tenant user — fine-grained authorities from JWT
+                grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_TENANT"));
+
+                List<String> authorities = jwtService.extractAuthorities(token);
+                for (String authority : authorities) {
+                    grantedAuthorities.add(new SimpleGrantedAuthority(authority));
+                }
+
+                UUID tenantId = jwtService.extractTenantId(token);
+                UUID branchId = jwtService.extractBranchId(token);
+
+                // Set TenantContext for downstream services
+                TenantContext.set(tenantId);
+
+                // Build TenantPrincipal with full context
+                TenantPrincipal principal = new TenantPrincipal(userId, tenantId, branchId);
+
+                UsernamePasswordAuthenticationToken authToken =
+                    new UsernamePasswordAuthenticationToken(
+                        principal, null, grantedAuthorities);
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
             }
-
-            UUID userId = UUID.fromString(sessionData.get("userId"));
-            UUID tenantId = UUID.fromString(sessionData.get("tenantId"));
-            String role = sessionData.get("role");
-
-            // 4. Set TenantContext (replaces the old hardcoded value)
-            TenantContext.set(tenantId);
-
-            // 5. Set Spring Security authentication context
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    userId.toString(),
-                    null,
-                    List.of(new SimpleGrantedAuthority("ROLE_" + role))
-            );
-            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authToken);
 
         } catch (Exception e) {
             // Token is invalid — continue without authentication
-            // The security chain will return 401 on protected endpoints
         }
 
         try {
             filterChain.doFilter(request, response);
         } finally {
-            // Clean up ThreadLocal
             TenantContext.clear();
         }
     }
@@ -113,7 +128,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getServletPath();
-        // Don't filter the login endpoint
-        return path.equals("/auth/login");
+        return path.equals("/auth/login") || path.equals("/auth/platform-login");
     }
 }

@@ -1,76 +1,8 @@
 import { useState, useEffect } from 'react';
 import useSliderStore from '../../stores/sliderStore';
-
-// ═══════════════════════════════════════════════════════════════
-// Reusable Form Components (shared patterns from TripCreateContent)
-// ═══════════════════════════════════════════════════════════════
-
-function FormField({ label, value, onChange, type = 'text', placeholder, required, options, disabled, info, full, textarea, rows }) {
-  const baseInput = {
-    width: '100%', border: '1.5px solid #E2E8F0', borderRadius: 10, padding: '9px 12px',
-    fontSize: 13, color: '#1E293B', fontFamily: 'inherit', fontWeight: 500, outline: 'none',
-    background: disabled ? '#F8FAFC' : '#fff',
-    transition: 'border-color 0.15s, box-shadow 0.15s',
-  };
-
-  const focusStyle = (e) => { e.target.style.borderColor = '#1A73E8'; e.target.style.boxShadow = '0 0 0 3px rgba(26,115,232,0.08)'; };
-  const blurStyle = (e) => { e.target.style.borderColor = '#E2E8F0'; e.target.style.boxShadow = 'none'; };
-
-  return (
-    <div style={full ? { gridColumn: '1 / -1' } : {}}>
-      <div style={{ fontSize: 11, fontWeight: 700, color: '#475569', marginBottom: 5, display: 'flex', alignItems: 'center', gap: 4, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-        {label}
-        {required && <span style={{ color: '#DC2626', fontSize: 13 }}>*</span>}
-      </div>
-      {textarea ? (
-        <textarea value={value} onChange={e => onChange?.(e.target.value)} placeholder={placeholder} disabled={disabled}
-          rows={rows || 3}
-          style={{ ...baseInput, resize: 'vertical', minHeight: 72 }}
-          onFocus={focusStyle} onBlur={blurStyle}
-        />
-      ) : options ? (
-        <select value={value} onChange={e => onChange?.(e.target.value)}
-          style={{ ...baseInput, cursor: 'pointer', appearance: 'none', backgroundImage: `url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2394A3B8' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center', paddingRight: 32 }}
-          disabled={disabled}>
-          {options.map((o, i) => <option key={i} value={o.value ?? o}>{o.label ?? o}</option>)}
-        </select>
-      ) : (
-        <input type={type} value={value} onChange={e => onChange?.(e.target.value)} placeholder={placeholder} disabled={disabled}
-          style={baseInput}
-          onFocus={focusStyle} onBlur={blurStyle}
-        />
-      )}
-      {info && <div style={{ fontSize: 10, color: '#94A3B8', marginTop: 3 }}><i className="fas fa-info-circle" style={{ marginRight: 3 }}></i>{info}</div>}
-    </div>
-  );
-}
-
-function Section({ title, emoji, borderColor, headerBg, accentColor, children, collapsible, defaultCollapsed }) {
-  const [collapsed, setCollapsed] = useState(defaultCollapsed || false);
-
-  return (
-    <div style={{
-      border: `1.5px solid ${borderColor || '#E2E8F0'}`,
-      borderRadius: 14, marginBottom: 16, overflow: 'hidden',
-      background: '#fff', transition: 'box-shadow 0.2s',
-    }}>
-      <div
-        onClick={collapsible ? () => setCollapsed(!collapsed) : undefined}
-        style={{
-          background: headerBg || '#F8FAFC', padding: '12px 16px',
-          borderBottom: collapsed ? 'none' : `1px solid ${borderColor || '#E2E8F0'}`,
-          display: 'flex', alignItems: 'center', gap: 8,
-          cursor: collapsible ? 'pointer' : 'default', userSelect: 'none',
-        }}
-      >
-        {emoji && <span style={{ fontSize: 14 }}>{emoji}</span>}
-        <span style={{ fontSize: 12, fontWeight: 800, color: accentColor || '#1E293B', textTransform: 'uppercase', letterSpacing: 0.6, flex: 1 }}>{title}</span>
-        {collapsible && <i className={`fas fa-chevron-${collapsed ? 'down' : 'up'}`} style={{ fontSize: 10, color: '#94A3B8' }}></i>}
-      </div>
-      {!collapsed && <div style={{ padding: '16px 16px 18px' }}>{children}</div>}
-    </div>
-  );
-}
+import { deleteRoute } from '../../services/routeService';
+import DeleteConfirmModal from '../../components/common/DeleteConfirmModal';
+import { FormField, Section } from '../../components/common/FormField';
 
 
 // ═══════════════════════════════════════════════════════════════
@@ -219,6 +151,7 @@ export function RouteCreateContent({ onSave }) {
 export function RouteDetailContent({ rt, onSave }) {
   const { closeSlider } = useSliderStore();
   const [isEditing, setIsEditing] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [form, setForm] = useState(buildFormState(rt));
   const set = (key) => (val) => setForm(f => ({ ...f, [key]: val }));
 
@@ -227,6 +160,12 @@ export function RouteDetailContent({ rt, onSave }) {
 
   const handleSave = () => {
     setIsEditing(false);
+    onSave?.();
+  };
+
+  const handleDelete = async () => {
+    await deleteRoute(rt.id);
+    closeSlider();
     onSave?.();
   };
 
@@ -256,6 +195,9 @@ export function RouteDetailContent({ rt, onSave }) {
           <i className="fas fa-print" style={{ fontSize: 10 }}></i> Print
         </button>
         <div style={{ flex: 1 }}></div>
+        <button className="sl-delete-btn" onClick={() => setShowDeleteModal(true)}>
+          <i className="fas fa-recycle"></i> Delete
+        </button>
       </div>
 
       <div style={{ padding: '20px 20px 40px' }}>
@@ -265,6 +207,14 @@ export function RouteDetailContent({ rt, onSave }) {
           <RouteViewSections rt={rt} form={form} />
         )}
       </div>
+
+      <DeleteConfirmModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleDelete}
+        entityName={rt.route || `${rt.origin} → ${rt.dest}`}
+        entityType="Route"
+      />
     </div>
   );
 }

@@ -29,4 +29,9 @@ public class RouteService {
                 .map(routeMapper::toResponse)
                 .orElseThrow(() -> new RuntimeException("Route not found: " + id));
     }
+
+    @Transactional
+    public void delete(UUID id) {
+        routeRepository.deleteById(id);
+    }
 }

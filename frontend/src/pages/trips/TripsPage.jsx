@@ -51,7 +51,7 @@ export default function TripsPage() {
     openSlider({
       title: `Trip ${trip.id}`,
       subtitle: `${trip.origin} → ${trip.destination} • ${trip.client}`,
-      content: <TripDetailContent trip={trip} />,
+      content: <TripDetailContent trip={trip} onRefresh={() => getTrips().then(setTrips)} />,
       width: '52vw',
     });
   };
@@ -98,8 +98,8 @@ export default function TripsPage() {
       <div style={{ background: '#fff', border: '1.5px solid #E2E8F0', borderRadius: 16, overflow: 'hidden' }}>
         <div style={{ padding: '16px 20px', borderBottom: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ fontSize: 15, fontWeight: 800, color: '#1E293B' }}>All Active Trips</div>
-          <input value={search} onChange={e => setSearch(e.target.value)}
-            placeholder="🔍 Search..." style={{ border: '1.5px solid #E2E8F0', borderRadius: 10, padding: '7px 12px', fontSize: 12, color: '#1E293B', outline: 'none', width: 200, fontFamily: 'inherit' }} />
+          <input className="ax-filter-search" value={search} onChange={e => setSearch(e.target.value)}
+            placeholder="🔍 Search..." />
         </div>
         {/* Header Row */}
         <div style={{ display: 'grid', gridTemplateColumns: '70px 80px 1.2fr 1fr 1fr 90px 80px 50px', padding: '10px 20px', background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', fontSize: 10, fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: 0.5 }}>

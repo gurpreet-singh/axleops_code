@@ -6,6 +6,7 @@ import com.fleetmanagement.dto.response.BranchResponse;
 import com.fleetmanagement.dto.response.TenantResponse;
 import com.fleetmanagement.dto.response.TenantUserResponse;
 import com.fleetmanagement.entity.Branch;
+import com.fleetmanagement.entity.Role;
 import com.fleetmanagement.entity.Tenant;
 import com.fleetmanagement.entity.User;
 import com.fleetmanagement.mapper.BranchMapper;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -60,7 +62,7 @@ public class PlatformAdminService {
     }
 
     /**
-     * Create a new tenant with primary branch and initial system admin user
+     * Create a new tenant with primary branch and initial owner user
      */
     @Transactional
     public TenantResponse createTenant(CreateTenantRequest request) {
@@ -89,20 +91,20 @@ public class PlatformAdminService {
         primaryBranch.setStatus("ACTIVE");
         primaryBranch = branchRepository.save(primaryBranch);
 
-        // 3. Create System Admin User for this tenant
+        // 3. Create Owner/Director user for this tenant
         if (request.getAdminEmail() != null && !request.getAdminEmail().isEmpty()) {
-            User admin = new User();
-            admin.setId(UUID.randomUUID());
-            admin.setTenantId(tenant.getId());
-            admin.setFirstName(request.getAdminFirstName());
-            admin.setLastName(request.getAdminLastName());
-            admin.setEmail(request.getAdminEmail());
-            admin.setPassword(request.getAdminPassword());
-            admin.setRole("OWNER");
-            admin.setTitle(request.getAdminTitle() != null ? request.getAdminTitle() : "System Administrator");
-            admin.setBranch(primaryBranch);
-            admin.setStatus("ACTIVE");
-            userRepository.save(admin);
+            User owner = new User();
+            owner.setId(UUID.randomUUID());
+            owner.setTenantId(tenant.getId());
+            owner.setFirstName(request.getAdminFirstName());
+            owner.setLastName(request.getAdminLastName());
+            owner.setEmail(request.getAdminEmail());
+            owner.setPassword(request.getAdminPassword());
+            owner.setRoles(EnumSet.of(Role.OWNER_DIRECTOR));
+            owner.setTitle(request.getAdminTitle() != null ? request.getAdminTitle() : "Owner / Director");
+            owner.setBranch(primaryBranch);
+            owner.setActive(true);
+            userRepository.save(owner);
         }
 
         TenantResponse resp = tenantMapper.toResponse(tenant);
@@ -125,11 +127,15 @@ public class PlatformAdminService {
                     resp.setId(user.getId());
                     resp.setFirstName(user.getFirstName());
                     resp.setLastName(user.getLastName());
+                    resp.setFullName(user.getFullName());
                     resp.setEmail(user.getEmail());
                     resp.setPhone(user.getPhone());
-                    resp.setRole(user.getRole());
+                    resp.setRoles(user.getRoles().stream()
+                            .map(Enum::name)
+                            .sorted()
+                            .collect(Collectors.toList()));
                     resp.setTitle(user.getTitle());
-                    resp.setStatus(user.getStatus());
+                    resp.setActive(user.isActive());
                     resp.setTenantId(tenantId);
                     resp.setTenantName(tenant.getName());
                     if (user.getBranch() != null) {
@@ -152,7 +158,7 @@ public class PlatformAdminService {
     }
 
     /**
-     * Add a system admin user to an existing tenant
+     * Add an admin user to an existing tenant
      */
     @Transactional
     public TenantUserResponse addTenantAdmin(CreateTenantAdminRequest request) {
@@ -173,22 +179,23 @@ public class PlatformAdminService {
         user.setLastName(request.getLastName());
         user.setEmail(request.getEmail());
         user.setPassword(request.getPassword());
-        user.setRole("OWNER");
-        user.setTitle(request.getTitle() != null ? request.getTitle() : "System Administrator");
+        user.setRoles(EnumSet.of(Role.OWNER_DIRECTOR));
+        user.setTitle(request.getTitle() != null ? request.getTitle() : "Owner / Director");
         user.setPhone(request.getPhone());
         user.setBranch(targetBranch);
-        user.setStatus("ACTIVE");
+        user.setActive(true);
         user = userRepository.save(user);
 
         TenantUserResponse resp = new TenantUserResponse();
         resp.setId(user.getId());
         resp.setFirstName(user.getFirstName());
         resp.setLastName(user.getLastName());
+        resp.setFullName(user.getFullName());
         resp.setEmail(user.getEmail());
         resp.setPhone(user.getPhone());
-        resp.setRole(user.getRole());
+        resp.setRoles(user.getRoles().stream().map(Enum::name).sorted().collect(Collectors.toList()));
         resp.setTitle(user.getTitle());
-        resp.setStatus(user.getStatus());
+        resp.setActive(user.isActive());
         resp.setTenantId(request.getTenantId());
         resp.setTenantName(tenant.getName());
         if (targetBranch != null) {
@@ -196,5 +203,20 @@ public class PlatformAdminService {
             resp.setBranchName(targetBranch.getName());
         }
         return resp;
+    }
+
+    /**
+     * Delete a tenant and all associated users and branches
+     */
+    @Transactional
+    public void deleteTenant(UUID tenantId) {
+        Tenant tenant = tenantRepository.findById(tenantId)
+                .orElseThrow(() -> new RuntimeException("Tenant not found: " + tenantId));
+        // Delete users first (FK dependency)
+        userRepository.deleteAll(userRepository.findByTenantId(tenantId));
+        // Delete branches
+        branchRepository.deleteAll(branchRepository.findByTenantId(tenantId));
+        // Delete tenant
+        tenantRepository.delete(tenant);
     }
 }

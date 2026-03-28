@@ -25,4 +25,10 @@ public class TripController {
     public ResponseEntity<TripResponse> getTripById(@PathVariable UUID id) {
         return ResponseEntity.ok(tripService.getTripById(id));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTrip(@PathVariable UUID id) {
+        tripService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }

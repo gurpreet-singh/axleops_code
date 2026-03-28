@@ -75,3 +75,7 @@ export async function createRoute(payload) {
   const { data } = await api.post('/routes', payload);
   return data;
 }
+
+export async function deleteRoute(id) {
+  await api.delete(`/routes/${id}`);
+}

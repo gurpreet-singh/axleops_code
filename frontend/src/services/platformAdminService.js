@@ -14,6 +14,9 @@ const platformAdminService = {
 
   // ─── Tenant Branches ─────────────────────────────────
   getTenantBranches: (tenantId) => api.get(`${BASE}/tenants/${tenantId}/branches`),
+
+  // ─── Delete Tenant ──────────────────────────────────
+  deleteTenant: (tenantId) => api.delete(`${BASE}/tenants/${tenantId}`),
 };
 
 export default platformAdminService;

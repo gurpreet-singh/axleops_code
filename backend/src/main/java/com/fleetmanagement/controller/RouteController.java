@@ -25,4 +25,10 @@ public class RouteController {
     public ResponseEntity<RouteResponse> getRouteById(@PathVariable UUID id) {
         return ResponseEntity.ok(routeService.getRouteById(id));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteRoute(@PathVariable UUID id) {
+        routeService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }

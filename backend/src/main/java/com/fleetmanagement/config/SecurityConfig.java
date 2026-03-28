@@ -35,15 +35,17 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                // Public endpoints
-                .requestMatchers("/auth/login", "/enums").permitAll()
+                // Public endpoints — no auth required
+                .requestMatchers("/auth/login", "/auth/platform-login", "/enums").permitAll()
                 // Swagger / API docs
                 .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/api-docs/**", "/v3/api-docs/**").permitAll()
                 // Actuator
                 .requestMatchers("/actuator/**").permitAll()
                 // H2 console (dev only)
                 .requestMatchers("/h2-console/**").permitAll()
-                // Everything else requires authentication
+                // Platform endpoints — platform admins only
+                .requestMatchers("/platform/**").hasAuthority("ROLE_PLATFORM")
+                // Everything else requires authentication (tenant or platform)
                 .anyRequest().authenticated()
             )
             .headers(headers -> headers.frameOptions(frame -> frame.disable()))

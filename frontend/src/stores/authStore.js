@@ -53,7 +53,6 @@ const useAuthStore = create((set, get) => ({
   },
 
   // ─── Validate Session ───────────────────────────
-  // Called on app load to check if existing token is still valid
   validateSession: async () => {
     const token = localStorage.getItem(TOKEN_KEY);
     if (!token) {
@@ -75,20 +74,37 @@ const useAuthStore = create((set, get) => ({
     }
   },
 
+  // ─── Select Role (calls backend for scoped JWT) ─
+  selectRole: async (roleCode) => {
+    try {
+      const response = await authService.selectRole(roleCode);
+      const { token, user } = response.data;
+
+      localStorage.setItem(TOKEN_KEY, token);
+      localStorage.setItem(USER_KEY, JSON.stringify(user));
+
+      set({ token, user, isAuthenticated: true });
+    } catch (e) {
+      console.error('Failed to select role:', e);
+    }
+  },
+
   // ─── Set UI Role (menu switching) ───────────────
-  // This is a UI concern — switches which menus are shown.
-  // The authenticated user stays the same.
+  // Sets which menu structure is shown based on the role selection.
+  // For PLATFORM_ADMIN or tenant roles — uses the ROLES/ROLE_MENUS config.
   setRole: (roleId) => {
     const role = ROLES[roleId];
     if (!role) return;
 
-    // Override the role user info with the real authenticated user
+    // Override role user info with the real authenticated user
     const { user } = get();
     const enhancedRole = { ...role };
     if (user) {
+      const firstName = user.firstName || user.fullName?.split(' ')[0] || '';
+      const lastName = user.lastName || user.fullName?.split(' ').slice(1).join(' ') || '';
       enhancedRole.user = {
-        name: `${user.firstName} ${user.lastName}`,
-        initials: `${user.firstName[0]}${user.lastName[0]}`,
+        name: user.fullName || `${firstName} ${lastName}`,
+        initials: `${firstName[0] || ''}${lastName[0] || ''}`,
         title: user.title || role.user.title,
       };
     }
@@ -106,6 +122,42 @@ const useAuthStore = create((set, get) => ({
   getToken: () => get().token,
   getUser: () => get().user,
   getRoleUser: () => get().currentRole?.user || null,
+
+  /**
+   * Get the user's assigned role codes (e.g. ['OWNER_DIRECTOR', 'SUPER_ADMIN']).
+   * Returns the role codes from the backend /me response.
+   */
+  getUserRoleCodes: () => {
+    const user = get().user;
+    if (!user?.roles) return [];
+    return user.roles.map(r => typeof r === 'string' ? r : r.code);
+  },
+
+  /**
+   * Check if user has a specific authority.
+   */
+  hasAuthority: (authority) => {
+    const user = get().user;
+    return user?.authorities?.includes(authority) || false;
+  },
+
+  /**
+   * Check if user can see a module (has any authority with the given prefix).
+   * e.g. canSeeModule('TRIP_') → true if user has TRIP_CREATE, TRIP_READ, etc.
+   */
+  canSeeModule: (prefix) => {
+    const user = get().user;
+    if (!user?.authorities) return false;
+    return user.authorities.some(a => a.startsWith(prefix));
+  },
+
+  /**
+   * Is the current user a platform admin?
+   */
+  isPlatformAdmin: () => {
+    const user = get().user;
+    return user?.type === 'PLATFORM';
+  },
 }));
 
 export default useAuthStore;

@@ -59,3 +59,7 @@ export async function updateTrip(id, payload) {
   const { data } = await api.put(`/trips/${id}`, payload);
   return data;
 }
+
+export async function deleteTrip(id) {
+  await api.delete(`/trips/${id}`);
+}

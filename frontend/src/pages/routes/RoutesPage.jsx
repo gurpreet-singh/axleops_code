@@ -51,18 +51,18 @@ export default function RoutesPage() {
       </div>
 
       {/* Filter Bar */}
-      <div style={{ background: '#fff', border: '1.5px solid #E2E8F0', borderRadius: 14, padding: '14px 18px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-        <select value={clientF} onChange={e => setClientF(e.target.value)} style={{ border: '1.5px solid #E2E8F0', borderRadius: 10, padding: '8px 14px', fontSize: 13, color: '#1E293B', outline: 'none', fontFamily: 'inherit', cursor: 'pointer' }}>
+      <div className="ax-filter-bar">
+        <select className="ax-filter-select" value={clientF} onChange={e => setClientF(e.target.value)}>
           <option value="all">All Clients</option>
           {clients.map(c => <option key={c} value={c}>{c}</option>)}
         </select>
-        <select value={vtF} onChange={e => setVtF(e.target.value)} style={{ border: '1.5px solid #E2E8F0', borderRadius: 10, padding: '8px 14px', fontSize: 13, color: '#1E293B', outline: 'none', fontFamily: 'inherit', cursor: 'pointer' }}>
+        <select className="ax-filter-select" value={vtF} onChange={e => setVtF(e.target.value)}>
           <option value="all">All Vehicles</option>
           {vTypes.map(v => <option key={v} value={v}>{v}</option>)}
         </select>
         <div style={{ flex: 1 }}></div>
-        <span style={{ fontSize: 12, color: '#94A3B8', fontWeight: 600 }}>{filtered.length} of {routes.length} routes</span>
-        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="🔍 Search routes..." style={{ border: '1.5px solid #E2E8F0', borderRadius: 10, padding: '8px 14px', fontSize: 13, color: '#1E293B', outline: 'none', width: 240, fontFamily: 'inherit' }} />
+        <span className="ax-filter-count">{filtered.length} of {routes.length} routes</span>
+        <input className="ax-filter-search" value={search} onChange={e => setSearch(e.target.value)} placeholder="🔍 Search routes..." />
       </div>
 
       {/* Table */}

@@ -2,41 +2,9 @@ import { useState } from 'react';
 import useSliderStore from '../../stores/sliderStore';
 import useEnumStore, { NATURE_COLORS } from '../../stores/enumStore';
 import ledgerGroupService from '../../services/ledgerGroupService';
+import DeleteConfirmModal from '../../components/common/DeleteConfirmModal';
+import { FormField } from '../../components/common/FormField';
 
-// ═══════════════════════════════════════════════════════════════
-// Reusable Form Components (same pattern as RouteSliderContent)
-// ═══════════════════════════════════════════════════════════════
-
-function FormField({ label, value, onChange, type = 'text', placeholder, required, options, disabled, info, full }) {
-  const baseInput = {
-    width: '100%', border: '1.5px solid #E2E8F0', borderRadius: 10, padding: '9px 12px',
-    fontSize: 13, color: '#1E293B', fontFamily: 'inherit', fontWeight: 500, outline: 'none',
-    background: disabled ? '#F8FAFC' : '#fff',
-    transition: 'border-color 0.15s, box-shadow 0.15s',
-  };
-  const focusStyle = (e) => { e.target.style.borderColor = '#1A73E8'; e.target.style.boxShadow = '0 0 0 3px rgba(26,115,232,0.08)'; };
-  const blurStyle = (e) => { e.target.style.borderColor = '#E2E8F0'; e.target.style.boxShadow = 'none'; };
-
-  return (
-    <div style={full ? { gridColumn: '1 / -1' } : {}}>
-      <div style={{ fontSize: 11, fontWeight: 700, color: '#475569', marginBottom: 5, display: 'flex', alignItems: 'center', gap: 4, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-        {label}
-        {required && <span style={{ color: '#DC2626', fontSize: 13 }}>*</span>}
-      </div>
-      {options ? (
-        <select value={value} onChange={e => onChange?.(e.target.value)}
-          style={{ ...baseInput, cursor: 'pointer', appearance: 'none', backgroundImage: `url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2394A3B8' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center', paddingRight: 32 }}
-          disabled={disabled}>
-          {options.map((o, i) => <option key={i} value={o.value ?? o}>{o.label ?? o}</option>)}
-        </select>
-      ) : (
-        <input type={type} value={value} onChange={e => onChange?.(e.target.value)} placeholder={placeholder} disabled={disabled}
-          style={baseInput} onFocus={focusStyle} onBlur={blurStyle} />
-      )}
-      {info && <div style={{ fontSize: 10, color: '#94A3B8', marginTop: 3 }}><i className="fas fa-info-circle" style={{ marginRight: 3 }}></i>{info}</div>}
-    </div>
-  );
-}
 
 function ReadField({ label, value, mono }) {
   return (
@@ -158,6 +126,7 @@ export function LedgerGroupDetailContent({ group, onSave, groups }) {
   const { closeSlider } = useSliderStore();
   const { getOptionsWithPlaceholder, getLabel } = useEnumStore();
   const [isEditing, setIsEditing] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [form, setForm] = useState({
     name: group.name || '',
     nature: group.nature || '',
@@ -209,6 +178,9 @@ export function LedgerGroupDetailContent({ group, onSave, groups }) {
           {isEditing ? 'Save Changes' : 'Edit Details'}
         </button>
         <div style={{ flex: 1 }}></div>
+        <button className="sl-delete-btn" onClick={() => setShowDeleteModal(true)}>
+          <i className="fas fa-recycle"></i> Delete
+        </button>
         <span style={{
           display: 'inline-flex', alignItems: 'center', gap: 4,
           background: nc.bg, color: nc.color, border: `1px solid ${nc.border}`,
@@ -255,6 +227,18 @@ export function LedgerGroupDetailContent({ group, onSave, groups }) {
           </>
         )}
       </div>
+
+      <DeleteConfirmModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={async () => {
+          await ledgerGroupService.delete(group.id);
+          closeSlider();
+          onSave?.();
+        }}
+        entityName={group.name}
+        entityType="Ledger Group"
+      />
     </div>
   );
 }

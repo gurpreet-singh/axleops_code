@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import platformAdminService from '../../services/platformAdminService';
 import useSliderStore from '../../stores/sliderStore';
 import AddTenantAdminContent from './AddTenantAdminContent';
+import DeleteConfirmModal from '../../components/common/DeleteConfirmModal';
+import { FormField, Section } from '../../components/common/FormField';
 
 // ═══════════════════════════════════════════════════════════
 // Shared read-only field (same pattern as TripSliderContent)
@@ -21,51 +23,6 @@ function Field({ label, value, mono, icon, badge, badgeColor, full }) {
   );
 }
 
-// ═══════════════════════════════════════════════════════════
-// Form field (editable) — same pattern as TripSliderContent
-// ═══════════════════════════════════════════════════════════
-function FormField({ label, value, onChange, type = 'text', placeholder, required, options, disabled, full }) {
-  const baseInput = {
-    width: '100%', border: '1.5px solid #E2E8F0', borderRadius: 10, padding: '9px 12px',
-    fontSize: 13, color: '#1E293B', fontFamily: 'inherit', fontWeight: 500, outline: 'none',
-    background: disabled ? '#F8FAFC' : '#fff',
-    transition: 'border-color 0.15s',
-  };
-
-  return (
-    <div style={full ? { gridColumn: '1 / -1' } : {}}>
-      <div style={{ fontSize: 11, fontWeight: 700, color: '#475569', marginBottom: 5, display: 'flex', alignItems: 'center', gap: 4, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-        {label}{required && <span style={{ color: '#DC2626' }}>*</span>}
-      </div>
-      {options ? (
-        <select value={value} onChange={e => onChange?.(e.target.value)} style={{ ...baseInput, cursor: 'pointer' }} disabled={disabled}>
-          {options.map((o, i) => <option key={i} value={o.value ?? o}>{o.label ?? o}</option>)}
-        </select>
-      ) : (
-        <input type={type} value={value} onChange={e => onChange?.(e.target.value)} placeholder={placeholder} disabled={disabled}
-          style={baseInput}
-          onFocus={e => { e.target.style.borderColor = '#1A73E8'; }}
-          onBlur={e => { e.target.style.borderColor = '#E2E8F0'; }}
-        />
-      )}
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════
-// Section wrapper — same pattern as TripSliderContent
-// ═══════════════════════════════════════════════════════════
-function Section({ title, icon, iconColor, borderColor, headerBg, children }) {
-  return (
-    <div style={{ border: `1.5px solid ${borderColor || '#E2E8F0'}`, borderRadius: 12, marginBottom: 14, overflow: 'hidden' }}>
-      <div style={{ background: headerBg || '#F8FAFC', padding: '10px 14px', borderBottom: `1px solid ${borderColor || '#E2E8F0'}`, display: 'flex', alignItems: 'center', gap: 8 }}>
-        {icon && <i className={icon} style={{ fontSize: 13, color: iconColor || '#1A73E8' }}></i>}
-        <span style={{ fontSize: 12, fontWeight: 800, color: '#1E293B', textTransform: 'uppercase', letterSpacing: 0.5, flex: 1 }}>{title}</span>
-      </div>
-      <div style={{ padding: 14 }}>{children}</div>
-    </div>
-  );
-}
 
 
 // ═══════════════════════════════════════════════════════════
@@ -74,11 +31,12 @@ function Section({ title, icon, iconColor, borderColor, headerBg, children }) {
 export default function TenantDetailContent({ tenant, onRefresh }) {
   const [activeTab, setActiveTab] = useState('overview');
   const [isEditing, setIsEditing] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [users, setUsers] = useState([]);
   const [branches, setBranches] = useState([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
   const [loadingBranches, setLoadingBranches] = useState(false);
-  const { openSlider } = useSliderStore();
+  const { openSlider, closeSlider } = useSliderStore();
 
   // Editable form state
   const [form, setForm] = useState({
@@ -155,6 +113,9 @@ export default function TenantDetailContent({ tenant, onRefresh }) {
           <i className="fas fa-user-plus"></i> Add System Admin
         </button>
         <div style={{ flex: 1 }}></div>
+        <button className="sl-delete-btn" onClick={() => setShowDeleteModal(true)}>
+          <i className="fas fa-recycle"></i> Delete
+        </button>
       </div>
 
       {/* Status Badge Row */}
@@ -182,6 +143,18 @@ export default function TenantDetailContent({ tenant, onRefresh }) {
         {activeTab === 'users' && <UsersTab users={users} loading={loadingUsers} />}
         {activeTab === 'branches' && <BranchesTab branches={branches} loading={loadingBranches} />}
       </div>
+
+      <DeleteConfirmModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={async () => {
+          await platformAdminService.deleteTenant(tenant.id);
+          closeSlider();
+          onRefresh?.();
+        }}
+        entityName={tenant.name}
+        entityType="Tenant"
+      />
     </div>
   );
 }
@@ -287,13 +260,15 @@ function UsersTab({ users, loading }) {
                 {user.firstName} {user.lastName}
               </div>
               <div style={{ fontSize: 11, color: '#94A3B8' }}>
-                {user.email} • {user.title || user.role}
+                {user.email} • {user.title || (user.roles || []).join(', ')}
               </div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 2 }}>
-              <span style={{ fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 4, background: '#EFF6FF', color: '#1D4ED8' }}>
-                {user.role}
-              </span>
+              {(user.roles || []).map((role, ri) => (
+                <span key={ri} style={{ fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 4, background: '#EFF6FF', color: '#1D4ED8' }}>
+                  {role}
+                </span>
+              ))}
               {user.branchName && (
                 <span style={{ fontSize: 10, color: '#94A3B8' }}>
                   <i className="fas fa-code-branch"></i> {user.branchName}

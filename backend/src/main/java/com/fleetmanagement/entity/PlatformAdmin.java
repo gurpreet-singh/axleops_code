@@ -8,9 +8,9 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
- * Platform Admins are a separate concept from tenant Users.
- * They manage the AxleOps platform itself — creating tenants,
+ * Platform Admins manage the AxleOps platform itself — creating tenants,
  * assigning system admins, etc. They are NOT tied to any tenant.
+ * Completely separate entity from TenantUser/User.
  */
 @Entity
 @Table(name = "platform_admins")
@@ -35,10 +35,12 @@ public class PlatformAdmin {
     private String phone;
     private String title = "Platform Administrator";
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "access_level")
-    private String accessLevel = "FULL";
+    private PlatformRole role = PlatformRole.PLATFORM_ADMIN;
 
-    private String status = "ACTIVE";
+    @Column(name = "is_active")
+    private boolean active = true;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -56,5 +58,10 @@ public class PlatformAdmin {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+
+    public String getFullName() {
+        if (lastName == null || lastName.isBlank()) return firstName;
+        return firstName + " " + lastName;
     }
 }

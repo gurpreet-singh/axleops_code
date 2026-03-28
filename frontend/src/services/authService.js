@@ -18,6 +18,13 @@ const authService = {
    */
   me: () =>
     api.get('/auth/me'),
+
+  /**
+   * POST /auth/select-role — generate a scoped JWT for a specific role
+   * @param {string} roleCode — enum name (e.g. 'FLEET_MANAGER') or 'ALL'
+   */
+  selectRole: (roleCode) =>
+    api.post('/auth/select-role', { roleCode }),
 };
 
 export default authService;

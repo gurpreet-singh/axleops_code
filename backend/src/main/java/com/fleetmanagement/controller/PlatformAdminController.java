@@ -79,4 +79,13 @@ public class PlatformAdminController {
     public ResponseEntity<List<BranchResponse>> getTenantBranches(@PathVariable UUID id) {
         return ResponseEntity.ok(platformAdminService.getTenantBranches(id));
     }
+
+    /**
+     * DELETE /api/v1/platform/tenants/{id} — Delete a tenant and all associated data
+     */
+    @DeleteMapping("/tenants/{id}")
+    public ResponseEntity<Void> deleteTenant(@PathVariable UUID id) {
+        platformAdminService.deleteTenant(id);
+        return ResponseEntity.noContent().build();
+    }
 }

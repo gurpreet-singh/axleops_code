@@ -561,3 +561,465 @@
 .stat-card .stat-change.negative {
   color: var(--status-overdue);
 }
+
+/* ===================================================
+   Delete Button — Slider Action Bar
+   =================================================== */
+.sl-delete-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid #FECACA;
+  border-radius: 6px;
+  background: #FEF2F2;
+  color: #DC2626;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  margin-left: auto;
+}
+
+.sl-delete-btn:hover {
+  background: #DC2626;
+  color: #fff;
+  border-color: #DC2626;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.25);
+  transform: translateY(-1px);
+}
+
+.sl-delete-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(220, 38, 38, 0.2);
+}
+
+.sl-delete-btn i {
+  font-size: 10px;
+}
+
+/* ===================================================
+   Delete Confirmation Modal — Premium Styled
+   =================================================== */
+.delete-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: deleteOverlayIn 0.2s ease-out;
+}
+
+@keyframes deleteOverlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.delete-modal-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 28px 32px 24px;
+  width: 380px;
+  max-width: 90vw;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  animation: deleteCardIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes deleteCardIn {
+  from { opacity: 0; transform: scale(0.9) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.delete-modal-icon-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.delete-modal-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FEE2E2, #FECACA);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: #DC2626;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
+}
+
+.delete-modal-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1E293B;
+  margin: 0 0 8px;
+}
+
+.delete-modal-entity {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 12px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.delete-modal-text {
+  font-size: 13px;
+  color: #64748B;
+  line-height: 1.5;
+  margin: 0 0 14px;
+}
+
+.delete-modal-text strong {
+  color: #DC2626;
+  font-weight: 700;
+}
+
+.delete-modal-warning {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #92400E;
+  margin-bottom: 20px;
+}
+
+.delete-modal-warning i {
+  font-size: 13px;
+  color: #D97706;
+  flex-shrink: 0;
+}
+
+.delete-modal-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.delete-modal-btn-cancel {
+  flex: 1;
+  padding: 10px 16px;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 10px;
+  background: #fff;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+
+.delete-modal-btn-cancel:hover {
+  background: #F1F5F9;
+  border-color: #CBD5E1;
+  color: #1E293B;
+}
+
+.delete-modal-btn-delete {
+  flex: 1;
+  padding: 10px 16px;
+  border: 1.5px solid #DC2626;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #DC2626, #EF4444);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: inherit;
+}
+
+.delete-modal-btn-delete:hover {
+  background: linear-gradient(135deg, #B91C1C, #DC2626);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+  transform: translateY(-1px);
+}
+
+.delete-modal-btn-delete:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(220, 38, 38, 0.2);
+}
+
+.delete-modal-btn-delete:disabled,
+.delete-modal-btn-cancel:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ===================================================
+   AxleOps Design System — Form Elements
+   Single source of truth for inputs, selects,
+   textareas, labels, filter bars, and sections.
+   =================================================== */
+
+/* ─── Base Input ────────────────────────────────── */
+.ax-input {
+  width: 100%;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #1E293B;
+  font-family: inherit;
+  font-weight: 500;
+  outline: none;
+  background: #fff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-sizing: border-box;
+}
+
+.ax-input:focus {
+  border-color: #1A73E8;
+  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.08);
+}
+
+.ax-input:disabled {
+  background: #F8FAFC;
+  color: #94A3B8;
+  cursor: not-allowed;
+}
+
+.ax-input::placeholder {
+  color: #CBD5E1;
+  font-weight: 400;
+}
+
+/* ─── Textarea ──────────────────────────────────── */
+.ax-textarea {
+  resize: vertical;
+  min-height: 72px;
+}
+
+/* ─── Select (Form Fields — Slider Forms) ───────── */
+.ax-select {
+  width: 100%;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 8px 28px 8px 12px;
+  font-size: 13px;
+  color: #1E293B;
+  font-family: inherit;
+  font-weight: 500;
+  outline: none;
+  background-color: #fff;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-sizing: border-box;
+  /* Custom tight chevron */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2364748B' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+
+.ax-select:focus {
+  border-color: #1A73E8;
+  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.08);
+}
+
+.ax-select:disabled {
+  background-color: #F8FAFC;
+  color: #94A3B8;
+  cursor: not-allowed;
+}
+
+/* ─── Filter Bar Select (List Pages) ────────────── */
+.ax-filter-select {
+  border: 1.5px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 7px 28px 7px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1E293B;
+  font-family: inherit;
+  outline: none;
+  cursor: pointer;
+  background-color: #fff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  box-sizing: border-box;
+  /* Custom tight chevron */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2364748B' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+
+.ax-filter-select:hover {
+  border-color: #CBD5E1;
+  background-color: #F8FAFC;
+}
+
+.ax-filter-select:focus {
+  border-color: #1A73E8;
+  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.08);
+  background-color: #fff;
+}
+
+/* ─── Filter Bar Search Input ───────────────────── */
+.ax-filter-search {
+  border: 1.5px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #1E293B;
+  font-family: inherit;
+  outline: none;
+  width: 220px;
+  background: #fff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, width 0.2s ease;
+  box-sizing: border-box;
+}
+
+.ax-filter-search:focus {
+  border-color: #1A73E8;
+  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.08);
+  width: 260px;
+}
+
+.ax-filter-search::placeholder {
+  color: #CBD5E1;
+  font-weight: 400;
+}
+
+/* ─── Filter Bar Container ──────────────────────── */
+.ax-filter-bar {
+  background: #fff;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 10px 16px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.ax-filter-bar .ax-filter-count {
+  font-size: 11px;
+  color: #94A3B8;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ─── Form Field Labels ─────────────────────────── */
+.ax-field {
+  min-width: 0;
+}
+
+.ax-field--full {
+  grid-column: 1 / -1;
+}
+
+.ax-field-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ax-field-required {
+  color: #DC2626;
+  font-size: 13px;
+}
+
+.ax-field-info {
+  font-size: 10px;
+  color: #94A3B8;
+  margin-top: 3px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+/* ─── Section Wrapper ───────────────────────────── */
+.ax-section {
+  border: 1.5px solid #E2E8F0;
+  border-radius: 14px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  background: #fff;
+  transition: box-shadow 0.2s ease;
+}
+
+.ax-section:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.ax-section-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid #E2E8F0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  user-select: none;
+}
+
+.ax-section-header--collapsible {
+  cursor: pointer;
+}
+
+.ax-section-header--collapsible:hover {
+  filter: brightness(0.97);
+}
+
+.ax-section-emoji {
+  font-size: 14px;
+}
+
+.ax-section-title {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  flex: 1;
+}
+
+.ax-section-chevron {
+  font-size: 10px;
+  color: #94A3B8;
+  transition: transform 0.2s ease;
+}
+
+.ax-section-body {
+  padding: 16px 16px 18px;
+}
+

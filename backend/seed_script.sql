@@ -31,22 +31,26 @@ INSERT INTO branches (id, tenant_id, name, city, state, is_primary, status, crea
 ON CONFLICT (id) DO NOTHING;
 
 
+-- ─── USERS (tenant users — no role column, roles in join table) ──────────────
 
-
-
--- ─── USERS ───────────────────────────────────────────────────────────────────
-
-INSERT INTO users (id, tenant_id, first_name, last_name, email, password, role, title, branch_id, created_at, updated_at) VALUES
-  ('ae999999-9999-9999-9999-999999999999', 'e9999999-9999-9999-9999-999999999999', 'Gurpreet', 'Singh',  'gurpreet_gt', 'gurpreet_gt', 'SYSTEM_ADMIN', 'System Administrator',  'b9999999-9999-9999-9999-999999999999', NOW(), NOW())
+INSERT INTO users (id, tenant_id, first_name, last_name, email, password, title, branch_id, is_active, created_at, updated_at) VALUES
+  ('ae999999-9999-9999-9999-999999999999', 'e9999999-9999-9999-9999-999999999999', 'Gurpreet', 'Singh',  'gurpreet_gt', 'gurpreet_gt', 'System Administrator',  'b9999999-9999-9999-9999-999999999999', TRUE, NOW(), NOW())
 ON CONFLICT (id) DO NOTHING;
 
 
+-- ─── TENANT USER ROLES (join table — enum name strings) ──────────────────────
+-- Gurpreet gets OWNER_DIRECTOR + SUPER_ADMIN so he has full access
+
+INSERT INTO tenant_user_role (user_id, role) VALUES
+  ('ae999999-9999-9999-9999-999999999999', 'OWNER_DIRECTOR'),
+  ('ae999999-9999-9999-9999-999999999999', 'SUPER_ADMIN')
+ON CONFLICT DO NOTHING;
 
 
 -- ─── PLATFORM ADMINS ─────────────────────────────────────────────────────────
 
-INSERT INTO platform_admins (id, first_name, last_name, email, password, title, access_level, status, created_at, updated_at) VALUES
-  ('a0000001-0000-4000-a000-000000000001', 'Platform', 'Admin', 'platform_admin', 'platform_admin', 'Platform Administrator', 'FULL', 'ACTIVE', NOW(), NOW())
+INSERT INTO platform_admins (id, first_name, last_name, email, password, title, access_level, is_active, created_at, updated_at) VALUES
+  ('a0000001-0000-4000-a000-000000000001', 'Platform', 'Admin', 'platform_admin', 'platform_admin', 'Platform Administrator', 'PLATFORM_ADMIN', TRUE, NOW(), NOW())
 ON CONFLICT (id) DO NOTHING;
 
 
