@@ -31,31 +31,7 @@ INSERT INTO branches (id, tenant_id, name, city, state, is_primary, status, crea
 ON CONFLICT (id) DO NOTHING;
 
 
--- ─── ROLES ───────────────────────────────────────────────────────────────────
 
-INSERT INTO roles (id, role_key, label, department, branch_scope, description, created_at, updated_at) VALUES
-  ('aa111111-1111-1111-1111-111111111111', 'OWNER',              'Owner / Director',   'executive',  'ALL', 'Full P&L visibility',                       NOW(), NOW()),
-  ('aa222222-2222-2222-2222-222222222222', 'BRANCH_MANAGER',     'Branch Manager',     'executive',  'OWN', 'Cross-department authority within branch',   NOW(), NOW()),
-  ('aa333333-3333-3333-3333-333333333333', 'FLEET_MANAGER',      'Fleet Manager',      'operations', 'OWN', 'Vehicle allocation',                        NOW(), NOW()),
-  ('aa444444-4444-4444-4444-444444444444', 'FINANCE_CONTROLLER', 'Finance Controller', 'finance',    'ALL', 'P&L oversight',                             NOW(), NOW()),
-  ('a0000002-0000-4000-a000-000000000001', 'PLATFORM_ADMIN',     'Platform Admin',     'platform',   'ALL', 'Full access to all tenants',                 NOW(), NOW()),
-  ('aa555555-5555-5555-5555-555555555555', 'SYSTEM_ADMIN',       'System Administrator','admin',     'ALL', 'Full system access — users, roles, configs', NOW(), NOW())
-ON CONFLICT (id) DO NOTHING;
-
-
--- ─── AUTHORITIES ─────────────────────────────────────────────────────────────
-
-INSERT INTO authorities (id, authority_key, module, description, created_at, updated_at) VALUES
-  ('ab111111-1111-1111-1111-111111111111', 'TRIP_VIEW',    'TRIP',    'View trip list and detail',  NOW(), NOW()),
-  ('ab222222-2222-2222-2222-222222222222', 'TRIP_CREATE',  'TRIP',    'Create new trips',           NOW(), NOW()),
-  ('ab333333-3333-3333-3333-333333333333', 'INVOICE_VIEW', 'INVOICE', 'View invoices',              NOW(), NOW())
-ON CONFLICT (id) DO NOTHING;
-
-INSERT INTO role_authorities (role_id, authority_id) VALUES
-  ('aa111111-1111-1111-1111-111111111111', 'ab111111-1111-1111-1111-111111111111'),
-  ('aa111111-1111-1111-1111-111111111111', 'ab222222-2222-2222-2222-222222222222'),
-  ('aa111111-1111-1111-1111-111111111111', 'ab333333-3333-3333-3333-333333333333')
-ON CONFLICT DO NOTHING;
 
 
 -- ─── USERS ───────────────────────────────────────────────────────────────────
@@ -64,9 +40,7 @@ INSERT INTO users (id, tenant_id, first_name, last_name, email, password, role, 
   ('ae999999-9999-9999-9999-999999999999', 'e9999999-9999-9999-9999-999999999999', 'Gurpreet', 'Singh',  'gurpreet_gt', 'gurpreet_gt', 'SYSTEM_ADMIN', 'System Administrator',  'b9999999-9999-9999-9999-999999999999', NOW(), NOW())
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO user_branch_roles (id, user_id, branch_id, role_id, is_primary) VALUES
-  ('cb999999-9999-9999-9999-999999999999', 'ae999999-9999-9999-9999-999999999999', 'b9999999-9999-9999-9999-999999999999', 'aa555555-5555-5555-5555-555555555555', TRUE)
-ON CONFLICT (id) DO NOTHING;
+
 
 
 -- ─── PLATFORM ADMINS ─────────────────────────────────────────────────────────
@@ -182,46 +156,6 @@ ON CONFLICT (id) DO NOTHING;
 
 
 -- ═════════════════════════════════════════════════════════════════════════════
--- LEDGER GROUPS — Minimal Standard Groups (Tally-compatible)
--- ═════════════════════════════════════════════════════════════════════════════
--- Primary
--- ├── Assets
--- ├── Liabilities
--- ├── Income
--- │   ├── Direct Income (Freight)
--- │   └── Indirect Income
--- └── Expenses
---     ├── Direct Expenses (Trip Costs)
---     └── Indirect Expenses
--- ═════════════════════════════════════════════════════════════════════════════
-
--- Primary (root — no nature)
-INSERT INTO ledger_groups (id, tenant_id, name, nature, default_account_sub_type, parent_group_id, tally_group_name, created_at, updated_at) VALUES
-  ('aa000000-0001-0000-0000-000000000000', 'e9999999-9999-9999-9999-999999999999', 'Primary', NULL, NULL, NULL, 'Primary', NOW(), NOW())
-ON CONFLICT (id) DO NOTHING;
-
--- 4 top-level groups under Primary
-INSERT INTO ledger_groups (id, tenant_id, name, nature, default_account_sub_type, parent_group_id, tally_group_name, created_at, updated_at) VALUES
-  ('aa000000-0001-0000-0000-000000000001', 'e9999999-9999-9999-9999-999999999999', 'Assets',      'ASSET',     NULL, 'aa000000-0001-0000-0000-000000000000', 'Assets',      NOW(), NOW()),
-  ('aa000000-0001-0000-0000-000000000002', 'e9999999-9999-9999-9999-999999999999', 'Liabilities', 'LIABILITY', NULL, 'aa000000-0001-0000-0000-000000000000', 'Liabilities', NOW(), NOW()),
-  ('aa000000-0001-0000-0000-000000000003', 'e9999999-9999-9999-9999-999999999999', 'Income',      'INCOME',    NULL, 'aa000000-0001-0000-0000-000000000000', 'Income',      NOW(), NOW()),
-  ('aa000000-0001-0000-0000-000000000004', 'e9999999-9999-9999-9999-999999999999', 'Expenses',    'EXPENSE',   NULL, 'aa000000-0001-0000-0000-000000000000', 'Expenses',    NOW(), NOW())
-ON CONFLICT (id) DO NOTHING;
-
--- Income sub-groups
-INSERT INTO ledger_groups (id, tenant_id, name, nature, default_account_sub_type, parent_group_id, tally_group_name, created_at, updated_at) VALUES
-  ('aa000000-0002-0000-0000-000000000001', 'e9999999-9999-9999-9999-999999999999', 'Direct Income',   'INCOME', NULL, 'aa000000-0001-0000-0000-000000000003', 'Direct Incomes',   NOW(), NOW()),
-  ('aa000000-0002-0000-0000-000000000002', 'e9999999-9999-9999-9999-999999999999', 'Indirect Income', 'INCOME', NULL, 'aa000000-0001-0000-0000-000000000003', 'Indirect Incomes', NOW(), NOW())
-ON CONFLICT (id) DO NOTHING;
-
--- Expense sub-groups
-INSERT INTO ledger_groups (id, tenant_id, name, nature, default_account_sub_type, parent_group_id, tally_group_name, created_at, updated_at) VALUES
-  ('aa000000-0002-0000-0000-000000000003', 'e9999999-9999-9999-9999-999999999999', 'Direct Expenses',   'EXPENSE', NULL, 'aa000000-0001-0000-0000-000000000004', 'Direct Expenses',   NOW(), NOW()),
-  ('aa000000-0002-0000-0000-000000000004', 'e9999999-9999-9999-9999-999999999999', 'Indirect Expenses', 'EXPENSE', NULL, 'aa000000-0001-0000-0000-000000000004', 'Indirect Expenses', NOW(), NOW())
-ON CONFLICT (id) DO NOTHING;
-
-
--- ═════════════════════════════════════════════════════════════════════════════
 -- DONE
 -- ═════════════════════════════════════════════════════════════════════════════
-SELECT 'Seed script completed. ' || COUNT(*) || ' ledger groups loaded.' AS status FROM ledger_groups;
+SELECT 'Seed script completed.' AS status;

@@ -33,10 +33,10 @@ public class LedgerGroup extends BaseEntity {
     private GroupNature nature;
 
     /**
-     * Default sub type for new accounts created under this group.
-     * The account can override this, but 95% of the time the group default is right.
+     * Determines which UI form sections appear and what business logic applies
+     * to accounts created under this group. Required for every group.
      */
-    @Column(name = "default_account_sub_type", length = 30)
+    @Column(name = "default_account_sub_type", length = 30, nullable = false)
     @Enumerated(EnumType.STRING)
     private AccountSubType defaultAccountSubType;
 

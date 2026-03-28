@@ -77,13 +77,13 @@ export function LedgerGroupCreateContent({ onSave, groups }) {
   const set = (key) => (val) => setForm(f => ({ ...f, [key]: val }));
 
   const handleSave = async () => {
-    if (!form.name || !form.nature) return;
+    if (!form.name || !form.nature || !form.defaultAccountSubType) return;
     setSaving(true);
     try {
       await ledgerGroupService.create({
         name: form.name,
         nature: form.nature,
-        defaultAccountSubType: form.defaultAccountSubType || null,
+        defaultAccountSubType: form.defaultAccountSubType,
         tallyGroupName: form.tallyGroupName || null,
         parentGroupId: form.parentGroupId || null,
       });
@@ -105,13 +105,13 @@ export function LedgerGroupCreateContent({ onSave, groups }) {
     <div>
       {/* Sticky Action Bar */}
       <div style={{ position: 'sticky', top: 0, zIndex: 10, display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', background: '#fff', borderBottom: '1px solid #E2E8F0', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
-        <button onClick={handleSave} disabled={saving || !form.name || !form.nature}
+        <button onClick={handleSave} disabled={saving || !form.name || !form.nature || !form.defaultAccountSubType}
           style={{
             display: 'inline-flex', alignItems: 'center', gap: 5,
             border: '1.5px solid #059669', borderRadius: 8, padding: '8px 18px',
             fontSize: 12, fontWeight: 700, color: '#059669', background: '#ECFDF5',
-            cursor: (saving || !form.name || !form.nature) ? 'not-allowed' : 'pointer',
-            opacity: (saving || !form.name || !form.nature) ? 0.5 : 1,
+            cursor: (saving || !form.name || !form.nature || !form.defaultAccountSubType) ? 'not-allowed' : 'pointer',
+            opacity: (saving || !form.name || !form.nature || !form.defaultAccountSubType) ? 0.5 : 1,
             transition: 'all 0.15s',
           }}
           onMouseEnter={e => { if (!saving) { e.currentTarget.style.background = '#059669'; e.currentTarget.style.color = '#fff'; } }}
@@ -134,7 +134,7 @@ export function LedgerGroupCreateContent({ onSave, groups }) {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
             <FormField label="Nature" value={form.nature} onChange={set('nature')} required options={getOptionsWithPlaceholder('groupNature', 'Select nature')} />
-            <FormField label="Default Sub Type" value={form.defaultAccountSubType} onChange={set('defaultAccountSubType')} options={getOptionsWithPlaceholder('accountSubType', 'Select sub type')} />
+            <FormField label="Default Sub Type" value={form.defaultAccountSubType} onChange={set('defaultAccountSubType')} required options={getOptionsWithPlaceholder('accountSubType', 'Select sub type')} />
           </div>
         </Section>
 
@@ -180,7 +180,7 @@ export function LedgerGroupDetailContent({ group, onSave, groups }) {
       await ledgerGroupService.update(group.id, {
         name: form.name,
         nature: form.nature,
-        defaultAccountSubType: form.defaultAccountSubType || null,
+        defaultAccountSubType: form.defaultAccountSubType,
         tallyGroupName: form.tallyGroupName || null,
         parentGroupId: form.parentGroupId || null,
       });
@@ -227,7 +227,7 @@ export function LedgerGroupDetailContent({ group, onSave, groups }) {
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                 <FormField label="Nature" value={form.nature} onChange={set('nature')} required options={getOptionsWithPlaceholder('groupNature', 'Select nature')} />
-                <FormField label="Default Sub Type" value={form.defaultAccountSubType} onChange={set('defaultAccountSubType')} options={getOptionsWithPlaceholder('accountSubType', 'Select sub type')} />
+                <FormField label="Default Sub Type" value={form.defaultAccountSubType} onChange={set('defaultAccountSubType')} required options={getOptionsWithPlaceholder('accountSubType', 'Select sub type')} />
               </div>
             </Section>
             <Section title="Hierarchy & Tally" emoji="🏗️" borderColor="#C4B5FD" headerBg="linear-gradient(135deg, #F5F3FF, #EDE9FE)" accentColor="#6D28D9">
