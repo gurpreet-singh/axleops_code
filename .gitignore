@@ -1,3 +1,5 @@
+.agent/
+.agents/
 node_modules/
 dist/
 build/
@@ -5,6 +7,25 @@ build/
 .idea/
 .vscode/
 *.log
+.DS_Store
+
+# Mobile specific
+mobile/*.iml
+mobile/.kotlin
+mobile/.gradle
+mobile/**/build/
+mobile/userdata
+!mobile/src/**/build/
+mobile/local.properties
+mobile/captures
+mobile/.externalNativeBuild
+mobile/.cxx
+mobile/*.xcodeproj/*
+!mobile/*.xcodeproj/project.pbxproj
+!mobile/*.xcodeproj/xcshareddata/
+!mobile/*.xcodeproj/project.xcworkspace/
+!mobile/*.xcworkspace/contents.xcworkspacedata
+mobile/**/xcshareddata/WorkspaceSettings.xcsettings
 
 # Backend (Gradle/Spring Boot)
 backend/build/
