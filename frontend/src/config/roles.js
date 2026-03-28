@@ -214,6 +214,7 @@ export function pageToPath(page) {
     'platform-tenants': '/platform/tenants',
     'platform-users': '/platform/users',
     'platform-settings': '/platform/settings',
+    'csv-import': '/import',
   };
   return map[page] || `/${page}`;
 }
@@ -311,6 +312,7 @@ export const ROLE_MENUS = {
       ]
     },
     { type: 'item', icon: 'fas fa-chart-bar', label: 'Reports', page: 'reports' },
+    { type: 'item', icon: 'fas fa-file-import', label: 'CSV Import', page: 'csv-import' },
     { type: 'item', icon: 'fas fa-cog', label: 'Settings', page: 'settings' },
   ],
 
@@ -769,6 +771,7 @@ export const ROLE_MENUS = {
       ]
     },
     { type: 'item', icon: 'fas fa-chart-bar', label: 'Reports', page: 'reports' },
+    { type: 'item', icon: 'fas fa-file-import', label: 'CSV Import', page: 'csv-import' },
     {
       type: 'group', icon: 'fas fa-book', label: 'Ledgers & Vouchers', id: 'sub-accounting', children: [
         { label: 'Chart of Accounts', page: 'chart-of-accounts' },

@@ -65,6 +65,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.session:spring-session-data-redis'
 
+    // ─── CSV Import ──────────────────────────────────
+    implementation 'com.opencsv:opencsv:5.9'
+    implementation 'me.xdrop:fuzzywuzzy:1.4.0'
+
     // ─── DevTools ─────────────────────────────────────
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 

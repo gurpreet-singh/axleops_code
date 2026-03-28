@@ -39,6 +39,9 @@ import WorkOrdersPage from './pages/mro/WorkOrdersPage';
 import PartsListPage from './pages/inventory/PartsListPage';
 import PurchaseOrdersPage from './pages/inventory/PurchaseOrdersPage';
 
+// ─── CSV Import ───────────────────────────────────────────
+import ImportPage from './pages/import/ImportPage';
+
 /**
  * Requires authentication — redirects to /login if not authenticated.
  * Also initialises the enum store on first mount.
@@ -221,6 +224,9 @@ export default function App() {
         <Route path="/accounting" element={<PlaceholderPage title="Accounting" icon="fas fa-rupee-sign" />} />
         <Route path="/users" element={<PlaceholderPage title="User Management" icon="fas fa-users-cog" />} />
         <Route path="/branches" element={<PlaceholderPage title="Branches" icon="fas fa-code-branch" />} />
+
+        {/* ─── CSV Import ──────────────────────────────── */}
+        <Route path="/import" element={<ImportPage />} />
       </Route>
 
       {/* Fallback */}
