@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import useSliderStore from '../../stores/sliderStore';
-import ledgerGroupService, { GROUP_NATURES, ACCOUNT_TYPES, NATURE_COLORS } from '../../services/ledgerGroupService';
+import useEnumStore, { NATURE_COLORS } from '../../stores/enumStore';
+import ledgerGroupService from '../../services/ledgerGroupService';
 
 // ═══════════════════════════════════════════════════════════════
 // Reusable Form Components (same pattern as RouteSliderContent)
@@ -67,6 +68,7 @@ function Section({ title, emoji, borderColor, headerBg, accentColor, children })
 
 export function LedgerGroupCreateContent({ onSave, groups }) {
   const { closeSlider } = useSliderStore();
+  const { getOptionsWithPlaceholder } = useEnumStore();
   const [form, setForm] = useState({
     name: '', nature: '', defaultAccountType: '',
     tallyGroupName: '', parentGroupId: '', systemGroup: false,
@@ -132,8 +134,8 @@ export function LedgerGroupCreateContent({ onSave, groups }) {
             <FormField label="Group Name" value={form.name} onChange={set('name')} required placeholder="e.g. SUNDRY DEBTORS" full />
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-            <FormField label="Nature" value={form.nature} onChange={set('nature')} required options={GROUP_NATURES} />
-            <FormField label="Default Account Type" value={form.defaultAccountType} onChange={set('defaultAccountType')} options={ACCOUNT_TYPES} />
+            <FormField label="Nature" value={form.nature} onChange={set('nature')} required options={getOptionsWithPlaceholder('groupNature', 'Select nature')} />
+            <FormField label="Default Account Type" value={form.defaultAccountType} onChange={set('defaultAccountType')} options={getOptionsWithPlaceholder('ledgerGroupAccountType', 'Select type')} />
           </div>
         </Section>
 
@@ -163,6 +165,7 @@ export function LedgerGroupCreateContent({ onSave, groups }) {
 
 export function LedgerGroupDetailContent({ group, onSave, groups }) {
   const { closeSlider } = useSliderStore();
+  const { getOptionsWithPlaceholder, getLabel } = useEnumStore();
   const [isEditing, setIsEditing] = useState(false);
   const [form, setForm] = useState({
     name: group.name || '',
@@ -234,8 +237,8 @@ export function LedgerGroupDetailContent({ group, onSave, groups }) {
                 <FormField label="Group Name" value={form.name} onChange={set('name')} required full />
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-                <FormField label="Nature" value={form.nature} onChange={set('nature')} required options={GROUP_NATURES} />
-                <FormField label="Default Account Type" value={form.defaultAccountType} onChange={set('defaultAccountType')} options={ACCOUNT_TYPES} />
+                <FormField label="Nature" value={form.nature} onChange={set('nature')} required options={getOptionsWithPlaceholder('groupNature', 'Select nature')} />
+                <FormField label="Default Account Type" value={form.defaultAccountType} onChange={set('defaultAccountType')} options={getOptionsWithPlaceholder('ledgerGroupAccountType', 'Select type')} />
               </div>
             </Section>
             <Section title="Hierarchy & Tally" emoji="🏗️" borderColor="#C4B5FD" headerBg="linear-gradient(135deg, #F5F3FF, #EDE9FE)" accentColor="#6D28D9">
@@ -251,7 +254,7 @@ export function LedgerGroupDetailContent({ group, onSave, groups }) {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 <ReadField label="Group Name" value={group.name} />
                 <ReadField label="Nature" value={group.nature} />
-                <ReadField label="Default Account Type" value={group.defaultAccountType?.replace(/_/g, ' ') || '—'} />
+                <ReadField label="Default Account Type" value={getLabel('ledgerGroupAccountType', group.defaultAccountType)} />
                 <ReadField label="System Group" value={group.systemGroup ? '✅ Yes — Protected' : 'No — Custom'} />
               </div>
             </Section>

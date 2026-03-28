@@ -48,6 +48,6 @@ public class LedgerGroup extends BaseEntity {
     }
 
     public enum AccountType {
-        PARTY_ROUTE, PARTY_GENERAL, BANK, DRIVER_CASH, GENERAL
+        PARTY_GENERAL, BANK, GENERAL
     }
 }

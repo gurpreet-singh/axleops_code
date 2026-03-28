@@ -205,7 +205,7 @@ public class LedgerAccount extends BaseEntity {
     // ═══════════════════════════════════════════════════════════════
 
     public enum AccountType {
-        PARTY_GENERAL, BANK, DRIVER_CASH, GENERAL
+        PARTY_GENERAL, BANK, GENERAL
     }
 
     public enum TcsApplicability {

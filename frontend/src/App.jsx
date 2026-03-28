@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import useAuthStore from './stores/authStore';
+import useEnumStore from './stores/enumStore';
 import AppLayout from './components/layout/AppLayout';
 import LoginPage from './pages/LoginPage';
 import RoleSelector from './pages/RoleSelector';
@@ -39,9 +41,12 @@ import PurchaseOrdersPage from './pages/inventory/PurchaseOrdersPage';
 
 /**
  * Requires authentication — redirects to /login if not authenticated.
+ * Also initialises the enum store on first mount.
  */
 function RequireAuth({ children }) {
   const { isAuthenticated } = useAuthStore();
+  const { fetchEnums } = useEnumStore();
+  useEffect(() => { fetchEnums(); }, [fetchEnums]);
   if (!isAuthenticated) return <Navigate to="/login" replace />;
   return children;
 }

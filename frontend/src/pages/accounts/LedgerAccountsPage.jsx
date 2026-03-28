@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
-import ledgerAccountService, { ACCOUNT_TYPE_COLORS } from '../../services/ledgerAccountService';
+import ledgerAccountService from '../../services/ledgerAccountService';
+import useEnumStore, { ACCOUNT_TYPE_COLORS } from '../../stores/enumStore';
 import ledgerGroupService from '../../services/ledgerGroupService';
 import useSliderStore from '../../stores/sliderStore';
 import { LedgerAccountCreateContent, LedgerAccountDetailContent } from './LedgerAccountSliderContent';
@@ -14,6 +15,7 @@ export default function LedgerAccountsPage() {
   const [typeFilter, setTypeFilter] = useState('all');
   const [natureFilter, setNatureFilter] = useState('all');
   const { openSlider } = useSliderStore();
+  const { getOptions } = useEnumStore();
 
   const refresh = () => {
     setLoading(true);
@@ -100,17 +102,15 @@ export default function LedgerAccountsPage() {
       <div style={{ background: '#fff', border: '1.5px solid #E2E8F0', borderRadius: 14, padding: '14px 18px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
         <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)} style={{ border: '1.5px solid #E2E8F0', borderRadius: 10, padding: '8px 14px', fontSize: 13, color: '#1E293B', outline: 'none', fontFamily: 'inherit', cursor: 'pointer' }}>
           <option value="all">All Types</option>
-          <option value="PARTY_GENERAL">Party General</option>
-          <option value="BANK">Bank</option>
-          <option value="DRIVER_CASH">Driver Cash</option>
-          <option value="GENERAL">General</option>
+          {getOptions('ledgerAccountType').map(o => (
+            <option key={o.value} value={o.value}>{o.label}</option>
+          ))}
         </select>
         <select value={natureFilter} onChange={e => setNatureFilter(e.target.value)} style={{ border: '1.5px solid #E2E8F0', borderRadius: 10, padding: '8px 14px', fontSize: 13, color: '#1E293B', outline: 'none', fontFamily: 'inherit', cursor: 'pointer' }}>
           <option value="all">All Natures</option>
-          <option value="ASSET">Asset</option>
-          <option value="LIABILITY">Liability</option>
-          <option value="INCOME">Income</option>
-          <option value="EXPENSE">Expense</option>
+          {getOptions('groupNature').map(o => (
+            <option key={o.value} value={o.value}>{o.label}</option>
+          ))}
         </select>
         <div style={{ flex: 1 }}></div>
         <span style={{ fontSize: 12, color: '#94A3B8', fontWeight: 600 }}>{filtered.length} of {accounts.length} accounts</span>

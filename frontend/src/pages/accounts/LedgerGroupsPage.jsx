@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
-import ledgerGroupService, { NATURE_COLORS } from '../../services/ledgerGroupService';
+import ledgerGroupService from '../../services/ledgerGroupService';
+import useEnumStore, { NATURE_COLORS } from '../../stores/enumStore';
 import useSliderStore from '../../stores/sliderStore';
 import { LedgerGroupCreateContent, LedgerGroupDetailContent } from './LedgerGroupSliderContent';
 
@@ -9,6 +10,7 @@ export default function LedgerGroupsPage() {
   const [search, setSearch] = useState('');
   const [natureFilter, setNatureFilter] = useState('all');
   const { openSlider } = useSliderStore();
+  const { getOptions, getLabel } = useEnumStore();
 
   const refresh = () => {
     setLoading(true);
@@ -88,10 +90,9 @@ export default function LedgerGroupsPage() {
       <div style={{ background: '#fff', border: '1.5px solid #E2E8F0', borderRadius: 14, padding: '14px 18px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
         <select value={natureFilter} onChange={e => setNatureFilter(e.target.value)} style={{ border: '1.5px solid #E2E8F0', borderRadius: 10, padding: '8px 14px', fontSize: 13, color: '#1E293B', outline: 'none', fontFamily: 'inherit', cursor: 'pointer' }}>
           <option value="all">All Natures</option>
-          <option value="ASSET">Asset</option>
-          <option value="LIABILITY">Liability</option>
-          <option value="INCOME">Income</option>
-          <option value="EXPENSE">Expense</option>
+          {getOptions('groupNature').map(o => (
+            <option key={o.value} value={o.value}>{o.label}</option>
+          ))}
         </select>
         <div style={{ flex: 1 }}></div>
         <span style={{ fontSize: 12, color: '#94A3B8', fontWeight: 600 }}>{filtered.length} of {groups.length} groups</span>
@@ -130,7 +131,7 @@ export default function LedgerGroupsPage() {
                   {g.nature}
                 </span>
               </div>
-              <div style={{ fontSize: 12, color: '#475569', fontWeight: 500 }}>{g.defaultAccountType?.replace(/_/g, ' ') || '—'}</div>
+              <div style={{ fontSize: 12, color: '#475569', fontWeight: 500 }}>{getLabel('ledgerGroupAccountType', g.defaultAccountType)}</div>
               <div style={{ fontSize: 12, color: '#64748B', fontFamily: "'JetBrains Mono', monospace", fontWeight: 500 }}>{g.tallyGroupName || '—'}</div>
               <div>
                 {g.systemGroup ? (

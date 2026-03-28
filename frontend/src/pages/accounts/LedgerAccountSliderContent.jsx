@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import useSliderStore from '../../stores/sliderStore';
-import ledgerAccountService, { ACCOUNT_TYPE_OPTIONS, TCS_OPTIONS, ACCOUNT_TYPE_COLORS } from '../../services/ledgerAccountService';
+import useEnumStore, { ACCOUNT_TYPE_COLORS } from '../../stores/enumStore';
+import ledgerAccountService from '../../services/ledgerAccountService';
 
 // ═══════════════════════════════════════════════════════════════
 // Reusable Form Components (consistent with RouteSliderContent)
@@ -74,6 +75,7 @@ const INR = n => n ? '₹' + Number(n).toLocaleString('en-IN') : '—';
 // ═══════════════════════════════════════════════════════════════
 
 export function LedgerAccountCreateContent({ onSave, groups }) {
+  const { getOptionsWithPlaceholder } = useEnumStore();
   const { closeSlider } = useSliderStore();
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
@@ -151,7 +153,7 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
             <FormField label="Ledger Group" value={form.accountGroupId} onChange={set('accountGroupId')} required options={groupOptions} />
-            <FormField label="Account Type" value={form.accountType} onChange={set('accountType')} required options={ACCOUNT_TYPE_OPTIONS} />
+            <FormField label="Account Type" value={form.accountType} onChange={set('accountType')} required options={getOptionsWithPlaceholder('ledgerAccountType', 'Select type')} />
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
             <FormField label="Tally Name" value={form.tallyName} onChange={set('tallyName')} placeholder="Override for Tally sync" />
@@ -183,7 +185,7 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
               <FormField label="Vendor Code" value={form.ourVendorCode} onChange={set('ourVendorCode')} placeholder="Our vendor code" />
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14, marginBottom: 14 }}>
-              <FormField label="TCS Applicable" value={form.tcsApplicable} onChange={set('tcsApplicable')} options={TCS_OPTIONS} />
+              <FormField label="TCS Applicable" value={form.tcsApplicable} onChange={set('tcsApplicable')} options={getOptionsWithPlaceholder('tcsApplicability', 'Not Applicable')} />
               <FormField label="Payment Terms" value={form.paymentTerms} onChange={set('paymentTerms')} placeholder="e.g. 30 days" />
               <FormField label="Tally Payment Terms" value={form.tallyPaymentTerms} onChange={set('tallyPaymentTerms')} placeholder="Tally terms" />
             </div>
@@ -252,6 +254,7 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
 
 export function LedgerAccountDetailContent({ account, onSave, groups }) {
   const { closeSlider } = useSliderStore();
+  const { getOptionsWithPlaceholder } = useEnumStore();
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
   const [form, setForm] = useState({ ...account });
@@ -350,7 +353,7 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
                   <FormField label="Ledger Group" value={form.accountGroupId} onChange={set('accountGroupId')} options={groupOptions} />
-                  <FormField label="Account Type" value={form.accountType} onChange={set('accountType')} options={ACCOUNT_TYPE_OPTIONS} />
+                  <FormField label="Account Type" value={form.accountType} onChange={set('accountType')} options={getOptionsWithPlaceholder('ledgerAccountType', 'Select type')} />
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                   <FormField label="Tally Name" value={form.tallyName} onChange={set('tallyName')} />
@@ -401,7 +404,7 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
                 <FormField label="Vendor Code" value={form.ourVendorCode} onChange={set('ourVendorCode')} />
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
-                <FormField label="TCS" value={form.tcsApplicable} onChange={set('tcsApplicable')} options={TCS_OPTIONS} />
+                <FormField label="TCS" value={form.tcsApplicable} onChange={set('tcsApplicable')} options={getOptionsWithPlaceholder('tcsApplicability', 'Not Applicable')} />
                 <FormField label="Payment Terms" value={form.paymentTerms} onChange={set('paymentTerms')} />
                 <FormField label="Tally Terms" value={form.tallyPaymentTerms} onChange={set('tallyPaymentTerms')} />
               </div>
