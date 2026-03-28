@@ -8,9 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Master reference table for ledger groups (~25 rows, max 3 levels deep).
- * Denormalised name/nature are copied onto LedgerAccount for zero-join reads.
- * Supports Tally-style hierarchy for automatic P&L / Balance Sheet roll-up.
+ * User-defined ledger group — purely organisational.
+ * <p>
+ * Tenants build their own chart of accounts hierarchy (any depth).
+ * The code never makes decisions based on group name or structure;
+ * it only cares about {@link GroupNature} and {@link AccountSubType}.
  */
 @Entity
 @Table(name = "ledger_groups")
@@ -18,36 +20,57 @@ import java.util.List;
 @Setter
 public class LedgerGroup extends BaseEntity {
 
+    /** e.g. "Sundry Debtors", "Bank Accounts", "Indirect Expenses" */
     @Column(nullable = false)
-    private String name; // e.g. "SUNDRY DEBTORS"
+    private String name;
 
+    /**
+     * Determines Balance Sheet vs P&L placement and debit/credit behaviour.
+     * Required for top-level groups, inherited from parent for sub-groups.
+     */
     @Column(length = 20)
     @Enumerated(EnumType.STRING)
-    private GroupNature nature; // ASSET, LIABILITY, INCOME, EXPENSE (null = Primary root)
+    private GroupNature nature;
 
-    @Column(name = "default_account_type", length = 30)
+    /**
+     * Default sub type for new accounts created under this group.
+     * The account can override this, but 95% of the time the group default is right.
+     */
+    @Column(name = "default_account_sub_type", length = 30)
     @Enumerated(EnumType.STRING)
-    private AccountType defaultAccountType; // drives which UI form to show
+    private AccountSubType defaultAccountSubType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_group_id")
     private LedgerGroup parentGroup;
 
-    /** Walk the tree downward — children of this group */
     @OneToMany(mappedBy = "parentGroup", fetch = FetchType.LAZY)
     private List<LedgerGroup> children = new ArrayList<>();
 
+    /** Optional — for Tally sync mapping */
     @Column(name = "tally_group_name")
     private String tallyGroupName;
 
-    @Column(name = "is_system_group", nullable = false)
-    private boolean systemGroup = false; // protect standard groups from deletion
+    // ═══════════════════════════════════════════════════════════════
+    // ENUMS — the only two things the code cares about
+    // ═══════════════════════════════════════════════════════════════
 
+    /** Accounting law — determines BS vs P&L and debit/credit default */
     public enum GroupNature {
         ASSET, LIABILITY, INCOME, EXPENSE
     }
 
-    public enum AccountType {
-        PARTY_GENERAL, BANK, GENERAL
+    /**
+     * Drives which UI form sections appear and what business logic applies.
+     * <ul>
+     *   <li>PARTY — PAN, GSTIN, addresses, payment terms, TCS</li>
+     *   <li>BANK — bank name, account no, IFSC, branch</li>
+     *   <li>CASH — minimal, cash-in-hand / petty cash / driver advances</li>
+     *   <li>DUTIES_TAXES — GST input/output, TDS, TCS statutory accounts</li>
+     *   <li>GENERAL — no extra fields, just identity + balance</li>
+     * </ul>
+     */
+    public enum AccountSubType {
+        PARTY, BANK, CASH, DUTIES_TAXES, GENERAL
     }
 }

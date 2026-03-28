@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-28T09:20:15+0530",
+    date = "2026-03-28T09:56:10+0530",
     comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.45.0.v20260224-0835, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -28,11 +28,10 @@ public class LedgerGroupMapperImpl implements LedgerGroupMapper {
         if ( entity.getNature() != null ) {
             ledgerGroupResponse.setNature( entity.getNature().name() );
         }
-        if ( entity.getDefaultAccountType() != null ) {
-            ledgerGroupResponse.setDefaultAccountType( entity.getDefaultAccountType().name() );
+        if ( entity.getDefaultAccountSubType() != null ) {
+            ledgerGroupResponse.setDefaultAccountSubType( entity.getDefaultAccountSubType().name() );
         }
         ledgerGroupResponse.setTallyGroupName( entity.getTallyGroupName() );
-        ledgerGroupResponse.setSystemGroup( entity.isSystemGroup() );
 
         return ledgerGroupResponse;
     }

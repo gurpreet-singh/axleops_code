@@ -47,7 +47,7 @@ export default function LedgerGroupsPage() {
 
   const openDetail = (group) => openSlider({
     title: group.name,
-    subtitle: `${group.nature} • ${group.systemGroup ? 'System' : 'Custom'}`,
+    subtitle: `${group.nature}`,
     content: <LedgerGroupDetailContent group={group} onSave={refresh} groups={groups} />,
     width: '520px',
   });
@@ -101,8 +101,8 @@ export default function LedgerGroupsPage() {
 
       {/* Table */}
       <div style={{ background: '#fff', border: '1.5px solid #E2E8F0', borderRadius: 16, overflow: 'hidden' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1.2fr 1fr 80px 60px', padding: '12px 18px', background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', fontSize: 11, fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: 0.5 }}>
-          <span>Group Name</span><span>Nature</span><span>Default Acct Type</span><span>Tally Name</span><span>System</span><span></span>
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1.2fr 1fr 60px', padding: '12px 18px', background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', fontSize: 11, fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+          <span>Group Name</span><span>Nature</span><span>Default Sub Type</span><span>Tally Name</span><span></span>
         </div>
         {loading ? (
           <div style={{ textAlign: 'center', padding: 40, color: '#94A3B8' }}>
@@ -119,7 +119,7 @@ export default function LedgerGroupsPage() {
           const nc = NATURE_COLORS[g.nature] || { bg: '#F8FAFC', color: '#475569', border: '#E2E8F0' };
           return (
             <div key={g.id} onClick={() => openDetail(g)}
-              style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1.2fr 1fr 80px 60px', padding: '14px 18px', borderBottom: '1px solid #F1F5F9', alignItems: 'center', cursor: 'pointer', transition: 'all .1s' }}
+              style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1.2fr 1fr 60px', padding: '14px 18px', borderBottom: '1px solid #F1F5F9', alignItems: 'center', cursor: 'pointer', transition: 'all .1s' }}
               onMouseEnter={e => e.currentTarget.style.background = '#F8FAFC'}
               onMouseLeave={e => e.currentTarget.style.background = '#fff'}>
               <div>
@@ -131,17 +131,8 @@ export default function LedgerGroupsPage() {
                   {g.nature}
                 </span>
               </div>
-              <div style={{ fontSize: 12, color: '#475569', fontWeight: 500 }}>{getLabel('ledgerGroupAccountType', g.defaultAccountType)}</div>
+              <div style={{ fontSize: 12, color: '#475569', fontWeight: 500 }}>{getLabel('accountSubType', g.defaultAccountSubType)}</div>
               <div style={{ fontSize: 12, color: '#64748B', fontFamily: "'JetBrains Mono', monospace", fontWeight: 500 }}>{g.tallyGroupName || '—'}</div>
-              <div>
-                {g.systemGroup ? (
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, background: '#FEF3C7', color: '#92400E', border: '1px solid #FDE68A', fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 12 }}>
-                    <i className="fas fa-lock" style={{ fontSize: 8 }}></i> System
-                  </span>
-                ) : (
-                  <span style={{ fontSize: 11, color: '#94A3B8' }}>Custom</span>
-                )}
-              </div>
               <div style={{ fontSize: 11, color: '#94A3B8', fontWeight: 700, textAlign: 'right' }}>Open →</div>
             </div>
           );

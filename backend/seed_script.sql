@@ -196,28 +196,28 @@ ON CONFLICT (id) DO NOTHING;
 -- ═════════════════════════════════════════════════════════════════════════════
 
 -- Primary (root — no nature)
-INSERT INTO ledger_groups (id, tenant_id, name, nature, default_account_type, parent_group_id, tally_group_name, is_system_group, created_at, updated_at) VALUES
-  ('aa000000-0001-0000-0000-000000000000', 'e9999999-9999-9999-9999-999999999999', 'Primary', NULL, NULL, NULL, 'Primary', TRUE, NOW(), NOW())
+INSERT INTO ledger_groups (id, tenant_id, name, nature, default_account_sub_type, parent_group_id, tally_group_name, created_at, updated_at) VALUES
+  ('aa000000-0001-0000-0000-000000000000', 'e9999999-9999-9999-9999-999999999999', 'Primary', NULL, NULL, NULL, 'Primary', NOW(), NOW())
 ON CONFLICT (id) DO NOTHING;
 
 -- 4 top-level groups under Primary
-INSERT INTO ledger_groups (id, tenant_id, name, nature, default_account_type, parent_group_id, tally_group_name, is_system_group, created_at, updated_at) VALUES
-  ('aa000000-0001-0000-0000-000000000001', 'e9999999-9999-9999-9999-999999999999', 'Assets',      'ASSET',     NULL, 'aa000000-0001-0000-0000-000000000000', 'Assets',      TRUE, NOW(), NOW()),
-  ('aa000000-0001-0000-0000-000000000002', 'e9999999-9999-9999-9999-999999999999', 'Liabilities', 'LIABILITY', NULL, 'aa000000-0001-0000-0000-000000000000', 'Liabilities', TRUE, NOW(), NOW()),
-  ('aa000000-0001-0000-0000-000000000003', 'e9999999-9999-9999-9999-999999999999', 'Income',      'INCOME',    NULL, 'aa000000-0001-0000-0000-000000000000', 'Income',      TRUE, NOW(), NOW()),
-  ('aa000000-0001-0000-0000-000000000004', 'e9999999-9999-9999-9999-999999999999', 'Expenses',    'EXPENSE',   NULL, 'aa000000-0001-0000-0000-000000000000', 'Expenses',    TRUE, NOW(), NOW())
+INSERT INTO ledger_groups (id, tenant_id, name, nature, default_account_sub_type, parent_group_id, tally_group_name, created_at, updated_at) VALUES
+  ('aa000000-0001-0000-0000-000000000001', 'e9999999-9999-9999-9999-999999999999', 'Assets',      'ASSET',     NULL, 'aa000000-0001-0000-0000-000000000000', 'Assets',      NOW(), NOW()),
+  ('aa000000-0001-0000-0000-000000000002', 'e9999999-9999-9999-9999-999999999999', 'Liabilities', 'LIABILITY', NULL, 'aa000000-0001-0000-0000-000000000000', 'Liabilities', NOW(), NOW()),
+  ('aa000000-0001-0000-0000-000000000003', 'e9999999-9999-9999-9999-999999999999', 'Income',      'INCOME',    NULL, 'aa000000-0001-0000-0000-000000000000', 'Income',      NOW(), NOW()),
+  ('aa000000-0001-0000-0000-000000000004', 'e9999999-9999-9999-9999-999999999999', 'Expenses',    'EXPENSE',   NULL, 'aa000000-0001-0000-0000-000000000000', 'Expenses',    NOW(), NOW())
 ON CONFLICT (id) DO NOTHING;
 
 -- Income sub-groups
-INSERT INTO ledger_groups (id, tenant_id, name, nature, default_account_type, parent_group_id, tally_group_name, is_system_group, created_at, updated_at) VALUES
-  ('aa000000-0002-0000-0000-000000000001', 'e9999999-9999-9999-9999-999999999999', 'Direct Income',   'INCOME', NULL, 'aa000000-0001-0000-0000-000000000003', 'Direct Incomes',   TRUE, NOW(), NOW()),
-  ('aa000000-0002-0000-0000-000000000002', 'e9999999-9999-9999-9999-999999999999', 'Indirect Income', 'INCOME', NULL, 'aa000000-0001-0000-0000-000000000003', 'Indirect Incomes', TRUE, NOW(), NOW())
+INSERT INTO ledger_groups (id, tenant_id, name, nature, default_account_sub_type, parent_group_id, tally_group_name, created_at, updated_at) VALUES
+  ('aa000000-0002-0000-0000-000000000001', 'e9999999-9999-9999-9999-999999999999', 'Direct Income',   'INCOME', NULL, 'aa000000-0001-0000-0000-000000000003', 'Direct Incomes',   NOW(), NOW()),
+  ('aa000000-0002-0000-0000-000000000002', 'e9999999-9999-9999-9999-999999999999', 'Indirect Income', 'INCOME', NULL, 'aa000000-0001-0000-0000-000000000003', 'Indirect Incomes', NOW(), NOW())
 ON CONFLICT (id) DO NOTHING;
 
 -- Expense sub-groups
-INSERT INTO ledger_groups (id, tenant_id, name, nature, default_account_type, parent_group_id, tally_group_name, is_system_group, created_at, updated_at) VALUES
-  ('aa000000-0002-0000-0000-000000000003', 'e9999999-9999-9999-9999-999999999999', 'Direct Expenses',   'EXPENSE', NULL, 'aa000000-0001-0000-0000-000000000004', 'Direct Expenses',   TRUE, NOW(), NOW()),
-  ('aa000000-0002-0000-0000-000000000004', 'e9999999-9999-9999-9999-999999999999', 'Indirect Expenses', 'EXPENSE', NULL, 'aa000000-0001-0000-0000-000000000004', 'Indirect Expenses', TRUE, NOW(), NOW())
+INSERT INTO ledger_groups (id, tenant_id, name, nature, default_account_sub_type, parent_group_id, tally_group_name, created_at, updated_at) VALUES
+  ('aa000000-0002-0000-0000-000000000003', 'e9999999-9999-9999-9999-999999999999', 'Direct Expenses',   'EXPENSE', NULL, 'aa000000-0001-0000-0000-000000000004', 'Direct Expenses',   NOW(), NOW()),
+  ('aa000000-0002-0000-0000-000000000004', 'e9999999-9999-9999-9999-999999999999', 'Indirect Expenses', 'EXPENSE', NULL, 'aa000000-0001-0000-0000-000000000004', 'Indirect Expenses', NOW(), NOW())
 ON CONFLICT (id) DO NOTHING;
 
 

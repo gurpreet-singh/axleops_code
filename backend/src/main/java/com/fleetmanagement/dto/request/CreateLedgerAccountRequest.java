@@ -18,7 +18,7 @@ public class CreateLedgerAccountRequest {
     @NotNull
     private UUID accountGroupId;
     @NotBlank
-    private String accountType; // PARTY_ROUTE, PARTY_GENERAL, BANK, DRIVER_CASH, GENERAL
+    private String accountSubType; // PARTY, BANK, CASH, DUTIES_TAXES, GENERAL
 
     // Financials
     private BigDecimal openingBalance;
@@ -58,7 +58,6 @@ public class CreateLedgerAccountRequest {
     private String shippingPhone;
     private String shippingContactPerson;
     private String shippingDesignation;
-
 
     // Other
     private String cinNumber;

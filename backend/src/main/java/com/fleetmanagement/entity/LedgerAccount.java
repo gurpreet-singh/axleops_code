@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "ledger_accounts", indexes = {
     @Index(name = "idx_la_company_id", columnList = "company_id"),
-    @Index(name = "idx_la_account_type", columnList = "account_type"),
+    @Index(name = "idx_la_account_sub_type", columnList = "account_sub_type"),
     @Index(name = "idx_la_account_group_id", columnList = "account_group_id"),
     @Index(name = "idx_la_is_active", columnList = "is_active"),
     @Index(name = "idx_la_gstin", columnList = "gstin"),
@@ -59,10 +59,10 @@ public class LedgerAccount extends BaseEntity {
     @Column(name = "group_nature", length = 20)
     private String groupNature;
 
-    /** Account type classification */
-    @Column(name = "account_type", nullable = false, length = 20)
+    /** Account sub type — drives UI forms and business logic */
+    @Column(name = "account_sub_type", nullable = false, length = 30)
     @Enumerated(EnumType.STRING)
-    private AccountType accountType;
+    private AccountSubType accountSubType;
 
     // ═══════════════════════════════════════════════════════════════
     // FINANCIALS (EVERY ACCOUNT)
@@ -82,7 +82,7 @@ public class LedgerAccount extends BaseEntity {
     private boolean active = true;
 
     // ═══════════════════════════════════════════════════════════════
-    // PARTY DATA (ONLY WHEN account_type = PARTY_*)
+    // PARTY DATA (ONLY WHEN accountSubType = PARTY)
     // Embedded, not joined. Company master is the source of truth.
     // ═══════════════════════════════════════════════════════════════
 
@@ -204,8 +204,12 @@ public class LedgerAccount extends BaseEntity {
     // ENUMS
     // ═══════════════════════════════════════════════════════════════
 
-    public enum AccountType {
-        PARTY_GENERAL, BANK, GENERAL
+    /**
+     * Drives which UI form sections appear and what business logic applies.
+     * Shared enum with LedgerGroup.AccountSubType — same 5 values.
+     */
+    public enum AccountSubType {
+        PARTY, BANK, CASH, DUTIES_TAXES, GENERAL
     }
 
     public enum TcsApplicability {

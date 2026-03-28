@@ -17,7 +17,7 @@ public class LedgerAccountResponse {
     private String accountGroup;
     private UUID accountGroupId;
     private String groupNature;
-    private String accountType;
+    private String accountSubType;
 
     // Financials
     private BigDecimal openingBalance;
@@ -60,7 +60,6 @@ public class LedgerAccountResponse {
     private String shippingPhone;
     private String shippingContactPerson;
     private String shippingDesignation;
-
 
     // Other
     private String cinNumber;

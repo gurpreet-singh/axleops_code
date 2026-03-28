@@ -19,23 +19,16 @@ public interface LedgerAccountRepository extends JpaRepository<LedgerAccount, UU
 
     List<LedgerAccount> findByCompanyId(UUID companyId);
 
-    List<LedgerAccount> findByAccountType(LedgerAccount.AccountType accountType);
+    List<LedgerAccount> findByAccountSubType(LedgerAccount.AccountSubType accountSubType);
 
-    @Query("SELECT la FROM LedgerAccount la WHERE la.tenantId = :tenantId AND la.active = true AND la.accountType = :accountType")
-    List<LedgerAccount> findActiveByType(@Param("tenantId") UUID tenantId, @Param("accountType") LedgerAccount.AccountType accountType);
-
-
-
-
-
-
+    @Query("SELECT la FROM LedgerAccount la WHERE la.tenantId = :tenantId AND la.active = true AND la.accountSubType = :subType")
+    List<LedgerAccount> findActiveBySubType(@Param("tenantId") UUID tenantId, @Param("subType") LedgerAccount.AccountSubType subType);
 
     @Query("SELECT la FROM LedgerAccount la WHERE la.tenantId = :tenantId AND la.groupNature = :nature AND la.active = true")
     List<LedgerAccount> findByGroupNature(@Param("tenantId") UUID tenantId, @Param("nature") String nature);
 
     /**
      * Cascade update: when Company master data changes, propagate to all LedgerAccount rows.
-     * This is a rare write-time cost that eliminates constant read-time joins.
      */
     @Modifying
     @Query("UPDATE LedgerAccount la SET la.legalName = :legalName, la.panNumber = :panNumber WHERE la.company.id = :companyId")

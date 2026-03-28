@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-28T09:20:25+0530",
+    date = "2026-03-28T09:56:08+0530",
     comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.45.0.v20260224-0835, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -33,8 +33,8 @@ public class LedgerAccountMapperImpl implements LedgerAccountMapper {
         ledgerAccountResponse.setNameOnDashboard( entity.getNameOnDashboard() );
         ledgerAccountResponse.setAccountGroup( entity.getAccountGroup() );
         ledgerAccountResponse.setGroupNature( entity.getGroupNature() );
-        if ( entity.getAccountType() != null ) {
-            ledgerAccountResponse.setAccountType( entity.getAccountType().name() );
+        if ( entity.getAccountSubType() != null ) {
+            ledgerAccountResponse.setAccountSubType( entity.getAccountSubType().name() );
         }
         ledgerAccountResponse.setOpeningBalance( entity.getOpeningBalance() );
         ledgerAccountResponse.setCurrentBalance( entity.getCurrentBalance() );

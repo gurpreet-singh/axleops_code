@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import useSliderStore from '../../stores/sliderStore';
-import useEnumStore, { ACCOUNT_TYPE_COLORS } from '../../stores/enumStore';
+import useEnumStore, { ACCOUNT_SUB_TYPE_COLORS } from '../../stores/enumStore';
 import ledgerAccountService from '../../services/ledgerAccountService';
 
 // ═══════════════════════════════════════════════════════════════
@@ -80,7 +80,7 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
     accountHead: '', tallyName: '', nameOnDashboard: '',
-    accountGroupId: '', accountType: '',
+    accountGroupId: '', accountSubType: '',
     openingBalance: '', currency: 'INR',
     panNumber: '', gstin: '', legalName: '', ourVendorCode: '',
     tcsApplicable: '', paymentTerms: '', tallyPaymentTerms: '',
@@ -99,7 +99,7 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
   ];
 
   const handleSave = async () => {
-    if (!form.accountHead || !form.accountGroupId || !form.accountType) return;
+    if (!form.accountHead || !form.accountGroupId || !form.accountSubType) return;
     setSaving(true);
     try {
       await ledgerAccountService.create({
@@ -117,13 +117,13 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
     }
   };
 
-  const isPartyType = form.accountType === 'PARTY_GENERAL';
+  const isPartyType = form.accountSubType === 'PARTY';
 
   return (
     <div>
       {/* Sticky Action Bar */}
       <div style={{ position: 'sticky', top: 0, zIndex: 10, display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', background: '#fff', borderBottom: '1px solid #E2E8F0', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
-        <button onClick={handleSave} disabled={saving || !form.accountHead || !form.accountGroupId || !form.accountType}
+        <button onClick={handleSave} disabled={saving || !form.accountHead || !form.accountGroupId || !form.accountSubType}
           style={{
             display: 'inline-flex', alignItems: 'center', gap: 5,
             border: '1.5px solid #059669', borderRadius: 8, padding: '8px 18px',
@@ -153,7 +153,7 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
             <FormField label="Ledger Group" value={form.accountGroupId} onChange={set('accountGroupId')} required options={groupOptions} />
-            <FormField label="Account Type" value={form.accountType} onChange={set('accountType')} required options={getOptionsWithPlaceholder('ledgerAccountType', 'Select type')} />
+            <FormField label="Account Sub Type" value={form.accountSubType} onChange={set('accountSubType')} required options={getOptionsWithPlaceholder('accountSubType', 'Select sub type')} />
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
             <FormField label="Tally Name" value={form.tallyName} onChange={set('tallyName')} placeholder="Override for Tally sync" />
@@ -260,8 +260,8 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
   const [form, setForm] = useState({ ...account });
   const set = (key) => (val) => setForm(f => ({ ...f, [key]: val }));
 
-  const tc = ACCOUNT_TYPE_COLORS[account.accountType] || ACCOUNT_TYPE_COLORS.GENERAL;
-  const isPartyType = account.accountType === 'PARTY_GENERAL';
+  const tc = ACCOUNT_SUB_TYPE_COLORS[account.accountSubType] || ACCOUNT_SUB_TYPE_COLORS.GENERAL;
+  const isPartyType = account.accountSubType === 'PARTY';
 
   const groupOptions = [
     { value: '', label: 'Select group' },
@@ -308,7 +308,7 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
         </button>
         <div style={{ flex: 1 }}></div>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: tc.bg, color: tc.color, border: `1px solid ${tc.border}`, fontSize: 10, fontWeight: 700, padding: '4px 12px', borderRadius: 20 }}>
-          {account.accountType?.replace(/_/g, ' ')}
+          {account.accountSubType?.replace(/_/g, ' ')}
         </span>
         {account.active ? (
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: '#F0FDF4', color: '#16A34A', border: '1px solid #BBF7D0', fontSize: 10, fontWeight: 700, padding: '4px 10px', borderRadius: 20 }}>
@@ -353,7 +353,7 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
                   <FormField label="Ledger Group" value={form.accountGroupId} onChange={set('accountGroupId')} options={groupOptions} />
-                  <FormField label="Account Type" value={form.accountType} onChange={set('accountType')} options={getOptionsWithPlaceholder('ledgerAccountType', 'Select type')} />
+                  <FormField label="Account Sub Type" value={form.accountSubType} onChange={set('accountSubType')} options={getOptionsWithPlaceholder('accountSubType', 'Select sub type')} />
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                   <FormField label="Tally Name" value={form.tallyName} onChange={set('tallyName')} />
@@ -374,7 +374,7 @@ export function LedgerAccountDetailContent({ account, onSave, groups }) {
                   <ReadField label="Account Head" value={account.accountHead} />
                   <ReadField label="Ledger Group" value={account.accountGroup} />
                   <ReadField label="Group Nature" value={account.groupNature} />
-                  <ReadField label="Account Type" value={account.accountType?.replace(/_/g, ' ')} />
+                  <ReadField label="Account Sub Type" value={account.accountSubType?.replace(/_/g, ' ')} />
                   <ReadField label="Tally Name" value={account.tallyName} />
                   <ReadField label="Dashboard Name" value={account.nameOnDashboard} />
                 </div>

@@ -33,16 +33,18 @@ public class EnumService {
     public Map<String, List<EnumValueDto>> getAllEnums() {
         Map<String, List<EnumValueDto>> result = new LinkedHashMap<>();
 
-        // ── Ledger Account Types ────────────────────────────
-        result.put("ledgerAccountType", mapEnum("ledger_account_type",
-                LedgerAccount.AccountType.values(),
+        // ── Account Sub Types (shared by LedgerGroup + LedgerAccount) ──
+        result.put("accountSubType", mapEnum("account_sub_type",
+                LedgerAccount.AccountSubType.values(),
                 Map.of(
-                        "PARTY_GENERAL", "Party General",
+                        "PARTY", "Party",
                         "BANK", "Bank",
+                        "CASH", "Cash",
+                        "DUTIES_TAXES", "Duties & Taxes",
                         "GENERAL", "General"
                 )));
 
-        // ── Ledger Group Natures ────────────────────────────
+        // ── Group Natures ───────────────────────────────────
         result.put("groupNature", mapEnum("group_nature",
                 LedgerGroup.GroupNature.values(),
                 Map.of(
@@ -50,15 +52,6 @@ public class EnumService {
                         "LIABILITY", "Liability",
                         "INCOME", "Income",
                         "EXPENSE", "Expense"
-                )));
-
-        // ── Ledger Group Default Account Types ──────────────
-        result.put("ledgerGroupAccountType", mapEnum("ledger_group_account_type",
-                LedgerGroup.AccountType.values(),
-                Map.of(
-                        "PARTY_GENERAL", "Party General",
-                        "BANK", "Bank",
-                        "GENERAL", "General"
                 )));
 
         // ── TCS Applicability ───────────────────────────────

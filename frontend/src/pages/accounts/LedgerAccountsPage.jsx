@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import ledgerAccountService from '../../services/ledgerAccountService';
-import useEnumStore, { ACCOUNT_TYPE_COLORS } from '../../stores/enumStore';
+import useEnumStore, { ACCOUNT_SUB_TYPE_COLORS } from '../../stores/enumStore';
 import ledgerGroupService from '../../services/ledgerGroupService';
 import useSliderStore from '../../stores/sliderStore';
 import { LedgerAccountCreateContent, LedgerAccountDetailContent } from './LedgerAccountSliderContent';
@@ -15,7 +15,7 @@ export default function LedgerAccountsPage() {
   const [typeFilter, setTypeFilter] = useState('all');
   const [natureFilter, setNatureFilter] = useState('all');
   const { openSlider } = useSliderStore();
-  const { getOptions } = useEnumStore();
+  const { getOptions, getLabel } = useEnumStore();
 
   const refresh = () => {
     setLoading(true);
@@ -32,7 +32,7 @@ export default function LedgerAccountsPage() {
 
   const filtered = useMemo(() => {
     return accounts.filter(a =>
-      (typeFilter === 'all' || a.accountType === typeFilter) &&
+      (typeFilter === 'all' || a.accountSubType === typeFilter) &&
       (natureFilter === 'all' || a.groupNature === natureFilter) &&
       (!search ||
         a.accountHead?.toLowerCase().includes(search.toLowerCase()) ||
@@ -46,8 +46,8 @@ export default function LedgerAccountsPage() {
   const stats = useMemo(() => ({
     total: accounts.length,
     active: accounts.filter(a => a.active).length,
-    partyGeneral: accounts.filter(a => a.accountType === 'PARTY_GENERAL').length,
-    bank: accounts.filter(a => a.accountType === 'BANK').length,
+    party: accounts.filter(a => a.accountSubType === 'PARTY').length,
+    bank: accounts.filter(a => a.accountSubType === 'BANK').length,
     totalBalance: accounts.reduce((s, a) => s + (a.currentBalance || 0), 0),
   }), [accounts]);
 
@@ -60,7 +60,7 @@ export default function LedgerAccountsPage() {
 
   const openDetail = (acct) => openSlider({
     title: acct.accountHead,
-    subtitle: `${acct.accountGroup || 'General'} • ${acct.accountType?.replace(/_/g, ' ')}`,
+    subtitle: `${acct.accountGroup || 'General'} • ${getLabel('accountSubType', acct.accountSubType)}`,
     content: <LedgerAccountDetailContent account={acct} onSave={refresh} groups={groups} />,
     width: '52vw',
   });
@@ -79,8 +79,8 @@ export default function LedgerAccountsPage() {
         {[
           { label: 'Total', value: stats.total, icon: 'fas fa-book', color: '#475569', bg: '#F8FAFC', border: '#E2E8F0' },
           { label: 'Active', value: stats.active, icon: 'fas fa-check-circle', color: '#16A34A', bg: '#F0FDF4', border: '#BBF7D0' },
-          { label: 'Party General', value: stats.partyGeneral, icon: 'fas fa-building', ...ACCOUNT_TYPE_COLORS.PARTY_GENERAL },
-          { label: 'Bank', value: stats.bank, icon: 'fas fa-university', ...ACCOUNT_TYPE_COLORS.BANK },
+          { label: 'Party', value: stats.party, icon: 'fas fa-building', ...ACCOUNT_SUB_TYPE_COLORS.PARTY },
+          { label: 'Bank', value: stats.bank, icon: 'fas fa-university', ...ACCOUNT_SUB_TYPE_COLORS.BANK },
           { label: 'Net Balance', value: INR(stats.totalBalance), icon: 'fas fa-rupee-sign', color: '#D97706', bg: '#FFFBEB', border: '#FDE68A' },
         ].map(s => (
           <div key={s.label} style={{
@@ -101,8 +101,8 @@ export default function LedgerAccountsPage() {
       {/* Filter bar */}
       <div style={{ background: '#fff', border: '1.5px solid #E2E8F0', borderRadius: 14, padding: '14px 18px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
         <select value={typeFilter} onChange={e => setTypeFilter(e.target.value)} style={{ border: '1.5px solid #E2E8F0', borderRadius: 10, padding: '8px 14px', fontSize: 13, color: '#1E293B', outline: 'none', fontFamily: 'inherit', cursor: 'pointer' }}>
-          <option value="all">All Types</option>
-          {getOptions('ledgerAccountType').map(o => (
+          <option value="all">All Sub Types</option>
+          {getOptions('accountSubType').map(o => (
             <option key={o.value} value={o.value}>{o.label}</option>
           ))}
         </select>
@@ -120,7 +120,7 @@ export default function LedgerAccountsPage() {
       {/* Table */}
       <div style={{ background: '#fff', border: '1.5px solid #E2E8F0', borderRadius: 16, overflow: 'hidden' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1.8fr 1fr 1fr 0.8fr 100px 80px 60px', padding: '12px 18px', background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', fontSize: 11, fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: 0.5 }}>
-          <span>Account Head</span><span>Group</span><span>Type</span><span>GSTIN</span><span style={{ textAlign: 'right' }}>Balance</span><span>Status</span><span></span>
+          <span>Account Head</span><span>Group</span><span>Sub Type</span><span>GSTIN</span><span style={{ textAlign: 'right' }}>Balance</span><span>Status</span><span></span>
         </div>
         {loading ? (
           <div style={{ textAlign: 'center', padding: 40, color: '#94A3B8' }}>
@@ -134,7 +134,7 @@ export default function LedgerAccountsPage() {
             {accounts.length === 0 && <div style={{ fontSize: 12, color: '#CBD5E1', marginTop: 4 }}>Click "Add Account" to create one</div>}
           </div>
         ) : filtered.map(a => {
-          const tc = ACCOUNT_TYPE_COLORS[a.accountType] || ACCOUNT_TYPE_COLORS.GENERAL;
+          const tc = ACCOUNT_SUB_TYPE_COLORS[a.accountSubType] || ACCOUNT_SUB_TYPE_COLORS.GENERAL;
           const balColor = (a.currentBalance || 0) >= 0 ? '#16A34A' : '#DC2626';
           return (
             <div key={a.id} onClick={() => openDetail(a)}
@@ -150,7 +150,7 @@ export default function LedgerAccountsPage() {
               <div style={{ fontSize: 12, color: '#475569', fontWeight: 500 }}>{a.accountGroup || '—'}</div>
               <div>
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: tc.bg, color: tc.color, border: `1px solid ${tc.border}`, fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 12, whiteSpace: 'nowrap' }}>
-                  {a.accountType?.replace(/_/g, ' ')}
+                  {getLabel('accountSubType', a.accountSubType)}
                 </span>
               </div>
               <div style={{ fontSize: 11, color: '#64748B', fontFamily: "'JetBrains Mono', monospace", fontWeight: 500 }}>{a.gstin || '—'}</div>

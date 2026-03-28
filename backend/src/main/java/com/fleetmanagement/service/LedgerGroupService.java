@@ -44,9 +44,9 @@ public class LedgerGroupService {
         group.setName((String) req.get("name"));
         group.setNature(LedgerGroup.GroupNature.valueOf((String) req.get("nature")));
 
-        String defaultAccountType = (String) req.get("defaultAccountType");
-        if (defaultAccountType != null && !defaultAccountType.isEmpty()) {
-            group.setDefaultAccountType(LedgerGroup.AccountType.valueOf(defaultAccountType));
+        String defaultAccountSubType = (String) req.get("defaultAccountSubType");
+        if (defaultAccountSubType != null && !defaultAccountSubType.isEmpty()) {
+            group.setDefaultAccountSubType(LedgerGroup.AccountSubType.valueOf(defaultAccountSubType));
         }
 
         String tallyGroupName = (String) req.get("tallyGroupName");
@@ -58,9 +58,6 @@ public class LedgerGroupService {
                     .orElseThrow(() -> new RuntimeException("Parent group not found"));
             group.setParentGroup(parent);
         }
-
-        Boolean systemGroup = (Boolean) req.get("systemGroup");
-        group.setSystemGroup(systemGroup != null && systemGroup);
 
         LedgerGroup saved = repository.save(group);
         return mapper.toResponse(saved);
@@ -74,11 +71,11 @@ public class LedgerGroupService {
         group.setName((String) req.get("name"));
         group.setNature(LedgerGroup.GroupNature.valueOf((String) req.get("nature")));
 
-        String defaultAccountType = (String) req.get("defaultAccountType");
-        if (defaultAccountType != null && !defaultAccountType.isEmpty()) {
-            group.setDefaultAccountType(LedgerGroup.AccountType.valueOf(defaultAccountType));
+        String defaultAccountSubType = (String) req.get("defaultAccountSubType");
+        if (defaultAccountSubType != null && !defaultAccountSubType.isEmpty()) {
+            group.setDefaultAccountSubType(LedgerGroup.AccountSubType.valueOf(defaultAccountSubType));
         } else {
-            group.setDefaultAccountType(null);
+            group.setDefaultAccountSubType(null);
         }
 
         group.setTallyGroupName((String) req.get("tallyGroupName"));
@@ -91,9 +88,6 @@ public class LedgerGroupService {
         } else {
             group.setParentGroup(null);
         }
-
-        Boolean systemGroup = (Boolean) req.get("systemGroup");
-        group.setSystemGroup(systemGroup != null && systemGroup);
 
         LedgerGroup saved = repository.save(group);
         return mapper.toResponse(saved);

@@ -74,7 +74,7 @@ public class LedgerAccountService {
         account.setAccountGroup(group.getName());
         account.setAccountGroupRef(group);
         account.setGroupNature(group.getNature().name());
-        account.setAccountType(LedgerAccount.AccountType.valueOf(req.getAccountType()));
+        account.setAccountSubType(LedgerAccount.AccountSubType.valueOf(req.getAccountSubType()));
 
         // Financials
         account.setOpeningBalance(req.getOpeningBalance() != null ? req.getOpeningBalance() : BigDecimal.ZERO);

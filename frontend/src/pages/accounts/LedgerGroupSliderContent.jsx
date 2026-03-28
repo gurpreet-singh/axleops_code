@@ -70,8 +70,8 @@ export function LedgerGroupCreateContent({ onSave, groups }) {
   const { closeSlider } = useSliderStore();
   const { getOptionsWithPlaceholder } = useEnumStore();
   const [form, setForm] = useState({
-    name: '', nature: '', defaultAccountType: '',
-    tallyGroupName: '', parentGroupId: '', systemGroup: false,
+    name: '', nature: '', defaultAccountSubType: '',
+    tallyGroupName: '', parentGroupId: '',
   });
   const [saving, setSaving] = useState(false);
   const set = (key) => (val) => setForm(f => ({ ...f, [key]: val }));
@@ -83,10 +83,9 @@ export function LedgerGroupCreateContent({ onSave, groups }) {
       await ledgerGroupService.create({
         name: form.name,
         nature: form.nature,
-        defaultAccountType: form.defaultAccountType || null,
+        defaultAccountSubType: form.defaultAccountSubType || null,
         tallyGroupName: form.tallyGroupName || null,
         parentGroupId: form.parentGroupId || null,
-        systemGroup: form.systemGroup,
       });
       onSave?.();
       closeSlider();
@@ -135,7 +134,7 @@ export function LedgerGroupCreateContent({ onSave, groups }) {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
             <FormField label="Nature" value={form.nature} onChange={set('nature')} required options={getOptionsWithPlaceholder('groupNature', 'Select nature')} />
-            <FormField label="Default Account Type" value={form.defaultAccountType} onChange={set('defaultAccountType')} options={getOptionsWithPlaceholder('ledgerGroupAccountType', 'Select type')} />
+            <FormField label="Default Sub Type" value={form.defaultAccountSubType} onChange={set('defaultAccountSubType')} options={getOptionsWithPlaceholder('accountSubType', 'Select sub type')} />
           </div>
         </Section>
 
@@ -143,14 +142,6 @@ export function LedgerGroupCreateContent({ onSave, groups }) {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
             <FormField label="Parent Group" value={form.parentGroupId} onChange={set('parentGroupId')} options={parentOptions} />
             <FormField label="Tally Group Name" value={form.tallyGroupName} onChange={set('tallyGroupName')} placeholder="e.g. Sundry Debtors" />
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: '#FEFCE8', border: '1px solid #FDE68A', borderRadius: 8 }}>
-            <input type="checkbox" checked={form.systemGroup} onChange={e => set('systemGroup')(e.target.checked)}
-              style={{ width: 16, height: 16, cursor: 'pointer' }} />
-            <div>
-              <div style={{ fontSize: 12, fontWeight: 600, color: '#92400E' }}>System Group</div>
-              <div style={{ fontSize: 10, color: '#A16207' }}>System groups are protected from deletion</div>
-            </div>
           </div>
         </Section>
       </div>
@@ -170,10 +161,9 @@ export function LedgerGroupDetailContent({ group, onSave, groups }) {
   const [form, setForm] = useState({
     name: group.name || '',
     nature: group.nature || '',
-    defaultAccountType: group.defaultAccountType || '',
+    defaultAccountSubType: group.defaultAccountSubType || '',
     tallyGroupName: group.tallyGroupName || '',
     parentGroupId: group.parentGroupId || '',
-    systemGroup: group.systemGroup || false,
   });
   const set = (key) => (val) => setForm(f => ({ ...f, [key]: val }));
 
@@ -190,10 +180,9 @@ export function LedgerGroupDetailContent({ group, onSave, groups }) {
       await ledgerGroupService.update(group.id, {
         name: form.name,
         nature: form.nature,
-        defaultAccountType: form.defaultAccountType || null,
+        defaultAccountSubType: form.defaultAccountSubType || null,
         tallyGroupName: form.tallyGroupName || null,
         parentGroupId: form.parentGroupId || null,
-        systemGroup: form.systemGroup,
       });
       setIsEditing(false);
       onSave?.();
@@ -238,7 +227,7 @@ export function LedgerGroupDetailContent({ group, onSave, groups }) {
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                 <FormField label="Nature" value={form.nature} onChange={set('nature')} required options={getOptionsWithPlaceholder('groupNature', 'Select nature')} />
-                <FormField label="Default Account Type" value={form.defaultAccountType} onChange={set('defaultAccountType')} options={getOptionsWithPlaceholder('ledgerGroupAccountType', 'Select type')} />
+                <FormField label="Default Sub Type" value={form.defaultAccountSubType} onChange={set('defaultAccountSubType')} options={getOptionsWithPlaceholder('accountSubType', 'Select sub type')} />
               </div>
             </Section>
             <Section title="Hierarchy & Tally" emoji="🏗️" borderColor="#C4B5FD" headerBg="linear-gradient(135deg, #F5F3FF, #EDE9FE)" accentColor="#6D28D9">
@@ -254,8 +243,7 @@ export function LedgerGroupDetailContent({ group, onSave, groups }) {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 <ReadField label="Group Name" value={group.name} />
                 <ReadField label="Nature" value={group.nature} />
-                <ReadField label="Default Account Type" value={getLabel('ledgerGroupAccountType', group.defaultAccountType)} />
-                <ReadField label="System Group" value={group.systemGroup ? '✅ Yes — Protected' : 'No — Custom'} />
+                <ReadField label="Default Sub Type" value={getLabel('accountSubType', group.defaultAccountSubType)} />
               </div>
             </Section>
             <Section title="Hierarchy & Tally" emoji="🏗️" borderColor="#C4B5FD" headerBg="linear-gradient(135deg, #F5F3FF, #EDE9FE)" accentColor="#6D28D9">

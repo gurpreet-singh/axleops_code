@@ -13,7 +13,7 @@ import enumService from '../services/enumService';
  */
 const useEnumStore = create((set, get) => ({
   // ── state ─────────────────────────────────────────────────
-  enums: {},           // { ledgerAccountType: [{key, labelKey, defaultLabel}], ... }
+  enums: {},           // { accountSubType: [{key, labelKey, defaultLabel}], ... }
   loaded: false,
   loading: false,
 
@@ -36,8 +36,8 @@ const useEnumStore = create((set, get) => ({
 
   /**
    * Returns dropdown options for a given enum group.
-   *  e.g. getOptions('ledgerAccountType')
-   *  → [{ value: 'PARTY_GENERAL', label: 'Party General' }, ...]
+   *  e.g. getOptions('accountSubType')
+   *  → [{ value: 'PARTY', label: 'Party' }, ...]
    */
   getOptions: (group) => {
     const items = get().enums[group] || [];
@@ -46,8 +46,8 @@ const useEnumStore = create((set, get) => ({
 
   /**
    * Same as getOptions but prepends a placeholder option.
-   *  e.g. getOptionsWithPlaceholder('ledgerAccountType', 'Select type')
-   *  → [{ value: '', label: 'Select type' }, { value: 'PARTY_GENERAL', label: 'Party General' }, ...]
+   *  e.g. getOptionsWithPlaceholder('accountSubType', 'Select type')
+   *  → [{ value: '', label: 'Select type' }, { value: 'PARTY', label: 'Party' }, ...]
    */
   getOptionsWithPlaceholder: (group, placeholder = 'Select...') => {
     const items = get().enums[group] || [];
@@ -59,7 +59,7 @@ const useEnumStore = create((set, get) => ({
 
   /**
    * Returns the defaultLabel for a given enum key.
-   *  e.g. getLabel('ledgerAccountType', 'PARTY_GENERAL') → 'Party General'
+   *  e.g. getLabel('accountSubType', 'PARTY') → 'Party'
    */
   getLabel: (group, key) => {
     const items = get().enums[group] || [];
@@ -75,10 +75,12 @@ export default useEnumStore;
 // These are purely for badge/chip styling and belong in the UI.
 // ═══════════════════════════════════════════════════════════════
 
-export const ACCOUNT_TYPE_COLORS = {
-  PARTY_GENERAL: { bg: '#F0FDF4', color: '#16A34A', border: '#BBF7D0' },
-  BANK:          { bg: '#F5F3FF', color: '#7C3AED', border: '#DDD6FE' },
-  GENERAL:       { bg: '#F8FAFC', color: '#475569', border: '#E2E8F0' },
+export const ACCOUNT_SUB_TYPE_COLORS = {
+  PARTY:        { bg: '#F0FDF4', color: '#16A34A', border: '#BBF7D0' },
+  BANK:         { bg: '#F5F3FF', color: '#7C3AED', border: '#DDD6FE' },
+  CASH:         { bg: '#FFFBEB', color: '#D97706', border: '#FDE68A' },
+  DUTIES_TAXES: { bg: '#FFF1F2', color: '#E11D48', border: '#FECDD3' },
+  GENERAL:      { bg: '#F8FAFC', color: '#475569', border: '#E2E8F0' },
 };
 
 export const NATURE_COLORS = {

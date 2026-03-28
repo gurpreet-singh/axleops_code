@@ -11,6 +11,4 @@ import java.util.UUID;
 public interface LedgerGroupRepository extends JpaRepository<LedgerGroup, UUID> {
 
     List<LedgerGroup> findByTenantId(UUID tenantId);
-
-    List<LedgerGroup> findByTenantIdAndSystemGroupTrue(UUID tenantId);
 }
