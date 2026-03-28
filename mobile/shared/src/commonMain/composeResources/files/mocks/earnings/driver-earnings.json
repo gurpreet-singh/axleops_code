@@ -1,0 +1,32 @@
+{
+  "period": "March 2026",
+  "total_earnings": 54500.00,
+  "trip_count": 3,
+  "total_distance_km": 642.8,
+  "trips": [
+    {
+      "trip_id": 1002,
+      "trip_number": "TRP-2026-002",
+      "route": "Pune → Nashik",
+      "completion_date": "2026-03-25",
+      "freight_amount": 18000.00,
+      "driver_payout": 5400.00
+    },
+    {
+      "trip_id": 1003,
+      "trip_number": "TRP-2026-003",
+      "route": "Mumbai → Surat",
+      "completion_date": "2026-03-20",
+      "freight_amount": 24000.00,
+      "driver_payout": 7200.00
+    },
+    {
+      "trip_id": 1005,
+      "trip_number": "TRP-2026-005",
+      "route": "Mumbai → Ahmedabad",
+      "completion_date": "2026-03-15",
+      "freight_amount": 35000.00,
+      "driver_payout": 10500.00
+    }
+  ]
+}

@@ -1,28 +1,19 @@
 import SwiftUI
 import Shared
 
+/**
+ * iOS root view — entry point for the AxleOps mobile app.
+ *
+ * Compose Multiplatform content is rendered via ComposeView
+ * in a future integration step. For now, this shows a placeholder.
+ */
 struct ContentView: View {
-    @State private var showContent = false
     var body: some View {
         VStack {
-            Button("Click me!") {
-                withAnimation {
-                    showContent = !showContent
-                }
-            }
-
-            if showContent {
-                VStack(spacing: 16) {
-                    Image(systemName: "swift")
-                        .font(.system(size: 200))
-                        .foregroundColor(.accentColor)
-                    Text("SwiftUI: \(Greeting().greet())")
-                }
-                .transition(.move(edge: .top).combined(with: .opacity))
-            }
+            Text("AxleOps Mobile")
+                .font(.title)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 

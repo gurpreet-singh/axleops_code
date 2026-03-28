@@ -19,6 +19,9 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.koin.android)
+            implementation(libs.decompose)
+            implementation(libs.decompose.extensions.compose)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -38,11 +41,11 @@ kotlin {
 }
 
 android {
-    namespace = "org.example.project"
+    namespace = "com.axleops.mobile"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "org.example.project"
+        applicationId = "com.axleops.mobile"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1

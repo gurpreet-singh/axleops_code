@@ -1,0 +1,10 @@
+{
+  "id": 1,
+  "first_name": "Mock",
+  "last_name": "Driver",
+  "email": "driver@axleops-mock.com",
+  "roles": ["ROLE_DRIVER", "ROLE_OPS_EXECUTIVE"],
+  "tenant_id": 1,
+  "contact_id": 42,
+  "branch_id": 1
+}
