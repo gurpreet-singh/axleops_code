@@ -1,0 +1,96 @@
+[
+  {
+    "id": 1001,
+    "trip_number": "TR-2026-001",
+    "status": "DISPATCHED",
+    "origin_city": "Mumbai",
+    "destination_city": "Pune",
+    "origin_address": "JNPT Container Terminal, Nhava Sheva",
+    "destination_address": "Hinjewadi IT Park, Phase 3",
+    "origin_lat": 18.9500,
+    "origin_lng": 72.9500,
+    "destination_lat": 18.5908,
+    "destination_lng": 73.7390,
+    "start_date": "2026-03-29T08:00:00Z",
+    "expected_delivery_date": "2026-03-29T16:00:00Z",
+    "driver_id": 42,
+    "driver_name": "Rajesh Kumar",
+    "vehicle_id": 10,
+    "vehicle_number": "MH-04-AB-1234",
+    "branch_id": 1,
+    "customer_name": "TechCorp Logistics",
+    "cargo_description": "Automotive Spare Parts",
+    "booked_weight_mt": 22.5,
+    "consignment_value": 750000,
+    "lr_number": "LR-2026-001-A",
+    "total_distance_km": 148.5,
+    "freight_amount": 35000,
+    "budget_estimate": 12000,
+    "dispatched_at": "2026-03-29T07:30:00Z",
+    "accept_timeout_minutes": 30,
+    "milestones": [
+      {
+        "id": 1,
+        "type": "DISPATCH",
+        "sequence_number": 1,
+        "status": "COMPLETED",
+        "completed_at": "2026-03-29T07:30:00Z",
+        "completed_by": 5
+      },
+      {
+        "id": 2,
+        "type": "ACCEPT",
+        "sequence_number": 2,
+        "status": "CURRENT"
+      },
+      {
+        "id": 3,
+        "type": "ARRIVE_ORIGIN",
+        "sequence_number": 3,
+        "status": "UPCOMING"
+      },
+      {
+        "id": 4,
+        "type": "START_LOADING",
+        "sequence_number": 4,
+        "status": "UPCOMING"
+      },
+      {
+        "id": 5,
+        "type": "LOADING_COMPLETE",
+        "sequence_number": 5,
+        "status": "UPCOMING"
+      },
+      {
+        "id": 6,
+        "type": "DEPART",
+        "sequence_number": 6,
+        "status": "UPCOMING"
+      },
+      {
+        "id": 7,
+        "type": "ARRIVE_DESTINATION",
+        "sequence_number": 7,
+        "status": "UPCOMING"
+      },
+      {
+        "id": 8,
+        "type": "START_UNLOADING",
+        "sequence_number": 8,
+        "status": "UPCOMING"
+      },
+      {
+        "id": 9,
+        "type": "DELIVERY_COMPLETE",
+        "sequence_number": 9,
+        "status": "UPCOMING"
+      },
+      {
+        "id": 10,
+        "type": "SUBMIT_POD",
+        "sequence_number": 10,
+        "status": "UPCOMING"
+      }
+    ]
+  }
+]

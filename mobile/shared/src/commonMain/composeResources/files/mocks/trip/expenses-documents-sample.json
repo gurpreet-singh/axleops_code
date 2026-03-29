@@ -1,0 +1,13 @@
+{
+  "expenses": [
+    { "id": 1, "trip_id": 3001, "category": "FUEL", "amount": 4500.0, "description": "Diesel fill-up at HP pump", "logged_at": "2026-03-30T06:00:00Z", "fuel_litres": 50.0, "price_per_litre": 90.0, "odometer_reading": 145230.0 },
+    { "id": 2, "trip_id": 3001, "category": "TOLL", "amount": 350.0, "description": "Mumbai-Pune Expressway toll", "logged_at": "2026-03-30T06:30:00Z" },
+    { "id": 3, "trip_id": 3001, "category": "FOOD", "amount": 200.0, "description": "Lunch at dhaba", "logged_at": "2026-03-30T08:00:00Z" },
+    { "id": 4, "trip_id": 3001, "category": "LOADING_UNLOADING", "amount": 1500.0, "description": "Loading charges", "logged_at": "2026-03-30T06:15:00Z" }
+  ],
+  "documents": [
+    { "id": 1, "trip_id": 3001, "category": "INVOICE", "filename": "invoice-3001.pdf", "mime_type": "application/pdf", "file_size_bytes": 245000, "uploaded_at": "2026-03-30T05:30:00Z", "upload_status": "UPLOADED" },
+    { "id": 2, "trip_id": 3001, "category": "WEIGHBRIDGE_SLIP", "filename": "weighbridge.jpg", "mime_type": "image/jpeg", "file_size_bytes": 1800000, "uploaded_at": "2026-03-30T07:15:00Z", "upload_status": "UPLOADED" },
+    { "id": 3, "trip_id": 3001, "category": "CARGO_PHOTO", "filename": "cargo-loaded.jpg", "mime_type": "image/jpeg", "file_size_bytes": 2100000, "uploaded_at": "2026-03-30T07:00:00Z", "upload_status": "UPLOADED" }
+  ]
+}

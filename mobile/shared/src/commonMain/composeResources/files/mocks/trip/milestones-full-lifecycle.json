@@ -1,0 +1,12 @@
+[
+  { "id": 1, "type": "DISPATCH", "sequence_number": 1, "status": "COMPLETED", "completed_at": "2026-03-30T05:00:00Z" },
+  { "id": 2, "type": "ACCEPT", "sequence_number": 2, "status": "COMPLETED", "completed_at": "2026-03-30T05:05:00Z" },
+  { "id": 3, "type": "ARRIVE_ORIGIN", "sequence_number": 3, "status": "COMPLETED", "completed_at": "2026-03-30T05:45:00Z" },
+  { "id": 4, "type": "START_LOADING", "sequence_number": 4, "status": "COMPLETED", "completed_at": "2026-03-30T06:00:00Z", "captured_data": { "actual_weight_mt": "22.5", "seal_number": "SL-9876" } },
+  { "id": 5, "type": "LOADING_COMPLETE", "sequence_number": 5, "status": "COMPLETED", "completed_at": "2026-03-30T07:00:00Z" },
+  { "id": 6, "type": "DEPART", "sequence_number": 6, "status": "IN_PROGRESS", "captured_data": { "odometer_km": "145200" } },
+  { "id": 7, "type": "ARRIVE_DESTINATION", "sequence_number": 7, "status": "UPCOMING" },
+  { "id": 8, "type": "START_UNLOADING", "sequence_number": 8, "status": "UPCOMING" },
+  { "id": 9, "type": "DELIVERY_COMPLETE", "sequence_number": 9, "status": "UPCOMING" },
+  { "id": 10, "type": "SUBMIT_POD", "sequence_number": 10, "status": "UPCOMING" }
+]

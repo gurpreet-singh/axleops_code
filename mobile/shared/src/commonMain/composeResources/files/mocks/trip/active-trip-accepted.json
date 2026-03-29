@@ -1,0 +1,23 @@
+[
+  {
+    "id": 3001, "trip_number": "TRP-MH-3001", "status": "ACCEPTED",
+    "origin_city": "Mumbai", "destination_city": "Pune",
+    "origin_address": "Gateway Logistics Hub, Navi Mumbai 400701",
+    "destination_address": "Hinjawadi Phase 3, Pune 411057",
+    "origin_lat": 19.0330, "origin_lng": 73.0297, "destination_lat": 18.5912, "destination_lng": 73.7388,
+    "start_date": "2026-03-30T06:00:00Z", "expected_delivery_date": "2026-03-30T14:00:00Z",
+    "driver_id": 101, "driver_name": "Rajesh Kumar",
+    "vehicle_id": 301, "vehicle_number": "MH-04-AB-1234",
+    "customer_name": "Tata Steel", "cargo_description": "Steel Rods",
+    "booked_weight_mt": 20.0, "total_distance_km": 148.0,
+    "freight_amount": 42000.0, "budget_estimate": 8000.0,
+    "dispatched_at": "2026-03-30T05:00:00Z", "accepted_at": "2026-03-30T05:05:00Z",
+    "accept_timeout_minutes": 30,
+    "milestones": [
+      { "id": 1, "type": "DISPATCH", "sequence_number": 1, "status": "COMPLETED", "completed_at": "2026-03-30T05:00:00Z" },
+      { "id": 2, "type": "ACCEPT", "sequence_number": 2, "status": "COMPLETED", "completed_at": "2026-03-30T05:05:00Z" },
+      { "id": 3, "type": "ARRIVE_ORIGIN", "sequence_number": 3, "status": "CURRENT" }
+    ],
+    "documents": [], "expenses": []
+  }
+]

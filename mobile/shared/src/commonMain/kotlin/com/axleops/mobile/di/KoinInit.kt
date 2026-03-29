@@ -10,6 +10,6 @@ import org.koin.core.context.startKoin
  */
 fun initKoin() {
     startKoin {
-        modules(appModule, analyticsModule, authModule, dataSourceModule, platformModule, uploadModule)
+        modules(appModule, analyticsModule, authModule, dataSourceModule, platformModule, tripModule, trackingModule, uploadModule)
     }
 }

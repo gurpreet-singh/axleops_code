@@ -6,6 +6,7 @@ import com.axleops.mobile.di.appModule
 import com.axleops.mobile.di.authModule
 import com.axleops.mobile.di.dataSourceModule
 import com.axleops.mobile.di.platformModule
+import com.axleops.mobile.di.tripModule
 import com.axleops.mobile.di.uploadModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -35,6 +36,7 @@ class AxleOpsApplication : Application() {
                 authModule,
                 dataSourceModule,
                 platformModule,
+                tripModule,
                 uploadModule,
             )
         }

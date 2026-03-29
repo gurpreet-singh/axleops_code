@@ -109,18 +109,28 @@ sealed interface ScreenConfig {
         override val title: String = "Settings"
     }
 
-    // ── Feature screens are added below by feature epics ─────────────────
-    // Example (Driver Active Trip epic would add):
-    //
-    // @Serializable
-    // data class TripDetail(val tripId: String) : ScreenConfig {
-    //     override val title = "Trip Details"
-    // }
-    //
-    // @Serializable
-    // data class MilestoneCapture(val tripId: String, val milestoneId: String) : ScreenConfig {
-    //     override val title = "Capture POD"
-    // }
+    // ── Driver Active Trip Screens ────────────────────────────────────────
+
+    /**
+     * Trip detail screen showing full lifecycle, milestones, CTA.
+     * Pushed from the active trip tab or trip list.
+     */
+    @Serializable
+    data class TripDetail(val tripId: Long) : ScreenConfig {
+        override val title: String = "Trip Details"
+    }
+
+    /**
+     * Milestone action form — pushed from trip detail for form-bearing transitions.
+     */
+    @Serializable
+    data class MilestoneAction(
+        val tripId: Long,
+        val event: String,
+        val statusName: String,
+    ) : ScreenConfig {
+        override val title: String = "Milestone Action"
+    }
 }
 
 // ── Auth Flow Configuration ─────────────────────────────────────────────────────

@@ -188,6 +188,8 @@ During the IN_TRANSIT phase, the driver logs en-route events (fuel stops, toll p
 
 **Why this priority**: Checkpoint logging is incremental enhancement to the core trip flow. It enriches the audit trail but is not blocking for trip completion.
 
+> **Note**: Checkpoint events and expense entries are **independent records**. Checkpoint events are lightweight timeline markers ("driver was here, did this") for the en-route audit trail. Expense entries are financial records for trip P&L. A driver may log a "Fuel Stop" checkpoint AND a separate "Fuel" expense — each serves a different purpose and audience. No auto-creation or deduplication between the two systems.
+
 **Independent Test**: During an IN_TRANSIT trip, log a fuel stop and a toll entry. Verify both appear as sub-events in the en-route timeline.
 
 **Acceptance Scenarios**:
@@ -237,7 +239,7 @@ During the IN_TRANSIT phase, the driver logs en-route events (fuel stops, toll p
 - **FR-020**: The driver MUST be able to progress the trip through milestones in strict sequential order. The available action button MUST reflect only the next valid transition.
 - **FR-021**: At AT_ORIGIN, the driver MUST be able to trigger "Start Loading".
 - **FR-022**: At LOADING, the driver MUST be able to trigger "Loading Complete" — capturing: actual weight (MT), seal number (if template requires), optional cargo photos.
-- **FR-023**: At LOADED, the driver MUST be able to trigger "Depart" — but ONLY if the EWB is GENERATED or ACTIVE for consignments > ₹50,000. If EWB is not ready, departure MUST be blocked with message.
+- **FR-023**: At LOADED, the driver MUST be able to trigger "Depart". The mobile app MUST NOT perform client-side EWB status checks. Instead, the app sends the departure transition to the backend; the backend enforces the EWB guard and rejects the transition with `422 Unprocessable Entity` if the EWB is not ready (for consignments > ₹50,000). On `422` rejection, the app MUST display the server-provided block message inline (e.g., "E-Way Bill required. Contact dispatch.") and prevent the driver from re-attempting until a pull-to-refresh or server-push indicates the guard is cleared.
 - **FR-024**: During IN_TRANSIT, the driver MUST see the trip as actively in progress with the running expense total and en-route event timeline.
 - **FR-025**: At AT_DESTINATION, the driver MUST be able to trigger "Start Unloading".
 - **FR-026**: At UNLOADING, the driver MUST be able to trigger "Delivery Complete" — capturing delivered weight and cargo condition.
@@ -280,6 +282,7 @@ During the IN_TRANSIT phase, the driver logs en-route events (fuel stops, toll p
 - **FR-063**: The driver MUST be able to view uploaded documents — photos full-screen with zoom, PDFs in an in-app viewer.
 - **FR-064**: Failed document uploads MUST be queued locally and MUST be retryable.
 - **FR-065**: The document section MUST become read-only after the trip enters POD_SUBMITTED or later states.
+- **FR-066**: The driver MUST be able to delete uploaded documents before POD submission. Deletion MUST be a soft-delete (record preserved for audit with `deleted_by`, `deleted_at`). After POD_SUBMITTED, documents are immutable.
 
 #### Expense Logging
 
@@ -290,6 +293,7 @@ During the IN_TRANSIT phase, the driver logs en-route events (fuel stops, toll p
 - **FR-074**: A running expense total MUST be displayed in the expense section.
 - **FR-075**: Expenses logged offline MUST be stored locally and synced when connectivity is restored.
 - **FR-076**: The expense section MUST become read-only after the trip enters POD_SUBMITTED or later states.
+- **FR-077**: The driver MUST be able to edit or delete expense entries before POD submission. Deletion MUST be a soft-delete (record preserved for audit with `deleted_by`, `deleted_at`). Editing MUST preserve previous values in an audit history. After POD_SUBMITTED, expenses are immutable.
 
 #### Exception Reporting
 
@@ -333,7 +337,7 @@ During the IN_TRANSIT phase, the driver logs en-route events (fuel stops, toll p
 #### Offline & Poor-Network Considerations
 
 - **FR-100**: All trip detail data MUST be cached locally after initial load. The driver MUST be able to view trip details without network connectivity.
-- **FR-101**: Milestone transitions attempted offline MUST be queued locally and synced when connectivity is restored.
+- **FR-101**: Milestone transitions attempted offline MUST be queued locally and synced when connectivity is restored. The queue MUST support multiple concurrent pending transitions (e.g., a driver may progress AT_ORIGIN → LOADING → LOADED → DEPARTED while fully offline). On reconnect, the sync engine MUST replay queued transitions in strict chronological order. If the server rejects any transition (e.g., state conflict), the queue MUST halt at that point, refresh the trip state from the server, and notify the driver of the discrepancy. Remaining unsynced transitions after the rejected one are discarded.
 - **FR-102**: A connectivity indicator MUST be visible when the app is offline.
 - **FR-103**: Queued (unsynced) mutations MUST be visible to the driver — e.g., "1 pending update" badge.
 - **FR-104**: If a queued mutation fails after sync (e.g., backend rejects an out-of-date transition), the app MUST refresh the trip state from the server and notify the driver of the discrepancy.
@@ -538,6 +542,7 @@ Later driver features (Past Trips, Earnings, Settings content, Inspections) can 
 - ❌ **Multi-stop (Multi-Drop) trip support** — future enhancement.
 - ❌ **EWB management (extend, cancel, Part B update)** — operations-scoped.
 - ❌ **Load transfer workflow** — operations-scoped.
+- ❌ **POD resubmission after rejection** — requires POD verification feature (ops-side) to exist first. For v1, POD_DISPUTED is read-only for the driver with message “Contact operations.”
 - ❌ **Backend changes** — all backend gaps are documented. This feature uses existing APIs + derived mock-backed contracts.
 - ❌ **Third-party map provider selection** — implementation will decide between Mapbox/Google Maps. This spec defines the UX behavior.
 - ❌ **Driver advance/cash management** — finance-scoped.
@@ -564,4 +569,10 @@ Later driver features (Past Trips, Earnings, Settings content, Inspections) can 
 
 ## Clarifications
 
-*None yet — to be filled during review.*
+### Session 2026-03-29
+
+- Q: How many milestone transitions can be queued concurrently while offline — single or multiple? → A: **Queue multiple.** Allow the driver to progress through as many milestones as needed while offline. Sync replays them in order on reconnect. If any transition is rejected by the server, the queue halts at that point, state refreshes from server, and the driver is notified.
+- Q: How does the mobile app know the current EWB status for the departure guard? → A: **Backend-only guard.** Mobile always sends the "depart" transition. Backend rejects with `422` if EWB is not ready. Mobile shows the server-provided rejection as a block message. No client-side EWB status field or separate EWB API needed.
+- Q: Are checkpoint events (Story 10) and expense entries (Story 8) the same record, or independent? → A: **Independent records.** Checkpoint events are timeline markers for audit. Expenses are financial records for trip P&L. Driver logs them separately. Some overlap (e.g., fuel stop + fuel expense) is expected and acceptable.
+- Q: Can the driver edit or delete expenses and documents after saving? → A: **Both editable/deletable until POD submission.** Expenses can be edited (amount, description, category) and deleted. Documents can be deleted. All deletions are soft-deletes preserving audit trail. After POD_SUBMITTED, both become immutable.
+- Q: If operations rejects the POD, can the driver resubmit? → A: **Defer to later feature.** POD resubmission requires the ops-side POD verification workflow. For v1, POD_DISPUTED/POD_REJECTED are read-only for the driver with message “Contact operations.” Explicitly out of scope.

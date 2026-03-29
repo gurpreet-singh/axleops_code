@@ -174,5 +174,18 @@ private fun RenderScreenChild(
                 onDataSourceChanged = onDataSourceChanged,
             )
         }
+        is ScreenChild.ActiveTrip -> {
+            ActiveTripScreen(component = screenChild.component)
+        }
+        is ScreenChild.TripDetail -> {
+            com.axleops.mobile.ui.trip.TripDetailScreen(
+                component = screenChild.component,
+            )
+        }
+        is ScreenChild.MilestoneAction -> {
+            com.axleops.mobile.ui.trip.MilestoneActionScreen(
+                component = screenChild.component,
+            )
+        }
     }
 }

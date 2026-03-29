@@ -32,6 +32,11 @@ data class DataSourceConfig(
     val milestoneSource: DataSourceMode = DataSourceMode.MOCK,
     val podSource: DataSourceMode = DataSourceMode.MOCK,
     val earningsSource: DataSourceMode = DataSourceMode.MOCK,
+    val documentSource: DataSourceMode = DataSourceMode.MOCK,
+    val expenseSource: DataSourceMode = DataSourceMode.MOCK,
+    val exceptionSource: DataSourceMode = DataSourceMode.MOCK,
+    val checkpointSource: DataSourceMode = DataSourceMode.MOCK,
+    val locationSource: DataSourceMode = DataSourceMode.MOCK,
 ) {
     companion object {
         /** Default config: real APIs where available, mock for gaps. */
@@ -47,6 +52,11 @@ data class DataSourceConfig(
             milestoneSource = DataSourceMode.MOCK,
             podSource = DataSourceMode.MOCK,
             earningsSource = DataSourceMode.MOCK,
+            documentSource = DataSourceMode.MOCK,
+            expenseSource = DataSourceMode.MOCK,
+            exceptionSource = DataSourceMode.MOCK,
+            checkpointSource = DataSourceMode.MOCK,
+            locationSource = DataSourceMode.MOCK,
         )
     }
 }

@@ -2,6 +2,9 @@ package com.axleops.mobile.navigation
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DelicateDecomposeApi
+import com.axleops.mobile.trip.component.ActiveTripComponent
+import com.axleops.mobile.trip.component.MilestoneActionComponent
+import com.axleops.mobile.trip.component.TripDetailComponent
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
@@ -123,11 +126,27 @@ sealed interface ScreenChild {
      */
     data object Settings : ScreenChild
 
-    // ── Feature epics add their screen children below ────────────────────
-    // Example (Driver Active Trip epic would add):
-    //
-    // data class TripDetail(
-    //     val tripId: String,
-    //     val component: TripDetailComponent,  // Decompose component with business logic
-    // ) : ScreenChild
+    // ── Driver Active Trip Screens ────────────────────────────────────────
+
+    /**
+     * Active trip landing -- wraps [ActiveTripComponent] for the active trip tab.
+     */
+    data class ActiveTrip(
+        val component: ActiveTripComponent,
+    ) : ScreenChild
+
+    /**
+     * Trip detail pushed from active trip or trip list.
+     */
+    data class TripDetail(
+        val tripId: Long,
+        val component: TripDetailComponent,
+    ) : ScreenChild
+
+    /**
+     * Milestone action form -- context-sensitive transition UI.
+     */
+    data class MilestoneAction(
+        val component: MilestoneActionComponent,
+    ) : ScreenChild
 }
