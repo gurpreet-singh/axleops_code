@@ -34,6 +34,7 @@ fun driverScreenFactory(
                 getActiveTrip = koin.get(),
                 acceptTrip = koin.get(),
                 rejectTrip = koin.get(),
+                trackingManager = koin.get(),
             )
             ScreenChild.ActiveTrip(component = component)
         } else {

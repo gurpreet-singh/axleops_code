@@ -1,0 +1,68 @@
+-- LocationBuffer.sq
+-- Offline buffer for GPS location points captured during trip tracking.
+-- Points are stored locally and synced to the backend in batches.
+--
+-- Source: spec §7.1, §7.2, plan §6
+
+CREATE TABLE BufferedLocationPoint (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    clientId TEXT NOT NULL UNIQUE,
+    tripId INTEGER NOT NULL,
+    latitude REAL NOT NULL,
+    longitude REAL NOT NULL,
+    accuracy REAL NOT NULL,
+    timestamp TEXT NOT NULL,
+    speed REAL,
+    bearing REAL,
+    altitude REAL,
+    provider TEXT,
+    batteryLevel INTEGER,
+    syncStatus TEXT NOT NULL DEFAULT 'PENDING',
+    capturedAt TEXT NOT NULL,
+    syncAttempts INTEGER NOT NULL DEFAULT 0
+);
+
+-- Retrieve pending (unsynced) points for a trip, oldest first (FIFO).
+-- Limit parameter controls batch size (max 50 per spec §7.2).
+getPendingByTrip:
+SELECT * FROM BufferedLocationPoint
+WHERE tripId = ? AND syncStatus = 'PENDING'
+ORDER BY capturedAt ASC
+LIMIT ?;
+
+-- Count of all pending (unsynced) points across all trips.
+-- Used for the pending sync badge in the UI.
+pendingCount:
+SELECT COUNT(*) FROM BufferedLocationPoint
+WHERE syncStatus = 'PENDING';
+
+-- Mark specific points as successfully synced (by clientId).
+markSynced:
+UPDATE BufferedLocationPoint
+SET syncStatus = 'SYNCED'
+WHERE clientId IN ?;
+
+-- Insert a new captured location point. OR IGNORE handles dedup
+-- if the same clientId is inserted twice (e.g., retry scenario).
+insertPoint:
+INSERT OR IGNORE INTO BufferedLocationPoint
+(clientId, tripId, latitude, longitude, accuracy, timestamp,
+ speed, bearing, altitude, provider, batteryLevel, syncStatus, capturedAt, syncAttempts)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'PENDING', ?, 0);
+
+-- Remove all synced points to free storage.
+-- Called periodically after successful batch sync.
+deleteSynced:
+DELETE FROM BufferedLocationPoint
+WHERE syncStatus = 'SYNCED';
+
+-- Increment sync attempt counter for failed batch retries.
+incrementSyncAttempts:
+UPDATE BufferedLocationPoint
+SET syncAttempts = syncAttempts + 1
+WHERE clientId IN ?;
+
+-- Get the oldest pending point's timestamp for calculating buffer duration.
+oldestPendingTimestamp:
+SELECT MIN(capturedAt) FROM BufferedLocationPoint
+WHERE syncStatus = 'PENDING';

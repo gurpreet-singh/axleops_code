@@ -4,5 +4,15 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<!-- T025: Location tracking usage descriptions -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>AxleOps uses your location to track trip progress during active deliveries.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>AxleOps needs background location access to continue tracking trip progress when the app is minimized.</string>
+	<!-- T025: Background location mode -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+	</array>
 </dict>
 </plist>

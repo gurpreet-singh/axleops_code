@@ -8,6 +8,8 @@ import com.axleops.mobile.trip.state.TripUiState
 import com.axleops.mobile.trip.usecase.AcceptTripUseCase
 import com.axleops.mobile.trip.usecase.GetActiveTripUseCase
 import com.axleops.mobile.trip.usecase.RejectTripUseCase
+import com.axleops.mobile.tracking.TrackingManager
+import com.axleops.mobile.tracking.model.TrackingState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -32,6 +34,7 @@ class ActiveTripComponent(
     private val getActiveTrip: GetActiveTripUseCase,
     private val acceptTrip: AcceptTripUseCase,
     private val rejectTrip: RejectTripUseCase,
+    private val trackingManager: TrackingManager,
 ) : ComponentContext by componentContext {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
@@ -40,6 +43,9 @@ class ActiveTripComponent(
 
     /** Observable UI state for the Active Trip screen. */
     val uiState: StateFlow<TripUiState> = _uiState.asStateFlow()
+
+    /** Observable tracking state — delegates to TrackingManager. */
+    val trackingState: StateFlow<TrackingState> = trackingManager.trackingState
 
     init {
         loadActiveTrip()
@@ -84,11 +90,15 @@ class ActiveTripComponent(
             try {
                 val trip = getActiveTrip()
                 _uiState.value = if (trip != null) {
+                    // T039/T041: Auto-start tracking if trip is in a transit state
+                    updateTrackingForTrip(trip)
                     TripUiState.Active(
                         trip = trip,
                         ctaState = deriveCtaState(trip),
                     )
                 } else {
+                    // No active trip — ensure tracking is stopped
+                    trackingManager.reset()
                     TripUiState.NoTrip
                 }
             } catch (e: Exception) {
@@ -150,6 +160,37 @@ class ActiveTripComponent(
         } else {
             // Form-required states (LOADING, UNLOADING) -- use status-specific label
             CtaState.Enabled(label = status.driverLabel ?: "Continue")
+        }
+    }
+
+    // ── Tracking Lifecycle (T039–T042) ───────────────────────────────────
+
+    /**
+     * Update tracking state based on trip status.
+     *
+     * Covers:
+     * - T039: Start tracking on departure (DEPARTED/IN_TRANSIT/AT_CHECKPOINT)
+     * - T040: Stop tracking on arrival (AT_DESTINATION and beyond)
+     * - T041: Resume tracking on app relaunch if trip is in transit
+     * - T042: React to status changes (e.g., exception overlay during transit)
+     */
+    private fun updateTrackingForTrip(trip: com.axleops.mobile.domain.model.TripDetail) {
+        val shouldTrack = TripStateMachine.shouldTrackGps(trip.status)
+        val isCurrentlyTracking = trackingManager.currentState.isActive
+
+        when {
+            shouldTrack && !isCurrentlyTracking -> {
+                // Start or resume tracking
+                trackingManager.start(
+                    tripId = trip.id,
+                    skipPermissionCheck = trackingManager.currentState == TrackingState.STOPPED,
+                )
+            }
+            !shouldTrack && isCurrentlyTracking -> {
+                // Stop tracking (arrived or moved to non-transit state)
+                trackingManager.stop()
+            }
+            // else: tracking state matches trip state — no action needed
         }
     }
 }
