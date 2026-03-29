@@ -205,8 +205,12 @@ public class ImportPersistenceService {
     }
 
     private Object convertValue(String value, ImportFieldDefinition fieldDef, Class<?> entityClass) {
-        if (value == null || value.trim().isEmpty()) return null;
-        String trimmed = value.trim();
+        String trimmed = (value == null) ? "" : value.trim();
+
+        // Treat common null-like placeholders as empty across ALL types
+        if (isEffectivelyNull(trimmed)) {
+            return null;
+        }
 
         // Check the actual field type on the entity to handle enums properly
         try {
@@ -220,13 +224,56 @@ public class ImportPersistenceService {
 
         return switch (fieldDef.getDataType()) {
             case STRING, EMAIL, PHONE, PAN, GSTIN -> trimmed;
-            case INTEGER -> Integer.parseInt(cleanNumeric(trimmed));
-            case LONG -> Long.parseLong(cleanNumeric(trimmed));
-            case DOUBLE -> Double.parseDouble(cleanNumeric(trimmed));
+            case INTEGER -> {
+                String clean = cleanNumeric(trimmed);
+                yield clean.isEmpty() ? null : Integer.parseInt(clean);
+            }
+            case LONG -> {
+                String clean = cleanNumeric(trimmed);
+                yield clean.isEmpty() ? null : Long.parseLong(clean);
+            }
+            case DOUBLE -> {
+                String clean = cleanNumeric(trimmed);
+                yield clean.isEmpty() ? null : Double.parseDouble(clean);
+            }
             case BOOLEAN -> parseBoolean(trimmed);
             case DATE -> parseDate(trimmed, fieldDef.getDateFormat());
             case ENUM -> trimmed.toUpperCase();
         };
+    }
+
+    /**
+     * Detects whether a CSV cell value is effectively null/empty.
+     * Handles all common representations of "no data" across CSV exports
+     * from Excel, Google Sheets, Tally, SAP, and other systems.
+     */
+    private boolean isEffectivelyNull(String value) {
+        if (value == null || value.isEmpty()) return true;
+        String lower = value.trim().toLowerCase();
+        return lower.isEmpty()
+                || lower.equals("-")
+                || lower.equals("--")
+                || lower.equals("---")
+                || lower.equals("na")
+                || lower.equals("n/a")
+                || lower.equals("n.a.")
+                || lower.equals("n.a")
+                || lower.equals("nil")
+                || lower.equals("null")
+                || lower.equals("none")
+                || lower.equals("empty")
+                || lower.equals("blank")
+                || lower.equals(".")
+                || lower.equals("..")
+                || lower.equals("#n/a")
+                || lower.equals("#na")
+                || lower.equals("#value!")
+                || lower.equals("#ref!")
+                || lower.equals("#div/0!")
+                || lower.equals("#null!")
+                || lower.equals("not applicable")
+                || lower.equals("not available")
+                || lower.equals("undefined");
     }
 
     private Field findField(Class<?> clazz, String fieldName) {
@@ -261,7 +308,22 @@ public class ImportPersistenceService {
     }
 
     private String cleanNumeric(String value) {
-        return value.replaceAll(",", "");
+        if (value == null) return "";
+        if (isEffectivelyNull(value)) return "";
+
+        String cleaned = value.trim()
+                .replace("₹", "").replace("$", "").replace("€", "").replace("£", "")
+                .replace("¥", "").replace("Rs.", "").replace("Rs", "").replace("INR", "")
+                .replace("\u00A0", "")
+                .replace("\u2012", "-").replace("\u2013", "-")
+                .replace("\u2014", "-").replace("\u2015", "-")
+                .replaceAll("[,\\s]", "")
+                .trim();
+
+        if (isEffectivelyNull(cleaned)) return "";
+        if (cleaned.equals("+") || cleaned.equals("-")) return "";
+
+        return cleaned;
     }
 
     private boolean parseBoolean(String value) {

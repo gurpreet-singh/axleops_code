@@ -61,8 +61,8 @@ public class RowValidationService {
             for (ImportFieldDefinition field : config.getFields()) {
                 String value = row.getOrDefault(field.getFieldName(), "");
 
-                // Required check
-                if (field.isRequired() && (value == null || value.trim().isEmpty())) {
+                // Required check — treat null-like placeholders as empty
+                if (field.isRequired() && isEffectivelyNull(value)) {
                     errors.add(FieldError.builder()
                             .fieldName(field.getFieldName())
                             .value(value)
@@ -72,8 +72,8 @@ public class RowValidationService {
                     continue;
                 }
 
-                // Skip further validation if empty and not required
-                if (value == null || value.trim().isEmpty()) continue;
+                // Skip further validation if effectively null and not required
+                if (isEffectivelyNull(value)) continue;
 
                 // Data type validation
                 validateDataType(field, value, errors);
@@ -172,26 +172,32 @@ public class RowValidationService {
     // ─── Private validation helpers ────────────────────────────
 
     private void validateDataType(ImportFieldDefinition field, String value, List<FieldError> errors) {
-        if (value == null || value.trim().isEmpty()) return;
+        if (isEffectivelyNull(value)) return;
 
         switch (field.getDataType()) {
             case INTEGER:
                 try {
-                    Integer.parseInt(cleanNumeric(value));
+                    String cleanInt = cleanNumeric(value);
+                    if (cleanInt.isEmpty()) break;  // empty after cleaning = valid (defaults to 0)
+                    Integer.parseInt(cleanInt);
                 } catch (NumberFormatException e) {
                     errors.add(makeError(field, value, "INVALID_INTEGER", "Must be a valid integer"));
                 }
                 break;
             case LONG:
                 try {
-                    Long.parseLong(cleanNumeric(value));
+                    String cleanLong = cleanNumeric(value);
+                    if (cleanLong.isEmpty()) break;
+                    Long.parseLong(cleanLong);
                 } catch (NumberFormatException e) {
                     errors.add(makeError(field, value, "INVALID_LONG", "Must be a valid number"));
                 }
                 break;
             case DOUBLE:
                 try {
-                    Double.parseDouble(cleanNumeric(value));
+                    String cleanDbl = cleanNumeric(value);
+                    if (cleanDbl.isEmpty()) break;
+                    Double.parseDouble(cleanDbl);
                 } catch (NumberFormatException e) {
                     errors.add(makeError(field, value, "INVALID_DOUBLE", "Must be a valid decimal number"));
                 }
@@ -253,8 +259,63 @@ public class RowValidationService {
     }
 
     private String cleanNumeric(String value) {
-        // Handle Indian (1,50,000) and Western (150,000) thousand separators
-        return value.trim().replaceAll(",", "");
+        if (value == null) return "";
+        // First check if effectively null before any cleaning
+        if (isEffectivelyNull(value)) return "";
+
+        // Strip currency symbols, whitespace, commas, and common formatting
+        String cleaned = value.trim()
+                .replace("₹", "").replace("$", "").replace("€", "").replace("£", "")
+                .replace("¥", "").replace("Rs.", "").replace("Rs", "").replace("INR", "")
+                .replace("\u00A0", "")    // non-breaking space
+                .replace("\u2012", "-")   // figure dash → hyphen
+                .replace("\u2013", "-")   // en-dash → hyphen
+                .replace("\u2014", "-")   // em-dash → hyphen
+                .replace("\u2015", "-")   // horizontal bar → hyphen
+                .replaceAll("[,\\s]", "") // commas and whitespace
+                .trim();
+
+        // After cleaning, check again
+        if (isEffectivelyNull(cleaned)) return "";
+
+        // If the cleaned value is just a sign character, treat as empty
+        if (cleaned.equals("+") || cleaned.equals("-")) return "";
+
+        return cleaned;
+    }
+
+    /**
+     * Detects whether a CSV cell value is effectively null/empty.
+     * Handles all common representations of "no data" across CSV exports
+     * from Excel, Google Sheets, Tally, SAP, and other ERP systems.
+     */
+    private boolean isEffectivelyNull(String value) {
+        if (value == null || value.isEmpty()) return true;
+        String lower = value.trim().toLowerCase();
+        return lower.isEmpty()
+                || lower.equals("-")
+                || lower.equals("--")
+                || lower.equals("---")
+                || lower.equals("na")
+                || lower.equals("n/a")
+                || lower.equals("n.a.")
+                || lower.equals("n.a")
+                || lower.equals("nil")
+                || lower.equals("null")
+                || lower.equals("none")
+                || lower.equals("empty")
+                || lower.equals("blank")
+                || lower.equals(".")
+                || lower.equals("..")
+                || lower.equals("#n/a")
+                || lower.equals("#na")
+                || lower.equals("#value!")
+                || lower.equals("#ref!")
+                || lower.equals("#div/0!")
+                || lower.equals("#null!")
+                || lower.equals("not applicable")
+                || lower.equals("not available")
+                || lower.equals("undefined");
     }
 
     private boolean isValidBoolean(String value) {

@@ -733,8 +733,8 @@ function StepValidationReview({ result, entity, onCellEdit, onExportErrors, onEx
       </div>
 
       {/* Data Table */}
-      <div className="validation-table-wrap" style={{ maxHeight: 400, overflowY: 'auto' }}>
-        <table className="validation-table">
+      <div className="validation-table-wrap" style={{ maxHeight: 500, overflow: 'auto' }}>
+        <table className="validation-table" style={{ minWidth: Math.max(900, fieldNames.length * 140) }}>
           <thead>
             <tr>
               <th>#</th>

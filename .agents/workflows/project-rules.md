@@ -71,6 +71,21 @@ com.fleetmanagement
 - The `platform_admin` role is for Platform Management (multi-tenant administration)
 - Adding a new role requires entries in DEPARTMENTS, ROLES, pageToRoute mapping, and ROLE_MENUS
 
+### Sidebar Menu Architecture (v2 — Task-Oriented)
+The sidebar uses **10 top-level groups** organized by *what the user is doing*, not by entity type:
+1. **Command Center** — Dashboard, Morning Brief, Alerts & Reminders
+2. **Trips** — Active, Settled, Archived, Routes & Rates
+3. **Fleet** — Vehicles, Vehicle Types, Equipment, Assignments, Documents, Fuel Log
+4. **People & Accounts** — Ledger Accounts, Drivers, Employees
+5. **Workshop** — Service Records, Job Cards, Inspections, Parts & Stock, Part Fitment History
+6. **Billing** — Invoices, Payment Receipts, Aging Analysis
+7. **Books** — Chart of Accounts, Voucher Entry, Day Book, Account Ledger, Trial Balance, Financial Statements, Tally Export
+8. **Insights** — Route Profitability, Fleet Utilization, Driver Scorecard, Fuel Analytics, Behavioral Losses, Service Level Report
+9. **Settings** — Organization, Branches, Users & Roles, Masters, Integrations
+10. CSV Import (flat utility item, admin roles only)
+
+Menu items are composed using reusable `MENU.*` factory functions in `roles.js`. Each role gets a curated subset.
+
 ### Slider Panel Pattern
 - Use `useSliderStore` (Zustand) for all detail/create views
 - Open: `const { openSlider } = useSliderStore()` → `openSlider({ title, content, width })`

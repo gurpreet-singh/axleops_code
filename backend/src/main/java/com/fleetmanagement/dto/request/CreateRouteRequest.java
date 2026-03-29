@@ -1,12 +1,11 @@
-package com.fleetmanagement.dto.response;
+package com.fleetmanagement.dto.request;
 
 import lombok.Data;
 import java.math.BigDecimal;
 import java.util.UUID;
 
 @Data
-public class RouteResponse {
-    private UUID id;
+public class CreateRouteRequest {
     private String name;
     private String origin;
     private String destination;
@@ -46,11 +45,8 @@ public class RouteResponse {
     private String loadingInstructions;
     private String unloadingInstructions;
 
-    // FK names
+    // FK IDs
     private UUID ledgerAccountId;
-    private String ledgerAccountName;
     private UUID invoiceTypeId;
-    private String invoiceTypeName;
     private UUID annexureTypeId;
-    private String annexureTypeName;
 }

@@ -29,7 +29,11 @@ public class ColumnMappingService {
         Set<String> usedFields = new HashSet<>();
 
         for (String csvHeader : csvHeaders) {
+            // Skip blank/empty CSV column headers (from trailing commas, etc.)
+            if (csvHeader == null || csvHeader.trim().isEmpty()) continue;
+
             String normalizedHeader = normalize(csvHeader);
+            if (normalizedHeader.isEmpty()) continue;
 
             // 1. Exact match (case-insensitive, ignore spaces/underscores/hyphens)
             String exactMatch = findExactMatch(normalizedHeader, config.getFields(), usedFields);
@@ -148,6 +152,9 @@ public class ColumnMappingService {
     }
 
     private String findContainsMatch(String normalizedHeader, List<ImportFieldDefinition> fields, Set<String> usedFields) {
+        // Guard: never match empty or very short headers (causes false positives)
+        if (normalizedHeader.length() < 2) return null;
+
         for (ImportFieldDefinition field : fields) {
             if (usedFields.contains(field.getFieldName())) continue;
             String normalizedField = normalize(field.getFieldName());

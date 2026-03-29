@@ -53,6 +53,7 @@ public class CsvParserService {
                 String[] headerRow = allRows.get(0);
                 List<String> headers = Arrays.stream(headerRow)
                         .map(String::trim)
+                        .filter(h -> !h.isEmpty())  // strip blank columns from trailing commas
                         .toList();
 
                 List<Map<String, String>> rows = new ArrayList<>();

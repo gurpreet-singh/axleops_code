@@ -1,25 +1,14 @@
 import { useState, useEffect } from 'react';
 import useSliderStore from '../../stores/sliderStore';
-import { deleteRoute } from '../../services/routeService';
+import { createRoute, updateRoute, deleteRoute } from '../../services/routeService';
 import DeleteConfirmModal from '../../components/common/DeleteConfirmModal';
 import { FormField, Section } from '../../components/common/FormField';
+import api from '../../services/api';
 
 
 // ═══════════════════════════════════════════════════════════════
-// MOCK DATA
+// STATIC OPTIONS
 // ═══════════════════════════════════════════════════════════════
-const CLIENTS = [
-  { value: '', label: 'Select client' },
-  { value: 'Reliance Industries', label: 'Reliance Industries' },
-  { value: 'Tata Steel', label: 'Tata Steel' },
-  { value: 'Hindustan Unilever', label: 'Hindustan Unilever' },
-  { value: 'ITC Limited', label: 'ITC Limited' },
-  { value: 'Adani Ports', label: 'Adani Ports' },
-  { value: 'Mahindra Logistics', label: 'Mahindra Logistics' },
-  { value: 'Asian Paints', label: 'Asian Paints' },
-  { value: 'Larsen & Toubro', label: 'Larsen & Toubro' },
-];
-
 const VEHICLE_TYPES = [
   { value: '', label: 'Select vehicle type' },
   { value: 'Multi-Axle Truck', label: 'Multi-Axle Truck' },
@@ -70,14 +59,14 @@ const BRANCHES = [
 
 
 // ═══════════════════════════════════════════════════════════════
-// Helper — build initial form state from a route object (for edit)
-// or empty (for create)
+// Helper — build form state from route or empty for create
 // ═══════════════════════════════════════════════════════════════
 function buildFormState(rt) {
   if (!rt) return {
-    client: '', vType: '', origin: '', originPin: '', dest: '', destPin: '',
+    name: '', ledgerAccountId: '', vType: '', origin: '', originPin: '', dest: '', destPin: '',
     via: '', dist: '', estTime: '',
     billingType: '', slaHrs: '', payTerms: '',
+    documentSeries: '', invoiceTypeId: '', annexureTypeId: '',
     freightRate: '', gdsCharges: '', stCharges: '', insurance: '',
     loadingCharges: '', unloadingCharges: '', deliveryCharges: '', collectionCharges: '',
     detentionCharges: '', godownCharges: '', lrCharges: '', otherCharges: '',
@@ -87,57 +76,128 @@ function buildFormState(rt) {
   };
 
   return {
-    client: rt.client || '', vType: rt.vType || '',
+    name: rt.name || '',
+    ledgerAccountId: rt.ledgerAccountId || '',
+    vType: rt.vType || rt.vehicleType || '',
     origin: rt.origin || '', originPin: rt.originPin || '',
-    dest: rt.dest || '', destPin: rt.destPin || '',
-    via: rt.via || '', dist: rt.dist?.toString() || '', estTime: rt.estTime?.toString() || '',
-    billingType: rt.billingType || '', slaHrs: rt.slaHrs?.toString() || '', payTerms: rt.payTerms || '',
+    dest: rt.dest || rt.destination || '', destPin: rt.destPin || '',
+    via: rt.via || '', dist: rt.dist?.toString() || rt.distanceKm?.toString() || '',
+    estTime: rt.estTime?.toString() || rt.estimatedHours?.toString() || '',
+    billingType: rt.billingType || '',
+    slaHrs: rt.slaHrs?.toString() || rt.slaHours?.toString() || '',
+    payTerms: rt.payTerms || rt.paymentTerms || '',
+    documentSeries: rt.documentSeries || '',
+    invoiceTypeId: rt.invoiceTypeId || '',
+    annexureTypeId: rt.annexureTypeId || '',
     freightRate: rt.freightRate?.toString() || '', gdsCharges: rt.gdsCharges?.toString() || '',
     stCharges: rt.stCharges?.toString() || '', insurance: rt.insurance?.toString() || '',
     loadingCharges: rt.loadingCharges?.toString() || '', unloadingCharges: rt.unloadingCharges?.toString() || '',
     deliveryCharges: rt.deliveryCharges?.toString() || '', collectionCharges: rt.collectionCharges?.toString() || '',
     detentionCharges: rt.detentionCharges?.toString() || '', godownCharges: rt.godownCharges?.toString() || '',
     lrCharges: rt.lrCharges?.toString() || '', otherCharges: rt.otherCharges?.toString() || '',
-    driverExpense: rt.driverExpense?.toString() || rt.toll ? '' : '', // derive from data
-    tollExpense: rt.toll?.toString() || '', diesel: rt.diesel?.toString() || '',
+    driverExpense: rt.driverExpense?.toString() || '',
+    tollExpense: rt.toll?.toString() || rt.tollCost?.toString() || '',
+    diesel: rt.diesel?.toString() || '',
     workflowTemplate: rt.template || 'Standard', branch: rt.branch || '',
     loadingInstructions: rt.loadingInstructions || '', unloadingInstructions: rt.unloadingInstructions || '',
   };
 }
 
+// Convert form state → API payload
+function formToPayload(form) {
+  const num = (v) => v ? parseFloat(v) : null;
+  return {
+    name: form.name || null,
+    origin: form.origin || null,
+    destination: form.dest || null,
+    distanceKm: num(form.dist),
+    estimatedHours: num(form.estTime),
+    tollCost: num(form.tollExpense),
+    via: form.via || null,
+    originPin: form.originPin || null,
+    destPin: form.destPin || null,
+    slaHours: form.slaHrs ? parseInt(form.slaHrs, 10) : null,
+    paymentTerms: form.payTerms || null,
+    template: form.workflowTemplate || null,
+    status: 'ACTIVE',
+    vehicleType: form.vType || null,
+    billingType: form.billingType || null,
+    documentSeries: form.documentSeries || null,
+    // Charge columns
+    freightRate: num(form.freightRate),
+    gdsCharges: num(form.gdsCharges),
+    stCharges: num(form.stCharges),
+    insurance: num(form.insurance),
+    loadingCharges: num(form.loadingCharges),
+    unloadingCharges: num(form.unloadingCharges),
+    deliveryCharges: num(form.deliveryCharges),
+    collectionCharges: num(form.collectionCharges),
+    detentionCharges: num(form.detentionCharges),
+    godownCharges: num(form.godownCharges),
+    lrCharges: num(form.lrCharges),
+    otherCharges: num(form.otherCharges),
+    // Operational defaults
+    driverExpense: num(form.driverExpense),
+    dieselLitres: num(form.diesel),
+    // Instructions
+    loadingInstructions: form.loadingInstructions || null,
+    unloadingInstructions: form.unloadingInstructions || null,
+    // FK IDs
+    ledgerAccountId: form.ledgerAccountId || null,
+    invoiceTypeId: form.invoiceTypeId || null,
+    annexureTypeId: form.annexureTypeId || null,
+  };
+}
+
 
 // ═══════════════════════════════════════════════════════════════
-// ROUTE CREATE/EDIT SLIDER CONTENT
-// mode = 'create' → shows "NEW ROUTE / Define a new route" header
-// mode = 'edit'   → shows route name, with Edit Details toggle
+// ROUTE CREATE SLIDER CONTENT
 // ═══════════════════════════════════════════════════════════════
-
 export function RouteCreateContent({ onSave }) {
   const { closeSlider } = useSliderStore();
   const [form, setForm] = useState(buildFormState(null));
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
   const set = (key) => (val) => setForm(f => ({ ...f, [key]: val }));
 
-  const handleSave = () => {
-    onSave?.();
-    closeSlider();
+  const handleSave = async () => {
+    // Validate mandatory field
+    if (!form.name.trim()) {
+      setError('Route Name is required');
+      return;
+    }
+    setError(null);
+    setSaving(true);
+    try {
+      await createRoute(formToPayload(form));
+      onSave?.();
+      closeSlider();
+    } catch (e) {
+      console.error('Failed to create route:', e);
+      setError(e?.response?.data?.message || 'Failed to create route');
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
     <div>
       {/* Action Bar */}
       <div style={{ position: 'sticky', top: 0, zIndex: 10, display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', background: '#fff', borderBottom: '1px solid #E2E8F0', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
-        <button onClick={handleSave} style={{
+        <button onClick={handleSave} disabled={saving} style={{
           display: 'inline-flex', alignItems: 'center', gap: 5,
           border: '1.5px solid #059669', borderRadius: 8, padding: '8px 18px',
           fontSize: 12, fontWeight: 700, color: '#059669', background: '#ECFDF5',
-          cursor: 'pointer', transition: 'all 0.15s',
+          cursor: saving ? 'wait' : 'pointer', transition: 'all 0.15s',
+          opacity: saving ? 0.7 : 1,
         }}
-          onMouseEnter={e => { e.currentTarget.style.background = '#059669'; e.currentTarget.style.color = '#fff'; }}
+          onMouseEnter={e => { if (!saving) { e.currentTarget.style.background = '#059669'; e.currentTarget.style.color = '#fff'; } }}
           onMouseLeave={e => { e.currentTarget.style.background = '#ECFDF5'; e.currentTarget.style.color = '#059669'; }}
         >
-          <i className="fas fa-plus" style={{ fontSize: 10 }}></i> Create Route
+          <i className="fas fa-plus" style={{ fontSize: 10 }}></i> {saving ? 'Saving…' : 'Create Route'}
         </button>
         <div style={{ flex: 1 }}></div>
+        {error && <div style={{ fontSize: 12, color: '#DC2626', fontWeight: 600 }}><i className="fas fa-exclamation-circle"></i> {error}</div>}
       </div>
 
       <div style={{ padding: '20px 20px 40px' }}>
@@ -148,19 +208,37 @@ export function RouteCreateContent({ onSave }) {
 }
 
 
+// ═══════════════════════════════════════════════════════════════
+// ROUTE DETAIL SLIDER CONTENT (view + edit)
+// ═══════════════════════════════════════════════════════════════
 export function RouteDetailContent({ rt, onSave }) {
   const { closeSlider } = useSliderStore();
   const [isEditing, setIsEditing] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
   const [form, setForm] = useState(buildFormState(rt));
   const set = (key) => (val) => setForm(f => ({ ...f, [key]: val }));
 
-  // Status info
-  const statusColor = rt.status === 'Active' ? '#16A34A' : rt.status === 'Ad-hoc' ? '#D97706' : '#94A3B8';
+  const statusColor = rt.status === 'Active' || rt.status === 'ACTIVE' ? '#16A34A' : rt.status === 'Ad-hoc' ? '#D97706' : '#94A3B8';
 
-  const handleSave = () => {
-    setIsEditing(false);
-    onSave?.();
+  const handleSave = async () => {
+    if (!form.name.trim()) {
+      setError('Route Name is required');
+      return;
+    }
+    setError(null);
+    setSaving(true);
+    try {
+      await updateRoute(rt.id, formToPayload(form));
+      setIsEditing(false);
+      onSave?.();
+    } catch (e) {
+      console.error('Failed to update route:', e);
+      setError(e?.response?.data?.message || 'Failed to update route');
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleDelete = async () => {
@@ -174,6 +252,7 @@ export function RouteDetailContent({ rt, onSave }) {
       {/* Action Bar */}
       <div style={{ position: 'sticky', top: 0, zIndex: 10, display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', background: '#fff', borderBottom: '1px solid #E2E8F0', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
         <button onClick={() => { if (isEditing) { handleSave(); } else { setIsEditing(true); } }}
+          disabled={saving}
           style={{
             display: 'inline-flex', alignItems: 'center', gap: 5,
             border: `1.5px solid ${isEditing ? '#059669' : '#E2E8F0'}`,
@@ -181,12 +260,21 @@ export function RouteDetailContent({ rt, onSave }) {
             fontSize: 12, fontWeight: 700,
             color: isEditing ? '#059669' : '#475569',
             background: isEditing ? '#ECFDF5' : '#fff',
-            cursor: 'pointer', transition: 'all 0.15s',
+            cursor: saving ? 'wait' : 'pointer', transition: 'all 0.15s',
           }}
         >
           <i className={`fas fa-${isEditing ? 'save' : 'edit'}`} style={{ fontSize: 10 }}></i>
-          {isEditing ? 'Save Changes' : 'Edit Details'}
+          {saving ? 'Saving…' : isEditing ? 'Save Changes' : 'Edit Details'}
         </button>
+        {isEditing && (
+          <button onClick={() => { setIsEditing(false); setForm(buildFormState(rt)); setError(null); }} style={{
+            display: 'inline-flex', alignItems: 'center', gap: 5,
+            border: '1.5px solid #E2E8F0', borderRadius: 8, padding: '7px 14px',
+            fontSize: 12, fontWeight: 600, color: '#64748B', background: '#fff', cursor: 'pointer',
+          }}>
+            Cancel
+          </button>
+        )}
         <button style={{
           display: 'inline-flex', alignItems: 'center', gap: 5,
           border: '1.5px solid #E2E8F0', borderRadius: 8, padding: '7px 14px',
@@ -195,6 +283,7 @@ export function RouteDetailContent({ rt, onSave }) {
           <i className="fas fa-print" style={{ fontSize: 10 }}></i> Print
         </button>
         <div style={{ flex: 1 }}></div>
+        {error && <div style={{ fontSize: 12, color: '#DC2626', fontWeight: 600, marginRight: 8 }}><i className="fas fa-exclamation-circle"></i> {error}</div>}
         <button className="sl-delete-btn" onClick={() => setShowDeleteModal(true)}>
           <i className="fas fa-recycle"></i> Delete
         </button>
@@ -212,7 +301,7 @@ export function RouteDetailContent({ rt, onSave }) {
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onConfirm={handleDelete}
-        entityName={rt.route || `${rt.origin} → ${rt.dest}`}
+        entityName={rt.name || rt.route || `${rt.origin} → ${rt.dest}`}
         entityType="Route"
       />
     </div>
@@ -224,50 +313,90 @@ export function RouteDetailContent({ rt, onSave }) {
 // EDITABLE FORM SECTIONS (used by both create and edit)
 // ═══════════════════════════════════════════════════════════════
 function RouteFormSections({ form, set }) {
+  const [ledgerAccounts, setLedgerAccounts] = useState([]);
+  const [invoiceTypes, setInvoiceTypes] = useState([]);
+  const [annexureTypes, setAnnexureTypes] = useState([]);
+
+  // Fetch dropdown data
+  useEffect(() => {
+    api.get('/ledger-accounts').then(({ data }) => setLedgerAccounts(data || [])).catch(() => setLedgerAccounts([]));
+    api.get('/invoice-types').then(({ data }) => setInvoiceTypes(data || [])).catch(() => setInvoiceTypes([]));
+    api.get('/annexure-types').then(({ data }) => setAnnexureTypes(data || [])).catch(() => setAnnexureTypes([]));
+  }, []);
+
+  const ledgerOptions = [
+    { value: '', label: 'Select ledger account' },
+    ...ledgerAccounts.map(la => ({ value: la.id, label: `${la.accountHead}${la.accountType ? ' (' + la.accountType + ')' : ''}` })),
+  ];
+
+  const invoiceTypeOptions = [
+    { value: '', label: 'Select invoice type' },
+    ...invoiceTypes.map(it => ({ value: it.id, label: it.name })),
+  ];
+
+  const annexureTypeOptions = [
+    { value: '', label: 'Select annexure type' },
+    ...annexureTypes.map(at => ({ value: at.id, label: at.name })),
+  ];
+
   return (
     <>
       {/* ═══ 1. ROUTE DETAILS ═══ */}
       <Section title="Route Details" emoji="🚛" borderColor="#BAE6FD" headerBg="linear-gradient(135deg, #F0F9FF, #E0F2FE)" accentColor="#0369A1">
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
-          <FormField label="Client" value={form.client} onChange={set('client')} required options={CLIENTS} />
-          <FormField label="Vehicle Type" value={form.vType} onChange={set('vType')} required options={VEHICLE_TYPES} />
+        <div style={{ marginBottom: 14 }}>
+          <FormField label="Route Name" value={form.name} onChange={set('name')} required placeholder="e.g. Mumbai–Delhi Express" />
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
-          <FormField label="Origin" value={form.origin} onChange={set('origin')} required placeholder="e.g. JNPT Navi Mumbai" />
+          <FormField label="Ledger Account" value={form.ledgerAccountId} onChange={set('ledgerAccountId')} options={ledgerOptions} />
+          <FormField label="Vehicle Type" value={form.vType} onChange={set('vType')} options={VEHICLE_TYPES} />
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
+          <FormField label="Origin" value={form.origin} onChange={set('origin')} placeholder="e.g. JNPT Navi Mumbai" />
           <FormField label="Origin Pincode" value={form.originPin} onChange={set('originPin')} placeholder="e.g. 400707" />
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
-          <FormField label="Destination" value={form.dest} onChange={set('dest')} required placeholder="e.g. Mathura Refinery" />
+          <FormField label="Destination" value={form.dest} onChange={set('dest')} placeholder="e.g. Mathura Refinery" />
           <FormField label="Dest Pincode" value={form.destPin} onChange={set('destPin')} placeholder="e.g. 281006" />
         </div>
         <FormField label="Via Highway" value={form.via} onChange={set('via')} placeholder="e.g. NH48 → NH44" full />
         <div style={{ height: 14 }}></div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-          <FormField label="Distance (KM)" value={form.dist} onChange={set('dist')} type="number" required placeholder="e.g. 1380" />
+          <FormField label="Distance (KM)" value={form.dist} onChange={set('dist')} type="number" placeholder="e.g. 1380" />
           <FormField label="Est. Duration (HRS)" value={form.estTime} onChange={set('estTime')} type="number" placeholder="e.g. 22" />
+        </div>
+      </Section>
+
+      {/* ═══ 1b. DOCUMENT & PDF CONFIG ═══ */}
+      <Section title="Document & PDF Config" emoji="📄" borderColor="#A5F3FC" headerBg="linear-gradient(135deg, #ECFEFF, #CFFAFE)" accentColor="#0E7490">
+        <div style={{ padding: '10px 14px', background: '#F0FDFA', border: '1px solid #99F6E4', borderRadius: 8, marginBottom: 14, fontSize: 12, color: '#115E59', display: 'flex', alignItems: 'center', gap: 6 }}>
+          <i className="fas fa-file-pdf" style={{ fontSize: 11 }}></i>
+          Controls how invoices and annexures are generated for trips on this route.
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
+          <FormField label="Document Series" value={form.documentSeries} onChange={set('documentSeries')} placeholder="e.g. GTLC/Number/F-26" />
+          <FormField label="Invoice Type" value={form.invoiceTypeId} onChange={set('invoiceTypeId')} options={invoiceTypeOptions} />
+          <FormField label="Annexure Type" value={form.annexureTypeId} onChange={set('annexureTypeId')} options={annexureTypeOptions} />
         </div>
       </Section>
 
       {/* ═══ 2. ROUTE CONTRACT ═══ */}
       <Section title="Route Contract" emoji="📝" borderColor="#C4B5FD" headerBg="linear-gradient(135deg, #F5F3FF, #EDE9FE)" accentColor="#6D28D9">
-        {/* Info banner */}
         <div style={{ padding: '10px 14px', background: '#FEFCE8', border: '1px solid #FDE68A', borderRadius: 8, marginBottom: 14, fontSize: 12, color: '#92400E', display: 'flex', alignItems: 'center', gap: 6 }}>
           <i className="fas fa-info-circle" style={{ fontSize: 11 }}></i>
           Contract terms + charge columns. These are templatised per route and feed into trip settlement & client invoicing.
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14, marginBottom: 16 }}>
-          <FormField label="Billing Type" value={form.billingType} onChange={set('billingType')} required options={BILLING_TYPES} />
-          <FormField label="SLA (HRS)" value={form.slaHrs} onChange={set('slaHrs')} type="number" required placeholder="e.g. 26" />
+          <FormField label="Billing Type" value={form.billingType} onChange={set('billingType')} options={BILLING_TYPES} />
+          <FormField label="SLA (HRS)" value={form.slaHrs} onChange={set('slaHrs')} type="number" placeholder="e.g. 26" />
           <FormField label="Payment Terms" value={form.payTerms} onChange={set('payTerms')} options={PAYMENT_TERMS} />
         </div>
 
-        {/* Charge Columns sub-header */}
         <div style={{ fontSize: 11, fontWeight: 700, color: '#6D28D9', textTransform: 'uppercase', letterSpacing: 0.6, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 6 }}>
           Charge Columns (Per Trip → Invoice)
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 12 }}>
-          <FormField label="Freight Rate" value={form.freightRate} onChange={set('freightRate')} type="number" required placeholder="e.g. 47130" />
+          <FormField label="Freight Rate" value={form.freightRate} onChange={set('freightRate')} type="number" placeholder="e.g. 47130" />
           <FormField label="GDS Charges" value={form.gdsCharges} onChange={set('gdsCharges')} type="number" placeholder="e.g. 0" />
           <FormField label="ST Charges" value={form.stCharges} onChange={set('stCharges')} type="number" placeholder="e.g. 0" />
           <FormField label="Insurance" value={form.insurance} onChange={set('insurance')} type="number" placeholder="e.g. 450" />
@@ -289,9 +418,9 @@ function RouteFormSections({ form, set }) {
       {/* ═══ 3. OPERATIONAL CONFIG ═══ */}
       <Section title="Operational Config" emoji="📦" borderColor="#FDBA74" headerBg="linear-gradient(135deg, #FFF7ED, #FFEDD5)" accentColor="#9A3412">
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14, marginBottom: 14 }}>
-          <FormField label="Driver Expense (₹)" value={form.driverExpense} onChange={set('driverExpense')} type="number" required placeholder="e.g. 2200" />
-          <FormField label="Toll Expense (₹)" value={form.tollExpense} onChange={set('tollExpense')} type="number" required placeholder="e.g. 8400" />
-          <FormField label="Diesel (Litres)" value={form.diesel} onChange={set('diesel')} type="number" required placeholder="e.g. 300" />
+          <FormField label="Driver Expense (₹)" value={form.driverExpense} onChange={set('driverExpense')} type="number" placeholder="e.g. 2200" />
+          <FormField label="Toll Expense (₹)" value={form.tollExpense} onChange={set('tollExpense')} type="number" placeholder="e.g. 8400" />
+          <FormField label="Diesel (Litres)" value={form.diesel} onChange={set('diesel')} type="number" placeholder="e.g. 300" />
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
           <FormField label="Workflow Template" value={form.workflowTemplate} onChange={set('workflowTemplate')} options={WORKFLOW_TEMPLATES} />
@@ -308,7 +437,7 @@ function RouteFormSections({ form, set }) {
 
 
 // ═══════════════════════════════════════════════════════════════
-// READ-ONLY VIEW SECTIONS (used by detail slider when not editing)
+// READ-ONLY VIEW SECTIONS
 // ═══════════════════════════════════════════════════════════════
 
 function ReadField({ label, value, mono }) {
@@ -330,20 +459,28 @@ function RouteViewSections({ rt, form }) {
       {/* Route Details */}
       <Section title="Route Details" emoji="🚛" borderColor="#BAE6FD" headerBg="linear-gradient(135deg, #F0F9FF, #E0F2FE)" accentColor="#0369A1">
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-          <ReadField label="Client" value={rt.client} />
-          <ReadField label="Vehicle Type" value={rt.vType} />
+          <ReadField label="Route Name" value={rt.name} />
+          <ReadField label="Ledger Account" value={rt.ledgerAccountName} />
+          <ReadField label="Vehicle Type" value={rt.vType || rt.vehicleType} />
+          <ReadField label="Branch" value={rt.branch} />
           <ReadField label="Origin" value={rt.origin} />
           <ReadField label="Origin Pincode" value={rt.originPin} mono />
-          <ReadField label="Destination" value={rt.dest} />
+          <ReadField label="Destination" value={rt.dest || rt.destination} />
           <ReadField label="Dest Pincode" value={rt.destPin} mono />
           <ReadField label="Via Highway" value={rt.via} />
           <ReadField label="Distance" value={rt.dist ? `${rt.dist.toLocaleString()} km` : '—'} />
           <ReadField label="Est. Duration" value={rt.estTime ? `${rt.estTime} hrs` : '—'} />
-          <ReadField label="Branch" value={rt.branch} />
         </div>
       </Section>
 
-      {/* Route Contract */}
+      {/* Document & PDF Config */}
+      <Section title="Document & PDF Config" emoji="📄" borderColor="#A5F3FC" headerBg="linear-gradient(135deg, #ECFEFF, #CFFAFE)" accentColor="#0E7490">
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
+          <ReadField label="Document Series" value={rt.documentSeries} mono />
+          <ReadField label="Invoice Type" value={rt.invoiceTypeName} />
+          <ReadField label="Annexure Type" value={rt.annexureTypeName} />
+        </div>
+      </Section>
       <Section title="Route Contract" emoji="📝" borderColor="#C4B5FD" headerBg="linear-gradient(135deg, #F5F3FF, #EDE9FE)" accentColor="#6D28D9">
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 14 }}>
           <ReadField label="Billing Type" value={rt.billingType} />
@@ -355,7 +492,7 @@ function RouteViewSections({ rt, form }) {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 14 }}>
           <div style={{ padding: 12, background: '#EFF6FF', borderRadius: 10, border: '1px solid #BFDBFE', textAlign: 'center' }}>
             <div style={{ fontSize: 10, fontWeight: 700, color: '#2563EB', textTransform: 'uppercase' }}>Trips MTD</div>
-            <div style={{ fontSize: 20, fontWeight: 800, color: '#1E3A5F', marginTop: 4 }}>{rt.tripsMtd} / {rt.trips}</div>
+            <div style={{ fontSize: 20, fontWeight: 800, color: '#1E3A5F', marginTop: 4 }}>{rt.tripsMtd || 0} / {rt.trips || 0}</div>
           </div>
           <div style={{ padding: 12, background: '#F0FDF4', borderRadius: 10, border: '1px solid #BBF7D0', textAlign: 'center' }}>
             <div style={{ fontSize: 10, fontWeight: 700, color: '#16A34A', textTransform: 'uppercase' }}>On-Time %</div>
@@ -367,7 +504,7 @@ function RouteViewSections({ rt, form }) {
           </div>
         </div>
 
-        {/* Charge columns display */}
+        {/* Charge columns */}
         <div style={{ fontSize: 11, fontWeight: 700, color: '#6D28D9', textTransform: 'uppercase', letterSpacing: 0.6, marginBottom: 10 }}>Charge Columns</div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>
           {[
