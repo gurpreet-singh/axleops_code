@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { getRoutes, ROUTE_STATUS_COLORS, TEMPLATE_COLORS } from '../../services/routeService';
+import { getRoutes } from '../../services/routeService';
 import useSliderStore from '../../stores/sliderStore';
 import { RouteCreateContent, RouteDetailContent } from './RouteSliderContent';
 
@@ -65,36 +65,39 @@ export default function RoutesPage() {
       </div>
 
       {/* Table */}
-      <div style={{ background: '#fff', border: '1.5px solid #E2E8F0', borderRadius: 16, overflow: 'hidden' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1.2fr 1fr 1fr 0.8fr 80px 90px 100px', padding: '12px 18px', background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', fontSize: 11, fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: 0.5 }}>
-          <span>Route Name</span><span>Origin → Dest</span><span>Ledger Account</span><span>Vehicle</span><span>Template</span><span style={{ textAlign: 'right' }}>Dist.</span><span style={{ textAlign: 'right' }}>Toll</span><span>Status</span>
+      <div style={{ background: '#fff', border: '1.5px solid #E2E8F0', borderRadius: 16, overflow: 'auto' }}>
+        <div style={{ minWidth: 900 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.6fr 1.2fr 80px 90px 90px 90px 90px', padding: '12px 18px', background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', fontSize: 11, fontWeight: 700, color: '#64748B', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+            <span>Route Name</span>
+            <span>Ledger Account</span>
+            <span style={{ textAlign: 'right' }}>Dist.</span>
+            <span style={{ textAlign: 'right' }}>Driver</span>
+            <span style={{ textAlign: 'right' }}>Toll</span>
+            <span style={{ textAlign: 'right' }}>Diesel</span>
+            <span style={{ textAlign: 'right' }}>Freight</span>
+          </div>
+          {filtered.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: 40, color: '#94A3B8' }}><div style={{ fontSize: 28, marginBottom: 8 }}>📭</div><div style={{ fontSize: 13, fontWeight: 600 }}>No routes found</div></div>
+          ) : filtered.map(rt => {
+            return (
+              <div key={rt.id} onClick={() => openDetail(rt)}
+                style={{ display: 'grid', gridTemplateColumns: '1.6fr 1.2fr 80px 90px 90px 90px 90px', padding: '14px 18px', borderBottom: '1px solid #F1F5F9', alignItems: 'center', cursor: 'pointer', transition: 'all .1s' }}
+                onMouseEnter={e => e.currentTarget.style.background = '#F8FAFC'}
+                onMouseLeave={e => e.currentTarget.style.background = '#fff'}>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#1E293B' }}>{rt.name || '—'}</div>
+                  {rt.via && <div style={{ fontSize: 11, color: '#94A3B8' }}>{rt.via}</div>}
+                </div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: '#475569' }}>{rt.ledgerAccountName || '—'}</div>
+                <div style={{ textAlign: 'right', fontSize: 12, fontWeight: 700, color: '#1E293B' }}>{rt.dist ? rt.dist.toLocaleString() + ' km' : '—'}</div>
+                <div style={{ textAlign: 'right', fontSize: 12, fontWeight: 600, color: '#1E293B' }}>{rt.driverExpense ? INR(rt.driverExpense) : '—'}</div>
+                <div style={{ textAlign: 'right', fontSize: 12, fontWeight: 600, color: '#1E293B' }}>{rt.toll ? INR(rt.toll) : '—'}</div>
+                <div style={{ textAlign: 'right', fontSize: 12, fontWeight: 600, color: '#1E293B' }}>{rt.diesel ? rt.diesel.toLocaleString() + ' L' : '—'}</div>
+                <div style={{ textAlign: 'right', fontSize: 12, fontWeight: 600, color: '#1E293B' }}>{rt.freightRate ? INR(rt.freightRate) : '—'}</div>
+              </div>
+            );
+          })}
         </div>
-        {filtered.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: 40, color: '#94A3B8' }}><div style={{ fontSize: 28, marginBottom: 8 }}>📭</div><div style={{ fontSize: 13, fontWeight: 600 }}>No routes found</div></div>
-        ) : filtered.map(rt => {
-          const sc = ROUTE_STATUS_COLORS[rt.status] || ROUTE_STATUS_COLORS.Draft;
-          const tc = TEMPLATE_COLORS[rt.template] || { bg: '#F1F5F9', color: '#475569' };
-          return (
-            <div key={rt.id} onClick={() => openDetail(rt)}
-              style={{ display: 'grid', gridTemplateColumns: '1.2fr 1.2fr 1fr 1fr 0.8fr 80px 90px 100px', padding: '14px 18px', borderBottom: '1px solid #F1F5F9', alignItems: 'center', cursor: 'pointer', transition: 'all .1s' }}
-              onMouseEnter={e => e.currentTarget.style.background = '#F8FAFC'}
-              onMouseLeave={e => e.currentTarget.style.background = '#fff'}>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#1E293B' }}>{rt.name || '—'}</div>
-                {rt.via && <div style={{ fontSize: 11, color: '#94A3B8' }}>{rt.via}</div>}
-              </div>
-              <div style={{ fontSize: 12, color: '#475569' }}>
-                {rt.origin || '—'} → {rt.dest || rt.destination || '—'}
-              </div>
-              <div style={{ fontSize: 12, fontWeight: 600, color: '#475569' }}>{rt.ledgerAccountName || '—'}</div>
-              <div><span style={{ fontSize: 12, fontFamily: 'monospace', background: '#F1F5F9', padding: '2px 8px', borderRadius: 6 }}>{rt.vType || '—'}</span></div>
-              <div><span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: tc.bg, color: tc.color, border: `1px solid ${tc.color}30`, fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 12, whiteSpace: 'nowrap' }}>{rt.template}</span></div>
-              <div style={{ textAlign: 'right', fontSize: 12, fontWeight: 700, color: '#1E293B' }}>{rt.dist ? rt.dist.toLocaleString() + ' km' : '—'}</div>
-              <div style={{ textAlign: 'right', fontSize: 12, fontWeight: 700, color: '#1E293B' }}>{rt.toll ? INR(rt.toll) : '—'}</div>
-              <div><span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: sc.mid, color: sc.text, border: `1px solid ${sc.border}`, fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 12 }}><span style={{ width: 6, height: 6, borderRadius: '50%', background: sc.dot }}></span>{rt.status}</span></div>
-            </div>
-          );
-        })}
       </div>
     </div>
   );

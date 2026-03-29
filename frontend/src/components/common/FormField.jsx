@@ -54,7 +54,7 @@ export function FormField({ label, value, onChange, type = 'text', placeholder, 
 /**
  * Section — Collapsible card wrapper for grouping form fields.
  */
-export function Section({ title, emoji, borderColor, headerBg, accentColor, children, collapsible, defaultCollapsed }) {
+export function Section({ title, emoji, borderColor, headerBg, accentColor, children, collapsible, defaultCollapsed, headerAction }) {
   const [collapsed, setCollapsed] = useState(defaultCollapsed || false);
 
   return (
@@ -69,6 +69,11 @@ export function Section({ title, emoji, borderColor, headerBg, accentColor, chil
       >
         {emoji && <span className="ax-section-emoji">{emoji}</span>}
         <span className="ax-section-title" style={{ color: accentColor || '#1E293B' }}>{title}</span>
+        {headerAction && (
+          <span className="ax-section-header-action" onClick={e => e.stopPropagation()} style={{ marginLeft: 'auto' }}>
+            {headerAction}
+          </span>
+        )}
         {collapsible && (
           <i className={`fas fa-chevron-${collapsed ? 'down' : 'up'} ax-section-chevron`}></i>
         )}

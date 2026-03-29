@@ -1017,6 +1017,14 @@
   font-size: 10px;
   color: #94A3B8;
   transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.ax-section-header-action {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
 .ax-section-body {

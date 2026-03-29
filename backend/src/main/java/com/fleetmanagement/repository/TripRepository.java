@@ -12,4 +12,7 @@ import java.util.UUID;
 public interface TripRepository extends JpaRepository<Trip, UUID> {
     List<Trip> findByTenantId(UUID tenantId);
     Optional<Trip> findByIdAndTenantId(UUID id, UUID tenantId);
+    List<Trip> findByVehicleIdAndTenantIdOrderByScheduledStartDesc(UUID vehicleId, UUID tenantId);
+    long countByVehicleIdAndTenantId(UUID vehicleId, UUID tenantId);
+    long countByVehicleIdAndTenantIdAndStatus(UUID vehicleId, UUID tenantId, String status);
 }

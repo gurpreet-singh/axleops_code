@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS ledger_groups (
 
 -- ── ROOT GROUPS (depth=0) ──────────────────────────────────
 
-INSERT INTO ledger_groups (id, tenant_id, name, nature, default_account_type, parent_group_id, tally_group_name, is_system_group, created_at, updated_at)
+MERGE INTO ledger_groups (id, tenant_id, name, nature, default_account_type, parent_group_id, tally_group_name, is_system_group, created_at, updated_at) KEY(id)
 VALUES
   ('aa000000-0001-0000-0000-000000000001', 'e1111111-1111-1111-1111-111111111111',
    'Assets', 'ASSET', NULL, NULL, 'Assets', TRUE, NOW(), NOW()),
@@ -37,12 +37,12 @@ VALUES
   ('aa000000-0001-0000-0000-000000000004', 'e1111111-1111-1111-1111-111111111111',
    'Expenses', 'EXPENSE', NULL, NULL, 'Expenses', TRUE, NOW(), NOW())
 
-ON CONFLICT (id) DO NOTHING;
+;
 
 
 -- ── ASSET CHILDREN (depth=1) ───────────────────────────────
 
-INSERT INTO ledger_groups (id, tenant_id, name, nature, default_account_type, parent_group_id, tally_group_name, is_system_group, created_at, updated_at)
+MERGE INTO ledger_groups (id, tenant_id, name, nature, default_account_type, parent_group_id, tally_group_name, is_system_group, created_at, updated_at) KEY(id)
 VALUES
   ('aa000000-0002-0000-0000-000000000001', 'e1111111-1111-1111-1111-111111111111',
    'Current Assets', 'ASSET', NULL, 'aa000000-0001-0000-0000-000000000001', 'Current Assets', TRUE, NOW(), NOW()),
@@ -50,10 +50,10 @@ VALUES
   ('aa000000-0002-0000-0000-000000000002', 'e1111111-1111-1111-1111-111111111111',
    'Fixed Assets', 'ASSET', NULL, 'aa000000-0001-0000-0000-000000000001', 'Fixed Assets', TRUE, NOW(), NOW())
 
-ON CONFLICT (id) DO NOTHING;
+;
 
 -- ASSET depth=2
-INSERT INTO ledger_groups (id, tenant_id, name, nature, default_account_type, parent_group_id, tally_group_name, is_system_group, created_at, updated_at)
+MERGE INTO ledger_groups (id, tenant_id, name, nature, default_account_type, parent_group_id, tally_group_name, is_system_group, created_at, updated_at) KEY(id)
 VALUES
   ('aa000000-0003-0000-0000-000000000001', 'e1111111-1111-1111-1111-111111111111',
    'Cash-in-Hand', 'ASSET', 'GENERAL', 'aa000000-0002-0000-0000-000000000001', 'Cash-in-Hand', TRUE, NOW(), NOW()),
@@ -67,12 +67,12 @@ VALUES
   ('aa000000-0003-0000-0000-000000000004', 'e1111111-1111-1111-1111-111111111111',
    'Vehicles', 'ASSET', 'GENERAL', 'aa000000-0002-0000-0000-000000000002', 'Vehicles', TRUE, NOW(), NOW())
 
-ON CONFLICT (id) DO NOTHING;
+;
 
 
 -- ── LIABILITY CHILDREN (depth=1) ───────────────────────────
 
-INSERT INTO ledger_groups (id, tenant_id, name, nature, default_account_type, parent_group_id, tally_group_name, is_system_group, created_at, updated_at)
+MERGE INTO ledger_groups (id, tenant_id, name, nature, default_account_type, parent_group_id, tally_group_name, is_system_group, created_at, updated_at) KEY(id)
 VALUES
   ('aa000000-0002-0000-0000-000000000003', 'e1111111-1111-1111-1111-111111111111',
    'Current Liabilities', 'LIABILITY', NULL, 'aa000000-0001-0000-0000-000000000002', 'Current Liabilities', TRUE, NOW(), NOW()),
@@ -80,10 +80,10 @@ VALUES
   ('aa000000-0002-0000-0000-000000000004', 'e1111111-1111-1111-1111-111111111111',
    'Loans (Liability)', 'LIABILITY', NULL, 'aa000000-0001-0000-0000-000000000002', 'Loans (Liability)', TRUE, NOW(), NOW())
 
-ON CONFLICT (id) DO NOTHING;
+;
 
 -- LIABILITY depth=2
-INSERT INTO ledger_groups (id, tenant_id, name, nature, default_account_type, parent_group_id, tally_group_name, is_system_group, created_at, updated_at)
+MERGE INTO ledger_groups (id, tenant_id, name, nature, default_account_type, parent_group_id, tally_group_name, is_system_group, created_at, updated_at) KEY(id)
 VALUES
   ('aa000000-0003-0000-0000-000000000005', 'e1111111-1111-1111-1111-111111111111',
    'Sundry Creditors', 'LIABILITY', 'PARTY_GENERAL', 'aa000000-0002-0000-0000-000000000003', 'Sundry Creditors', TRUE, NOW(), NOW()),
@@ -94,20 +94,20 @@ VALUES
   ('aa000000-0003-0000-0000-000000000007', 'e1111111-1111-1111-1111-111111111111',
    'Vehicle Loans (EMI)', 'LIABILITY', 'GENERAL', 'aa000000-0002-0000-0000-000000000004', 'Secured Loans', TRUE, NOW(), NOW())
 
-ON CONFLICT (id) DO NOTHING;
+;
 
 
 -- ── INCOME CHILDREN (depth=1) ──────────────────────────────
 
-INSERT INTO ledger_groups (id, tenant_id, name, nature, default_account_type, parent_group_id, tally_group_name, is_system_group, created_at, updated_at)
+MERGE INTO ledger_groups (id, tenant_id, name, nature, default_account_type, parent_group_id, tally_group_name, is_system_group, created_at, updated_at) KEY(id)
 VALUES
   ('aa000000-0002-0000-0000-000000000005', 'e1111111-1111-1111-1111-111111111111',
    'Direct Income', 'INCOME', NULL, 'aa000000-0001-0000-0000-000000000003', 'Direct Incomes', TRUE, NOW(), NOW())
 
-ON CONFLICT (id) DO NOTHING;
+;
 
 -- INCOME depth=2
-INSERT INTO ledger_groups (id, tenant_id, name, nature, default_account_type, parent_group_id, tally_group_name, is_system_group, created_at, updated_at)
+MERGE INTO ledger_groups (id, tenant_id, name, nature, default_account_type, parent_group_id, tally_group_name, is_system_group, created_at, updated_at) KEY(id)
 VALUES
   ('aa000000-0003-0000-0000-000000000008', 'e1111111-1111-1111-1111-111111111111',
    'Freight Revenue', 'INCOME', 'PARTY_ROUTE', 'aa000000-0002-0000-0000-000000000005', 'Freight Revenue', TRUE, NOW(), NOW()),
@@ -115,12 +115,12 @@ VALUES
   ('aa000000-0003-0000-0000-000000000009', 'e1111111-1111-1111-1111-111111111111',
    'Loading/Unloading Income', 'INCOME', 'GENERAL', 'aa000000-0002-0000-0000-000000000005', 'Loading/Unloading Income', FALSE, NOW(), NOW())
 
-ON CONFLICT (id) DO NOTHING;
+;
 
 
 -- ── EXPENSE CHILDREN (depth=1) ─────────────────────────────
 
-INSERT INTO ledger_groups (id, tenant_id, name, nature, default_account_type, parent_group_id, tally_group_name, is_system_group, created_at, updated_at)
+MERGE INTO ledger_groups (id, tenant_id, name, nature, default_account_type, parent_group_id, tally_group_name, is_system_group, created_at, updated_at) KEY(id)
 VALUES
   ('aa000000-0002-0000-0000-000000000006', 'e1111111-1111-1111-1111-111111111111',
    'Trip Expenses', 'EXPENSE', NULL, 'aa000000-0001-0000-0000-000000000004', 'Direct Expenses', TRUE, NOW(), NOW()),
@@ -131,10 +131,10 @@ VALUES
   ('aa000000-0002-0000-0000-000000000008', 'e1111111-1111-1111-1111-111111111111',
    'Admin Expenses', 'EXPENSE', NULL, 'aa000000-0001-0000-0000-000000000004', 'Administrative Expenses', TRUE, NOW(), NOW())
 
-ON CONFLICT (id) DO NOTHING;
+;
 
 -- EXPENSE depth=2 (Trip Expenses children)
-INSERT INTO ledger_groups (id, tenant_id, name, nature, default_account_type, parent_group_id, tally_group_name, is_system_group, created_at, updated_at)
+MERGE INTO ledger_groups (id, tenant_id, name, nature, default_account_type, parent_group_id, tally_group_name, is_system_group, created_at, updated_at) KEY(id)
 VALUES
   ('aa000000-0003-0000-0000-000000000010', 'e1111111-1111-1111-1111-111111111111',
    'Fuel', 'EXPENSE', 'GENERAL', 'aa000000-0002-0000-0000-000000000006', 'Fuel Expenses', TRUE, NOW(), NOW()),
@@ -148,10 +148,10 @@ VALUES
   ('aa000000-0003-0000-0000-000000000013', 'e1111111-1111-1111-1111-111111111111',
    'Trip Maintenance', 'EXPENSE', 'GENERAL', 'aa000000-0002-0000-0000-000000000006', 'Repair & Maintenance', FALSE, NOW(), NOW())
 
-ON CONFLICT (id) DO NOTHING;
+;
 
 -- EXPENSE depth=2 (Fixed Costs children)
-INSERT INTO ledger_groups (id, tenant_id, name, nature, default_account_type, parent_group_id, tally_group_name, is_system_group, created_at, updated_at)
+MERGE INTO ledger_groups (id, tenant_id, name, nature, default_account_type, parent_group_id, tally_group_name, is_system_group, created_at, updated_at) KEY(id)
 VALUES
   ('aa000000-0003-0000-0000-000000000014', 'e1111111-1111-1111-1111-111111111111',
    'EMI', 'EXPENSE', 'GENERAL', 'aa000000-0002-0000-0000-000000000007', 'EMI Payments', FALSE, NOW(), NOW()),
@@ -162,10 +162,10 @@ VALUES
   ('aa000000-0003-0000-0000-000000000016', 'e1111111-1111-1111-1111-111111111111',
    'Permits & Tax', 'EXPENSE', 'GENERAL', 'aa000000-0002-0000-0000-000000000007', 'Road Tax & Permits', TRUE, NOW(), NOW())
 
-ON CONFLICT (id) DO NOTHING;
+;
 
 -- EXPENSE depth=2 (Admin Expenses children)
-INSERT INTO ledger_groups (id, tenant_id, name, nature, default_account_type, parent_group_id, tally_group_name, is_system_group, created_at, updated_at)
+MERGE INTO ledger_groups (id, tenant_id, name, nature, default_account_type, parent_group_id, tally_group_name, is_system_group, created_at, updated_at) KEY(id)
 VALUES
   ('aa000000-0003-0000-0000-000000000017', 'e1111111-1111-1111-1111-111111111111',
    'Office Rent', 'EXPENSE', 'GENERAL', 'aa000000-0002-0000-0000-000000000008', 'Rent', FALSE, NOW(), NOW()),
@@ -173,4 +173,4 @@ VALUES
   ('aa000000-0003-0000-0000-000000000018', 'e1111111-1111-1111-1111-111111111111',
    'Salaries', 'EXPENSE', 'GENERAL', 'aa000000-0002-0000-0000-000000000008', 'Salary Expenses', TRUE, NOW(), NOW())
 
-ON CONFLICT (id) DO NOTHING;
+;
