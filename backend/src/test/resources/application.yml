@@ -1,0 +1,32 @@
+# ==========================================
+# AxleOps Backend — Test Configuration (H2)
+# ==========================================
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:axleops-test;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  h2:
+    console:
+      enabled: false
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  # Disable Redis for tests
+  session:
+    store-type: none
+  data:
+    redis:
+      host: localhost
+      port: 6379

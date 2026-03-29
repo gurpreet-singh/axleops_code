@@ -96,19 +96,17 @@ public class AccountingService {
     }
 
     public ProfitLossResponse getProfitLoss() {
-        List<UUID> branchIds = BranchSecurityContext.get();
-        if (branchIds == null || branchIds.isEmpty()) branchIds = null;
-        UUID tenantId = TenantContext.get();
-
-        List<VoucherResponse> vouchers = voucherRepository.findAllScoped(tenantId, branchIds).stream()
-                .map(voucherMapper::toResponse)
-                .collect(Collectors.toList());
-
-        ProfitLossResponse pl = new ProfitLossResponse();
+        // TODO: Replace hardcoded P&L values with real voucher aggregation:
+        // List<UUID> branchIds = BranchSecurityContext.get();
+        // if (branchIds == null || branchIds.isEmpty()) branchIds = null;
+        // UUID tenantId = TenantContext.get();
+        // List<VoucherResponse> vouchers = voucherRepository.findAllScoped(tenantId, branchIds)
+        //         .stream().map(voucherMapper::toResponse).collect(Collectors.toList());
 
         // Very simplified P&L aggregation based on Tally Groups
         // In a real app we would join on ledgers and aggregate properly via SQL
         // This simulates the behavior for the demo.
+        ProfitLossResponse pl = new ProfitLossResponse();
         pl.setDirectIncome(new BigDecimal("1845200"));
         pl.setIndirectIncome(new BigDecimal("12700"));
         pl.setDirectExpenses(new BigDecimal("1255200"));

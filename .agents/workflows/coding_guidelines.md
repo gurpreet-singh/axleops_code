@@ -136,6 +136,48 @@ Renders as: uppercase label + input with blue focus ring
 | Red | #FECACA | linear-gradient(135deg, #FEF2F2, #FFE4E6) | #DC2626 |
 | Gray | #E2E8F0 | #F8FAFC | #64748B |
 
+#### `Section` — headerAction Prop (CRITICAL PATTERN)
+When a section supports adding/creating items (e.g., documents, fuel entries, driver assignments),
+the **Add/Action button MUST be placed in the section header** via the `headerAction` prop —
+**never inside the section body**.
+
+```jsx
+// ✅ CORRECT — action button in section header
+<Section title="Fuel Log" emoji="⛽" borderColor="#FDBA74" accentColor="#9A3412"
+  headerAction={<SectionAddBtn label="Add Fuel Entry" icon="plus" color="#9A3412" onClick={toggle} />}
+>
+  {showForm && <AddFuelForm ... />}
+  {/* list content */}
+</Section>
+
+// ❌ WRONG — action button inside section body
+<Section title="Fuel Log" emoji="⛽">
+  <div style={{ display: 'flex', marginBottom: 12 }}>
+    <button onClick={toggle}>Add Fuel Entry</button>  // ← DO NOT DO THIS
+  </div>
+</Section>
+```
+
+**Multiple header actions** (e.g., filter + add button) use a React fragment:
+```jsx
+<Section title="Compliance Documents" ...
+  headerAction={<>
+    <select value={filter} onChange={...}>...</select>
+    <SectionAddBtn label="Add Document" icon="plus" color="#0369A1" onClick={toggle} />
+  </>}
+>
+```
+
+#### `SectionAddBtn` — Reusable Header Action Button
+Defined in `VehicleSliderContent.jsx`. Use for all section header add/toggle buttons.
+```jsx
+<SectionAddBtn label="Add Entry" icon="plus" color="#9A3412" onClick={fn} />
+```
+- `label`: Button text (toggles between "Add X" / "Cancel")
+- `icon`: FontAwesome icon name without `fa-` prefix (e.g., `plus`, `times`, `user-plus`)
+- `color`: Must match the section's `accentColor`
+- Compact size (10px font, 3px/10px padding) designed to fit in section headers
+
 ### CSS Classes to Use (from overrides.css)
 - `.sl-action-bar` — action bar below header
 - `.sl-action-btn` — individual action button
@@ -269,3 +311,28 @@ export default function EntitiesPage() {
 - All business entities have `tenant_id` column
 - Gobind Transport (`e9999999-...`) = primary test tenant
 - All UUIDs must use valid hex characters only (0-9, a-f)
+
+---
+
+## 6. UX Rule — Action Buttons at the Top (CRITICAL)
+
+**All actionable buttons MUST appear at the TOP of their view**, immediately after any heading/title.
+Users should **never** need to scroll down to find primary actions (Back, Next, Submit, Save, Import, etc.).
+
+### Rules:
+1. **Wizard steps**: Place the action bar (Back / Next / Save) directly below the step title, **before** the main content.
+2. **Form views**: Action buttons (Save, Cancel) go in a sticky header or right below the title — never at the bottom.
+3. **Responsive**: On all screen sizes, action buttons must remain visible at the top. Content scrolls beneath them.
+4. **No bottom footers for actions**: Do NOT use bottom-pinned footers or end-of-page action rows. Export/download links (secondary actions) may appear inline near the relevant data, but primary navigation and submission buttons stay at the top.
+
+### Pattern:
+```
+┌─────────────────────────────┐
+│ Step Title / Heading        │
+├─────────────────────────────┤
+│ [← Back] [Save]  [Next →]  │  ← Action bar (always visible, top)
+├─────────────────────────────┤
+│ Main content (scrollable)   │
+│ ...                         │
+└─────────────────────────────┘
+```

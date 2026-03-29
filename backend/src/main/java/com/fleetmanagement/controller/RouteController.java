@@ -1,6 +1,7 @@
 package com.fleetmanagement.controller;
 
 import com.fleetmanagement.config.RequiresAuthority;
+import com.fleetmanagement.dto.request.CreateRouteRequest;
 import com.fleetmanagement.dto.response.RouteResponse;
 import com.fleetmanagement.entity.Authority;
 import com.fleetmanagement.service.RouteService;
@@ -28,6 +29,18 @@ public class RouteController {
     @RequiresAuthority(Authority.TRIP_READ)
     public ResponseEntity<RouteResponse> getRouteById(@PathVariable UUID id) {
         return ResponseEntity.ok(routeService.getRouteById(id));
+    }
+
+    @PostMapping
+    @RequiresAuthority(Authority.TRIP_CREATE)
+    public ResponseEntity<RouteResponse> createRoute(@RequestBody CreateRouteRequest request) {
+        return ResponseEntity.ok(routeService.create(request));
+    }
+
+    @PutMapping("/{id}")
+    @RequiresAuthority(Authority.TRIP_UPDATE)
+    public ResponseEntity<RouteResponse> updateRoute(@PathVariable UUID id, @RequestBody CreateRouteRequest request) {
+        return ResponseEntity.ok(routeService.update(id, request));
     }
 
     @DeleteMapping("/{id}")

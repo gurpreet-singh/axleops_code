@@ -9,7 +9,7 @@ public class LedgerGroupResponse {
     private UUID id;
     private String name;
     private String nature;
-    private String defaultAccountSubType;
+    private String groupType;
     private UUID parentGroupId;
     private String tallyGroupName;
 }

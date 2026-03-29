@@ -5,6 +5,7 @@ import com.fleetmanagement.config.TenantContext;
 import com.fleetmanagement.dto.request.CreateLedgerAccountRequest;
 import com.fleetmanagement.dto.response.LedgerAccountResponse;
 import com.fleetmanagement.entity.LedgerGroup;
+import com.fleetmanagement.entity.LedgerAccountType;
 import com.fleetmanagement.entity.Company;
 import com.fleetmanagement.entity.LedgerAccount;
 import com.fleetmanagement.mapper.LedgerAccountMapper;
@@ -75,15 +76,20 @@ public class LedgerAccountService {
         account.setAccountHead(req.getAccountHead());
         account.setTallyName(req.getTallyName());
         account.setNameOnDashboard(req.getNameOnDashboard());
-        account.setAccountGroup(group.getName());
+        account.setPrintName(req.getPrintName());
         account.setAccountGroupRef(group);
-        account.setGroupNature(group.getNature().name());
-        account.setAccountSubType(LedgerAccount.AccountSubType.valueOf(req.getAccountSubType()));
+        // accountType — persisted directly, selected by user
+        if (req.getAccountType() != null && !req.getAccountType().isEmpty()) {
+            account.setAccountType(LedgerAccountType.valueOf(req.getAccountType()));
+        }
 
         // Financials
         account.setOpeningBalance(req.getOpeningBalance() != null ? req.getOpeningBalance() : BigDecimal.ZERO);
         account.setCurrentBalance(account.getOpeningBalance());
         account.setCurrency(req.getCurrency() != null ? req.getCurrency() : "INR");
+        if (req.getDebitCredit() != null) {
+            account.setDebitCredit(LedgerAccount.DebitCredit.valueOf(req.getDebitCredit()));
+        }
 
         // Party data — denormalise from Company if provided
         if (req.getCompanyId() != null) {
@@ -119,6 +125,7 @@ public class LedgerAccountService {
         account.setEmail(req.getEmail());
         account.setContactPerson(req.getContactPerson());
         account.setDesignation(req.getDesignation());
+        account.setWebsite(req.getWebsite());
 
         // Shipping
         account.setShippedToSameAsBilling(req.isShippedToSameAsBilling());
@@ -129,12 +136,13 @@ public class LedgerAccountService {
         account.setShippingCountry(req.getShippingCountry());
         account.setShippingPinCode(req.getShippingPinCode());
         account.setShippingPhone(req.getShippingPhone());
+        account.setShippingMobile(req.getShippingMobile());
+        account.setShippingEmail(req.getShippingEmail());
         account.setShippingContactPerson(req.getShippingContactPerson());
         account.setShippingDesignation(req.getShippingDesignation());
 
         // Other
         account.setCinNumber(req.getCinNumber());
-        account.setLastYearRevenue(req.getLastYearRevenue());
         account.setDefaultShippedToCode(req.getDefaultShippedToCode());
 
         LedgerAccount saved = ledgerAccountRepository.save(account);
@@ -147,26 +155,31 @@ public class LedgerAccountService {
         LedgerAccount account = ledgerAccountRepository.findByIdAndTenantId(id, tenantId)
                 .orElseThrow(() -> new ResourceNotFoundException("LedgerAccount", id));
 
-        // Update identity
         account.setAccountHead(req.getAccountHead());
         account.setTallyName(req.getTallyName());
         account.setNameOnDashboard(req.getNameOnDashboard());
+        account.setPrintName(req.getPrintName());
 
         if (req.getAccountGroupId() != null) {
             LedgerGroup group = ledgerGroupRepository.findByIdAndTenantId(req.getAccountGroupId(), tenantId)
                     .orElseThrow(() -> new ResourceNotFoundException("LedgerGroup", req.getAccountGroupId()));
-            account.setAccountGroup(group.getName());
             account.setAccountGroupRef(group);
-            account.setGroupNature(group.getNature().name());
         }
 
-        // Update remaining fields
+        // accountType — update if provided
+        if (req.getAccountType() != null && !req.getAccountType().isEmpty()) {
+            account.setAccountType(LedgerAccountType.valueOf(req.getAccountType()));
+        }
+
         account.setGstin(req.getGstin());
         account.setPanNumber(req.getPanNumber());
         account.setLegalName(req.getLegalName());
         account.setOurVendorCode(req.getOurVendorCode());
         if (req.getTcsApplicable() != null) {
             account.setTcsApplicable(LedgerAccount.TcsApplicability.valueOf(req.getTcsApplicable()));
+        }
+        if (req.getDebitCredit() != null) {
+            account.setDebitCredit(LedgerAccount.DebitCredit.valueOf(req.getDebitCredit()));
         }
         account.setPaymentTerms(req.getPaymentTerms());
         account.setTallyPaymentTerms(req.getTallyPaymentTerms());
@@ -183,6 +196,7 @@ public class LedgerAccountService {
         account.setEmail(req.getEmail());
         account.setContactPerson(req.getContactPerson());
         account.setDesignation(req.getDesignation());
+        account.setWebsite(req.getWebsite());
 
         // Shipping
         account.setShippedToSameAsBilling(req.isShippedToSameAsBilling());
@@ -193,12 +207,13 @@ public class LedgerAccountService {
         account.setShippingCountry(req.getShippingCountry());
         account.setShippingPinCode(req.getShippingPinCode());
         account.setShippingPhone(req.getShippingPhone());
+        account.setShippingMobile(req.getShippingMobile());
+        account.setShippingEmail(req.getShippingEmail());
         account.setShippingContactPerson(req.getShippingContactPerson());
         account.setShippingDesignation(req.getShippingDesignation());
 
         // Other
         account.setCinNumber(req.getCinNumber());
-        account.setLastYearRevenue(req.getLastYearRevenue());
         account.setDefaultShippedToCode(req.getDefaultShippedToCode());
 
         LedgerAccount saved = ledgerAccountRepository.save(account);

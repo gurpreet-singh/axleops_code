@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "trips")
 @Getter
@@ -37,20 +40,25 @@ public class Trip extends BaseEntity {
     @JoinColumn(name = "branch_id")
     private Branch branch;
 
+    // ─── Status & Lifecycle ─────────────────────────────────────
     @Column(name = "status", length = 50)
-    private String status = "CREATED";
+    private String status = "CREATED"; // CREATED, DISPATCHED, IN_TRANSIT, DELIVERED, COMPLETED, CANCELLED
 
     @Column(name = "scheduled_start")
-    private java.time.LocalDateTime scheduledStart;
+    private LocalDateTime scheduledStart;
 
     @Column(name = "actual_start")
-    private java.time.LocalDateTime actualStart;
+    private LocalDateTime actualStart;
 
     @Column(name = "actual_arrival")
-    private java.time.LocalDateTime actualArrival;
+    private LocalDateTime actualArrival;
 
+    @Column(name = "completed_at")
+    private LocalDateTime completedAt;
+
+    // ─── Cargo ──────────────────────────────────────────────────
     @Column(name = "cargo_weight")
-    private java.math.BigDecimal cargoWeight;
+    private BigDecimal cargoWeight;
 
     @Column(name = "cargo_description", columnDefinition = "TEXT")
     private String cargoDescription;
@@ -62,14 +70,48 @@ public class Trip extends BaseEntity {
     private String hsnCode;
 
     @Column(name = "consignment_value")
-    private java.math.BigDecimal consignmentValue;
+    private BigDecimal consignmentValue;
 
-    private java.math.BigDecimal revenue;
+    // ─── Odometer ───────────────────────────────────────────────
+    @Column(name = "start_odometer")
+    private BigDecimal startOdometer;
+
+    @Column(name = "end_odometer")
+    private BigDecimal endOdometer;
+
+    @Column(name = "distance_travelled")
+    private BigDecimal distanceTravelled;
+
+    // ─── Financials ─────────────────────────────────────────────
+    private BigDecimal revenue;
+
+    @Column(name = "fuel_cost")
+    private BigDecimal fuelCost;
+
+    @Column(name = "toll_cost")
+    private BigDecimal tollCost;
+
+    @Column(name = "driver_allowance")
+    private BigDecimal driverAllowance;
+
+    @Column(name = "other_expense")
+    private BigDecimal otherExpense;
+
+    @Column(name = "total_expense")
+    private BigDecimal totalExpense;
 
     @Column(name = "net_profit")
-    private java.math.BigDecimal netProfit;
+    private BigDecimal netProfit;
 
+    // ─── Invoice ────────────────────────────────────────────────
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "invoice_id")
     private Invoice invoice;
+
+    // ─── Delivery ───────────────────────────────────────────────
+    @Column(name = "pod_status")
+    private String podStatus; // PENDING, RECEIVED, VERIFIED
+
+    @Column(name = "delivery_notes", columnDefinition = "TEXT")
+    private String deliveryNotes;
 }

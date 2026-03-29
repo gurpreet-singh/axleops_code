@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════
 // ROUTE SERVICE
-// Calls: GET /api/v1/routes  — falls back to local JSON
+// Full CRUD: GET, POST, PUT, DELETE /api/v1/routes
 // ═══════════════════════════════════════════════════════════
 import api from './api';
 import routesJson from '../data/routes.json';
@@ -23,11 +23,10 @@ export const TEMPLATE_COLORS = {
 
 // Map backend API response fields → frontend field names
 function mapApiRoute(r) {
-  // If the record already has 'route' field (local JSON format), return as-is
   if (r.route) return r;
   return {
     ...r,
-    route: r.name || `${r.origin} → ${r.destination}`,
+    route: r.name || `${r.origin || ''} → ${r.destination || ''}`,
     dist: r.distanceKm || r.dist || 0,
     estTime: r.estimatedHours || r.estTime || 0,
     toll: r.tollCost || r.toll || 0,
@@ -36,11 +35,36 @@ function mapApiRoute(r) {
     originPin: r.originPin || '',
     destPin: r.destPin || '',
     via: r.via || '',
-    client: r.client || r.clientName || '—',
-    vType: r.vType || r.vehicleType || '—',
+    ledgerAccountId: r.ledgerAccountId || null,
+    ledgerAccountName: r.ledgerAccountName || '—',
+    vType: r.vehicleType || r.vType || '—',
     template: r.template || 'Standard',
     branch: r.branch || 'Global',
     billingType: r.billingType || '',
+    documentSeries: r.documentSeries || '',
+    invoiceTypeId: r.invoiceTypeId || null,
+    invoiceTypeName: r.invoiceTypeName || '—',
+    annexureTypeId: r.annexureTypeId || null,
+    annexureTypeName: r.annexureTypeName || '—',
+    // Charge columns
+    freightRate: r.freightRate || 0,
+    gdsCharges: r.gdsCharges || 0,
+    stCharges: r.stCharges || 0,
+    insurance: r.insurance || 0,
+    loadingCharges: r.loadingCharges || 0,
+    unloadingCharges: r.unloadingCharges || 0,
+    deliveryCharges: r.deliveryCharges || 0,
+    collectionCharges: r.collectionCharges || 0,
+    detentionCharges: r.detentionCharges || 0,
+    godownCharges: r.godownCharges || 0,
+    lrCharges: r.lrCharges || 0,
+    otherCharges: r.otherCharges || 0,
+    // Operational defaults
+    driverExpense: r.driverExpense || 0,
+    diesel: r.dieselLitres || r.diesel || 0,
+    // Instructions
+    loadingInstructions: r.loadingInstructions || '',
+    unloadingInstructions: r.unloadingInstructions || '',
     slaHrs: r.slaHours || r.slaHrs || 0,
     payTerms: r.paymentTerms || r.payTerms || '',
     status: r.status || 'Active',
@@ -73,7 +97,12 @@ export async function getRouteById(id) {
 
 export async function createRoute(payload) {
   const { data } = await api.post('/routes', payload);
-  return data;
+  return mapApiRoute(data);
+}
+
+export async function updateRoute(id, payload) {
+  const { data } = await api.put(`/routes/${id}`, payload);
+  return mapApiRoute(data);
 }
 
 export async function deleteRoute(id) {

@@ -15,13 +15,14 @@ public class CreateLedgerAccountRequest {
     private String accountHead;
     private String tallyName;
     private String nameOnDashboard;
+    private String printName;
     @NotNull
     private UUID accountGroupId;
-    @NotBlank
-    private String accountSubType; // PARTY, BANK, CASH, DUTIES_TAXES, GENERAL
+    private String accountType; // LedgerAccountType enum value — selected by the user
 
     // Financials
     private BigDecimal openingBalance;
+    private String debitCredit;  // DEBIT or CREDIT
     private String currency;
 
     // Party data
@@ -46,6 +47,7 @@ public class CreateLedgerAccountRequest {
     private String email;
     private String contactPerson;
     private String designation;
+    private String website;
 
     // Shipping
     private boolean shippedToSameAsBilling = true;
@@ -56,11 +58,12 @@ public class CreateLedgerAccountRequest {
     private String shippingCountry;
     private String shippingPinCode;
     private String shippingPhone;
+    private String shippingMobile;
+    private String shippingEmail;
     private String shippingContactPerson;
     private String shippingDesignation;
 
     // Other
     private String cinNumber;
-    private BigDecimal lastYearRevenue;
     private String defaultShippedToCode;
 }

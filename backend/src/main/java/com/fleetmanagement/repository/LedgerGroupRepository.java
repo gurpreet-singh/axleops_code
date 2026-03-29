@@ -13,4 +13,5 @@ public interface LedgerGroupRepository extends JpaRepository<LedgerGroup, UUID> 
 
     List<LedgerGroup> findByTenantId(UUID tenantId);
     Optional<LedgerGroup> findByIdAndTenantId(UUID id, UUID tenantId);
+    Optional<LedgerGroup> findByNameIgnoreCaseAndTenantId(String name, UUID tenantId);
 }

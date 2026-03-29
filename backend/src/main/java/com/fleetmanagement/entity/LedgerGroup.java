@@ -12,7 +12,7 @@ import java.util.List;
  * <p>
  * Tenants build their own chart of accounts hierarchy (any depth).
  * The code never makes decisions based on group name or structure;
- * it only cares about {@link GroupNature} and {@link AccountSubType}.
+ * it only cares about {@link GroupNature} and {@link LedgerGroupType}.
  */
 @Entity
 @Table(name = "ledger_groups")
@@ -36,9 +36,9 @@ public class LedgerGroup extends BaseEntity {
      * Determines which UI form sections appear and what business logic applies
      * to accounts created under this group. Required for every group.
      */
-    @Column(name = "default_account_sub_type", length = 30, nullable = false)
+    @Column(name = "group_type", length = 20, nullable = false)
     @Enumerated(EnumType.STRING)
-    private AccountSubType defaultAccountSubType;
+    private LedgerGroupType groupType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_group_id")
@@ -52,25 +52,11 @@ public class LedgerGroup extends BaseEntity {
     private String tallyGroupName;
 
     // ═══════════════════════════════════════════════════════════════
-    // ENUMS — the only two things the code cares about
+    // ENUMS — GroupNature stays here; LedgerGroupType and LedgerAccountType are top-level
     // ═══════════════════════════════════════════════════════════════
 
     /** Accounting law — determines BS vs P&L and debit/credit default */
     public enum GroupNature {
         ASSET, LIABILITY, INCOME, EXPENSE
-    }
-
-    /**
-     * Drives which UI form sections appear and what business logic applies.
-     * <ul>
-     *   <li>PARTY — PAN, GSTIN, addresses, payment terms, TCS</li>
-     *   <li>BANK — bank name, account no, IFSC, branch</li>
-     *   <li>CASH — minimal, cash-in-hand / petty cash / driver advances</li>
-     *   <li>DUTIES_TAXES — GST input/output, TDS, TCS statutory accounts</li>
-     *   <li>GENERAL — no extra fields, just identity + balance</li>
-     * </ul>
-     */
-    public enum AccountSubType {
-        PARTY, BANK, CASH, DUTIES_TAXES, GENERAL
     }
 }

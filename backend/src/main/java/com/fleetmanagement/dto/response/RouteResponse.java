@@ -20,4 +20,37 @@ public class RouteResponse {
     private String paymentTerms;
     private String template;
     private String status;
+    private String vehicleType;
+    private String billingType;
+    private String documentSeries;
+
+    // Charge columns
+    private BigDecimal freightRate;
+    private BigDecimal gdsCharges;
+    private BigDecimal stCharges;
+    private BigDecimal insurance;
+    private BigDecimal loadingCharges;
+    private BigDecimal unloadingCharges;
+    private BigDecimal deliveryCharges;
+    private BigDecimal collectionCharges;
+    private BigDecimal detentionCharges;
+    private BigDecimal godownCharges;
+    private BigDecimal lrCharges;
+    private BigDecimal otherCharges;
+
+    // Operational defaults
+    private BigDecimal driverExpense;
+    private BigDecimal dieselLitres;
+
+    // Instructions
+    private String loadingInstructions;
+    private String unloadingInstructions;
+
+    // FK names
+    private UUID ledgerAccountId;
+    private String ledgerAccountName;
+    private UUID invoiceTypeId;
+    private String invoiceTypeName;
+    private UUID annexureTypeId;
+    private String annexureTypeName;
 }

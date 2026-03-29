@@ -4,7 +4,10 @@ import com.fleetmanagement.dto.response.EnumValueDto;
 import com.fleetmanagement.entity.Company;
 import com.fleetmanagement.entity.FreightRate;
 import com.fleetmanagement.entity.LedgerAccount;
+import com.fleetmanagement.entity.LedgerAccountType;
 import com.fleetmanagement.entity.LedgerGroup;
+import com.fleetmanagement.entity.LedgerGroupType;
+
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -33,14 +36,34 @@ public class EnumService {
     public Map<String, List<EnumValueDto>> getAllEnums() {
         Map<String, List<EnumValueDto>> result = new LinkedHashMap<>();
 
-        // ── Account Sub Types (shared by LedgerGroup + LedgerAccount) ──
-        result.put("accountSubType", mapEnum("account_sub_type",
-                LedgerAccount.AccountSubType.values(),
+        // ── Ledger Account Types (on LedgerAccount — operational behaviour) ──
+        result.put("ledgerAccountType", mapEnum("ledger_account_type",
+                LedgerAccountType.values(),
+                Map.ofEntries(
+                        Map.entry("CLIENT", "Client"),
+                        Map.entry("VENDOR", "Vendor"),
+                        Map.entry("FUEL_PUMP", "Fuel Pump"),
+                        Map.entry("BANK_ACCOUNT", "Bank Account"),
+                        Map.entry("CASH_ACCOUNT", "Cash Account"),
+                        Map.entry("FUEL_CARD", "Fuel Card"),
+                        Map.entry("FASTAG_ACCOUNT", "FASTag Account"),
+                        Map.entry("CORPORATE_EXPENSE_CARD", "Corporate Expense Card"),
+                        Map.entry("TAX_DUTY", "Tax & Duty"),
+                        Map.entry("CAPITAL_ACCOUNT", "Capital Account"),
+                        Map.entry("INTERNAL_TRANSFER", "Internal Transfer"),
+                        Map.entry("EXPENSE", "Expense"),
+                        Map.entry("INCOME", "Income"),
+                        Map.entry("FIXED_ASSET", "Fixed Asset")
+                )));
+
+        // ── Ledger Group Types (on LedgerGroup — broad category) ────────
+        result.put("ledgerGroupType", mapEnum("ledger_group_type",
+                LedgerGroupType.values(),
                 Map.of(
                         "PARTY", "Party",
                         "BANK", "Bank",
                         "CASH", "Cash",
-                        "DUTIES_TAXES", "Duties & Taxes",
+                        "TAX", "Tax",
                         "GENERAL", "General"
                 )));
 
