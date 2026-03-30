@@ -26,6 +26,7 @@ mobile/*.xcodeproj/*
 !mobile/*.xcodeproj/project.xcworkspace/
 !mobile/*.xcworkspace/contents.xcworkspacedata
 mobile/**/xcshareddata/WorkspaceSettings.xcsettings
+.specify/
 
 # Backend (Gradle/Spring Boot)
 backend/build/
