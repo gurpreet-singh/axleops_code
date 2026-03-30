@@ -112,16 +112,6 @@ public class Vehicle extends BaseEntity {
     @Column(name = "group_id")
     private java.util.UUID groupId;
 
-    // ─── Compliance Expiry (denormalized caches — Phase 2 will derive from ComplianceDocument) ──
-    @Column(name = "insurance_expiry")
-    private LocalDate insuranceExpiry;
-
-    @Column(name = "fitness_expiry")
-    private LocalDate fitnessExpiry;
-
-    @Column(name = "permit_expiry")
-    private LocalDate permitExpiry;
-
     // ─── Relationships ──────────────────────────────────────────
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "branch_id")

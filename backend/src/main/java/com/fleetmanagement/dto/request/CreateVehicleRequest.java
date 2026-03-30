@@ -55,8 +55,4 @@ public class CreateVehicleRequest {
     private UUID clientId;
     private UUID operatorId;
 
-    // ─── Compliance Expiry (denormalized) ───────────────────────
-    private LocalDate insuranceExpiry;
-    private LocalDate fitnessExpiry;
-    private LocalDate permitExpiry;
 }

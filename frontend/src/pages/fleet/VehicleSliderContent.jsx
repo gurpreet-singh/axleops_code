@@ -90,7 +90,6 @@ function buildFormState(v) {
     registrationDate: '', registrationState: '', rtoOffice: '',
     ownership: 'OWNED', soldFlag: false, vehicleTypeMaster: '', hypothecation: '',
     vehicleGroup: '', groupId: '', branchId: '', clientId: '', operatorId: '',
-    insuranceExpiry: '', fitnessExpiry: '', permitExpiry: '',
   };
 
   return {
@@ -113,8 +112,6 @@ function buildFormState(v) {
     vehicleTypeMaster: v.vehicleTypeMaster || '', hypothecation: v.hypothecation || '',
     vehicleGroup: v.vehicleGroup || '', groupId: v.groupId || '',
     branchId: v.branchId || '', clientId: v.clientId || '', operatorId: v.operatorId || '',
-    insuranceExpiry: v.insuranceExpiry || '', fitnessExpiry: v.fitnessExpiry || '',
-    permitExpiry: v.permitExpiry || '',
   };
 }
 
@@ -155,9 +152,6 @@ function formToPayload(form) {
     branchId: form.branchId || null,
     clientId: form.clientId || null,
     operatorId: form.operatorId || null,
-    insuranceExpiry: form.insuranceExpiry || null,
-    fitnessExpiry: form.fitnessExpiry || null,
-    permitExpiry: form.permitExpiry || null,
   };
 }
 

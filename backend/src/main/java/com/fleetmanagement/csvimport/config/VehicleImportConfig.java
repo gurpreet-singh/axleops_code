@@ -174,23 +174,6 @@ public class VehicleImportConfig {
                                 .aliases(List.of("Owner Type", "Ownership Type"))
                                 .enumValues(List.of("OWNED", "LEASED", "RENTED", "MARKET"))
                                 .exampleValue("OWNED").exampleValue2("LEASED")
-                                .build(),
-
-                        // ─── Compliance Expiry Dates ────────────────────────
-                        ImportFieldDefinition.builder()
-                                .fieldName("insuranceExpiry").displayName("Insurance Expiry").dataType(ImportDataType.DATE)
-                                .aliases(List.of("Insurance Expiry Date", "Insurance Due"))
-                                .exampleValue("31/12/2025").exampleValue2("15/06/2026")
-                                .build(),
-                        ImportFieldDefinition.builder()
-                                .fieldName("fitnessExpiry").displayName("Fitness Expiry").dataType(ImportDataType.DATE)
-                                .aliases(List.of("Fitness Expiry Date", "Fitness Due", "FC Expiry"))
-                                .exampleValue("31/03/2026").exampleValue2("30/09/2025")
-                                .build(),
-                        ImportFieldDefinition.builder()
-                                .fieldName("permitExpiry").displayName("Permit Expiry").dataType(ImportDataType.DATE)
-                                .aliases(List.of("Permit Expiry Date", "Permit Due"))
-                                .exampleValue("30/06/2026").exampleValue2("31/12/2025")
                                 .build()
                 ))
                 .duplicateCheckFields(List.of("registrationNumber"))

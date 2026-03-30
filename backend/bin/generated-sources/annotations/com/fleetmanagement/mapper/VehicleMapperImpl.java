@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-30T05:58:23+0530",
+    date = "2026-03-30T06:53:46+0530",
     comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.45.0.v20260224-0835, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -64,9 +64,6 @@ public class VehicleMapperImpl implements VehicleMapper {
         vehicleResponse.setHypothecation( vehicle.getHypothecation() );
         vehicleResponse.setVehicleGroup( vehicle.getVehicleGroup() );
         vehicleResponse.setGroupId( vehicle.getGroupId() );
-        vehicleResponse.setInsuranceExpiry( vehicle.getInsuranceExpiry() );
-        vehicleResponse.setFitnessExpiry( vehicle.getFitnessExpiry() );
-        vehicleResponse.setPermitExpiry( vehicle.getPermitExpiry() );
 
         return vehicleResponse;
     }
@@ -107,9 +104,6 @@ public class VehicleMapperImpl implements VehicleMapper {
         vehicle.setHypothecation( request.getHypothecation() );
         vehicle.setVehicleGroup( request.getVehicleGroup() );
         vehicle.setGroupId( request.getGroupId() );
-        vehicle.setInsuranceExpiry( request.getInsuranceExpiry() );
-        vehicle.setFitnessExpiry( request.getFitnessExpiry() );
-        vehicle.setPermitExpiry( request.getPermitExpiry() );
 
         return vehicle;
     }
@@ -148,9 +142,6 @@ public class VehicleMapperImpl implements VehicleMapper {
         vehicle.setHypothecation( request.getHypothecation() );
         vehicle.setVehicleGroup( request.getVehicleGroup() );
         vehicle.setGroupId( request.getGroupId() );
-        vehicle.setInsuranceExpiry( request.getInsuranceExpiry() );
-        vehicle.setFitnessExpiry( request.getFitnessExpiry() );
-        vehicle.setPermitExpiry( request.getPermitExpiry() );
     }
 
     private UUID vehicleVehicleTypeId(Vehicle vehicle) {

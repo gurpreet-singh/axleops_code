@@ -65,8 +65,4 @@ public class VehicleResponse {
     private UUID operatorId;
     private String operatorName;
 
-    // ─── Compliance Expiry (denormalized caches) ────────────────
-    private LocalDate insuranceExpiry;
-    private LocalDate fitnessExpiry;
-    private LocalDate permitExpiry;
 }

@@ -80,7 +80,7 @@ Pattern matches: `RouteCreateContent`, `TripCreateContent`, `TenantCreateContent
 │  Title (white, 15px bold)  [X]  │     + subtitle (11px, #94A3B8)
 ├─────────────────────────────────┤
 │ Sticky action bar               │  ← position: sticky, top: 0, z-index: 10
-│  [✓ Create] [Cancel]           │     Green create button + Cancel
+│  [✓ Create]                     │     Primary action only (no Cancel)
 ├─────────────────────────────────┤
 │ Form content (20px padding)     │
 │                                 │
@@ -336,3 +336,49 @@ Users should **never** need to scroll down to find primary actions (Back, Next, 
 │ ...                         │
 └─────────────────────────────┘
 ```
+
+---
+
+## 7. Slider Action Bar — No Cancel Button, Use Delete (CRITICAL)
+
+**Never show a "Cancel" button on slider action bars.** The slider panel's **X close button** (top-right corner of the dark header) already serves as the cancel/close action.
+
+### Rules:
+1. **Create sliders**: Show only the primary action button (e.g., `[✓ Create]`). No Cancel button.
+2. **Detail/Edit sliders**: Show `[Edit]` (toggles to `[Save]`) on the left, and `[🗑 Delete]` on the **right** side (pushed via `flex: 1` spacer).
+3. **Cancel = redundant**: Users close the slider via the header X button. A Cancel button wastes action bar real estate.
+4. **Delete button**: Use the `.sl-delete-btn` CSS class (red recycle icon) for all destructive actions in sliders.
+
+### Pattern:
+```
+Create Mode:
+┌─────────────────────────────┐
+│ [✓ Create]                  │  ← Only primary action, no Cancel
+└─────────────────────────────┘
+
+Detail/Edit Mode:
+┌─────────────────────────────┐
+│ [Edit/Save]    [🗑 Delete]  │  ← Edit left, Delete pushed right
+└─────────────────────────────┘
+```
+
+### Example:
+```jsx
+// ✅ CORRECT — No Cancel, Delete on right
+<div className="sl-action-bar">
+  <button className="sl-action-btn sl-edit-toggle-btn active" onClick={handleSave}>
+    <i className="fas fa-check"></i> Save
+  </button>
+  <div style={{ flex: 1 }}></div>
+  <button className="sl-delete-btn" onClick={handleDelete}>
+    <i className="fas fa-recycle"></i> Delete
+  </button>
+</div>
+
+// ❌ WRONG — Cancel button wastes space
+<div className="sl-action-bar">
+  <button onClick={handleSave}>Save</button>
+  <button onClick={closeSlider}>Cancel</button>  // ← DO NOT DO THIS
+</div>
+```
+

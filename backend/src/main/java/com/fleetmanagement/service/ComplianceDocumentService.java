@@ -192,9 +192,6 @@ public class ComplianceDocumentService {
 
         ComplianceDocument saved = complianceRepo.save(doc);
 
-        // Update vehicle's denormalized expiry caches
-        updateVehicleExpiryCaches(vehicle, docType, request.getEffectiveTo());
-
         return toResponse(saved);
     }
 
@@ -217,11 +214,6 @@ public class ComplianceDocumentService {
         doc.setStatus(computeExpiryStatus(doc, LocalDate.now()));
 
         ComplianceDocument saved = complianceRepo.save(doc);
-
-        // Update vehicle caches if this is the current doc
-        if (Boolean.TRUE.equals(doc.getIsCurrent())) {
-            updateVehicleExpiryCaches(doc.getVehicle(), doc.getDocumentType(), doc.getEffectiveTo());
-        }
 
         return toResponse(saved);
     }
@@ -306,14 +298,5 @@ public class ComplianceDocumentService {
         if (days < 0) return "EXPIRED";
         if (days <= 30) return "EXPIRING_SOON";
         return "ACTIVE";
-    }
-
-    private void updateVehicleExpiryCaches(Vehicle vehicle, String docType, LocalDate expiryDate) {
-        switch (docType) {
-            case "INSURANCE" -> vehicle.setInsuranceExpiry(expiryDate);
-            case "PASSING" -> vehicle.setFitnessExpiry(expiryDate);
-            case "PERMIT" -> vehicle.setPermitExpiry(expiryDate);
-        }
-        vehicleRepository.save(vehicle);
     }
 }

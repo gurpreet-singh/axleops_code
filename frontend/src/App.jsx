@@ -42,6 +42,9 @@ import PurchaseOrdersPage from './pages/inventory/PurchaseOrdersPage';
 // ─── CSV Import ───────────────────────────────────────────
 import ImportPage from './pages/import/ImportPage';
 
+// ─── Settings ─────────────────────────────────────────────
+import MastersPage from './pages/settings/MastersPage';
+
 /**
  * Requires authentication — redirects to /login if not authenticated.
  * Also initialises the enum store on first mount.
@@ -150,7 +153,8 @@ export default function App() {
         <Route path="/settings/organization" element={<PlaceholderPage title="Organization" icon="fas fa-building" />} />
         <Route path="/settings/branches" element={<PlaceholderPage title="Branches" icon="fas fa-code-branch" />} />
         <Route path="/settings/users-roles" element={<PlaceholderPage title="Users & Roles" icon="fas fa-users-cog" />} />
-        <Route path="/settings/masters" element={<PlaceholderPage title="Masters" icon="fas fa-database" />} />
+        <Route path="/settings/masters" element={<MastersPage />} />
+        <Route path="/settings/masters/:entitySlug" element={<MastersPage />} />
         <Route path="/settings/integrations" element={<PlaceholderPage title="Integrations" icon="fas fa-plug" />} />
 
         {/* ─── Utility ───────────────────────────────────── */}
