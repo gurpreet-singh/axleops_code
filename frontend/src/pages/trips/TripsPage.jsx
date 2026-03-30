@@ -1,128 +1,82 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getTrips, TRIP_STATE_COLORS } from '../../services/tripService';
-import useSliderStore from '../../stores/sliderStore';
-import { TripCreateContent, TripDetailContent } from './TripSliderContent';
-
-const STATUS_META = [
-  { key: 'Created', icon: '📝', label: 'Created', sub: 'Assign vehicle + driver', color: '#7C3AED' },
-  { key: 'In Transit', icon: '🚛', label: 'In Transit', sub: 'Tracking', color: '#0EA5E9' },
-  { key: 'Completed', icon: '✅', label: 'Completed', sub: 'POD + delivery done', color: '#10B981' },
-  { key: 'Settled', icon: '🔒', label: 'Settled', sub: 'Revenue locked', color: '#D97706' },
-];
+import { getTripCounts, TRIP_STATE_COLORS } from '../../services/tripService';
 
 export default function TripsPage() {
-  const [trips, setTrips] = useState([]);
-  const [search, setSearch] = useState('');
   const navigate = useNavigate();
-  const { openSlider } = useSliderStore();
+  const [counts, setCounts] = useState({});
+  useEffect(() => { getTripCounts().then(setCounts).catch(() => {}); }, []);
 
-  useEffect(() => { getTrips().then(setTrips); }, []);
+  const cards = [
+    { key: 'CREATED', icon: 'fas fa-plus-circle', label: 'Created', desc: 'Booked & waiting to start' },
+    { key: 'IN_TRANSIT', icon: 'fas fa-truck-moving', label: 'In Transit', desc: 'On the road' },
+    { key: 'DELIVERED', icon: 'fas fa-box-open', label: 'Delivered', desc: 'Delivered, pending settlement' },
+    { key: 'SETTLED', icon: 'fas fa-check-double', label: 'Settled', desc: 'Expenses settled & closed' },
+    { key: 'CANCELLED', icon: 'fas fa-ban', label: 'Cancelled', desc: 'Cancelled trips' },
+  ];
 
-  const activeTrips = useMemo(() =>
-    trips.filter(t => t.status !== 'Settled'), [trips]);
-
-  const filtered = useMemo(() => {
-    if (!search) return activeTrips;
-    const q = search.toLowerCase();
-    return activeTrips.filter(t =>
-      t.id.toLowerCase().includes(q) || t.lr.toLowerCase().includes(q) ||
-      t.client.toLowerCase().includes(q) || t.origin.toLowerCase().includes(q) ||
-      t.destination.toLowerCase().includes(q) || (t.vehicle || '').toLowerCase().includes(q)
-    );
-  }, [activeTrips, search]);
-
-  const statusCounts = useMemo(() => {
-    const counts = {};
-    STATUS_META.forEach(s => { counts[s.key] = trips.filter(t => t.status === s.key).length; });
-    return counts;
-  }, [trips]);
-
-  const openNewTrip = () => {
-    openSlider({
-      title: 'New Trip',
-      subtitle: 'Create a new trip',
-      content: <TripCreateContent onSave={() => getTrips().then(setTrips)} />,
-      width: '52vw',
-    });
-  };
-
-  const openTripDetail = (trip) => {
-    openSlider({
-      title: `Trip ${trip.id}`,
-      subtitle: `${trip.origin} → ${trip.destination} • ${trip.client}`,
-      content: <TripDetailContent trip={trip} onRefresh={() => getTrips().then(setTrips)} />,
-      width: '52vw',
-    });
-  };
+  const total = Object.values(counts).reduce((a, b) => a + b, 0);
 
   return (
     <div className="page-content">
-      {/* Header */}
       <div className="page-header">
-        <h1>Trip Dashboard <span className="learn-badge"><i className="fas fa-route" style={{ color: '#059669' }}></i> TMS</span></h1>
+        <h1>Trips <span className="learn-badge"><i className="fas fa-route" style={{ color: '#059669' }}></i> Overview</span></h1>
         <div className="page-header-actions">
-          <button className="btn btn-primary" onClick={openNewTrip}>
-            <i className="fas fa-plus"></i> New Trip
-          </button>
+          <button className="btn btn-primary" onClick={() => navigate('/trips/active')}><i className="fas fa-list"></i> View All Trips</button>
         </div>
       </div>
 
-      {/* Lifecycle Strip */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: '#059669', textTransform: 'uppercase', letterSpacing: 0.8 }}>Trip Lifecycle</div>
-        <div style={{ flex: 1, height: 1, background: 'linear-gradient(90deg,#A7F3D0,transparent)' }}></div>
-      </div>
-
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 14, marginBottom: 24 }}>
-        {STATUS_META.map(sm => {
-          const sc = TRIP_STATE_COLORS[sm.key] || {};
-          return (
-            <button key={sm.key} onClick={() => navigate(`/trips/active?status=${sm.key}`)}
-              style={{ background: sc.light || '#F8FAFC', border: `2px solid ${sc.border || '#E2E8F0'}`, borderRadius: 16, padding: '18px 16px', cursor: 'pointer', textAlign: 'left', transition: 'all .15s', display: 'block' }}
-              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(0,0,0,0.08)'; }}
-              onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none'; }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-                <span style={{ fontSize: 22 }}>{sm.icon}</span>
-                <span style={{ fontSize: 26, fontWeight: 800, color: sm.color }}>{statusCounts[sm.key] || 0}</span>
+      {/* Total Banner */}
+      <div style={{
+        background: 'linear-gradient(135deg, #1E3A5F, #2D5F8B)',
+        borderRadius: 16, padding: '28px 32px', marginBottom: 20,
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#fff',
+      }}>
+        <div>
+          <div style={{ fontSize: 13, fontWeight: 600, opacity: 0.8, textTransform: 'uppercase', letterSpacing: 0.5 }}>Total Trips</div>
+          <div style={{ fontSize: 42, fontWeight: 900, lineHeight: 1.1 }}>{total}</div>
+        </div>
+        <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
+          {cards.filter(c => c.key !== 'CANCELLED').map(c => {
+            const sc = TRIP_STATE_COLORS[c.key];
+            return (
+              <div key={c.key} style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 24, fontWeight: 900 }}>{counts[c.key] || 0}</div>
+                <div style={{ fontSize: 10, fontWeight: 700, opacity: 0.7 }}>{c.label}</div>
               </div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#1E293B' }}>{sm.label}</div>
-              <div style={{ fontSize: 11, color: '#64748B', marginTop: 2 }}>{sm.sub}</div>
-              <div style={{ marginTop: 10, fontSize: 11, fontWeight: 700, color: sm.color }}>View trips →</div>
-            </button>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
 
-      {/* Trip Table */}
-      <div style={{ background: '#fff', border: '1.5px solid #E2E8F0', borderRadius: 16, overflow: 'hidden' }}>
-        <div style={{ padding: '16px 20px', borderBottom: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ fontSize: 15, fontWeight: 800, color: '#1E293B' }}>All Active Trips</div>
-          <input className="ax-filter-search" value={search} onChange={e => setSearch(e.target.value)}
-            placeholder="🔍 Search..." />
-        </div>
-        {/* Header Row */}
-        <div style={{ display: 'grid', gridTemplateColumns: '70px 80px 1.2fr 1fr 1fr 90px 80px 50px', padding: '10px 20px', background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', fontSize: 10, fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: 0.5 }}>
-          <span>ID</span><span>LR No.</span><span>Route</span><span>Client</span><span>Vehicle</span><span>Status</span><span>Freight</span><span></span>
-        </div>
-        {/* Rows */}
-        {filtered.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: 32, color: '#94A3B8', fontSize: 13 }}>No active trips</div>
-        ) : filtered.map(t => {
-          const sc = TRIP_STATE_COLORS[t.status] || {};
+      {/* Status Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 14 }}>
+        {cards.map(c => {
+          const sc = TRIP_STATE_COLORS[c.key];
+          const count = counts[c.key] || 0;
           return (
-            <div key={t.id} onClick={() => openTripDetail(t)}
-              style={{ display: 'grid', gridTemplateColumns: '70px 80px 1.2fr 1fr 1fr 90px 80px 50px', padding: '12px 20px', borderBottom: '1px solid #F8FAFC', alignItems: 'center', cursor: 'pointer', transition: 'background .1s' }}
-              onMouseEnter={e => e.currentTarget.style.background = '#F8FAFC'}
-              onMouseLeave={e => e.currentTarget.style.background = '#fff'}>
-              <div style={{ fontSize: 11, color: '#94A3B8', fontFamily: 'monospace' }}>{t.id}</div>
-              <div style={{ fontSize: 11, color: '#475569', fontFamily: 'monospace' }}>{t.lr}</div>
-              <div style={{ fontSize: 12, fontWeight: 700, color: '#1E293B' }}>{t.origin} → {t.destination}</div>
-              <div style={{ fontSize: 12, color: '#475569' }}>{t.client}</div>
-              <div>{t.vehicle ? <span style={{ fontSize: 11, fontFamily: 'monospace', background: '#F1F5F9', padding: '2px 6px', borderRadius: 4 }}>{t.vehicle}</span> : <span style={{ fontSize: 10, color: '#7C3AED', fontWeight: 700 }}>—</span>}</div>
-              <div><span style={{ background: sc.mid, color: sc.text, border: `1px solid ${sc.border}`, fontSize: 10, fontWeight: 700, padding: '2px 7px', borderRadius: 10 }}>{t.status}</span></div>
-              <div style={{ fontSize: 12, fontWeight: 600, color: '#1E293B' }}>₹{(t.freight || 0).toLocaleString()}</div>
-              <div style={{ fontSize: 10, color: '#94A3B8', fontWeight: 700, textAlign: 'right' }}>→</div>
+            <div key={c.key}
+              onClick={() => navigate(c.key === 'SETTLED' ? '/trips/settled' : `/trips/active?status=${c.key}`)}
+              style={{
+                background: '#fff', border: `1.5px solid ${sc.border}`, borderRadius: 16,
+                padding: '22px 20px', cursor: 'pointer', transition: 'all 0.15s',
+                position: 'relative', overflow: 'hidden',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.08)'; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none'; }}
+            >
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4, background: sc.bg }}></div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+                <div style={{
+                  width: 38, height: 38, borderRadius: 10, background: sc.mid,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <i className={c.icon} style={{ color: sc.dot, fontSize: 15 }}></i>
+                </div>
+                <span style={{ fontSize: 12, fontWeight: 700, color: sc.text, textTransform: 'uppercase', letterSpacing: 0.4 }}>{c.label}</span>
+              </div>
+              <div style={{ fontSize: 32, fontWeight: 900, color: '#1E293B', lineHeight: 1 }}>{count}</div>
+              <div style={{ fontSize: 11, color: '#94A3B8', fontWeight: 500, marginTop: 4 }}>{c.desc}</div>
             </div>
           );
         })}

@@ -14,6 +14,7 @@ import TenantsPage from './pages/platform/TenantsPage';
 // ─── Trip Management ──────────────────────────────────────
 import TripsPage from './pages/trips/TripsPage';
 import ActiveTripsPage from './pages/trips/ActiveTripsPage';
+import SettledTripsPage from './pages/trips/SettledTripsPage';
 
 // ─── Fleet Management ─────────────────────────────────────
 import VehicleListPage from './pages/fleet/VehicleListPage';
@@ -101,7 +102,7 @@ export default function App() {
         {/* ─── 2. Trips ──────────────────────────────────── */}
         <Route path="/trips" element={<TripsPage />} />
         <Route path="/trips/active" element={<ActiveTripsPage />} />
-        <Route path="/trips/settled" element={<PlaceholderPage title="Settled Trips" icon="fas fa-check-circle" />} />
+        <Route path="/trips/settled" element={<SettledTripsPage />} />
         <Route path="/trips/archived" element={<PlaceholderPage title="Archived Trips" icon="fas fa-archive" />} />
         <Route path="/trips/create" element={<Navigate to="/trips" replace />} />
         <Route path="/routes" element={<RoutesPage />} />

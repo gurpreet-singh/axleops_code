@@ -6,6 +6,7 @@ import com.fleetmanagement.config.TenantPrincipal;
 import com.fleetmanagement.dto.request.CreateBranchRequest;
 import com.fleetmanagement.dto.response.BranchResponse;
 import com.fleetmanagement.entity.Branch;
+import com.fleetmanagement.entity.TripStatus;
 import com.fleetmanagement.entity.User;
 import com.fleetmanagement.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -163,7 +164,7 @@ public class BranchService {
         long vehicles = vehicleRepo.countByBranchIdAndStatus(branchId, "ACTIVE");
         long drivers = contactRepo.countByBranchIdAndStatus(branchId, "ACTIVE");
         long trips = tripRepo.countByBranchIdAndStatusIn(branchId,
-                List.of("CREATED", "DISPATCHED", "IN_TRANSIT"));
+                List.of(TripStatus.CREATED, TripStatus.IN_TRANSIT));
 
         if (vehicles + drivers + trips > 0) {
             throw new BranchInUseException(branchId, vehicles, drivers, trips);
@@ -220,7 +221,7 @@ public class BranchService {
                 .vehicleCount(vehicleRepo.countByBranchIdAndStatus(b.getId(), "ACTIVE"))
                 .driverCount(contactRepo.countByBranchIdAndStatus(b.getId(), "ACTIVE"))
                 .tripCount(tripRepo.countByBranchIdAndStatusIn(b.getId(),
-                        List.of("CREATED", "DISPATCHED", "IN_TRANSIT")))
+                        List.of(TripStatus.CREATED, TripStatus.IN_TRANSIT)))
                 .build();
     }
 }

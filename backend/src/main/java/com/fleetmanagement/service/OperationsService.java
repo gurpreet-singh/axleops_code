@@ -192,7 +192,7 @@ public class OperationsService {
 
     public List<Map<String, Object>> getVehicleTrips(UUID vehicleId) {
         UUID tid = TenantContext.get();
-        return tripRepo.findByVehicleIdAndTenantIdOrderByScheduledStartDesc(vehicleId, tid).stream()
+        return tripRepo.findByVehicleIdAndTenantIdOrderByCreatedAtDesc(vehicleId, tid).stream()
                 .map(this::tripToMap).toList();
     }
 
@@ -204,8 +204,8 @@ public class OperationsService {
         UUID tid = TenantContext.get();
         Map<String, Object> dash = new LinkedHashMap<>();
         dash.put("totalTrips", tripRepo.countByVehicleIdAndTenantId(vehicleId, tid));
-        dash.put("activeTrips", tripRepo.countByVehicleIdAndTenantIdAndStatus(vehicleId, tid, "IN_TRANSIT"));
-        dash.put("completedTrips", tripRepo.countByVehicleIdAndTenantIdAndStatus(vehicleId, tid, "COMPLETED"));
+        dash.put("activeTrips", tripRepo.countByVehicleIdAndTenantIdAndStatus(vehicleId, tid, TripStatus.IN_TRANSIT));
+        dash.put("completedTrips", tripRepo.countByVehicleIdAndTenantIdAndStatus(vehicleId, tid, TripStatus.DELIVERED));
         dash.put("totalFuelCost", fuelEntryRepo.sumCostByVehicle(vehicleId, tid));
         dash.put("avgMileage", fuelEntryRepo.avgMileageByVehicle(vehicleId, tid));
         dash.put("documentCount", vehicleDocRepo.countByVehicleIdAndTenantId(vehicleId, tid));
@@ -282,17 +282,14 @@ public class OperationsService {
         m.put("origin", t.getRoute() != null ? t.getRoute().getOrigin() : null);
         m.put("destination", t.getRoute() != null ? t.getRoute().getDestination() : null);
         m.put("driverName", t.getDriver() != null ? t.getDriver().getFirstName() : null);
-        m.put("clientName", t.getClient() != null ? t.getClient().getName() : null);
-        m.put("status", t.getStatus());
-        m.put("scheduledStart", t.getScheduledStart());
-        m.put("actualStart", t.getActualStart());
-        m.put("actualArrival", t.getActualArrival());
-        m.put("distanceTravelled", t.getDistanceTravelled());
-        m.put("revenue", t.getRevenue());
-        m.put("totalExpense", t.getTotalExpense());
-        m.put("netProfit", t.getNetProfit());
+        m.put("status", t.getStatus() != null ? t.getStatus().name() : null);
+        m.put("startedAt", t.getStartedAt());
+        m.put("deliveredAt", t.getDeliveredAt());
+        m.put("settledAt", t.getSettledAt());
+        m.put("actualDistanceKm", t.getActualDistanceKm());
+        m.put("freightAmount", t.getFreightAmount());
         m.put("lrNumber", t.getLrNumber());
-        m.put("podStatus", t.getPodStatus());
+        m.put("podStatus", t.getPodStatus() != null ? t.getPodStatus().name() : null);
         return m;
     }
 
