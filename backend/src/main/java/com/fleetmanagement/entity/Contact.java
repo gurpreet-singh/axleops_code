@@ -5,7 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "contacts")
+@Table(name = "contacts",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "phone"}))
 @Getter
 @Setter
 public class Contact extends BaseEntity {

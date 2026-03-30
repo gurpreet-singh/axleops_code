@@ -49,4 +49,8 @@ public class Inspection extends BaseEntity {
 
     @Column(columnDefinition = "TEXT")
     private String notes;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "branch_id")
+    private Branch branch;
 }

@@ -19,7 +19,7 @@ public class CreateRouteRequest {
     private String paymentTerms;
     private String template;
     private String status;
-    private String vehicleType;
+    private UUID vehicleTypeId;
     private String billingType;
     private String documentSeries;
 
@@ -46,6 +46,7 @@ public class CreateRouteRequest {
     private String unloadingInstructions;
 
     // FK IDs
+    private UUID branchId;
     private UUID ledgerAccountId;
     private UUID invoiceTypeId;
     private UUID annexureTypeId;

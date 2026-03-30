@@ -116,17 +116,15 @@ export default function VehicleListPage() {
                 <th>Status</th>
                 <th>Branch</th>
                 <th>Odometer</th>
-                <th>Insurance</th>
-                <th>Fitness</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={11} style={{ textAlign: 'center', padding: 40, color: '#94A3B8' }}>
+                <tr><td colSpan={9} style={{ textAlign: 'center', padding: 40, color: '#94A3B8' }}>
                   <i className="fas fa-spinner fa-spin" style={{ marginRight: 8 }}></i> Loading vehicles...
                 </td></tr>
               ) : filtered.length === 0 ? (
-                <tr><td colSpan={11} style={{ textAlign: 'center', padding: 40, color: '#94A3B8' }}>
+                <tr><td colSpan={9} style={{ textAlign: 'center', padding: 40, color: '#94A3B8' }}>
                   <div style={{ fontSize: 28, marginBottom: 8 }}>🚛</div>
                   <div style={{ fontSize: 13, fontWeight: 600 }}>No vehicles found</div>
                 </td></tr>
@@ -154,8 +152,6 @@ export default function VehicleListPage() {
                   <td style={{ fontSize: 12, fontFamily: "'JetBrains Mono', monospace", color: '#475569' }}>
                     {v.odometer ? Number(v.odometer).toLocaleString('en-IN') + ' km' : '—'}
                   </td>
-                  <td><ExpiryBadge date={v.insuranceExpiry} /></td>
-                  <td><ExpiryBadge date={v.fitnessExpiry} /></td>
                 </tr>
               ))}
             </tbody>

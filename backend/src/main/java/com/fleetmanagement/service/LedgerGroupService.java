@@ -41,10 +41,18 @@ public class LedgerGroupService {
     @Transactional
     public LedgerGroupResponse create(Map<String, Object> req) {
         UUID tenantId = TenantContext.get();
+        String name = (String) req.get("name");
+
+        // Validate uniqueness of group name within tenant
+        repository.findByNameIgnoreCaseAndTenantId(name, tenantId)
+                .ifPresent(g -> {
+                    throw new IllegalArgumentException(
+                            "Ledger group with name '" + name + "' already exists");
+                });
 
         LedgerGroup group = new LedgerGroup();
         group.setTenantId(tenantId);
-        group.setName((String) req.get("name"));
+        group.setName(name);
         group.setNature(LedgerGroup.GroupNature.valueOf((String) req.get("nature")));
 
         String groupType = (String) req.get("groupType");
@@ -72,7 +80,17 @@ public class LedgerGroupService {
         LedgerGroup group = repository.findByIdAndTenantId(id, tenantId)
                 .orElseThrow(() -> new ResourceNotFoundException("LedgerGroup", id));
 
-        group.setName((String) req.get("name"));
+        String name = (String) req.get("name");
+        // If name is changing, validate uniqueness
+        if (name != null && !name.equalsIgnoreCase(group.getName())) {
+            repository.findByNameIgnoreCaseAndTenantId(name, tenantId)
+                    .ifPresent(g -> {
+                        throw new IllegalArgumentException(
+                                "Ledger group with name '" + name + "' already exists");
+                    });
+        }
+
+        group.setName(name);
         group.setNature(LedgerGroup.GroupNature.valueOf((String) req.get("nature")));
 
         String groupType = (String) req.get("groupType");

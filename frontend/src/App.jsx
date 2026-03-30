@@ -14,6 +14,7 @@ import TenantsPage from './pages/platform/TenantsPage';
 // ─── Trip Management ──────────────────────────────────────
 import TripsPage from './pages/trips/TripsPage';
 import ActiveTripsPage from './pages/trips/ActiveTripsPage';
+import SettledTripsPage from './pages/trips/SettledTripsPage';
 
 // ─── Fleet Management ─────────────────────────────────────
 import VehicleListPage from './pages/fleet/VehicleListPage';
@@ -41,6 +42,10 @@ import PurchaseOrdersPage from './pages/inventory/PurchaseOrdersPage';
 
 // ─── CSV Import ───────────────────────────────────────────
 import ImportPage from './pages/import/ImportPage';
+
+// ─── Settings ─────────────────────────────────────────────
+import MastersPage from './pages/settings/MastersPage';
+import BranchesPage from './pages/settings/BranchesPage';
 
 /**
  * Requires authentication — redirects to /login if not authenticated.
@@ -97,7 +102,7 @@ export default function App() {
         {/* ─── 2. Trips ──────────────────────────────────── */}
         <Route path="/trips" element={<TripsPage />} />
         <Route path="/trips/active" element={<ActiveTripsPage />} />
-        <Route path="/trips/settled" element={<PlaceholderPage title="Settled Trips" icon="fas fa-check-circle" />} />
+        <Route path="/trips/settled" element={<SettledTripsPage />} />
         <Route path="/trips/archived" element={<PlaceholderPage title="Archived Trips" icon="fas fa-archive" />} />
         <Route path="/trips/create" element={<Navigate to="/trips" replace />} />
         <Route path="/routes" element={<RoutesPage />} />
@@ -148,9 +153,10 @@ export default function App() {
 
         {/* ─── 9. Settings ───────────────────────────────── */}
         <Route path="/settings/organization" element={<PlaceholderPage title="Organization" icon="fas fa-building" />} />
-        <Route path="/settings/branches" element={<PlaceholderPage title="Branches" icon="fas fa-code-branch" />} />
+        <Route path="/settings/branches" element={<BranchesPage />} />
         <Route path="/settings/users-roles" element={<PlaceholderPage title="Users & Roles" icon="fas fa-users-cog" />} />
-        <Route path="/settings/masters" element={<PlaceholderPage title="Masters" icon="fas fa-database" />} />
+        <Route path="/settings/masters" element={<MastersPage />} />
+        <Route path="/settings/masters/:entitySlug" element={<MastersPage />} />
         <Route path="/settings/integrations" element={<PlaceholderPage title="Integrations" icon="fas fa-plug" />} />
 
         {/* ─── Utility ───────────────────────────────────── */}

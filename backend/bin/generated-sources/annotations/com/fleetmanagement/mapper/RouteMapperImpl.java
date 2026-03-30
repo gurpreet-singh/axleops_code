@@ -6,13 +6,14 @@ import com.fleetmanagement.entity.AnnexureType;
 import com.fleetmanagement.entity.InvoiceType;
 import com.fleetmanagement.entity.LedgerAccount;
 import com.fleetmanagement.entity.Route;
+import com.fleetmanagement.entity.master.VehicleTypeMaster;
 import java.util.UUID;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-29T07:20:35+0530",
+    date = "2026-03-30T10:21:15+0530",
     comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.45.0.v20260224-0835, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -32,6 +33,8 @@ public class RouteMapperImpl implements RouteMapper {
         routeResponse.setInvoiceTypeName( routeInvoiceTypeName( route ) );
         routeResponse.setAnnexureTypeId( routeAnnexureTypeId( route ) );
         routeResponse.setAnnexureTypeName( routeAnnexureTypeName( route ) );
+        routeResponse.setVehicleTypeId( routeVehicleTypeMasterId( route ) );
+        routeResponse.setVehicleTypeName( routeVehicleTypeMasterName( route ) );
         routeResponse.setId( route.getId() );
         routeResponse.setName( route.getName() );
         routeResponse.setOrigin( route.getOrigin() );
@@ -46,7 +49,6 @@ public class RouteMapperImpl implements RouteMapper {
         routeResponse.setPaymentTerms( route.getPaymentTerms() );
         routeResponse.setTemplate( route.getTemplate() );
         routeResponse.setStatus( route.getStatus() );
-        routeResponse.setVehicleType( route.getVehicleType() );
         routeResponse.setBillingType( route.getBillingType() );
         routeResponse.setDocumentSeries( route.getDocumentSeries() );
         routeResponse.setFreightRate( route.getFreightRate() );
@@ -90,7 +92,6 @@ public class RouteMapperImpl implements RouteMapper {
         route.setPaymentTerms( request.getPaymentTerms() );
         route.setTemplate( request.getTemplate() );
         route.setStatus( request.getStatus() );
-        route.setVehicleType( request.getVehicleType() );
         route.setBillingType( request.getBillingType() );
         route.setDocumentSeries( request.getDocumentSeries() );
         route.setFreightRate( request.getFreightRate() );
@@ -132,7 +133,6 @@ public class RouteMapperImpl implements RouteMapper {
         route.setPaymentTerms( request.getPaymentTerms() );
         route.setTemplate( request.getTemplate() );
         route.setStatus( request.getStatus() );
-        route.setVehicleType( request.getVehicleType() );
         route.setBillingType( request.getBillingType() );
         route.setDocumentSeries( request.getDocumentSeries() );
         route.setFreightRate( request.getFreightRate() );
@@ -199,5 +199,21 @@ public class RouteMapperImpl implements RouteMapper {
             return null;
         }
         return annexureType.getName();
+    }
+
+    private UUID routeVehicleTypeMasterId(Route route) {
+        VehicleTypeMaster vehicleTypeMaster = route.getVehicleTypeMaster();
+        if ( vehicleTypeMaster == null ) {
+            return null;
+        }
+        return vehicleTypeMaster.getId();
+    }
+
+    private String routeVehicleTypeMasterName(Route route) {
+        VehicleTypeMaster vehicleTypeMaster = route.getVehicleTypeMaster();
+        if ( vehicleTypeMaster == null ) {
+            return null;
+        }
+        return vehicleTypeMaster.getName();
     }
 }

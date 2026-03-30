@@ -16,7 +16,7 @@ public class CreateVehicleRequest {
     private String make;
     private String model;
     private Integer year;
-    private LocalDate mfgMonthYear;
+    private String mfgMonthYear;
 
     // ─── Chassis & Engine ───────────────────────────────────────
     private String chassisNumber;
@@ -45,7 +45,6 @@ public class CreateVehicleRequest {
     // ─── Ownership ──────────────────────────────────────────────
     private String ownership;  // OWNED, LEASED, RENTED, MARKET
     private Boolean soldFlag;
-    private String vehicleTypeMaster;
     private String hypothecation;
 
     // ─── Group & Assignment ─────────────────────────────────────
@@ -55,8 +54,4 @@ public class CreateVehicleRequest {
     private UUID clientId;
     private UUID operatorId;
 
-    // ─── Compliance Expiry (denormalized) ───────────────────────
-    private LocalDate insuranceExpiry;
-    private LocalDate fitnessExpiry;
-    private LocalDate permitExpiry;
 }

@@ -6,14 +6,14 @@ import com.fleetmanagement.entity.Branch;
 import com.fleetmanagement.entity.Client;
 import com.fleetmanagement.entity.Contact;
 import com.fleetmanagement.entity.Vehicle;
-import com.fleetmanagement.entity.VehicleType;
+import com.fleetmanagement.entity.master.VehicleTypeMaster;
 import java.util.UUID;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-29T09:58:02+0530",
+    date = "2026-03-30T10:18:34+0530",
     comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.45.0.v20260224-0835, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -27,8 +27,8 @@ public class VehicleMapperImpl implements VehicleMapper {
 
         VehicleResponse vehicleResponse = new VehicleResponse();
 
-        vehicleResponse.setVehicleTypeId( vehicleVehicleTypeId( vehicle ) );
-        vehicleResponse.setVehicleTypeName( vehicleVehicleTypeName( vehicle ) );
+        vehicleResponse.setVehicleTypeId( vehicleVehicleTypeMasterId( vehicle ) );
+        vehicleResponse.setVehicleTypeName( vehicleVehicleTypeMasterName( vehicle ) );
         vehicleResponse.setBranchId( vehicleBranchId( vehicle ) );
         vehicleResponse.setBranchName( vehicleBranchName( vehicle ) );
         vehicleResponse.setClientId( vehicleClientId( vehicle ) );
@@ -60,13 +60,9 @@ public class VehicleMapperImpl implements VehicleMapper {
         vehicleResponse.setRtoOffice( vehicle.getRtoOffice() );
         vehicleResponse.setOwnership( vehicle.getOwnership() );
         vehicleResponse.setSoldFlag( vehicle.getSoldFlag() );
-        vehicleResponse.setVehicleTypeMaster( vehicle.getVehicleTypeMaster() );
         vehicleResponse.setHypothecation( vehicle.getHypothecation() );
         vehicleResponse.setVehicleGroup( vehicle.getVehicleGroup() );
         vehicleResponse.setGroupId( vehicle.getGroupId() );
-        vehicleResponse.setInsuranceExpiry( vehicle.getInsuranceExpiry() );
-        vehicleResponse.setFitnessExpiry( vehicle.getFitnessExpiry() );
-        vehicleResponse.setPermitExpiry( vehicle.getPermitExpiry() );
 
         return vehicleResponse;
     }
@@ -103,13 +99,9 @@ public class VehicleMapperImpl implements VehicleMapper {
         vehicle.setRtoOffice( request.getRtoOffice() );
         vehicle.setOwnership( request.getOwnership() );
         vehicle.setSoldFlag( request.getSoldFlag() );
-        vehicle.setVehicleTypeMaster( request.getVehicleTypeMaster() );
         vehicle.setHypothecation( request.getHypothecation() );
         vehicle.setVehicleGroup( request.getVehicleGroup() );
         vehicle.setGroupId( request.getGroupId() );
-        vehicle.setInsuranceExpiry( request.getInsuranceExpiry() );
-        vehicle.setFitnessExpiry( request.getFitnessExpiry() );
-        vehicle.setPermitExpiry( request.getPermitExpiry() );
 
         return vehicle;
     }
@@ -144,29 +136,25 @@ public class VehicleMapperImpl implements VehicleMapper {
         vehicle.setRtoOffice( request.getRtoOffice() );
         vehicle.setOwnership( request.getOwnership() );
         vehicle.setSoldFlag( request.getSoldFlag() );
-        vehicle.setVehicleTypeMaster( request.getVehicleTypeMaster() );
         vehicle.setHypothecation( request.getHypothecation() );
         vehicle.setVehicleGroup( request.getVehicleGroup() );
         vehicle.setGroupId( request.getGroupId() );
-        vehicle.setInsuranceExpiry( request.getInsuranceExpiry() );
-        vehicle.setFitnessExpiry( request.getFitnessExpiry() );
-        vehicle.setPermitExpiry( request.getPermitExpiry() );
     }
 
-    private UUID vehicleVehicleTypeId(Vehicle vehicle) {
-        VehicleType vehicleType = vehicle.getVehicleType();
-        if ( vehicleType == null ) {
+    private UUID vehicleVehicleTypeMasterId(Vehicle vehicle) {
+        VehicleTypeMaster vehicleTypeMaster = vehicle.getVehicleTypeMaster();
+        if ( vehicleTypeMaster == null ) {
             return null;
         }
-        return vehicleType.getId();
+        return vehicleTypeMaster.getId();
     }
 
-    private String vehicleVehicleTypeName(Vehicle vehicle) {
-        VehicleType vehicleType = vehicle.getVehicleType();
-        if ( vehicleType == null ) {
+    private String vehicleVehicleTypeMasterName(Vehicle vehicle) {
+        VehicleTypeMaster vehicleTypeMaster = vehicle.getVehicleTypeMaster();
+        if ( vehicleTypeMaster == null ) {
             return null;
         }
-        return vehicleType.getName();
+        return vehicleTypeMaster.getName();
     }
 
     private UUID vehicleBranchId(Vehicle vehicle) {

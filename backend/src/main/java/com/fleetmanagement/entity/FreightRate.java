@@ -13,7 +13,8 @@ import java.time.LocalDate;
  * Used for rate negotiation and trip costing.
  */
 @Entity
-@Table(name = "freight_rates")
+@Table(name = "freight_rates",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "company_id", "origin", "destination", "vehicle_type"}))
 @Getter
 @Setter
 public class FreightRate extends BaseEntity {

@@ -43,6 +43,7 @@ public class JwtService {
         Date expiry = new Date(now.getTime() + expirationMs);
 
         UUID branchId = user.getBranch() != null ? user.getBranch().getId() : null;
+        String branchCode = user.getBranch() != null ? user.getBranch().getCode() : null;
 
         List<String> roleNames = activeRoles.stream()
                 .map(Enum::name)
@@ -58,6 +59,7 @@ public class JwtService {
         claims.put("type", "TENANT");
         claims.put("tenantId", user.getTenantId().toString());
         claims.put("branchId", branchId != null ? branchId.toString() : "");
+        claims.put("branchCode", branchCode != null ? branchCode : "");
         claims.put("roles", roleNames);
         claims.put("authorities", authorityNames);
 

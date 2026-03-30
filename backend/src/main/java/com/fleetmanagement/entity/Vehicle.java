@@ -1,5 +1,6 @@
 package com.fleetmanagement.entity;
 
+import com.fleetmanagement.entity.master.VehicleTypeMaster;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,48 +9,55 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "vehicles")
+@Table(name = "vehicles",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "registration_number"}))
 @Getter
 @Setter
 public class Vehicle extends BaseEntity {
 
     // ─── Core Identification ────────────────────────────────────
-    @Column(name = "registration_number", nullable = false)
+    @Column(name = "registration_number", nullable = false, length = 500)
     private String registrationNumber;
 
-    @Column(name = "vehicle_category")
+    @Column(name = "vehicle_category", length = 500)
     private String vehicleCategory; // TRANSPORT, NON_TRANSPORT, PRIVATE, GOVERNMENT
 
+    @Column(name = "reference_number", length = 500)
+    private String referenceNumber; // Internal reference / fleet code
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vehicle_type_id")
-    private VehicleType vehicleType;
+    @JoinColumn(name = "vehicle_type_master_id")
+    private VehicleTypeMaster vehicleTypeMaster;
 
+    @Column(length = 500)
     private String make;
+
+    @Column(length = 500)
     private String model;
 
     @Column(name = "manufacture_year")
     private Integer year;
 
-    @Column(name = "mfg_month_year")
-    private LocalDate mfgMonthYear;
+    @Column(name = "mfg_month_year", length = 500)
+    private String mfgMonthYear; // Stored as "YYYY-MM" (e.g. "2022-03")
 
     // ─── Chassis & Engine ───────────────────────────────────────
-    @Column(name = "chassis_number")
+    @Column(name = "chassis_number", length = 500)
     private String chassisNumber;
 
-    @Column(name = "engine_number")
+    @Column(name = "engine_number", length = 500)
     private String engineNumber;
 
     // ─── Physical Attributes ────────────────────────────────────
+    @Column(length = 500)
     private String color;
 
-    @Column(name = "body_type")
+    @Column(name = "body_type", length = 500)
     private String bodyType; // CLOSE_BODY, OPEN_BODY, TANKER, CONTAINER, etc.
 
-    @Column(name = "fuel_type")
+    @Column(name = "fuel_type", length = 500)
     private String fuelType = "DIESEL"; // DIESEL, PETROL, CNG, ELECTRIC, HYBRID
 
-    @Column(name = "axle_config")
+    @Column(name = "axle_config", length = 500)
     private String axleConfig; // 6x4, 4x2, etc.
 
     @Column(name = "ulw_kg")
@@ -64,50 +72,44 @@ public class Vehicle extends BaseEntity {
     @Column(name = "seating_capacity")
     private Integer seatingCapacity;
 
-    @Column(name = "hp_cc")
+    @Column(name = "hp_cc", length = 500)
     private String hpCc; // Horsepower / engine CC
 
     // ─── Meter & Status ─────────────────────────────────────────
     private BigDecimal odometer;
+
+    @Column(length = 500)
     private String status = "ACTIVE"; // ACTIVE, INACTIVE, IN_MAINTENANCE, SOLD, SCRAPPED
 
     // ─── Registration Details ───────────────────────────────────
     @Column(name = "registration_date")
     private LocalDate registrationDate;
 
-    @Column(name = "registration_state")
+    @Column(name = "registration_state", length = 500)
     private String registrationState;
 
-    @Column(name = "rto_office")
+    @Column(name = "rto_office", length = 500)
     private String rtoOffice;
 
     // ─── Ownership ──────────────────────────────────────────────
+    @Column(length = 500)
     private String ownership; // OWNED, LEASED, RENTED, MARKET
+
+    @Column(name = "customer_name", length = 500)
+    private String customerName; // Registered owner name (from RTO)
 
     @Column(name = "sold_flag")
     private Boolean soldFlag;
 
-    @Column(name = "vehicle_type_master")
-    private String vehicleTypeMaster; // Classification code (e.g., 9 MT 32 FEET)
-
+    @Column(length = 500)
     private String hypothecation; // Hypothecation details (bank/financer)
 
     // ─── Group & Assignment ─────────────────────────────────────
-    @Column(name = "vehicle_group")
+    @Column(name = "vehicle_group", length = 500)
     private String vehicleGroup;
 
     @Column(name = "group_id")
     private java.util.UUID groupId;
-
-    // ─── Compliance Expiry (denormalized caches — Phase 2 will derive from ComplianceDocument) ──
-    @Column(name = "insurance_expiry")
-    private LocalDate insuranceExpiry;
-
-    @Column(name = "fitness_expiry")
-    private LocalDate fitnessExpiry;
-
-    @Column(name = "permit_expiry")
-    private LocalDate permitExpiry;
 
     // ─── Relationships ──────────────────────────────────────────
     @ManyToOne(fetch = FetchType.LAZY)

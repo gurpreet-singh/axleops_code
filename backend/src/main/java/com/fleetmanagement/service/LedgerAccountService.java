@@ -66,6 +66,13 @@ public class LedgerAccountService {
     public LedgerAccountResponse create(CreateLedgerAccountRequest req) {
         UUID tenantId = TenantContext.get();
 
+        // Validate uniqueness of account head within tenant
+        ledgerAccountRepository.findByAccountHeadIgnoreCaseAndTenantId(req.getAccountHead(), tenantId)
+                .ifPresent(a -> {
+                    throw new IllegalArgumentException(
+                            "Ledger account with name '" + req.getAccountHead() + "' already exists");
+                });
+
         LedgerGroup group = ledgerGroupRepository.findByIdAndTenantId(req.getAccountGroupId(), tenantId)
                 .orElseThrow(() -> new ResourceNotFoundException("LedgerGroup", req.getAccountGroupId()));
 
@@ -154,6 +161,15 @@ public class LedgerAccountService {
         UUID tenantId = TenantContext.get();
         LedgerAccount account = ledgerAccountRepository.findByIdAndTenantId(id, tenantId)
                 .orElseThrow(() -> new ResourceNotFoundException("LedgerAccount", id));
+
+        // If account head is changing, validate uniqueness
+        if (req.getAccountHead() != null && !req.getAccountHead().equalsIgnoreCase(account.getAccountHead())) {
+            ledgerAccountRepository.findByAccountHeadIgnoreCaseAndTenantId(req.getAccountHead(), tenantId)
+                    .ifPresent(a -> {
+                        throw new IllegalArgumentException(
+                                "Ledger account with name '" + req.getAccountHead() + "' already exists");
+                    });
+        }
 
         account.setAccountHead(req.getAccountHead());
         account.setTallyName(req.getTallyName());

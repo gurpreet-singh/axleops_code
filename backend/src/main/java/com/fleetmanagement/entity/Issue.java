@@ -12,7 +12,8 @@ import java.util.UUID;
  * Can optionally be linked to a WorkOrder for resolution.
  */
 @Entity
-@Table(name = "vehicle_issues")
+@Table(name = "vehicle_issues",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "issue_number"}))
 @Getter
 @Setter
 public class Issue extends BaseEntity {
@@ -21,7 +22,7 @@ public class Issue extends BaseEntity {
     @JoinColumn(name = "vehicle_id", nullable = false)
     private Vehicle vehicle;
 
-    @Column(name = "issue_number", unique = true)
+    @Column(name = "issue_number")
     private String issueNumber;
 
     @Column(nullable = false)
@@ -57,4 +58,8 @@ public class Issue extends BaseEntity {
 
     @Column(name = "odometer_at_report")
     private Integer odometerAtReport;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "branch_id")
+    private Branch branch;
 }

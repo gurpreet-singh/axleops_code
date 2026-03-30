@@ -2,6 +2,7 @@ package com.fleetmanagement.service;
 
 import com.fleetmanagement.config.ResourceNotFoundException;
 import com.fleetmanagement.config.TenantContext;
+import com.fleetmanagement.config.TenantPrincipal;
 import com.fleetmanagement.dto.response.LedgerAccountResponse;
 import com.fleetmanagement.dto.request.CreateVoucherRequest;
 import com.fleetmanagement.dto.response.VoucherResponse;
@@ -37,6 +38,7 @@ public class AccountingService {
     private final TripRepository tripRepository;
     private final LedgerAccountMapper ledgerAccountMapper;
     private final VoucherMapper voucherMapper;
+    private final BranchValidator branchValidator;
 
     public List<LedgerAccountResponse> getAllLedgers() {
         UUID tenantId = TenantContext.get();
@@ -47,7 +49,8 @@ public class AccountingService {
 
     @Transactional
     public VoucherResponse createVoucher(CreateVoucherRequest req) {
-        UUID tenantId = TenantContext.get();
+        TenantPrincipal p = TenantPrincipal.current();
+        UUID tenantId = p.tenantId();
 
         // Verify debit/credit ledger accounts belong to this tenant
         LedgerAccount dr = ledgerAccountRepository.findByIdAndTenantId(req.getDebitLedgerId(), tenantId)
@@ -65,14 +68,11 @@ public class AccountingService {
         voucher.setAmount(req.getAmount());
         voucher.setNarration(req.getNarration());
 
-        // Verify branch belongs to this tenant
-        if (req.getBranchId() != null) {
-            Branch branch = branchRepository.findByTenantId(tenantId).stream()
-                    .filter(b -> b.getId().equals(req.getBranchId()))
-                    .findFirst()
-                    .orElse(null);
-            voucher.setBranch(branch);
-        }
+        // Resolve branch from user context (uses request branchId if specified, else auto-resolves)
+        UUID resolvedBranchId = branchValidator.resolve(p, req.getBranchId());
+        Branch branch = branchRepository.findById(resolvedBranchId)
+                .orElseThrow(() -> new ResourceNotFoundException("Branch", resolvedBranchId));
+        voucher.setBranch(branch);
 
         // Verify trip belongs to this tenant
         if (req.getTripId() != null) {

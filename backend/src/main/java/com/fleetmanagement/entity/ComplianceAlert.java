@@ -5,7 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "compliance_alerts")
+@Table(name = "compliance_alerts",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "document_type"}))
 @Getter
 @Setter
 public class ComplianceAlert extends BaseEntity {

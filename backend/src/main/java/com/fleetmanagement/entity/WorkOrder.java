@@ -8,12 +8,13 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "work_orders")
+@Table(name = "work_orders",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "work_order_number"}))
 @Getter
 @Setter
 public class WorkOrder extends BaseEntity {
 
-    @Column(name = "work_order_number", nullable = false, unique = true, length = 100)
+    @Column(name = "work_order_number", nullable = false, length = 100)
     private String workOrderNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)

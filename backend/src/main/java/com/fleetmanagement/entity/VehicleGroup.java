@@ -5,7 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "vehicle_groups")
+@Table(name = "vehicle_groups",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "name"}))
 @Getter
 @Setter
 public class VehicleGroup extends BaseEntity {

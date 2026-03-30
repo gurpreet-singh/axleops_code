@@ -17,7 +17,7 @@ public class VehicleResponse {
     private Integer year;
     private String make;
     private String model;
-    private LocalDate mfgMonthYear;
+    private String mfgMonthYear;
 
     // ─── Chassis & Engine ───────────────────────────────────────
     private String chassisNumber;
@@ -46,7 +46,6 @@ public class VehicleResponse {
     // ─── Ownership ──────────────────────────────────────────────
     private String ownership;
     private Boolean soldFlag;
-    private String vehicleTypeMaster;
     private String hypothecation;
 
     // ─── Group & Assignment (flattened FK names) ────────────────
@@ -65,8 +64,4 @@ public class VehicleResponse {
     private UUID operatorId;
     private String operatorName;
 
-    // ─── Compliance Expiry (denormalized caches) ────────────────
-    private LocalDate insuranceExpiry;
-    private LocalDate fitnessExpiry;
-    private LocalDate permitExpiry;
 }

@@ -18,13 +18,15 @@ import java.math.BigDecimal;
  * Primary entity — 633 rows.
  */
 @Entity
-@Table(name = "ledger_accounts", indexes = {
-    @Index(name = "idx_la_company_id", columnList = "company_id"),
-    @Index(name = "idx_la_account_group_id", columnList = "account_group_id"),
-    @Index(name = "idx_la_is_active", columnList = "is_active"),
-    @Index(name = "idx_la_gstin", columnList = "gstin"),
-    @Index(name = "idx_la_tenant_active", columnList = "tenant_id, is_active")
-})
+@Table(name = "ledger_accounts",
+    uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "account_head"}),
+    indexes = {
+        @Index(name = "idx_la_company_id", columnList = "company_id"),
+        @Index(name = "idx_la_account_group_id", columnList = "account_group_id"),
+        @Index(name = "idx_la_is_active", columnList = "is_active"),
+        @Index(name = "idx_la_gstin", columnList = "gstin"),
+        @Index(name = "idx_la_tenant_active", columnList = "tenant_id, is_active")
+    })
 @Getter
 @Setter
 public class LedgerAccount extends BaseEntity {

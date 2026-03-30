@@ -49,4 +49,8 @@ public class CostEntry extends BaseEntity {
 
     @Column(name = "invoice_number")
     private String invoiceNumber;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "branch_id")
+    private Branch branch;
 }

@@ -2,20 +2,23 @@ package com.fleetmanagement.service;
 
 import com.fleetmanagement.config.ResourceNotFoundException;
 import com.fleetmanagement.config.TenantContext;
+import com.fleetmanagement.config.TenantPrincipal;
 import com.fleetmanagement.dto.request.CreateVehicleRequest;
 import com.fleetmanagement.dto.response.VehicleResponse;
 import com.fleetmanagement.entity.Branch;
 import com.fleetmanagement.entity.Client;
 import com.fleetmanagement.entity.Contact;
 import com.fleetmanagement.entity.Vehicle;
-import com.fleetmanagement.entity.VehicleType;
+import com.fleetmanagement.entity.master.VehicleTypeMaster;
 import com.fleetmanagement.mapper.VehicleMapper;
 import com.fleetmanagement.repository.BranchRepository;
 import com.fleetmanagement.repository.ClientRepository;
 import com.fleetmanagement.repository.ContactRepository;
 import com.fleetmanagement.repository.VehicleRepository;
-import com.fleetmanagement.repository.VehicleTypeRepository;
+import com.fleetmanagement.repository.master.VehicleTypeMasterRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,15 +37,18 @@ public class VehicleService {
     private final BranchRepository branchRepository;
     private final ClientRepository clientRepository;
     private final ContactRepository contactRepository;
-    private final VehicleTypeRepository vehicleTypeRepository;
+    private final VehicleTypeMasterRepository vehicleTypeMasterRepository;
+    private final BranchScope branchScope;
+    private final BranchValidator branchValidator;
 
-    // ─── Read ───────────────────────────────────────────────────
+    // ─── Read (branch-scoped) ───────────────────────────────────
 
     public List<VehicleResponse> getAllVehicles() {
-        UUID tenantId = TenantContext.get();
-        return vehicleRepository.findByTenantId(tenantId).stream()
-                .map(vehicleMapper::toResponse)
-                .toList();
+        TenantPrincipal p = getPrincipal();
+        return branchScope.queryList(p,
+                vehicleRepository::findByTenantId,
+                vehicleRepository::findByTenantIdAndBranchId
+        ).stream().map(vehicleMapper::toResponse).toList();
     }
 
     public VehicleResponse getVehicleById(UUID id) {
@@ -53,28 +59,43 @@ public class VehicleService {
     }
 
     public List<VehicleResponse> searchVehicles(String query) {
-        UUID tenantId = TenantContext.get();
-        return vehicleRepository.search(tenantId, query).stream()
-                .map(vehicleMapper::toResponse)
-                .toList();
+        TenantPrincipal p = getPrincipal();
+        List<Vehicle> results;
+        if (p.isTenantWide()) {
+            results = vehicleRepository.search(p.tenantId(), query);
+        } else {
+            results = vehicleRepository.searchByBranch(p.tenantId(), p.branchId(), query);
+        }
+        return results.stream().map(vehicleMapper::toResponse).toList();
     }
 
     public Map<String, Long> getVehicleStats() {
-        UUID tenantId = TenantContext.get();
+        TenantPrincipal p = getPrincipal();
         Map<String, Long> stats = new HashMap<>();
-        stats.put("total", vehicleRepository.countByTenantId(tenantId));
-        stats.put("active", vehicleRepository.countByTenantIdAndStatus(tenantId, "ACTIVE"));
-        stats.put("inactive", vehicleRepository.countByTenantIdAndStatus(tenantId, "INACTIVE"));
-        stats.put("inMaintenance", vehicleRepository.countByTenantIdAndStatus(tenantId, "IN_MAINTENANCE"));
-        stats.put("sold", vehicleRepository.countByTenantIdAndStatus(tenantId, "SOLD"));
+        stats.put("total", branchScope.queryCount(p,
+                vehicleRepository::countByTenantId,
+                vehicleRepository::countByTenantIdAndBranchId));
+        stats.put("active", branchScope.queryCount(p,
+                tid -> vehicleRepository.countByTenantIdAndStatus(tid, "ACTIVE"),
+                (tid, bid) -> vehicleRepository.countByTenantIdAndBranchIdAndStatus(tid, bid, "ACTIVE")));
+        stats.put("inactive", branchScope.queryCount(p,
+                tid -> vehicleRepository.countByTenantIdAndStatus(tid, "INACTIVE"),
+                (tid, bid) -> vehicleRepository.countByTenantIdAndBranchIdAndStatus(tid, bid, "INACTIVE")));
+        stats.put("inMaintenance", branchScope.queryCount(p,
+                tid -> vehicleRepository.countByTenantIdAndStatus(tid, "IN_MAINTENANCE"),
+                (tid, bid) -> vehicleRepository.countByTenantIdAndBranchIdAndStatus(tid, bid, "IN_MAINTENANCE")));
+        stats.put("sold", branchScope.queryCount(p,
+                tid -> vehicleRepository.countByTenantIdAndStatus(tid, "SOLD"),
+                (tid, bid) -> vehicleRepository.countByTenantIdAndBranchIdAndStatus(tid, bid, "SOLD")));
         return stats;
     }
 
-    // ─── Create ─────────────────────────────────────────────────
+    // ─── Create (with branch resolution) ────────────────────────
 
     @Transactional
     public VehicleResponse createVehicle(CreateVehicleRequest request) {
-        UUID tenantId = TenantContext.get();
+        TenantPrincipal p = getPrincipal();
+        UUID tenantId = p.tenantId();
 
         // Validate uniqueness of registration number within tenant
         vehicleRepository.findByRegistrationNumberAndTenantId(request.getRegistrationNumber(), tenantId)
@@ -90,7 +111,13 @@ public class VehicleService {
             vehicle.setStatus("ACTIVE");
         }
 
-        resolveForeignKeys(vehicle, request, tenantId);
+        // Resolve branch via BranchValidator
+        UUID resolvedBranchId = branchValidator.resolve(p, request.getBranchId());
+        Branch branch = branchRepository.findById(resolvedBranchId)
+                .orElseThrow(() -> new ResourceNotFoundException("Branch", resolvedBranchId));
+        vehicle.setBranch(branch);
+
+        resolveOtherForeignKeys(vehicle, request, tenantId);
 
         return vehicleMapper.toResponse(vehicleRepository.save(vehicle));
     }
@@ -114,7 +141,15 @@ public class VehicleService {
         }
 
         vehicleMapper.updateEntity(request, vehicle);
-        resolveForeignKeys(vehicle, request, tenantId);
+
+        // Resolve branch FK
+        if (request.getBranchId() != null) {
+            Branch branch = branchRepository.findByIdAndTenantId(request.getBranchId(), tenantId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Branch", request.getBranchId()));
+            vehicle.setBranch(branch);
+        }
+
+        resolveOtherForeignKeys(vehicle, request, tenantId);
 
         return vehicleMapper.toResponse(vehicleRepository.save(vehicle));
     }
@@ -132,23 +167,14 @@ public class VehicleService {
 
     // ─── Private helpers ────────────────────────────────────────
 
-    private void resolveForeignKeys(Vehicle vehicle, CreateVehicleRequest request, UUID tenantId) {
-        // Vehicle Type
+    private void resolveOtherForeignKeys(Vehicle vehicle, CreateVehicleRequest request, UUID tenantId) {
+        // Vehicle Type Master
         if (request.getVehicleTypeId() != null) {
-            VehicleType vt = vehicleTypeRepository.findById(request.getVehicleTypeId())
-                    .orElseThrow(() -> new ResourceNotFoundException("VehicleType", request.getVehicleTypeId()));
-            vehicle.setVehicleType(vt);
+            VehicleTypeMaster vtm = vehicleTypeMasterRepository.findByIdAndTenantId(request.getVehicleTypeId(), tenantId)
+                    .orElseThrow(() -> new ResourceNotFoundException("VehicleTypeMaster", request.getVehicleTypeId()));
+            vehicle.setVehicleTypeMaster(vtm);
         } else {
-            vehicle.setVehicleType(null);
-        }
-
-        // Branch
-        if (request.getBranchId() != null) {
-            Branch branch = branchRepository.findByIdAndTenantId(request.getBranchId(), tenantId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Branch", request.getBranchId()));
-            vehicle.setBranch(branch);
-        } else {
-            vehicle.setBranch(null);
+            vehicle.setVehicleTypeMaster(null);
         }
 
         // Client (owner)
@@ -168,5 +194,15 @@ public class VehicleService {
         } else {
             vehicle.setOperator(null);
         }
+    }
+
+    private TenantPrincipal getPrincipal() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.getPrincipal() instanceof TenantPrincipal tp) {
+            return tp;
+        }
+        // Fallback: create a tenant-wide principal from TenantContext
+        UUID tenantId = TenantContext.get();
+        return new TenantPrincipal(null, tenantId, null);
     }
 }

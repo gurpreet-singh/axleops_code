@@ -51,10 +51,35 @@ public class CsvParserService {
                 }
 
                 String[] headerRow = allRows.get(0);
-                List<String> headers = Arrays.stream(headerRow)
-                        .map(String::trim)
-                        .filter(h -> !h.isEmpty())  // strip blank columns from trailing commas
-                        .toList();
+
+                // Build header list AND track original column indices.
+                // Empty headers (from blank columns / trailing commas) are excluded.
+                // CRITICAL: Duplicate headers are made unique by appending " (2)", " (3)"
+                // etc. This prevents Map.put() from overwriting values of earlier columns
+                // that share the same header name (e.g., two "Registration Date" columns).
+                List<String> headers = new ArrayList<>();
+                List<Integer> headerIndices = new ArrayList<>();
+                Map<String, Integer> headerOccurrences = new LinkedHashMap<>();
+
+                for (int h = 0; h < headerRow.length; h++) {
+                    String hdr = headerRow[h].trim();
+                    if (!hdr.isEmpty()) {
+                        int count = headerOccurrences.getOrDefault(hdr, 0) + 1;
+                        headerOccurrences.put(hdr, count);
+                        // First occurrence keeps original name; subsequent get " (N)" suffix
+                        String uniqueHeader = count == 1 ? hdr : hdr + " (" + count + ")";
+                        headers.add(uniqueHeader);
+                        headerIndices.add(h);
+                    }
+                }
+
+                if (headerOccurrences.entrySet().stream().anyMatch(e -> e.getValue() > 1)) {
+                    log.warn("CSV has duplicate column headers: {}",
+                            headerOccurrences.entrySet().stream()
+                                .filter(e -> e.getValue() > 1)
+                                .map(e -> "'" + e.getKey() + "' x" + e.getValue())
+                                .collect(java.util.stream.Collectors.joining(", ")));
+                }
 
                 List<Map<String, String>> rows = new ArrayList<>();
                 for (int i = 1; i < allRows.size(); i++) {
@@ -64,7 +89,8 @@ public class CsvParserService {
 
                     Map<String, String> row = new LinkedHashMap<>();
                     for (int j = 0; j < headers.size(); j++) {
-                        String value = j < rowData.length ? rowData[j] : "";
+                        int origIdx = headerIndices.get(j);
+                        String value = origIdx < rowData.length ? rowData[origIdx] : "";
                         row.put(headers.get(j), value);
                     }
                     rows.add(row);

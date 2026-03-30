@@ -12,7 +12,8 @@ import java.time.LocalDate;
  * Tracks interval-based schedules (by months or KM).
  */
 @Entity
-@Table(name = "service_tasks")
+@Table(name = "service_tasks",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "vehicle_id", "name"}))
 @Getter
 @Setter
 public class ServiceTask extends BaseEntity {
@@ -59,4 +60,8 @@ public class ServiceTask extends BaseEntity {
 
     @Column(name = "compliance_pct")
     private Integer compliancePct; // 0-100, how on-schedule this task is
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "branch_id")
+    private Branch branch;
 }

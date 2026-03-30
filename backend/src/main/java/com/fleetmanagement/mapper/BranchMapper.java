@@ -7,6 +7,10 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface BranchMapper {
-    @Mapping(source = "tenantId", target = "tenantId")
+
+    @Mapping(target = "managerName", ignore = true)
+    @Mapping(target = "vehicleCount", ignore = true)
+    @Mapping(target = "driverCount", ignore = true)
+    @Mapping(target = "tripCount", ignore = true)
     BranchResponse toResponse(Branch branch);
 }

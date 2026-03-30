@@ -105,6 +105,67 @@ public class EnumService {
                         "PER_TON", "Per Tonne"
                 )));
 
+        // ── Trip Status ────────────────────────────────────
+        result.put("tripStatus", mapEnum("trip_status",
+                com.fleetmanagement.entity.TripStatus.values(),
+                Map.of(
+                        "CREATED", "Created",
+                        "IN_TRANSIT", "In Transit",
+                        "DELIVERED", "Delivered",
+                        "SETTLED", "Settled",
+                        "CANCELLED", "Cancelled"
+                )));
+
+        // ── Trip Type ──────────────────────────────────────
+        result.put("tripType", mapEnum("trip_type",
+                com.fleetmanagement.entity.TripType.values(),
+                Map.of(
+                        "FTL", "FTL — Full Truck Load",
+                        "PTL", "PTL — Part Truck Load",
+                        "LTL", "LTL — Less Than Truck Load",
+                        "CONTAINER", "Container",
+                        "TANKER", "Tanker",
+                        "ODC", "ODC — Over Dimensional Cargo"
+                )));
+
+        // ── POD Status ─────────────────────────────────────
+        result.put("podStatus", mapEnum("pod_status",
+                com.fleetmanagement.entity.PodStatus.values(),
+                Map.of(
+                        "PENDING", "Pending",
+                        "UPLOADED", "Uploaded",
+                        "VERIFIED", "Verified"
+                )));
+
+        // ── Payment Terms ──────────────────────────────────
+        result.put("paymentTerms", mapEnum("payment_terms",
+                com.fleetmanagement.entity.PaymentTerms.values(),
+                Map.of(
+                        "TO_PAY", "To Pay",
+                        "PAID", "Paid",
+                        "TO_BE_BILLED", "To Be Billed"
+                )));
+
+        // ── Payment Mode ───────────────────────────────────
+        result.put("paymentMode", mapEnum("payment_mode",
+                com.fleetmanagement.entity.PaymentMode.values(),
+                Map.of(
+                        "CASH", "Cash",
+                        "BANK_TRANSFER", "Bank Transfer",
+                        "FUEL_CARD", "Fuel Card",
+                        "UPI", "UPI",
+                        "FASTAG", "FASTag",
+                        "COMPANY_ACCOUNT", "Company Account"
+                )));
+
+        // ── Risk Type ──────────────────────────────────────
+        result.put("riskType", mapEnum("risk_type",
+                com.fleetmanagement.entity.RiskType.values(),
+                Map.of(
+                        "CARRIER_RISK", "Carrier Risk",
+                        "OWNER_RISK", "Owner's Risk"
+                )));
+
         return result;
     }
 

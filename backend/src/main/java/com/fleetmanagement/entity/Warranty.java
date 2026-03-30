@@ -10,7 +10,8 @@ import java.time.LocalDate;
  * Vehicle warranty (OEM, extended, component-level).
  */
 @Entity
-@Table(name = "vehicle_warranties")
+@Table(name = "vehicle_warranties",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "policy_number"}))
 @Getter
 @Setter
 public class Warranty extends BaseEntity {

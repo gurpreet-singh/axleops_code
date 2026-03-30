@@ -43,6 +43,22 @@ public class CompanyService {
     public CompanyResponse create(CreateCompanyRequest req) {
         UUID tenantId = TenantContext.get();
 
+        // Validate uniqueness of legal name within tenant
+        companyRepository.findByLegalNameIgnoreCaseAndTenantId(req.getLegalName(), tenantId)
+                .ifPresent(c -> {
+                    throw new IllegalArgumentException(
+                            "Company with legal name '" + req.getLegalName() + "' already exists");
+                });
+
+        // Validate uniqueness of PAN within tenant (if provided)
+        if (req.getPanNumber() != null && !req.getPanNumber().isBlank()) {
+            companyRepository.findByPanNumberAndTenantId(req.getPanNumber(), tenantId)
+                    .ifPresent(c -> {
+                        throw new IllegalArgumentException(
+                                "Company with PAN '" + req.getPanNumber() + "' already exists");
+                    });
+        }
+
         Company company = new Company();
         company.setTenantId(tenantId);
         company.setLegalName(req.getLegalName());
@@ -75,6 +91,25 @@ public class CompanyService {
 
         String oldLegalName = company.getLegalName();
         String oldPanNumber = company.getPanNumber();
+
+        // If legal name is changing, validate uniqueness
+        if (req.getLegalName() != null && !req.getLegalName().equalsIgnoreCase(oldLegalName)) {
+            companyRepository.findByLegalNameIgnoreCaseAndTenantId(req.getLegalName(), tenantId)
+                    .ifPresent(c -> {
+                        throw new IllegalArgumentException(
+                                "Company with legal name '" + req.getLegalName() + "' already exists");
+                    });
+        }
+
+        // If PAN is changing, validate uniqueness
+        if (req.getPanNumber() != null && !req.getPanNumber().isBlank()
+                && !req.getPanNumber().equals(oldPanNumber)) {
+            companyRepository.findByPanNumberAndTenantId(req.getPanNumber(), tenantId)
+                    .ifPresent(c -> {
+                        throw new IllegalArgumentException(
+                                "Company with PAN '" + req.getPanNumber() + "' already exists");
+                    });
+        }
 
         company.setLegalName(req.getLegalName());
         company.setTradeName(req.getTradeName());

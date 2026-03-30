@@ -6,12 +6,13 @@ import lombok.Setter;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "vouchers")
+@Table(name = "vouchers",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "voucher_number"}))
 @Getter
 @Setter
 public class Voucher extends BaseEntity {
 
-    @Column(name = "voucher_number", nullable = false, unique = true, length = 100)
+    @Column(name = "voucher_number", nullable = false, length = 100)
     private String voucherNumber;
 
     @Column(name = "voucher_type", nullable = false, length = 50)

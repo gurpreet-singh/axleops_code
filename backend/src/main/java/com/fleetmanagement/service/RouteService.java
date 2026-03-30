@@ -2,17 +2,22 @@ package com.fleetmanagement.service;
 
 import com.fleetmanagement.config.ResourceNotFoundException;
 import com.fleetmanagement.config.TenantContext;
+import com.fleetmanagement.config.TenantPrincipal;
 import com.fleetmanagement.dto.request.CreateRouteRequest;
 import com.fleetmanagement.dto.response.RouteResponse;
 import com.fleetmanagement.entity.AnnexureType;
 import com.fleetmanagement.entity.InvoiceType;
 import com.fleetmanagement.entity.LedgerAccount;
+import com.fleetmanagement.entity.Branch;
 import com.fleetmanagement.entity.Route;
+import com.fleetmanagement.entity.master.VehicleTypeMaster;
 import com.fleetmanagement.mapper.RouteMapper;
 import com.fleetmanagement.repository.AnnexureTypeRepository;
+import com.fleetmanagement.repository.BranchRepository;
 import com.fleetmanagement.repository.InvoiceTypeRepository;
 import com.fleetmanagement.repository.LedgerAccountRepository;
 import com.fleetmanagement.repository.RouteRepository;
+import com.fleetmanagement.repository.master.VehicleTypeMasterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +35,9 @@ public class RouteService {
     private final LedgerAccountRepository ledgerAccountRepository;
     private final InvoiceTypeRepository invoiceTypeRepository;
     private final AnnexureTypeRepository annexureTypeRepository;
+    private final VehicleTypeMasterRepository vehicleTypeMasterRepository;
+    private final BranchValidator branchValidator;
+    private final BranchRepository branchRepository;
 
     public List<RouteResponse> getAllRoutes() {
         UUID tenantId = TenantContext.get();
@@ -47,13 +55,28 @@ public class RouteService {
 
     @Transactional
     public RouteResponse create(CreateRouteRequest request) {
-        UUID tenantId = TenantContext.get();
+        TenantPrincipal p = TenantPrincipal.current();
+        UUID tenantId = p.tenantId();
+
+        // Validate uniqueness of route name within tenant
+        routeRepository.findByNameIgnoreCaseAndTenantId(request.getName(), tenantId)
+                .ifPresent(r -> {
+                    throw new IllegalArgumentException(
+                            "Route with name '" + request.getName() + "' already exists");
+                });
+
         Route route = routeMapper.toEntity(request);
         route.setTenantId(tenantId);
 
         if (route.getStatus() == null || route.getStatus().isBlank()) {
             route.setStatus("ACTIVE");
         }
+
+        // Resolve branch from user context
+        UUID resolvedBranchId = branchValidator.resolve(p, request.getBranchId());
+        Branch branch = branchRepository.findById(resolvedBranchId)
+                .orElseThrow(() -> new ResourceNotFoundException("Branch", resolvedBranchId));
+        route.setBranch(branch);
 
         resolveForeignKeys(route, request, tenantId);
 
@@ -65,6 +88,15 @@ public class RouteService {
         UUID tenantId = TenantContext.get();
         Route route = routeRepository.findByIdAndTenantId(id, tenantId)
                 .orElseThrow(() -> new ResourceNotFoundException("Route", id));
+
+        // If name is changing, validate uniqueness
+        if (request.getName() != null && !request.getName().equalsIgnoreCase(route.getName())) {
+            routeRepository.findByNameIgnoreCaseAndTenantId(request.getName(), tenantId)
+                    .ifPresent(r -> {
+                        throw new IllegalArgumentException(
+                                "Route with name '" + request.getName() + "' already exists");
+                    });
+        }
 
         routeMapper.updateEntity(request, route);
 
@@ -112,6 +144,16 @@ public class RouteService {
             route.setAnnexureType(at);
         } else {
             route.setAnnexureType(null);
+        }
+
+        // Vehicle Type Master
+        if (request.getVehicleTypeId() != null) {
+            VehicleTypeMaster vtm = vehicleTypeMasterRepository
+                    .findByIdAndTenantId(request.getVehicleTypeId(), tenantId)
+                    .orElseThrow(() -> new ResourceNotFoundException("VehicleTypeMaster", request.getVehicleTypeId()));
+            route.setVehicleTypeMaster(vtm);
+        } else {
+            route.setVehicleTypeMaster(null);
         }
     }
 }

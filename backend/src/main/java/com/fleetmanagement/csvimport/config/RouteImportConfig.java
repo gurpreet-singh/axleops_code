@@ -133,14 +133,7 @@ public class RouteImportConfig {
                                 .helpText("Agreed payment terms for this route (e.g. 30 days, COD, Advance).")
                                 .build(),
 
-                        // ── 6. Vehicle & Workflow ─────────────────────────
-                        ImportFieldDefinition.builder()
-                                .fieldName("vehicleType").displayName("Vehicle Type").dataType(ImportDataType.STRING)
-                                .aliases(List.of("Vehicle Type", "Truck Type", "Vehicle Category"))
-                                .exampleValue("Multi-Axle Truck").exampleValue2("Container 20ft")
-                                .helpText("Preferred vehicle type for this route (e.g. Multi-Axle Truck, Tanker, LCV).")
-                                .build(),
-
+                        // ── 6. Workflow ───────────────────────────────────
                         ImportFieldDefinition.builder()
                                 .fieldName("template").displayName("Workflow Template").dataType(ImportDataType.STRING)
                                 .aliases(List.of("Template", "Workflow", "Workflow Template"))

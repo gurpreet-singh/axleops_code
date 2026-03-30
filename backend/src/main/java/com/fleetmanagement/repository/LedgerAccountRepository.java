@@ -21,6 +21,8 @@ public interface LedgerAccountRepository extends JpaRepository<LedgerAccount, UU
 
     Optional<LedgerAccount> findByIdAndTenantId(UUID id, UUID tenantId);
 
+    Optional<LedgerAccount> findByAccountHeadIgnoreCaseAndTenantId(String accountHead, UUID tenantId);
+
     /**
      * Find ledger accounts by company — tenant-scoped via the company's tenant ownership.
      * Callers MUST verify company belongs to the tenant before calling this.

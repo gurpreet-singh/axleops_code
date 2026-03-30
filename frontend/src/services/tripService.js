@@ -1,65 +1,150 @@
-// ═══════════════════════════════════════════════════════════
-// TRIP SERVICE
-// Calls: GET /api/v1/trips  — falls back to local JSON
-// Normalizes API response fields to match frontend expectations
-// ═══════════════════════════════════════════════════════════
 import api from './api';
-import tripsJson from '../data/trips.json';
 
+// ═══════════════════════════════════════════════════════════
+// STATUS COLORS (matches new TripStatus enum)
+// ═══════════════════════════════════════════════════════════
 export const TRIP_STATE_COLORS = {
-  CREATED:       { mid: '#F5F3FF', text: '#7C3AED', dot: '#8B5CF6', border: '#DDD6FE', light: '#FAFAFE' },
-  Created:       { mid: '#F5F3FF', text: '#7C3AED', dot: '#8B5CF6', border: '#DDD6FE', light: '#FAFAFE' },
-  IN_TRANSIT:    { mid: '#ECFDF5', text: '#059669', dot: '#10B981', border: '#A7F3D0', light: '#F0FDF4' },
-  'In Transit':  { mid: '#ECFDF5', text: '#059669', dot: '#10B981', border: '#A7F3D0', light: '#F0FDF4' },
-  COMPLETED:     { mid: '#FFF7ED', text: '#C2410C', dot: '#F97316', border: '#FED7AA', light: '#FFFBEB' },
-  Completed:     { mid: '#FFF7ED', text: '#C2410C', dot: '#F97316', border: '#FED7AA', light: '#FFFBEB' },
-  SETTLED:       { mid: '#FEF3C7', text: '#92400E', dot: '#D97706', border: '#FDE68A', light: '#FFFBEB' },
-  Settled:       { mid: '#FEF3C7', text: '#92400E', dot: '#D97706', border: '#FDE68A', light: '#FFFBEB' },
+  CREATED: {
+    mid: '#EFF6FF', text: '#1E40AF', border: '#BFDBFE', dot: '#3B82F6',
+    bg: 'linear-gradient(135deg, #EFF6FF, #DBEAFE)', label: 'Created',
+  },
+  IN_TRANSIT: {
+    mid: '#FEF3C7', text: '#92400E', border: '#FDE68A', dot: '#F59E0B',
+    bg: 'linear-gradient(135deg, #FEF3C7, #FDE68A)', label: 'In Transit',
+  },
+  DELIVERED: {
+    mid: '#D1FAE5', text: '#065F46', border: '#6EE7B7', dot: '#10B981',
+    bg: 'linear-gradient(135deg, #D1FAE5, #A7F3D0)', label: 'Delivered',
+  },
+  SETTLED: {
+    mid: '#E0E7FF', text: '#3730A3', border: '#A5B4FC', dot: '#6366F1',
+    bg: 'linear-gradient(135deg, #E0E7FF, #C7D2FE)', label: 'Settled',
+  },
+  CANCELLED: {
+    mid: '#FEE2E2', text: '#991B1B', border: '#FECACA', dot: '#EF4444',
+    bg: 'linear-gradient(135deg, #FEE2E2, #FECACA)', label: 'Cancelled',
+  },
 };
 
-/** Normalize API response to match frontend field names */
-function normalizeTrip(t) {
-  return {
-    ...t,
-    lr: t.lrNumber || t.lr,
-    client: t.clientName || t.client,
-    vehicle: t.vehicleRegistration || t.vehicle,
-    driver: t.driverName || t.driver,
-    freight: t.revenue || t.freight || 0,
-    startDate: t.scheduledStart || t.startDate,
-    eta: t.eta || null,
-  };
-}
+// ═══════════════════════════════════════════════════════════
+// TRIP CRUD
+// ═══════════════════════════════════════════════════════════
 
-export async function getTrips() {
-  try {
-    const { data } = await api.get('/trips');
-    return data.map(normalizeTrip);
-  } catch {
-    console.warn('[tripService] API unavailable, using local JSON');
-    return tripsJson;
-  }
-}
-
-export async function getTripById(id) {
-  try {
-    const { data } = await api.get(`/trips/${id}`);
-    return normalizeTrip(data);
-  } catch {
-    return tripsJson.find(t => t.id === id) || null;
-  }
-}
-
-export async function createTrip(payload) {
-  const { data } = await api.post('/trips', payload);
+export async function getTrips(status) {
+  const params = status ? { status } : {};
+  const { data } = await api.get('/trips', { params });
   return data;
 }
 
-export async function updateTrip(id, payload) {
-  const { data } = await api.put(`/trips/${id}`, payload);
+export async function getActiveTrips() {
+  const { data } = await api.get('/trips/active');
+  return data;
+}
+
+export async function getTripCounts() {
+  const { data } = await api.get('/trips/counts');
+  return data;
+}
+
+export async function getTripById(id) {
+  const { data } = await api.get(`/trips/${id}`);
+  return data;
+}
+
+export async function createTrip(request) {
+  const { data } = await api.post('/trips', request);
+  return data;
+}
+
+export async function updateTrip(id, request) {
+  const { data } = await api.put(`/trips/${id}`, request);
   return data;
 }
 
 export async function deleteTrip(id) {
   await api.delete(`/trips/${id}`);
+}
+
+// ═══════════════════════════════════════════════════════════
+// STATE MACHINE TRANSITIONS
+// ═══════════════════════════════════════════════════════════
+
+export async function startTrip(id, request = {}) {
+  const { data } = await api.post(`/trips/${id}/start`, request);
+  return data;
+}
+
+export async function deliverTrip(id, request = {}) {
+  const { data } = await api.post(`/trips/${id}/deliver`, request);
+  return data;
+}
+
+export async function markReached(id) {
+  const { data } = await api.post(`/trips/${id}/mark-reached`);
+  return data;
+}
+
+export async function settleTrip(id, request = {}) {
+  const { data } = await api.post(`/trips/${id}/settle`, request);
+  return data;
+}
+
+export async function cancelTrip(id, request) {
+  const { data } = await api.post(`/trips/${id}/cancel`, request);
+  return data;
+}
+
+// ═══════════════════════════════════════════════════════════
+// EXPENSES
+// ═══════════════════════════════════════════════════════════
+
+export async function getTripExpenses(tripId) {
+  const { data } = await api.get(`/trips/${tripId}/expenses`);
+  return data;
+}
+
+export async function addTripExpense(tripId, request) {
+  const { data } = await api.post(`/trips/${tripId}/expenses`, request);
+  return data;
+}
+
+export async function updateTripExpense(tripId, expenseId, request) {
+  const { data } = await api.put(`/trips/${tripId}/expenses/${expenseId}`, request);
+  return data;
+}
+
+export async function deleteTripExpense(tripId, expenseId) {
+  await api.delete(`/trips/${tripId}/expenses/${expenseId}`);
+}
+
+// ═══════════════════════════════════════════════════════════
+// ADVANCES
+// ═══════════════════════════════════════════════════════════
+
+export async function getTripAdvances(tripId) {
+  const { data } = await api.get(`/trips/${tripId}/advances`);
+  return data;
+}
+
+export async function addTripAdvance(tripId, request) {
+  const { data } = await api.post(`/trips/${tripId}/advances`, request);
+  return data;
+}
+
+// ═══════════════════════════════════════════════════════════
+// SETTLEMENT
+// ═══════════════════════════════════════════════════════════
+
+export async function getSettlementSummary(tripId) {
+  const { data } = await api.get(`/trips/${tripId}/settlement-summary`);
+  return data;
+}
+
+// ═══════════════════════════════════════════════════════════
+// DOCUMENTS
+// ═══════════════════════════════════════════════════════════
+
+export async function getTripDocuments(tripId) {
+  const { data } = await api.get(`/trips/${tripId}/documents`);
+  return data;
 }

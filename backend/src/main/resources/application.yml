@@ -28,11 +28,11 @@ spring:
         format_sql: true
         default_schema: public
 
-  # ─── Flyway Migrations ──────────────────────
+  # ─── Flyway ─────────────────────────────────
+  # Disabled — schema managed by Hibernate ddl-auto:update
+  # Seed data scripts in db/migration/ use H2-specific syntax (for tests only)
   flyway:
-    enabled: true
-    locations: classpath:db/migration
-    baseline-on-migrate: true
+    enabled: false
 
   # ─── Jackson ────────────────────────────────
   jackson:

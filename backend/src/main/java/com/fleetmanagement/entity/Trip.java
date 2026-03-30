@@ -5,113 +5,202 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.UUID;
 
 @Entity
-@Table(name = "trips")
+@Table(name = "trips",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "trip_number"}))
 @Getter
 @Setter
 public class Trip extends BaseEntity {
 
-    @Column(name = "trip_number", nullable = false, unique = true)
+    // ─── System Fields ──────────────────────────────────────────
+    @Column(name = "trip_number", nullable = false)
     private String tripNumber;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id", nullable = false)
-    private Client client;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "route_id", nullable = false)
-    private Route route;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "route_contract_id")
-    private RouteContract routeContract;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vehicle_id", nullable = false)
-    private Vehicle vehicle;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "driver_id", nullable = false)
-    private Contact driver;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 20, nullable = false)
+    private TripStatus status = TripStatus.CREATED;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "branch_id")
     private Branch branch;
 
-    // ─── Status & Lifecycle ─────────────────────────────────────
-    @Column(name = "status", length = 50)
-    private String status = "CREATED"; // CREATED, DISPATCHED, IN_TRANSIT, DELIVERED, COMPLETED, CANCELLED
+    // ─── Secondary Flags ────────────────────────────────────────
+    @Column(name = "reached_destination")
+    private boolean reachedDestination = false;
 
-    @Column(name = "scheduled_start")
-    private LocalDateTime scheduledStart;
+    @Column(name = "reached_destination_at")
+    private LocalDateTime reachedDestinationAt;
 
-    @Column(name = "actual_start")
-    private LocalDateTime actualStart;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "pod_status", length = 20)
+    private PodStatus podStatus = PodStatus.PENDING;
 
-    @Column(name = "actual_arrival")
-    private LocalDateTime actualArrival;
+    // ─── Lifecycle Timestamps ───────────────────────────────────
+    @Column(name = "started_at")
+    private LocalDateTime startedAt;
 
-    @Column(name = "completed_at")
-    private LocalDateTime completedAt;
+    @Column(name = "delivered_at")
+    private LocalDateTime deliveredAt;
 
-    // ─── Cargo ──────────────────────────────────────────────────
-    @Column(name = "cargo_weight")
-    private BigDecimal cargoWeight;
+    @Column(name = "settled_at")
+    private LocalDateTime settledAt;
 
-    @Column(name = "cargo_description", columnDefinition = "TEXT")
-    private String cargoDescription;
+    @Column(name = "cancelled_at")
+    private LocalDateTime cancelledAt;
 
+    @Column(name = "cancellation_reason", columnDefinition = "TEXT")
+    private String cancellationReason;
+
+    @Column(name = "created_by")
+    private UUID createdBy;
+
+    @Column(name = "updated_by")
+    private UUID updatedBy;
+
+    // ─── Core Selection ─────────────────────────────────────────
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vehicle_id")
+    private Vehicle vehicle;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "driver_id")
+    private Contact driver;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "route_id", nullable = false)
+    private Route route;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "trip_type", length = 20)
+    private TripType tripType = TripType.FTL;
+
+    @Column(name = "vehicle_ownership", length = 20)
+    private String vehicleOwnership; // OWN, ATTACHED, MARKET — derived from Vehicle
+
+    // ─── LR / Consignment Note ──────────────────────────────────
     @Column(name = "lr_number")
     private String lrNumber;
 
-    @Column(name = "hsn_code")
-    private String hsnCode;
+    @Column(name = "lr_date")
+    private LocalDate lrDate;
+
+    @Column(name = "dispatch_date")
+    private LocalDate dispatchDate;
+
+    @Column(name = "dispatch_time")
+    private LocalTime dispatchTime;
+
+    @Column(name = "client_invoice_numbers")
+    private String clientInvoiceNumbers;
+
+    // ─── Parties ────────────────────────────────────────────────
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "consignor_id")
+    private LedgerAccount consignor;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "consignee_id")
+    private LedgerAccount consignee;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "billing_party_id")
+    private LedgerAccount billingParty;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "transporter_id")
+    private LedgerAccount transporter;
+
+    @Column(name = "consignor_name")
+    private String consignorName;
+
+    @Column(name = "consignee_name")
+    private String consigneeName;
+
+    @Column(name = "consignor_address", columnDefinition = "TEXT")
+    private String consignorAddress;
+
+    @Column(name = "consignee_address", columnDefinition = "TEXT")
+    private String consigneeAddress;
+
+    // ─── Cargo Details ──────────────────────────────────────────
+    @Column(name = "cargo_description", columnDefinition = "TEXT")
+    private String cargoDescription;
+
+    @Column(name = "material_type")
+    private String materialType;
+
+    @Column(name = "weight_kg")
+    private BigDecimal weightKg;
+
+    @Column(name = "packages_count")
+    private Integer packagesCount;
 
     @Column(name = "consignment_value")
     private BigDecimal consignmentValue;
 
-    // ─── Odometer ───────────────────────────────────────────────
-    @Column(name = "start_odometer")
-    private BigDecimal startOdometer;
+    @Column(name = "eway_bill_number")
+    private String ewayBillNumber;
 
-    @Column(name = "end_odometer")
-    private BigDecimal endOdometer;
+    @Column(name = "eway_bill_expiry")
+    private LocalDateTime ewayBillExpiry;
 
-    @Column(name = "distance_travelled")
-    private BigDecimal distanceTravelled;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "risk_type", length = 20)
+    private RiskType riskType = RiskType.CARRIER_RISK;
 
-    // ─── Financials ─────────────────────────────────────────────
-    private BigDecimal revenue;
+    @Column(name = "trolley_pallet_qty")
+    private Integer trolleyPalletQty;
 
-    @Column(name = "fuel_cost")
-    private BigDecimal fuelCost;
+    // ─── Financial ──────────────────────────────────────────────
+    @Column(name = "freight_amount")
+    private BigDecimal freightAmount;
 
-    @Column(name = "toll_cost")
-    private BigDecimal tollCost;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "rate_basis", length = 20)
+    private RateBasis rateBasis;
 
-    @Column(name = "driver_allowance")
-    private BigDecimal driverAllowance;
+    @Column(name = "rate_value")
+    private BigDecimal rateValue;
 
-    @Column(name = "other_expense")
-    private BigDecimal otherExpense;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_terms", length = 20)
+    private PaymentTerms paymentTerms = PaymentTerms.TO_BE_BILLED;
 
-    @Column(name = "total_expense")
-    private BigDecimal totalExpense;
+    @Column(name = "loading_note", columnDefinition = "TEXT")
+    private String loadingNote;
 
-    @Column(name = "net_profit")
-    private BigDecimal netProfit;
+    // ─── Additional / Optional ──────────────────────────────────
+    @Column(name = "permit_number")
+    private String permitNumber;
 
-    // ─── Invoice ────────────────────────────────────────────────
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invoice_id")
-    private Invoice invoice;
+    @Column(name = "document_number")
+    private String documentNumber;
 
-    // ─── Delivery ───────────────────────────────────────────────
-    @Column(name = "pod_status")
-    private String podStatus; // PENDING, RECEIVED, VERIFIED
+    @Column(columnDefinition = "TEXT")
+    private String remarks;
 
-    @Column(name = "delivery_notes", columnDefinition = "TEXT")
-    private String deliveryNotes;
+    // ─── Derived Route Fields (denormalized) ────────────────────
+    @Column(name = "origin_city")
+    private String originCity;
+
+    @Column(name = "destination_city")
+    private String destinationCity;
+
+    @Column(name = "expected_distance_km")
+    private BigDecimal expectedDistanceKm;
+
+    @Column(name = "expected_transit_days")
+    private Integer expectedTransitDays;
+
+    @Column(name = "actual_distance_km")
+    private BigDecimal actualDistanceKm;
+
+    // ─── Invoice Link ───────────────────────────────────────────
+    @Column(name = "invoice_id")
+    private UUID invoiceId;
 }
