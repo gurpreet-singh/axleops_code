@@ -11,7 +11,8 @@ import java.time.LocalDate;
  * Vehicle loan / financing details.
  */
 @Entity
-@Table(name = "vehicle_loans")
+@Table(name = "vehicle_loans",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "loan_account_no"}))
 @Getter
 @Setter
 public class Loan extends BaseEntity {

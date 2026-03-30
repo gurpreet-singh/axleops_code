@@ -5,7 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "invoice_types")
+@Table(name = "invoice_types",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "name"}))
 @Getter
 @Setter
 public class InvoiceType extends BaseEntity {

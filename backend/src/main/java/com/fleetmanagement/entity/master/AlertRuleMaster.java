@@ -13,7 +13,10 @@ import java.math.BigDecimal;
  */
 @Entity
 @Table(name = "master_alert_rules",
-       uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "code"}))
+       uniqueConstraints = {
+           @UniqueConstraint(columnNames = {"tenant_id", "code"}),
+           @UniqueConstraint(columnNames = {"tenant_id", "name"})
+       })
 @Getter @Setter
 public class AlertRuleMaster extends MasterEntity {
 

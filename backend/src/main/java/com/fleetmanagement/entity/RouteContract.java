@@ -5,7 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "route_contracts")
+@Table(name = "route_contracts",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "route_id", "client_id", "effective_from"}))
 @Getter
 @Setter
 public class RouteContract extends BaseEntity {

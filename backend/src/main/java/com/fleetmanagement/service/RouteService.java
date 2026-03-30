@@ -48,6 +48,14 @@ public class RouteService {
     @Transactional
     public RouteResponse create(CreateRouteRequest request) {
         UUID tenantId = TenantContext.get();
+
+        // Validate uniqueness of route name within tenant
+        routeRepository.findByNameIgnoreCaseAndTenantId(request.getName(), tenantId)
+                .ifPresent(r -> {
+                    throw new IllegalArgumentException(
+                            "Route with name '" + request.getName() + "' already exists");
+                });
+
         Route route = routeMapper.toEntity(request);
         route.setTenantId(tenantId);
 
@@ -65,6 +73,15 @@ public class RouteService {
         UUID tenantId = TenantContext.get();
         Route route = routeRepository.findByIdAndTenantId(id, tenantId)
                 .orElseThrow(() -> new ResourceNotFoundException("Route", id));
+
+        // If name is changing, validate uniqueness
+        if (request.getName() != null && !request.getName().equalsIgnoreCase(route.getName())) {
+            routeRepository.findByNameIgnoreCaseAndTenantId(request.getName(), tenantId)
+                    .ifPresent(r -> {
+                        throw new IllegalArgumentException(
+                                "Route with name '" + request.getName() + "' already exists");
+                    });
+        }
 
         routeMapper.updateEntity(request, route);
 

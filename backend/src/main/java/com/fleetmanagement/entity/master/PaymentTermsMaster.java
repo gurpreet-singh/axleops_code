@@ -11,7 +11,10 @@ import lombok.Setter;
  */
 @Entity
 @Table(name = "master_payment_terms",
-       uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "code"}))
+       uniqueConstraints = {
+           @UniqueConstraint(columnNames = {"tenant_id", "code"}),
+           @UniqueConstraint(columnNames = {"tenant_id", "name"})
+       })
 @Getter @Setter
 public class PaymentTermsMaster extends MasterEntity {
 

@@ -7,12 +7,13 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "purchase_orders")
+@Table(name = "purchase_orders",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "po_number"}))
 @Getter
 @Setter
 public class PurchaseOrder extends BaseEntity {
 
-    @Column(name = "po_number", nullable = false, unique = true, length = 100)
+    @Column(name = "po_number", nullable = false, length = 100)
     private String poNumber;
 
     @Column(name = "vendor_name", nullable = false)

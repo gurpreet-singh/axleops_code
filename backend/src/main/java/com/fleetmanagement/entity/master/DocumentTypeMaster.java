@@ -11,7 +11,10 @@ import lombok.Setter;
  */
 @Entity
 @Table(name = "master_document_types",
-       uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "code"}))
+       uniqueConstraints = {
+           @UniqueConstraint(columnNames = {"tenant_id", "code"}),
+           @UniqueConstraint(columnNames = {"tenant_id", "name"})
+       })
 @Getter @Setter
 public class DocumentTypeMaster extends MasterEntity {
 

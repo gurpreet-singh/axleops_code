@@ -12,4 +12,5 @@ import java.util.UUID;
 public interface RouteRepository extends JpaRepository<Route, UUID> {
     List<Route> findByTenantId(UUID tenantId);
     Optional<Route> findByIdAndTenantId(UUID id, UUID tenantId);
+    Optional<Route> findByNameIgnoreCaseAndTenantId(String name, UUID tenantId);
 }

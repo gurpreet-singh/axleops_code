@@ -7,7 +7,8 @@ import lombok.Setter;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "routes")
+@Table(name = "routes",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "name"}))
 @Getter
 @Setter
 public class Route extends BaseEntity {

@@ -5,12 +5,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "ledgers")
+@Table(name = "ledgers",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "code"}))
 @Getter
 @Setter
 public class Ledger extends BaseEntity {
 
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(nullable = false, length = 50)
     private String code;
 
     @Column(nullable = false)

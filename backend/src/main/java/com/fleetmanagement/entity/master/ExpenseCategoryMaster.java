@@ -14,7 +14,10 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "master_expense_categories",
-       uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "code"}))
+       uniqueConstraints = {
+           @UniqueConstraint(columnNames = {"tenant_id", "code"}),
+           @UniqueConstraint(columnNames = {"tenant_id", "name"})
+       })
 @Getter @Setter
 public class ExpenseCategoryMaster extends MasterEntity {
 

@@ -21,4 +21,6 @@ public interface CompanyRepository extends JpaRepository<Company, UUID> {
      * Find by PAN — tenant-scoped to prevent cross-tenant lookups.
      */
     Optional<Company> findByPanNumberAndTenantId(String panNumber, UUID tenantId);
+
+    Optional<Company> findByLegalNameIgnoreCaseAndTenantId(String legalName, UUID tenantId);
 }

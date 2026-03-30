@@ -15,7 +15,8 @@ import java.util.List;
  * it only cares about {@link GroupNature} and {@link LedgerGroupType}.
  */
 @Entity
-@Table(name = "ledger_groups")
+@Table(name = "ledger_groups",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "name"}))
 @Getter
 @Setter
 public class LedgerGroup extends BaseEntity {

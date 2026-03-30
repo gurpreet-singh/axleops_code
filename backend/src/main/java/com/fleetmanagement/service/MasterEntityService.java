@@ -172,6 +172,29 @@ public class MasterEntityService {
             return createLedgerGroup(tenantId, data);
         }
 
+        @SuppressWarnings("unchecked")
+        MasterEntityRepository<MasterEntity> repo = (MasterEntityRepository<MasterEntity>) getRepo(slug);
+
+        // Validate uniqueness of code within tenant
+        String code = (String) data.get("code");
+        if (code != null && !code.isBlank()) {
+            repo.findByCodeAndTenantId(code, tenantId)
+                .ifPresent(e -> {
+                    throw new IllegalArgumentException(
+                            "A record with code '" + code + "' already exists");
+                });
+        }
+
+        // Validate uniqueness of name within tenant
+        String name = (String) data.get("name");
+        if (name != null && !name.isBlank()) {
+            repo.findByNameIgnoreCaseAndTenantId(name, tenantId)
+                .ifPresent(e -> {
+                    throw new IllegalArgumentException(
+                            "A record with name '" + name + "' already exists");
+                });
+        }
+
         Class<? extends MasterEntity> clazz = getEntityClass(slug);
         MasterEntity entity;
         try {
@@ -183,8 +206,6 @@ public class MasterEntityService {
         entity.setTenantId(tenantId);
         mapFieldsToEntity(entity, data, slug);
 
-        @SuppressWarnings("unchecked")
-        MasterEntityRepository<MasterEntity> repo = (MasterEntityRepository<MasterEntity>) getRepo(slug);
         MasterEntity saved = repo.save(entity);
         return toMap(saved);
     }
@@ -202,6 +223,26 @@ public class MasterEntityService {
         MasterEntityRepository<MasterEntity> repo = (MasterEntityRepository<MasterEntity>) getRepo(slug);
         MasterEntity entity = repo.findByIdAndTenantId(id, tenantId)
             .orElseThrow(() -> new ResourceNotFoundException(slug, id));
+
+        // Validate uniqueness of code if changing
+        String code = (String) data.get("code");
+        if (code != null && !code.equalsIgnoreCase(entity.getCode())) {
+            repo.findByCodeAndTenantId(code, tenantId)
+                .ifPresent(e -> {
+                    throw new IllegalArgumentException(
+                            "A record with code '" + code + "' already exists");
+                });
+        }
+
+        // Validate uniqueness of name if changing
+        String name = (String) data.get("name");
+        if (name != null && !name.equalsIgnoreCase(entity.getName())) {
+            repo.findByNameIgnoreCaseAndTenantId(name, tenantId)
+                .ifPresent(e -> {
+                    throw new IllegalArgumentException(
+                            "A record with name '" + name + "' already exists");
+                });
+        }
 
         mapFieldsToEntity(entity, data, slug);
         MasterEntity saved = repo.save(entity);

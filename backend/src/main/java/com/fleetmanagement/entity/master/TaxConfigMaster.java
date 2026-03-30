@@ -14,7 +14,10 @@ import java.time.LocalDate;
  */
 @Entity
 @Table(name = "master_tax_config",
-       uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "code"}))
+       uniqueConstraints = {
+           @UniqueConstraint(columnNames = {"tenant_id", "code"}),
+           @UniqueConstraint(columnNames = {"tenant_id", "name"})
+       })
 @Getter @Setter
 public class TaxConfigMaster extends MasterEntity {
 

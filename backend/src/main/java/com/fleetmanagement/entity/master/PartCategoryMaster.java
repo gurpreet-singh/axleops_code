@@ -13,7 +13,10 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "master_part_categories",
-       uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "code"}))
+       uniqueConstraints = {
+           @UniqueConstraint(columnNames = {"tenant_id", "code"}),
+           @UniqueConstraint(columnNames = {"tenant_id", "name"})
+       })
 @Getter @Setter
 public class PartCategoryMaster extends MasterEntity {
 

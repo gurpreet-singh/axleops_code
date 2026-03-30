@@ -8,7 +8,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "vehicles")
+@Table(name = "vehicles",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "registration_number"}))
 @Getter
 @Setter
 public class Vehicle extends BaseEntity {

@@ -12,7 +12,8 @@ import java.time.LocalDate;
  * Tracks interval-based schedules (by months or KM).
  */
 @Entity
-@Table(name = "service_tasks")
+@Table(name = "service_tasks",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "vehicle_id", "name"}))
 @Getter
 @Setter
 public class ServiceTask extends BaseEntity {

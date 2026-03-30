@@ -14,7 +14,10 @@ import java.util.List;
  */
 @Entity
 @Table(name = "master_inspection_templates",
-       uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "code"}))
+       uniqueConstraints = {
+           @UniqueConstraint(columnNames = {"tenant_id", "code"}),
+           @UniqueConstraint(columnNames = {"tenant_id", "name"})
+       })
 @Getter @Setter
 public class InspectionTemplateMaster extends MasterEntity {
 

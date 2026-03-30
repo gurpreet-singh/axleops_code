@@ -12,7 +12,10 @@ import java.math.BigDecimal;
  */
 @Entity
 @Table(name = "master_equipment_types",
-       uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "code"}))
+       uniqueConstraints = {
+           @UniqueConstraint(columnNames = {"tenant_id", "code"}),
+           @UniqueConstraint(columnNames = {"tenant_id", "name"})
+       })
 @Getter @Setter
 public class EquipmentTypeMaster extends MasterEntity {
 

@@ -6,12 +6,13 @@ import lombok.Setter;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "invoices")
+@Table(name = "invoices",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "invoice_number"}))
 @Getter
 @Setter
 public class Invoice extends BaseEntity {
 
-    @Column(name = "invoice_number", nullable = false, unique = true, length = 100)
+    @Column(name = "invoice_number", nullable = false, length = 100)
     private String invoiceNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)

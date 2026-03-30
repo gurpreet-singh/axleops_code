@@ -9,7 +9,8 @@ import lombok.Setter;
  * Stores origin/destination/vehicle_type combinations that a company dispatches from.
  */
 @Entity
-@Table(name = "dispatch_details")
+@Table(name = "dispatch_details",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "company_id", "origin", "destination", "vehicle_type"}))
 @Getter
 @Setter
 public class DispatchDetail extends BaseEntity {

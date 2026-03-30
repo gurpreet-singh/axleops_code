@@ -21,7 +21,11 @@ import java.util.List;
  * 67+ rows. Master data — 1-2 edits per year per company.
  */
 @Entity
-@Table(name = "companies")
+@Table(name = "companies",
+       uniqueConstraints = {
+           @UniqueConstraint(columnNames = {"tenant_id", "legal_name"}),
+           @UniqueConstraint(columnNames = {"tenant_id", "pan_number"})
+       })
 @Getter
 @Setter
 public class Company extends BaseEntity {
