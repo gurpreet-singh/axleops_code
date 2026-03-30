@@ -17,7 +17,7 @@ public class VehicleResponse {
     private Integer year;
     private String make;
     private String model;
-    private LocalDate mfgMonthYear;
+    private String mfgMonthYear;
 
     // ─── Chassis & Engine ───────────────────────────────────────
     private String chassisNumber;

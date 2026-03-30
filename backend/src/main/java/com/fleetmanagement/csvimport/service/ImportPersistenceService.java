@@ -341,6 +341,33 @@ public class ImportPersistenceService {
                 return LocalDate.parse(value, fmt);
             } catch (DateTimeParseException ignored) {}
         }
+        // Fallback: month-year formats (YYYY-MM, MM/YYYY, MM-YYYY, YYYY/MM)
+        return tryParseMonthYear(value);
+    }
+
+    /**
+     * Parse month-year strings like "YYYY-MM", "MM/YYYY", "MM-YYYY", "YYYY/MM".
+     * Returns the 1st of that month as LocalDate, or null if unparseable.
+     */
+    private LocalDate tryParseMonthYear(String value) {
+        if (value == null) return null;
+        String v = value.trim();
+        // YYYY-MM or YYYY/MM
+        if (v.matches("\\d{4}[/\\-]\\d{1,2}")) {
+            String[] parts = v.split("[/\\-]");
+            int year = Integer.parseInt(parts[0]);
+            int month = Integer.parseInt(parts[1]);
+            if (month >= 1 && month <= 12 && year >= 1900 && year <= 2100)
+                return LocalDate.of(year, month, 1);
+        }
+        // MM/YYYY or MM-YYYY
+        if (v.matches("\\d{1,2}[/\\-]\\d{4}")) {
+            String[] parts = v.split("[/\\-]");
+            int month = Integer.parseInt(parts[0]);
+            int year = Integer.parseInt(parts[1]);
+            if (month >= 1 && month <= 12 && year >= 1900 && year <= 2100)
+                return LocalDate.of(year, month, 1);
+        }
         return null;
     }
 

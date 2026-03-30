@@ -51,10 +51,20 @@ public class CsvParserService {
                 }
 
                 String[] headerRow = allRows.get(0);
-                List<String> headers = Arrays.stream(headerRow)
-                        .map(String::trim)
-                        .filter(h -> !h.isEmpty())  // strip blank columns from trailing commas
-                        .toList();
+
+                // Build header list AND track original column indices.
+                // Empty headers (from blank columns / trailing commas) are excluded from
+                // the output, but we must use the ORIGINAL index when reading row data
+                // to prevent column shifting.
+                List<String> headers = new ArrayList<>();
+                List<Integer> headerIndices = new ArrayList<>();
+                for (int h = 0; h < headerRow.length; h++) {
+                    String hdr = headerRow[h].trim();
+                    if (!hdr.isEmpty()) {
+                        headers.add(hdr);
+                        headerIndices.add(h);
+                    }
+                }
 
                 List<Map<String, String>> rows = new ArrayList<>();
                 for (int i = 1; i < allRows.size(); i++) {
@@ -64,7 +74,8 @@ public class CsvParserService {
 
                     Map<String, String> row = new LinkedHashMap<>();
                     for (int j = 0; j < headers.size(); j++) {
-                        String value = j < rowData.length ? rowData[j] : "";
+                        int origIdx = headerIndices.get(j);
+                        String value = origIdx < rowData.length ? rowData[origIdx] : "";
                         row.put(headers.get(j), value);
                     }
                     rows.add(row);
