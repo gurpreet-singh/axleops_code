@@ -75,8 +75,9 @@ public class RowValidationService {
                 // Skip further validation if effectively null and not required
                 if (isEffectivelyNull(value)) continue;
 
-                // Data type validation
-                validateDataType(field, value, errors);
+                // Data type validation — only produce hard errors for required fields.
+                // For optional fields, bad values are silently skipped (treated as NULL).
+                validateDataType(field, value, errors, field.isRequired());
 
                 // Max length
                 if (field.getMaxLength() != null && value.length() > field.getMaxLength()) {
@@ -171,17 +172,26 @@ public class RowValidationService {
 
     // ─── Private validation helpers ────────────────────────────
 
-    private void validateDataType(ImportFieldDefinition field, String value, List<FieldError> errors) {
+    /**
+     * Validates value against the expected data type.
+     *
+     * @param strictErrors  If true (required fields), format errors are reported.
+     *                      If false (optional fields), bad values are silently ignored
+     *                      — they will become NULL during persistence.
+     */
+    private void validateDataType(ImportFieldDefinition field, String value, List<FieldError> errors, boolean strictErrors) {
         if (isEffectivelyNull(value)) return;
 
         switch (field.getDataType()) {
             case INTEGER:
                 try {
                     String cleanInt = cleanNumeric(value);
-                    if (cleanInt.isEmpty()) break;  // empty after cleaning = valid (defaults to 0)
+                    if (cleanInt.isEmpty()) break;
                     Integer.parseInt(cleanInt);
                 } catch (NumberFormatException e) {
-                    errors.add(makeError(field, value, "INVALID_INTEGER", "Must be a valid integer"));
+                    if (strictErrors) {
+                        errors.add(makeError(field, value, "INVALID_INTEGER", "Must be a valid integer"));
+                    }
                 }
                 break;
             case LONG:
@@ -190,7 +200,9 @@ public class RowValidationService {
                     if (cleanLong.isEmpty()) break;
                     Long.parseLong(cleanLong);
                 } catch (NumberFormatException e) {
-                    errors.add(makeError(field, value, "INVALID_LONG", "Must be a valid number"));
+                    if (strictErrors) {
+                        errors.add(makeError(field, value, "INVALID_LONG", "Must be a valid number"));
+                    }
                 }
                 break;
             case DOUBLE:
@@ -199,36 +211,38 @@ public class RowValidationService {
                     if (cleanDbl.isEmpty()) break;
                     Double.parseDouble(cleanDbl);
                 } catch (NumberFormatException e) {
-                    errors.add(makeError(field, value, "INVALID_DOUBLE", "Must be a valid decimal number"));
+                    if (strictErrors) {
+                        errors.add(makeError(field, value, "INVALID_DOUBLE", "Must be a valid decimal number"));
+                    }
                 }
                 break;
             case BOOLEAN:
-                if (!isValidBoolean(value)) {
+                if (!isValidBoolean(value) && strictErrors) {
                     errors.add(makeError(field, value, "INVALID_BOOLEAN", "Must be true/false, yes/no, 1/0, or Y/N"));
                 }
                 break;
             case DATE:
-                if (!isValidDate(value, field.getDateFormat())) {
+                if (!isValidDate(value, field.getDateFormat()) && strictErrors) {
                     errors.add(makeError(field, value, "INVALID_DATE", "Invalid date format. Expected formats: dd/MM/yyyy, yyyy-MM-dd, etc."));
                 }
                 break;
             case EMAIL:
-                if (!EMAIL_PATTERN.matcher(value.trim()).matches()) {
+                if (!EMAIL_PATTERN.matcher(value.trim()).matches() && strictErrors) {
                     errors.add(makeError(field, value, "INVALID_EMAIL", "Must be a valid email address"));
                 }
                 break;
             case PHONE:
-                if (!PHONE_PATTERN.matcher(value.trim().replaceAll("\\s", "")).matches()) {
+                if (!PHONE_PATTERN.matcher(value.trim().replaceAll("\\s", "")).matches() && strictErrors) {
                     errors.add(makeError(field, value, "INVALID_PHONE", "Must be a valid phone number"));
                 }
                 break;
             case PAN:
-                if (!PAN_PATTERN.matcher(value.trim().toUpperCase()).matches()) {
+                if (!PAN_PATTERN.matcher(value.trim().toUpperCase()).matches() && strictErrors) {
                     errors.add(makeError(field, value, "INVALID_PAN", "Invalid PAN format (expected: ABCDE1234F)"));
                 }
                 break;
             case GSTIN:
-                if (!GSTIN_PATTERN.matcher(value.trim().toUpperCase()).matches()) {
+                if (!GSTIN_PATTERN.matcher(value.trim().toUpperCase()).matches() && strictErrors) {
                     errors.add(makeError(field, value, "INVALID_GSTIN", "Invalid GSTIN format"));
                 }
                 break;
@@ -291,9 +305,10 @@ public class RowValidationService {
      */
     private boolean isEffectivelyNull(String value) {
         if (value == null || value.isEmpty()) return true;
-        String lower = value.trim().toLowerCase();
-        return lower.isEmpty()
-                || lower.equals("-")
+        String trimmed = value.trim();
+        if (trimmed.isEmpty()) return true;
+        String lower = trimmed.toLowerCase();
+        return lower.equals("-")
                 || lower.equals("--")
                 || lower.equals("---")
                 || lower.equals("na")
@@ -307,6 +322,17 @@ public class RowValidationService {
                 || lower.equals("blank")
                 || lower.equals(".")
                 || lower.equals("..")
+                || lower.equals("0")
+                || lower.equals("0.0")
+                || lower.equals("0.00")
+                || lower.equals("00/00/0000")
+                || lower.equals("01/01/0001")
+                || lower.equals("1900-01-01")
+                || lower.equals("(not set)")
+                || lower.equals("not set")
+                || lower.equals("(none)")
+                || lower.equals("(blank)")
+                || lower.equals("(empty)")
                 || lower.equals("#n/a")
                 || lower.equals("#na")
                 || lower.equals("#value!")
@@ -315,7 +341,8 @@ public class RowValidationService {
                 || lower.equals("#null!")
                 || lower.equals("not applicable")
                 || lower.equals("not available")
-                || lower.equals("undefined");
+                || lower.equals("undefined")
+                || lower.matches("^[\\-_.\\s]+$");  // only dashes, dots, underscores, spaces
     }
 
     private boolean isValidBoolean(String value) {

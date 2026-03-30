@@ -290,9 +290,10 @@ public class ImportPersistenceService {
      */
     private boolean isEffectivelyNull(String value) {
         if (value == null || value.isEmpty()) return true;
-        String lower = value.trim().toLowerCase();
-        return lower.isEmpty()
-                || lower.equals("-")
+        String trimmed = value.trim();
+        if (trimmed.isEmpty()) return true;
+        String lower = trimmed.toLowerCase();
+        return lower.equals("-")
                 || lower.equals("--")
                 || lower.equals("---")
                 || lower.equals("na")
@@ -306,6 +307,17 @@ public class ImportPersistenceService {
                 || lower.equals("blank")
                 || lower.equals(".")
                 || lower.equals("..")
+                || lower.equals("0")
+                || lower.equals("0.0")
+                || lower.equals("0.00")
+                || lower.equals("00/00/0000")
+                || lower.equals("01/01/0001")
+                || lower.equals("1900-01-01")
+                || lower.equals("(not set)")
+                || lower.equals("not set")
+                || lower.equals("(none)")
+                || lower.equals("(blank)")
+                || lower.equals("(empty)")
                 || lower.equals("#n/a")
                 || lower.equals("#na")
                 || lower.equals("#value!")
@@ -314,7 +326,8 @@ public class ImportPersistenceService {
                 || lower.equals("#null!")
                 || lower.equals("not applicable")
                 || lower.equals("not available")
-                || lower.equals("undefined");
+                || lower.equals("undefined")
+                || lower.matches("^[\\-_.\\s]+$");
     }
 
     private Field findField(Class<?> clazz, String fieldName) {
