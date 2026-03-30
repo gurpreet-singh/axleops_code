@@ -4,6 +4,7 @@ import com.fleetmanagement.dto.response.AuthUserResponse;
 import com.fleetmanagement.dto.response.LoginResponse;
 import com.fleetmanagement.dto.response.RoleInfo;
 import com.fleetmanagement.entity.*;
+import com.fleetmanagement.repository.BranchRepository;
 import com.fleetmanagement.repository.PlatformAdminRepository;
 import com.fleetmanagement.repository.TenantRepository;
 import com.fleetmanagement.repository.UserRepository;
@@ -33,6 +34,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PlatformAdminRepository platformAdminRepository;
     private final TenantRepository tenantRepository;
+    private final BranchRepository branchRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final RedisSessionService redisSessionService;
@@ -40,12 +42,14 @@ public class AuthService {
     public AuthService(UserRepository userRepository,
                        PlatformAdminRepository platformAdminRepository,
                        TenantRepository tenantRepository,
+                       BranchRepository branchRepository,
                        PasswordEncoder passwordEncoder,
                        JwtService jwtService,
                        RedisSessionService redisSessionService) {
         this.userRepository = userRepository;
         this.platformAdminRepository = platformAdminRepository;
         this.tenantRepository = tenantRepository;
+        this.branchRepository = branchRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.redisSessionService = redisSessionService;
@@ -242,10 +246,38 @@ public class AuthService {
         }
 
         UUID branchId = null;
-        String branchName = "";
+        String branchCode = null;
+        String branchName = null;
         if (user.getBranch() != null) {
             branchId = user.getBranch().getId();
+            branchCode = user.getBranch().getCode();
             branchName = user.getBranch().getName();
+        }
+
+        // Branch context: count and list of all branches
+        List<Branch> activeBranches = user.getTenantId() != null
+                ? branchRepository.findByTenantIdAndActiveTrueOrderBySortOrderAsc(user.getTenantId())
+                : List.of();
+        int branchCount = activeBranches.size();
+
+        // For tenant-wide users: all branches. For branch-scoped: only their branch.
+        List<AuthUserResponse.BranchSummary> allBranches;
+        if (branchId == null) {
+            // Tenant-wide user sees all branches
+            allBranches = activeBranches.stream()
+                    .map(b -> AuthUserResponse.BranchSummary.builder()
+                            .id(b.getId())
+                            .code(b.getCode())
+                            .name(b.getName())
+                            .build())
+                    .collect(Collectors.toList());
+        } else {
+            // Branch-scoped user sees only their branch
+            allBranches = List.of(AuthUserResponse.BranchSummary.builder()
+                    .id(branchId)
+                    .code(branchCode)
+                    .name(branchName)
+                    .build());
         }
 
         // Build role info list (all assigned roles, not just active)
@@ -273,7 +305,10 @@ public class AuthService {
                 .tenantId(user.getTenantId())
                 .tenantName(tenantName)
                 .branchId(branchId)
+                .branchCode(branchCode)
                 .branchName(branchName)
+                .branchCount(branchCount)
+                .allBranches(allBranches)
                 .roles(allRoleInfos)
                 .authorities(authorityNames)
                 .type("TENANT")

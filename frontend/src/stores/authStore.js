@@ -158,6 +158,59 @@ const useAuthStore = create((set, get) => ({
     const user = get().user;
     return user?.type === 'PLATFORM';
   },
+
+  // ─── Branch Context Helpers ─────────────────────────────
+  // Per spec section 9.1: branchCount drives all branch UI visibility.
+
+  /**
+   * Should branch-related UI be shown?
+   * Returns true when tenant has more than 1 active branch.
+   */
+  showBranchUI: () => {
+    const user = get().user;
+    return (user?.branchCount || 0) > 1;
+  },
+
+  /**
+   * Get the total active branch count for the tenant.
+   */
+  getBranchCount: () => {
+    const user = get().user;
+    return user?.branchCount || 0;
+  },
+
+  /**
+   * Get all branches available to this user.
+   * Tenant-wide users: all branches. Branch-scoped users: only their branch.
+   */
+  getAllBranches: () => {
+    const user = get().user;
+    return user?.allBranches || [];
+  },
+
+  /**
+   * Get the current user's assigned branch ID (null for tenant-wide users).
+   */
+  getUserBranchId: () => {
+    const user = get().user;
+    return user?.branchId || null;
+  },
+
+  /**
+   * Get the current user's branch code (null for tenant-wide).
+   */
+  getUserBranchCode: () => {
+    const user = get().user;
+    return user?.branchCode || null;
+  },
+
+  /**
+   * Is this user tenant-wide (sees all branches)?
+   */
+  isTenantWide: () => {
+    const user = get().user;
+    return user?.branchId == null && user?.type === 'TENANT';
+  },
 }));
 
 export default useAuthStore;

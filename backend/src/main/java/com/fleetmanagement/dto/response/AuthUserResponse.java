@@ -8,7 +8,7 @@ import java.util.UUID;
 
 /**
  * Response for the /auth/me endpoint and login response.
- * Contains full role and authority information for the authenticated user.
+ * Contains full role, authority, and branch context information.
  */
 @Data
 @Builder
@@ -20,8 +20,13 @@ public class AuthUserResponse {
     private String email;
     private UUID tenantId;
     private String tenantName;
-    private UUID branchId;
+
+    // ─── Branch context ─────────────────────────────────────
+    private UUID branchId;         // user's assigned branch (null = tenant-wide)
+    private String branchCode;     // for display
     private String branchName;
+    private int branchCount;       // total active branches for this tenant
+    private List<BranchSummary> allBranches; // for branch-switcher dropdown
 
     /** All roles assigned to this user */
     private List<RoleInfo> roles;
@@ -31,4 +36,15 @@ public class AuthUserResponse {
 
     /** "TENANT" or "PLATFORM" */
     private String type;
+
+    /**
+     * Lightweight branch summary for the allBranches list.
+     */
+    @Data
+    @Builder
+    public static class BranchSummary {
+        private UUID id;
+        private String code;
+        private String name;
+    }
 }

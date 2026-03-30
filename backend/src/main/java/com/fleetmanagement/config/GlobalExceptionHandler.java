@@ -61,6 +61,20 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
     }
 
+    @ExceptionHandler(BranchInUseException.class)
+    public ResponseEntity<Map<String, Object>> handleBranchInUse(BranchInUseException ex) {
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now().toString());
+        body.put("status", 409);
+        body.put("error", "Conflict");
+        body.put("message", ex.getMessage());
+        body.put("branchId", ex.getBranchId());
+        body.put("vehicleCount", ex.getVehicleCount());
+        body.put("driverCount", ex.getDriverCount());
+        body.put("tripCount", ex.getTripCount());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, Object>> handleIllegalArgument(IllegalArgumentException ex) {
         Map<String, Object> body = new LinkedHashMap<>();

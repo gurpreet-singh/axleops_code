@@ -58,4 +58,8 @@ public class Issue extends BaseEntity {
 
     @Column(name = "odometer_at_report")
     private Integer odometerAtReport;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "branch_id")
+    private Branch branch;
 }

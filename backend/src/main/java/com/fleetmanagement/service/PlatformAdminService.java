@@ -84,11 +84,12 @@ public class PlatformAdminService {
         Branch primaryBranch = new Branch();
         primaryBranch.setId(UUID.randomUUID());
         primaryBranch.setTenantId(tenant.getId());
+        primaryBranch.setCode("HQ");
         primaryBranch.setName(request.getPrimaryBranchName() != null ? request.getPrimaryBranchName() : request.getCity() + " HQ");
         primaryBranch.setCity(request.getPrimaryBranchCity() != null ? request.getPrimaryBranchCity() : request.getCity());
         primaryBranch.setState(request.getPrimaryBranchState() != null ? request.getPrimaryBranchState() : request.getState());
-        primaryBranch.setIsPrimary(true);
-        primaryBranch.setStatus("ACTIVE");
+        primaryBranch.setHeadquarters(true);
+        primaryBranch.setActive(true);
         primaryBranch = branchRepository.save(primaryBranch);
 
         // 3. Create Owner/Director user for this tenant
@@ -168,7 +169,7 @@ public class PlatformAdminService {
         // Find primary branch or first branch
         List<Branch> branches = branchRepository.findByTenantId(request.getTenantId());
         Branch targetBranch = branches.stream()
-                .filter(b -> Boolean.TRUE.equals(b.getIsPrimary()))
+                .filter(Branch::isHeadquarters)
                 .findFirst()
                 .orElse(branches.isEmpty() ? null : branches.get(0));
 

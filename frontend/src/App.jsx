@@ -44,6 +44,7 @@ import ImportPage from './pages/import/ImportPage';
 
 // ─── Settings ─────────────────────────────────────────────
 import MastersPage from './pages/settings/MastersPage';
+import BranchesPage from './pages/settings/BranchesPage';
 
 /**
  * Requires authentication — redirects to /login if not authenticated.
@@ -151,7 +152,7 @@ export default function App() {
 
         {/* ─── 9. Settings ───────────────────────────────── */}
         <Route path="/settings/organization" element={<PlaceholderPage title="Organization" icon="fas fa-building" />} />
-        <Route path="/settings/branches" element={<PlaceholderPage title="Branches" icon="fas fa-code-branch" />} />
+        <Route path="/settings/branches" element={<BranchesPage />} />
         <Route path="/settings/users-roles" element={<PlaceholderPage title="Users & Roles" icon="fas fa-users-cog" />} />
         <Route path="/settings/masters" element={<MastersPage />} />
         <Route path="/settings/masters/:entitySlug" element={<MastersPage />} />

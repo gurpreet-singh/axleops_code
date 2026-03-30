@@ -20,15 +20,16 @@ VALUES (
 ON CONFLICT (id) DO NOTHING;
 
 -- ─── 2. Branch: Punjab HQ ───────────────────────────────
-INSERT INTO branches (id, tenant_id, name, city, state, is_primary, status, created_at, updated_at)
+INSERT INTO branches (id, tenant_id, code, name, city, state, is_headquarters, is_active, created_at, updated_at)
 VALUES (
     'b9999999-9999-9999-9999-999999999999',
     'e9999999-9999-9999-9999-999999999999',
+    'HQ',
     'Punjab HQ',
     'Amritsar',
     'Punjab',
     TRUE,
-    'ACTIVE',
+    TRUE,
     NOW(), NOW()
 )
 ON CONFLICT (id) DO NOTHING;

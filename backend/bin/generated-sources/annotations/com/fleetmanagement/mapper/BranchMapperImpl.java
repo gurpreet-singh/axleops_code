@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-30T07:21:23+0530",
+    date = "2026-03-30T07:58:42+0530",
     comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.45.0.v20260224-0835, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -19,19 +19,23 @@ public class BranchMapperImpl implements BranchMapper {
             return null;
         }
 
-        BranchResponse branchResponse = new BranchResponse();
+        BranchResponse.BranchResponseBuilder branchResponse = BranchResponse.builder();
 
-        branchResponse.setTenantId( branch.getTenantId() );
-        branchResponse.setId( branch.getId() );
-        branchResponse.setName( branch.getName() );
-        branchResponse.setCity( branch.getCity() );
-        branchResponse.setState( branch.getState() );
-        branchResponse.setAddress( branch.getAddress() );
-        branchResponse.setPhone( branch.getPhone() );
-        branchResponse.setEmail( branch.getEmail() );
-        branchResponse.setIsPrimary( branch.getIsPrimary() );
-        branchResponse.setStatus( branch.getStatus() );
+        branchResponse.id( branch.getId() );
+        branchResponse.code( branch.getCode() );
+        branchResponse.name( branch.getName() );
+        branchResponse.city( branch.getCity() );
+        branchResponse.state( branch.getState() );
+        branchResponse.stateCode( branch.getStateCode() );
+        branchResponse.address( branch.getAddress() );
+        branchResponse.phone( branch.getPhone() );
+        branchResponse.email( branch.getEmail() );
+        branchResponse.gstin( branch.getGstin() );
+        branchResponse.managerId( branch.getManagerId() );
+        branchResponse.headquarters( branch.isHeadquarters() );
+        branchResponse.active( branch.isActive() );
+        branchResponse.sortOrder( branch.getSortOrder() );
 
-        return branchResponse;
+        return branchResponse.build();
     }
 }

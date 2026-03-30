@@ -60,4 +60,8 @@ public class ServiceTask extends BaseEntity {
 
     @Column(name = "compliance_pct")
     private Integer compliancePct; // 0-100, how on-schedule this task is
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "branch_id")
+    private Branch branch;
 }
