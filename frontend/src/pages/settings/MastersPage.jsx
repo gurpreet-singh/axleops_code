@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import masterService from '../../services/masterService';
 import useSliderStore from '../../stores/sliderStore';
+import CustomSelect from '../../components/common/CustomSelect';
 
 // ─── Entity navigation sidebar items ──────────────────────────────
 const ENTITY_NAV = [
@@ -57,11 +58,11 @@ function fieldLabel(key) {
 
 function MasterFormContent({ entitySlug, schema, record, onSave }) {
   const isEdit = !!record;
-  const { closeSlider } = useSliderStore();
   const [form, setForm] = useState({});
   const [saving, setSaving] = useState(false);
   const [isEditing, setIsEditing] = useState(!isEdit);
   const [dropdownOptions, setDropdownOptions] = useState({});
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (record) {
@@ -92,7 +93,7 @@ function MasterFormContent({ entitySlug, schema, record, onSave }) {
   };
 
   const handleSave = async () => {
-    setSaving(true);
+    setSaving(true); setError(null);
     try {
       if (isEdit) {
         await masterService.update(entitySlug, record.id, form);
@@ -100,10 +101,9 @@ function MasterFormContent({ entitySlug, schema, record, onSave }) {
         await masterService.create(entitySlug, form);
       }
       onSave?.();
-      closeSlider();
+      if (!isEdit) setIsEditing(false);
     } catch (err) {
-      const msg = err?.response?.data?.message || 'Failed to save';
-      alert(msg);
+      setError(err?.response?.data?.message || 'Failed to save');
     } finally {
       setSaving(false);
     }
@@ -114,10 +114,8 @@ function MasterFormContent({ entitySlug, schema, record, onSave }) {
     try {
       await masterService.deactivate(entitySlug, record.id);
       onSave?.();
-      closeSlider();
     } catch (err) {
-      const msg = err?.response?.data?.message || 'Cannot deactivate';
-      alert(msg);
+      setError(err?.response?.data?.message || 'Cannot deactivate');
     }
   };
 
@@ -125,9 +123,8 @@ function MasterFormContent({ entitySlug, schema, record, onSave }) {
     try {
       await masterService.activate(entitySlug, record.id);
       onSave?.();
-      closeSlider();
     } catch (err) {
-      alert('Failed to activate');
+      setError('Failed to activate');
     }
   };
 
@@ -166,6 +163,16 @@ function MasterFormContent({ entitySlug, schema, record, onSave }) {
           </>
         )}
       </div>
+
+      {/* Error display */}
+      {error && (
+        <div style={{ padding: '8px 20px' }}>
+          <div style={{ padding: '8px 12px', background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 8, fontSize: 12, color: '#991B1B', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <i className="fas fa-exclamation-circle" style={{ fontSize: 11 }}></i>
+            {error}
+          </div>
+        </div>
+      )}
 
       {/* Status badge for existing records */}
       {isEdit && (
@@ -265,21 +272,17 @@ function FormField({ label, value, onChange, type = 'text', options, dropdownOpt
         {label} {required && <span style={{ color: '#EF4444' }}>*</span>}
       </div>
       {type === 'select' && options ? (
-        <select style={inputStyle} value={value || ''} onChange={onChange}>
-          <option value="">Select...</option>
-          {options.map(o => (
-            <option key={o} value={o}>
-              {o.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()).replace(/\B[A-Z]/g, l => l.toLowerCase())}
-            </option>
-          ))}
-        </select>
+        <CustomSelect
+          options={[{ value: '', label: 'Select...' }, ...options.map(o => ({ value: o, label: o.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()).replace(/\B[A-Z]/g, l => l.toLowerCase()) }))]}
+          value={value || ''}
+          onChange={v => onChange?.({ target: { value: v } })}
+        />
       ) : type === 'master-dropdown' && dropdownOptions ? (
-        <select style={inputStyle} value={value || ''} onChange={onChange}>
-          <option value="">Select...</option>
-          {dropdownOptions.map(o => (
-            <option key={o.id} value={o.id}>{o.name}</option>
-          ))}
-        </select>
+        <CustomSelect
+          options={[{ value: '', label: 'Select...' }, ...dropdownOptions.map(o => ({ value: o.id, label: o.name }))]}
+          value={value || ''}
+          onChange={v => onChange?.({ target: { value: v } })}
+        />
       ) : type === 'checkbox' ? (
         <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', padding: '8px 0' }}>
           <input

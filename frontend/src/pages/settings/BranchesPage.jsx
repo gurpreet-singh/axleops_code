@@ -5,7 +5,7 @@ import useSliderStore from '../../stores/sliderStore';
 export default function BranchesPage() {
   const [branches, setBranches] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { openSlider, closeSlider } = useSliderStore();
+  const { openSlider } = useSliderStore();
 
   const refresh = async () => {
     setLoading(true);
@@ -24,14 +24,14 @@ export default function BranchesPage() {
   const openCreate = () => openSlider({
     title: 'Add New Branch',
     subtitle: 'Create a new branch or office',
-    content: <BranchFormContent onSave={() => { closeSlider(); refresh(); }} />,
+    content: <BranchFormContent onSave={refresh} />,
     width: '44vw',
   });
 
   const openDetail = (branch) => openSlider({
     title: branch.name,
     subtitle: `${branch.code} • ${branch.city || ''}, ${branch.state || ''}`,
-    content: <BranchFormContent branch={branch} onSave={() => { closeSlider(); refresh(); }} />,
+    content: <BranchFormContent branch={branch} onSave={refresh} />,
     width: '44vw',
   });
 

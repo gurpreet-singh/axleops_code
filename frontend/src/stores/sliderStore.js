@@ -15,6 +15,12 @@ const useSliderStore = create((set) => ({
     width,
   }),
 
+  /** Swap content/title without closing (keeps slider open) */
+  updateSlider: (updates) => set((state) => ({
+    ...state,
+    ...updates,
+  })),
+
   closeSlider: () => set({
     isOpen: false,
     title: '',

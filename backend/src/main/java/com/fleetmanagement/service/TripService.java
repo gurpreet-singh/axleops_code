@@ -16,10 +16,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -95,6 +101,10 @@ public class TripService {
         // Route (required)
         if (req.getRouteId() == null) {
             throw new IllegalArgumentException("Route is required");
+        }
+        // LR Number (required)
+        if (req.getLrNumber() == null || req.getLrNumber().isBlank()) {
+            throw new IllegalArgumentException("LR / Consignment Note number is required");
         }
         Route route = routeRepo.findByIdAndTenantId(req.getRouteId(), tenantId)
                 .orElseThrow(() -> new ResourceNotFoundException("Route", req.getRouteId()));
@@ -275,12 +285,12 @@ public class TripService {
             trip.setDriver(d);
         }
 
-        // Validate: vehicle and driver must be assigned
+        // Validate: vehicle and LR number are required to start
         if (trip.getVehicle() == null) {
             throw new IllegalArgumentException("Vehicle must be assigned before starting trip");
         }
-        if (trip.getDriver() == null) {
-            throw new IllegalArgumentException("Driver must be assigned before starting trip");
+        if (trip.getLrNumber() == null || trip.getLrNumber().isBlank()) {
+            throw new IllegalArgumentException("LR / Consignment Note number is required before starting trip");
         }
 
         trip.setStatus(TripStatus.IN_TRANSIT);
@@ -576,6 +586,56 @@ public class TripService {
         return documentRepo.findByTripIdAndTenantId(tripId, tenantId).stream()
                 .map(tripMapper::toDocumentResponse)
                 .toList();
+    }
+
+    @Transactional
+    public TripDocumentResponse uploadDocument(UUID tripId, MultipartFile file, String documentType, String notes) {
+        TenantPrincipal p = TenantPrincipal.current();
+        UUID tenantId = p.tenantId();
+
+        Trip trip = tripRepo.findByIdAndTenantId(tripId, tenantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Trip", tripId));
+
+        // Save file to disk
+        String originalName = file.getOriginalFilename();
+        String ext = originalName != null && originalName.contains(".")
+                ? originalName.substring(originalName.lastIndexOf('.'))
+                : "";
+        String storedName = UUID.randomUUID().toString().substring(0, 8) + "_" + (originalName != null ? originalName : "file" + ext);
+
+        try {
+            Path dir = Paths.get("uploads", "trip-documents");
+            Files.createDirectories(dir);
+            Files.write(dir.resolve(storedName), file.getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to save document file", e);
+        }
+
+        // Create TripDocument record
+        TripDocument doc = new TripDocument();
+        doc.setTenantId(tenantId);
+        doc.setTripId(tripId);
+        doc.setDocumentType(DocumentType.valueOf(documentType));
+        doc.setFileName(originalName);
+        doc.setFileUrl("/uploads/trip-documents/" + storedName);
+        doc.setMimeType(file.getContentType());
+        doc.setStatus(DocumentStatus.PENDING);
+        doc.setUploadedAt(LocalDateTime.now());
+        doc.setUploadedBy(p.userId());
+        doc.setNotes(notes);
+
+        return tripMapper.toDocumentResponse(documentRepo.save(doc));
+    }
+
+    @Transactional
+    public void deleteDocument(UUID tripId, UUID docId) {
+        UUID tenantId = TenantContext.get();
+        TripDocument doc = documentRepo.findByIdAndTenantId(docId, tenantId)
+                .orElseThrow(() -> new ResourceNotFoundException("TripDocument", docId));
+        if (!doc.getTripId().equals(tripId)) {
+            throw new ResourceNotFoundException("TripDocument", docId);
+        }
+        documentRepo.delete(doc);
     }
 
     // ═══════════════════════════════════════════════════════════

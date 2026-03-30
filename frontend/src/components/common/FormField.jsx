@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import CustomSelect from './CustomSelect';
 
 // ═══════════════════════════════════════════════════════════════
 // SHARED FORM COMPONENTS
@@ -7,10 +8,16 @@ import { useState } from 'react';
 // ═══════════════════════════════════════════════════════════════
 
 /**
- * FormField — Renders a labelled input, select, or textarea.
+ * FormField — Renders a labelled input, custom select, or textarea.
  * Uses CSS classes from overrides.css for zero inline-style drift.
+ *
+ * `searchable` prop: pass to enable forced search on select dropdowns.
+ * Defaults: auto-enabled when ≥6 options.
  */
-export function FormField({ label, value, onChange, type = 'text', placeholder, required, options, disabled, info, full, textarea, rows, icon, children }) {
+export function FormField({ label, value, onChange, type = 'text', placeholder, required, options, disabled, info, full, textarea, rows, icon, children, searchable }) {
+  // Derive placeholder from first option with empty value, or use provided
+  const selectPlaceholder = options?.find(o => (o.value ?? o) === '')?.label || placeholder || 'Select…';
+
   return (
     <div className={full ? 'ax-field ax-field--full' : 'ax-field'}>
       <label className="ax-field-label">
@@ -28,14 +35,14 @@ export function FormField({ label, value, onChange, type = 'text', placeholder, 
           rows={rows || 3}
         />
       ) : options ? (
-        <select
-          className="ax-select"
+        <CustomSelect
+          options={options}
           value={value}
-          onChange={e => onChange?.(e.target.value)}
+          onChange={onChange}
+          placeholder={selectPlaceholder}
           disabled={disabled}
-        >
-          {options.map((o, i) => <option key={i} value={o.value ?? o}>{o.label ?? o}</option>)}
-        </select>
+          searchable={searchable}
+        />
       ) : (
         <input
           className="ax-input"

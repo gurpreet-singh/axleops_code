@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { TRIP_STATE_COLORS, getTripById, deleteTrip, startTrip, deliverTrip, markReached, settleTrip, cancelTrip, getTripExpenses, addTripExpense, deleteTripExpense, getTripAdvances, addTripAdvance, getSettlementSummary } from '../../services/tripService';
 import useSliderStore from '../../stores/sliderStore';
+import useToastStore from '../../stores/toastStore';
 import DeleteConfirmModal from '../../components/common/DeleteConfirmModal';
 import { FormField } from '../../components/common/FormField';
 
@@ -41,6 +42,7 @@ function Section({ title, icon, iconColor, borderColor, headerBg, children }) {
 // ═══════════════════════════════════════════════════════════
 export function TripDetailContent({ tripId, onRefresh }) {
   const { closeSlider } = useSliderStore();
+  const { addToast } = useToastStore();
   const [trip, setTrip] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
@@ -76,7 +78,8 @@ export function TripDetailContent({ tripId, onRefresh }) {
       onRefresh?.();
       setShowCancelDialog(false);
     } catch(e) {
-      alert(e.response?.data?.message || `Failed to ${action}`);
+      const msg = e.response?.data?.message || `Failed to ${action}`;
+      addToast({ type: 'error', title: 'Action Failed', message: msg });
     } finally { setActionLoading(null); }
   };
 
@@ -193,63 +196,113 @@ export function TripDetailContent({ tripId, onRefresh }) {
 }
 
 // ─── OVERVIEW TAB ─────────────────────────────────────────
+// Mirrors the exact same section structure as TripCreateContent
 function OverviewTab({ trip }) {
+  const INR = v => v != null ? `₹${Number(v).toLocaleString('en-IN')}` : null;
+
   return (
     <>
-      <Section title="Trip Information" icon="fas fa-info-circle" iconColor="#1A73E8" borderColor="#BAE6FD" headerBg="#F0F9FF">
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-          <Field label="Trip Number" value={trip.tripNumber} mono />
-          <Field label="LR Number" value={trip.lrNumber} mono />
-          <Field label="Freight" value={trip.freightAmount ? `₹${trip.freightAmount.toLocaleString()}` : null} mono />
-          <Field label="Origin" value={trip.originCity} />
-          <Field label="Destination" value={trip.destinationCity} />
-          <Field label="Route" value={trip.routeName} full />
+      {/* 1. CORE SELECTION — same as TripCreateContent */}
+      <SectionCard title="Core Selection" emoji="🖥️" borderColor="#BAE6FD" headerBg="linear-gradient(135deg, #F0F9FF, #E0F2FE)" accentColor="#0369A1">
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+          <Field label="Route" value={trip.routeName} />
+          <Field label="Trip Type" value={trip.tripType} />
         </div>
-      </Section>
-
-      <Section title="Assignment" icon="fas fa-truck" iconColor="#7C3AED" borderColor="#C4B5FD" headerBg="#F5F3FF">
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginTop: 14 }}>
           <Field label="Vehicle" value={trip.vehicleRegistration || 'Unassigned'} mono />
           <Field label="Driver" value={trip.driverName || 'Unassigned'} />
-          <Field label="Trip Type" value={trip.tripType} />
-          <Field label="Payment Terms" value={trip.paymentTerms} />
         </div>
-        {!trip.vehicleRegistration && trip.status === 'CREATED' && (
-          <div style={{ marginTop: 10, padding: '8px 12px', background: '#FEF3C7', border: '1px solid #FDE68A', borderRadius: 6, fontSize: 11, color: '#92400E' }}>
+        {(!trip.vehicleRegistration || !trip.lrNumber) && trip.status === 'CREATED' && (
+          <div style={{ marginTop: 12, padding: '8px 12px', background: '#FEF3C7', border: '1px solid #FDE68A', borderRadius: 6, fontSize: 11, color: '#92400E' }}>
             <i className="fas fa-exclamation-triangle" style={{ marginRight: 4 }}></i>
-            Vehicle and driver need to be assigned before trip can start.
+            {!trip.vehicleRegistration && !trip.lrNumber
+              ? 'Vehicle and LR number are required before starting this trip.'
+              : !trip.vehicleRegistration
+                ? 'Vehicle must be assigned before starting this trip.'
+                : 'LR number is required before starting this trip.'}
           </div>
         )}
-      </Section>
+      </SectionCard>
 
-      <Section title="Parties" icon="fas fa-users" iconColor="#D97706" borderColor="#FDE68A" headerBg="#FFFBEB">
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-          <Field label="Consignor" value={trip.consignorName} />
-          <Field label="Consignee" value={trip.consigneeName} />
+      {/* 2. LR / CONSIGNMENT NOTE */}
+      <SectionCard title="LR / Consignment Note" emoji="📄" borderColor="#C4B5FD" headerBg="linear-gradient(135deg, #F5F3FF, #EDE9FE)" accentColor="#6D28D9">
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14, marginBottom: 14 }}>
+          <Field label="LR / GCN No." value={trip.lrNumber} mono />
+          <Field label="LR Date" value={trip.lrDate} />
+          <Field label="No. of Packages" value={trip.packagesCount} />
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
+          <Field label="Invoice Numbers" value={trip.clientInvoiceNumbers} />
+          <Field label="Dispatch Date" value={trip.dispatchDate} />
+          <Field label="Dispatch Time" value={trip.dispatchTime} />
+        </div>
+      </SectionCard>
+
+      {/* 3. PARTIES */}
+      <SectionCard title="Parties" emoji="🤝" borderColor="#FDE68A" headerBg="linear-gradient(135deg, #FFFBEB, #FEF3C7)" accentColor="#92400E">
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
+          <Field label="Consignor (Pickup)" value={trip.consignorName} />
+          <Field label="Consignee (Delivery)" value={trip.consigneeName} />
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
           <Field label="Billing Party" value={trip.billingPartyName} />
           <Field label="Transporter" value={trip.transporterName} />
         </div>
-      </Section>
+      </SectionCard>
 
-      {(trip.cargoDescription || trip.weightKg || trip.ewayBillNumber) && (
-        <Section title="Cargo Details" icon="fas fa-box" iconColor="#059669" borderColor="#A7F3D0" headerBg="#F0FDF4">
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-            <Field label="Description" value={trip.cargoDescription} />
-            <Field label="Material Type" value={trip.materialType} />
-            <Field label="Weight (KG)" value={trip.weightKg ? trip.weightKg.toLocaleString() : null} />
-            <Field label="Packages" value={trip.packagesCount} />
-            <Field label="E-Way Bill" value={trip.ewayBillNumber} mono />
+      {/* 4. CARGO DETAILS */}
+      <SectionCard title="Cargo Details" emoji="📦" borderColor="#FDBA74" headerBg="linear-gradient(135deg, #FFF7ED, #FFEDD5)" accentColor="#9A3412">
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
+          <Field label="Cargo Description" value={trip.cargoDescription} />
+          <Field label="Material Type" value={trip.materialType} />
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+          <Field label="Weight (KG)" value={trip.weightKg ? trip.weightKg.toLocaleString() : null} />
+          <Field label="E-Way Bill No." value={trip.ewayBillNumber} mono />
+        </div>
+      </SectionCard>
+
+      {/* 5. FINANCIAL */}
+      <SectionCard title="Financial" emoji="💰" borderColor="#FDE68A" headerBg="linear-gradient(135deg, #FEFCE8, #FEF9C3)" accentColor="#854D0E">
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
+          <Field label="Freight Amount (₹)" value={INR(trip.freightAmount)} mono />
+          <Field label="Payment Terms" value={trip.paymentTerms} />
+          <Field label="Loading Note" value={trip.loadingNote} />
+        </div>
+      </SectionCard>
+
+      {/* 6. ADDITIONAL */}
+      {(trip.consignmentValue || trip.permitNumber || trip.riskType || trip.remarks || trip.documentNumber || trip.consignorAddress || trip.consigneeAddress) && (
+        <SectionCard title="Additional Fields" emoji="⚙️" borderColor="#D1D5DB" headerBg="linear-gradient(135deg, #F9FAFB, #F3F4F6)" accentColor="#4B5563">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14, marginBottom: 14 }}>
+            <Field label="Consignment Value (₹)" value={INR(trip.consignmentValue)} mono />
+            <Field label="Permit Number" value={trip.permitNumber} />
             <Field label="Risk Type" value={trip.riskType} />
           </div>
-        </Section>
-      )}
-
-      {trip.remarks && (
-        <Section title="Remarks" icon="fas fa-comment-alt" iconColor="#6B7280" borderColor="#E5E7EB" headerBg="#F9FAFB">
-          <p style={{ fontSize: 13, color: '#475569', margin: 0, lineHeight: 1.5 }}>{trip.remarks}</p>
-        </Section>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
+            <Field label="Consignor Address" value={trip.consignorAddress} />
+            <Field label="Consignee Address" value={trip.consigneeAddress} />
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+            <Field label="Remarks" value={trip.remarks} />
+            <Field label="Document No." value={trip.documentNumber} />
+          </div>
+        </SectionCard>
       )}
     </>
+  );
+}
+
+/** Section card matching the TripCreateContent's Section style (emoji + gradient header) */
+function SectionCard({ title, emoji, borderColor, headerBg, accentColor, children }) {
+  return (
+    <div style={{ border: `1.5px solid ${borderColor || '#E2E8F0'}`, borderRadius: 14, marginBottom: 16, overflow: 'hidden', background: '#fff' }}>
+      <div style={{ background: headerBg || '#F8FAFC', padding: '12px 16px', borderBottom: `1px solid ${borderColor || '#E2E8F0'}`, display: 'flex', alignItems: 'center', gap: 8 }}>
+        {emoji && <span style={{ fontSize: 14 }}>{emoji}</span>}
+        <span style={{ fontSize: 12, fontWeight: 800, color: accentColor || '#1E293B', textTransform: 'uppercase', letterSpacing: 0.6 }}>{title}</span>
+      </div>
+      <div style={{ padding: '16px 16px 18px' }}>{children}</div>
+    </div>
   );
 }
 

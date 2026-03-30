@@ -6,8 +6,10 @@ import com.fleetmanagement.entity.TripStatus;
 import com.fleetmanagement.service.TripService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -149,5 +151,22 @@ public class TripController {
     @GetMapping("/{id}/documents")
     public List<TripDocumentResponse> getDocuments(@PathVariable UUID id) {
         return tripService.getDocuments(id);
+    }
+
+    @PostMapping(value = "/{id}/documents", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<TripDocumentResponse> uploadDocument(
+            @PathVariable UUID id,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "documentType", defaultValue = "LR") String documentType,
+            @RequestParam(value = "notes", required = false) String notes
+    ) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(tripService.uploadDocument(id, file, documentType, notes));
+    }
+
+    @DeleteMapping("/{id}/documents/{docId}")
+    public ResponseEntity<Void> deleteDocument(@PathVariable UUID id, @PathVariable UUID docId) {
+        tripService.deleteDocument(id, docId);
+        return ResponseEntity.noContent().build();
     }
 }
