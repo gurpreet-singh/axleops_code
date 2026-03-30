@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import platformAdminService from '../../services/platformAdminService';
-import useSliderStore from '../../stores/sliderStore';
 import { FormField, Section } from '../../components/common/FormField';
 
 // ═══════════════════════════════════════════════════════════
@@ -8,7 +7,6 @@ import { FormField, Section } from '../../components/common/FormField';
 // Uses same dark header + action bar + sections pattern
 // ═══════════════════════════════════════════════════════════
 export default function TenantCreateContent({ onSuccess }) {
-  const { closeSlider } = useSliderStore();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
 
@@ -37,7 +35,6 @@ export default function TenantCreateContent({ onSuccess }) {
       };
       await platformAdminService.createTenant(payload);
       if (onSuccess) onSuccess();
-      closeSlider();
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to create tenant');
     } finally {
@@ -61,14 +58,6 @@ export default function TenantCreateContent({ onSuccess }) {
         >
           <i className={`fas fa-${saving ? 'spinner fa-spin' : 'plus'}`} style={{ fontSize: 10 }}></i>
           {saving ? 'Creating...' : 'Create Tenant'}
-        </button>
-        <button onClick={closeSlider} disabled={saving} style={{
-          display: 'inline-flex', alignItems: 'center', gap: 5,
-          border: '1.5px solid #E2E8F0', borderRadius: 8, padding: '7px 14px',
-          fontSize: 12, fontWeight: 600, color: '#64748B', background: '#fff', cursor: 'pointer',
-          fontFamily: 'inherit',
-        }}>
-          Cancel
         </button>
         <div style={{ flex: 1 }}></div>
       </div>

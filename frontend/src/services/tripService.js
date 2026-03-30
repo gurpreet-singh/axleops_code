@@ -148,3 +148,18 @@ export async function getTripDocuments(tripId) {
   const { data } = await api.get(`/trips/${tripId}/documents`);
   return data;
 }
+
+export async function uploadTripDocument(tripId, file, documentType = 'LR', notes = '') {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('documentType', documentType);
+  if (notes) formData.append('notes', notes);
+  const { data } = await api.post(`/trips/${tripId}/documents`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+  return data;
+}
+
+export async function deleteTripDocument(tripId, docId) {
+  await api.delete(`/trips/${tripId}/documents/${docId}`);
+}

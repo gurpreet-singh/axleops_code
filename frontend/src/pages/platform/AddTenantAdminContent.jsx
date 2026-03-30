@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import platformAdminService from '../../services/platformAdminService';
-import useSliderStore from '../../stores/sliderStore';
 
 // ═══════════════════════════════════════════════════════════
 // FormField — same reusable pattern
@@ -52,7 +51,6 @@ function Section({ title, emoji, borderColor, headerBg, accentColor, children })
 
 
 export default function AddTenantAdminContent({ tenantId, tenantName, onSuccess }) {
-  const { closeSlider } = useSliderStore();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -72,7 +70,6 @@ export default function AddTenantAdminContent({ tenantId, tenantName, onSuccess 
       await platformAdminService.addTenantAdmin(tenantId, form);
       setSuccess(true);
       if (onSuccess) onSuccess();
-      setTimeout(() => closeSlider(), 1200);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to add admin');
     } finally {
@@ -115,14 +112,6 @@ export default function AddTenantAdminContent({ tenantId, tenantName, onSuccess 
         >
           <i className={`fas fa-${saving ? 'spinner fa-spin' : 'user-plus'}`} style={{ fontSize: 10 }}></i>
           {saving ? 'Adding...' : 'Add Admin'}
-        </button>
-        <button onClick={closeSlider} disabled={saving} style={{
-          display: 'inline-flex', alignItems: 'center', gap: 5,
-          border: '1.5px solid #E2E8F0', borderRadius: 8, padding: '7px 14px',
-          fontSize: 12, fontWeight: 600, color: '#64748B', background: '#fff', cursor: 'pointer',
-          fontFamily: 'inherit',
-        }}>
-          Cancel
         </button>
         <div style={{ flex: 1 }}></div>
       </div>

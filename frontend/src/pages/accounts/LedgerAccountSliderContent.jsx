@@ -46,7 +46,7 @@ function isGroupPartyType(groupId, groups) {
 
 export function LedgerAccountCreateContent({ onSave, groups }) {
   const { getOptionsWithPlaceholder, loaded: enumsLoaded, getLabel, fetchEnums } = useEnumStore();
-  const { closeSlider } = useSliderStore();
+  const { updateSlider } = useSliderStore();
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
     accountHead: '', tallyName: '', nameOnDashboard: '', printName: '',
@@ -75,16 +75,20 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
     if (!form.accountHead || !form.accountGroupId) return;
     setSaving(true);
     try {
-      await ledgerAccountService.create({
+      const acct = await ledgerAccountService.create({
         ...form,
-        // accountType is sent directly — selected by user
         accountType: form.accountType || null,
         openingBalance: form.openingBalance ? parseFloat(form.openingBalance) : 0,
         tcsApplicable: form.tcsApplicable || null,
         debitCredit: form.debitCredit || null,
       });
       onSave?.();
-      closeSlider();
+      // Swap to detail view
+      updateSlider({
+        title: acct.accountHead || 'Account',
+        subtitle: acct.accountGroup || '',
+        content: <LedgerAccountDetailContent account={acct} onSave={onSave} groups={groups} />,
+      });
     } catch (err) {
       console.error('Failed to create ledger account:', err);
     } finally {
@@ -115,11 +119,6 @@ export function LedgerAccountCreateContent({ onSave, groups }) {
           <i className={`fas fa-${saving ? 'spinner fa-spin' : 'plus'}`} style={{ fontSize: 10 }}></i>
           {saving ? 'Creating...' : 'Create Account'}
         </button>
-        <button onClick={closeSlider} style={{
-          display: 'inline-flex', alignItems: 'center', gap: 5,
-          border: '1.5px solid #E2E8F0', borderRadius: 8, padding: '8px 14px',
-          fontSize: 12, fontWeight: 600, color: '#64748B', background: '#fff', cursor: 'pointer',
-        }}>Cancel</button>
       </div>
 
       <div style={{ padding: '20px 20px 40px' }}>

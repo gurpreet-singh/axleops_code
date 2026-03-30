@@ -142,7 +142,7 @@ function formToPayload(form) {
 // ROUTE CREATE SLIDER CONTENT
 // ═══════════════════════════════════════════════════════════════
 export function RouteCreateContent({ onSave }) {
-  const { closeSlider } = useSliderStore();
+  const { updateSlider } = useSliderStore();
   const [form, setForm] = useState(buildFormState(null));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
@@ -157,9 +157,14 @@ export function RouteCreateContent({ onSave }) {
     setError(null);
     setSaving(true);
     try {
-      await createRoute(formToPayload(form));
+      const route = await createRoute(formToPayload(form));
       onSave?.();
-      closeSlider();
+      // Swap to detail view
+      updateSlider({
+        title: route.name || 'Route',
+        subtitle: `${route.origin || '?'} → ${route.destination || '?'}`,
+        content: <RouteDetailContent rt={route} onSave={onSave} />,
+      });
     } catch (e) {
       console.error('Failed to create route:', e);
       setError(e?.response?.data?.message || 'Failed to create route');

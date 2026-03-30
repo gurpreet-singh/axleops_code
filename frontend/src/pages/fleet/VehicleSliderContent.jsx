@@ -160,7 +160,7 @@ function formToPayload(form) {
 // ═══════════════════════════════════════════════════════════════
 
 export function VehicleCreateContent({ onSave }) {
-  const { closeSlider } = useSliderStore();
+  const { updateSlider } = useSliderStore();
   const [form, setForm] = useState(buildFormState(null));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
@@ -178,9 +178,14 @@ export function VehicleCreateContent({ onSave }) {
     setError(null);
     setSaving(true);
     try {
-      await createVehicle(formToPayload(form));
+      const vehicle = await createVehicle(formToPayload(form));
       onSave?.();
-      closeSlider();
+      // Swap to detail view
+      updateSlider({
+        title: vehicle.registrationNumber || 'Vehicle',
+        subtitle: `${vehicle.make || ''} ${vehicle.model || ''}`.trim(),
+        content: <VehicleDetailContent vehicle={vehicle} onSave={onSave} />,
+      });
     } catch (e) {
       console.error('Failed to create vehicle:', e);
       setError(e?.response?.data?.message || 'Failed to create vehicle');

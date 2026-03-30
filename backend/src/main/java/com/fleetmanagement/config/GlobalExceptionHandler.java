@@ -98,23 +98,48 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Safety net — catches DB-level unique constraint violations that bypass
+     * Safety net — catches DB-level constraint violations that bypass
      * service-level validation (e.g. race conditions, missing service checks).
      */
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Map<String, Object>> handleDataIntegrity(DataIntegrityViolationException ex) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now().toString());
-        body.put("status", 409);
-        body.put("error", "Conflict");
-        String message = "A record with the same unique identifier already exists";
-        if (ex.getMostSpecificCause() != null) {
-            String detail = ex.getMostSpecificCause().getMessage();
-            if (detail != null && detail.contains("unique constraint") || detail != null && detail.contains("duplicate key")) {
-                message = "Duplicate entry: a record with this value already exists";
-            }
+
+        String detail = ex.getMostSpecificCause() != null
+                ? ex.getMostSpecificCause().getMessage() : "";
+
+        String message;
+        int status;
+
+        if (detail != null && (detail.contains("unique constraint") || detail.contains("duplicate key"))) {
+            message = "Duplicate entry: a record with this value already exists";
+            status = 409;
+        } else if (detail != null && detail.contains("not-null constraint")) {
+            message = "A required field is missing: " + extractColumnName(detail);
+            status = 400;
+        } else if (detail != null && detail.contains("foreign key constraint")) {
+            message = "Referenced record does not exist or cannot be removed due to dependencies";
+            status = 409;
+        } else {
+            message = "Data integrity error — check required fields and references";
+            status = 409;
         }
+
+        body.put("status", status);
+        body.put("error", status == 400 ? "Bad Request" : "Conflict");
         body.put("message", message);
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
+        return ResponseEntity.status(status).body(body);
+    }
+
+    /** Extract column name from PostgreSQL not-null violation messages. */
+    private String extractColumnName(String detail) {
+        // PostgreSQL format: "null value in column \"xyz\" of relation ..."
+        if (detail != null && detail.contains("column \"")) {
+            int start = detail.indexOf("column \"") + 8;
+            int end = detail.indexOf("\"", start);
+            if (end > start) return detail.substring(start, end);
+        }
+        return "unknown";
     }
 }

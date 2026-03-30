@@ -2,6 +2,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import TopHeader from './TopHeader';
 import SliderPanel from './SliderPanel';
+import ToastContainer from '../common/ToastContainer';
 
 export default function AppLayout() {
   const location = useLocation();
@@ -27,6 +28,7 @@ export default function AppLayout() {
         </div>
       </main>
       <SliderPanel />
+      <ToastContainer />
     </div>
   );
 }

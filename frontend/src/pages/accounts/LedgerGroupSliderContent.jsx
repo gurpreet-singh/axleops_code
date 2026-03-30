@@ -35,7 +35,7 @@ function Section({ title, emoji, borderColor, headerBg, accentColor, children })
 // ═══════════════════════════════════════════════════════════════
 
 export function LedgerGroupCreateContent({ onSave, groups }) {
-  const { closeSlider } = useSliderStore();
+  const { updateSlider } = useSliderStore();
   const { getOptionsWithPlaceholder } = useEnumStore();
   const [form, setForm] = useState({
     name: '', nature: '', groupType: '',
@@ -48,7 +48,7 @@ export function LedgerGroupCreateContent({ onSave, groups }) {
     if (!form.name || !form.nature || !form.groupType) return;
     setSaving(true);
     try {
-      await ledgerGroupService.create({
+      const grp = await ledgerGroupService.create({
         name: form.name,
         nature: form.nature,
         groupType: form.groupType,
@@ -56,7 +56,12 @@ export function LedgerGroupCreateContent({ onSave, groups }) {
         parentGroupId: form.parentGroupId || null,
       });
       onSave?.();
-      closeSlider();
+      // Swap to detail view
+      updateSlider({
+        title: grp.name || 'Group',
+        subtitle: grp.nature || '',
+        content: <LedgerGroupDetailContent group={grp} onSave={onSave} groups={groups} />,
+      });
     } catch (err) {
       console.error('Failed to create ledger group:', err);
     } finally {
@@ -88,11 +93,6 @@ export function LedgerGroupCreateContent({ onSave, groups }) {
           <i className={`fas fa-${saving ? 'spinner fa-spin' : 'plus'}`} style={{ fontSize: 10 }}></i>
           {saving ? 'Creating...' : 'Create Group'}
         </button>
-        <button onClick={closeSlider} style={{
-          display: 'inline-flex', alignItems: 'center', gap: 5,
-          border: '1.5px solid #E2E8F0', borderRadius: 8, padding: '8px 14px',
-          fontSize: 12, fontWeight: 600, color: '#64748B', background: '#fff', cursor: 'pointer',
-        }}>Cancel</button>
       </div>
 
       <div style={{ padding: '20px 20px 40px' }}>
