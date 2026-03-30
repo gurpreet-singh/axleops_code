@@ -9,13 +9,13 @@ import com.fleetmanagement.entity.Branch;
 import com.fleetmanagement.entity.Client;
 import com.fleetmanagement.entity.Contact;
 import com.fleetmanagement.entity.Vehicle;
-import com.fleetmanagement.entity.VehicleType;
+import com.fleetmanagement.entity.master.VehicleTypeMaster;
 import com.fleetmanagement.mapper.VehicleMapper;
 import com.fleetmanagement.repository.BranchRepository;
 import com.fleetmanagement.repository.ClientRepository;
 import com.fleetmanagement.repository.ContactRepository;
 import com.fleetmanagement.repository.VehicleRepository;
-import com.fleetmanagement.repository.VehicleTypeRepository;
+import com.fleetmanagement.repository.master.VehicleTypeMasterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,7 +37,7 @@ public class VehicleService {
     private final BranchRepository branchRepository;
     private final ClientRepository clientRepository;
     private final ContactRepository contactRepository;
-    private final VehicleTypeRepository vehicleTypeRepository;
+    private final VehicleTypeMasterRepository vehicleTypeMasterRepository;
     private final BranchScope branchScope;
     private final BranchValidator branchValidator;
 
@@ -168,13 +168,13 @@ public class VehicleService {
     // ─── Private helpers ────────────────────────────────────────
 
     private void resolveOtherForeignKeys(Vehicle vehicle, CreateVehicleRequest request, UUID tenantId) {
-        // Vehicle Type
+        // Vehicle Type Master
         if (request.getVehicleTypeId() != null) {
-            VehicleType vt = vehicleTypeRepository.findById(request.getVehicleTypeId())
-                    .orElseThrow(() -> new ResourceNotFoundException("VehicleType", request.getVehicleTypeId()));
-            vehicle.setVehicleType(vt);
+            VehicleTypeMaster vtm = vehicleTypeMasterRepository.findByIdAndTenantId(request.getVehicleTypeId(), tenantId)
+                    .orElseThrow(() -> new ResourceNotFoundException("VehicleTypeMaster", request.getVehicleTypeId()));
+            vehicle.setVehicleTypeMaster(vtm);
         } else {
-            vehicle.setVehicleType(null);
+            vehicle.setVehicleTypeMaster(null);
         }
 
         // Client (owner)

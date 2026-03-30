@@ -20,7 +20,8 @@ public class RouteResponse {
     private String paymentTerms;
     private String template;
     private String status;
-    private String vehicleType;
+    private UUID vehicleTypeId;
+    private String vehicleTypeName;
     private String billingType;
     private String documentSeries;
 

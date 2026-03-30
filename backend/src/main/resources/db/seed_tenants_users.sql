@@ -78,6 +78,11 @@ ON CONFLICT DO NOTHING;
 UPDATE vehicles SET tenant_id = 'e9999999-9999-9999-9999-999999999999'
 WHERE tenant_id IS NULL OR tenant_id = 'e9999999-9999-9999-9999-999999999999';
 
+-- ─── 7. Assign HQ branch to vehicles missing a branch ──
+-- (Branch-scoped users can only see vehicles in their branch)
+UPDATE vehicles SET branch_id = 'b9999999-9999-9999-9999-999999999999'
+WHERE tenant_id = 'e9999999-9999-9999-9999-999999999999' AND branch_id IS NULL;
+
 -- ============================================
 -- VERIFICATION QUERIES (uncomment to check)
 -- ============================================

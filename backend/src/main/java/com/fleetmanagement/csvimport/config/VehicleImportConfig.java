@@ -88,9 +88,10 @@ public class VehicleImportConfig {
                                 .build(),
                         ImportFieldDefinition.builder()
                                 .fieldName("vehicleTypeMaster").displayName("Vehicle Type").dataType(ImportDataType.STRING)
-                                .aliases(List.of("Veh Type", "Type", "Vehicle Type Master"))
+                                .foreignKeyEntity("VehicleTypeMaster").foreignKeyLookupField("name")
+                                .aliases(List.of("Veh Type", "Type", "Vehicle Type Master", "Vehicle Type", "Vehicle Category"))
                                 .exampleValue("9 MT 32 FEET").exampleValue2("HCV 49T")
-                                .helpText("Vehicle type classification")
+                                .helpText("Vehicle type classification. Must match a Vehicle Type master entry by name.")
                                 .build(),
                         ImportFieldDefinition.builder()
                                 .fieldName("year").displayName("Year of Manufacture").dataType(ImportDataType.INTEGER)

@@ -45,7 +45,6 @@ public class CreateVehicleRequest {
     // ─── Ownership ──────────────────────────────────────────────
     private String ownership;  // OWNED, LEASED, RENTED, MARKET
     private Boolean soldFlag;
-    private String vehicleTypeMaster;
     private String hypothecation;
 
     // ─── Group & Assignment ─────────────────────────────────────

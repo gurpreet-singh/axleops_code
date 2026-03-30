@@ -44,6 +44,7 @@ public class OperationsService {
         FuelEntry f = new FuelEntry();
         f.setTenantId(tid);
         f.setVehicle(v);
+        f.setBranch(v.getBranch());
         f.setFillDate(data.get("fillDate") != null ? LocalDate.parse((String) data.get("fillDate")) : LocalDate.now());
         f.setFuelType((String) data.getOrDefault("fuelType", v.getFuelType()));
         f.setQuantityLitres(toBD(data.get("quantityLitres")));
@@ -128,6 +129,7 @@ public class OperationsService {
         DriverAssignment da = new DriverAssignment();
         da.setTenantId(tid);
         da.setVehicle(v);
+        da.setBranch(v.getBranch());
         da.setDriver(driver);
         da.setAssignedFrom(data.get("assignedFrom") != null ? LocalDate.parse((String) data.get("assignedFrom")) : LocalDate.now());
         da.setAssignmentType((String) data.getOrDefault("assignmentType", "PRIMARY"));

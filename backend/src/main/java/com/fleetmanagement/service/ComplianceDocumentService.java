@@ -177,6 +177,7 @@ public class ComplianceDocumentService {
         ComplianceDocument doc = new ComplianceDocument();
         doc.setTenantId(tenantId);
         doc.setVehicle(vehicle);
+        doc.setBranch(vehicle.getBranch());
         doc.setDocumentType(docType);
         doc.setDocumentNumber(request.getDocumentNumber());
         doc.setStatus(computeInitialStatus(request));

@@ -46,6 +46,7 @@ public class MaintenanceService {
         ServiceTask t = new ServiceTask();
         t.setTenantId(tid);
         t.setVehicle(v);
+        t.setBranch(v.getBranch());
         t.setName((String) data.get("name"));
         t.setDescription((String) data.get("description"));
         t.setTaskType((String) data.getOrDefault("taskType", "PREVENTIVE"));
@@ -100,6 +101,7 @@ public class MaintenanceService {
         Issue i = new Issue();
         i.setTenantId(tid);
         i.setVehicle(v);
+        i.setBranch(v.getBranch());
         i.setTitle((String) data.get("title"));
         i.setDescription((String) data.get("description"));
         i.setPriority((String) data.getOrDefault("priority", "MEDIUM"));
@@ -141,6 +143,7 @@ public class MaintenanceService {
         Inspection ins = new Inspection();
         ins.setTenantId(tid);
         ins.setVehicle(v);
+        ins.setBranch(v.getBranch());
         ins.setSubmittedAt(LocalDateTime.now());
         ins.setFormType((String) data.getOrDefault("formType", "DVIR"));
         ins.setOverallResult((String) data.getOrDefault("overallResult", "PASS"));
@@ -271,6 +274,7 @@ public class MaintenanceService {
         CostEntry c = new CostEntry();
         c.setTenantId(tid);
         c.setVehicle(v);
+        c.setBranch(v.getBranch());
         c.setCostCategory((String) data.get("costCategory"));
         c.setAmount(new BigDecimal(data.get("amount").toString()));
         c.setCostDate(data.get("costDate") != null ? LocalDate.parse((String) data.get("costDate")) : LocalDate.now());

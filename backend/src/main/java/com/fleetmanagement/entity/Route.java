@@ -1,5 +1,6 @@
 package com.fleetmanagement.entity;
 
+import com.fleetmanagement.entity.master.VehicleTypeMaster;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -47,8 +48,9 @@ public class Route extends BaseEntity {
 
     private String status = "ACTIVE";
 
-    @Column(name = "vehicle_type")
-    private String vehicleType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vehicle_type_master_id")
+    private VehicleTypeMaster vehicleTypeMaster;
 
     @Column(name = "billing_type")
     private String billingType;

@@ -46,7 +46,6 @@ public class VehicleResponse {
     // ─── Ownership ──────────────────────────────────────────────
     private String ownership;
     private Boolean soldFlag;
-    private String vehicleTypeMaster;
     private String hypothecation;
 
     // ─── Group & Assignment (flattened FK names) ────────────────

@@ -53,17 +53,32 @@ public class CsvParserService {
                 String[] headerRow = allRows.get(0);
 
                 // Build header list AND track original column indices.
-                // Empty headers (from blank columns / trailing commas) are excluded from
-                // the output, but we must use the ORIGINAL index when reading row data
-                // to prevent column shifting.
+                // Empty headers (from blank columns / trailing commas) are excluded.
+                // CRITICAL: Duplicate headers are made unique by appending " (2)", " (3)"
+                // etc. This prevents Map.put() from overwriting values of earlier columns
+                // that share the same header name (e.g., two "Registration Date" columns).
                 List<String> headers = new ArrayList<>();
                 List<Integer> headerIndices = new ArrayList<>();
+                Map<String, Integer> headerOccurrences = new LinkedHashMap<>();
+
                 for (int h = 0; h < headerRow.length; h++) {
                     String hdr = headerRow[h].trim();
                     if (!hdr.isEmpty()) {
-                        headers.add(hdr);
+                        int count = headerOccurrences.getOrDefault(hdr, 0) + 1;
+                        headerOccurrences.put(hdr, count);
+                        // First occurrence keeps original name; subsequent get " (N)" suffix
+                        String uniqueHeader = count == 1 ? hdr : hdr + " (" + count + ")";
+                        headers.add(uniqueHeader);
                         headerIndices.add(h);
                     }
+                }
+
+                if (headerOccurrences.entrySet().stream().anyMatch(e -> e.getValue() > 1)) {
+                    log.warn("CSV has duplicate column headers: {}",
+                            headerOccurrences.entrySet().stream()
+                                .filter(e -> e.getValue() > 1)
+                                .map(e -> "'" + e.getKey() + "' x" + e.getValue())
+                                .collect(java.util.stream.Collectors.joining(", ")));
                 }
 
                 List<Map<String, String>> rows = new ArrayList<>();

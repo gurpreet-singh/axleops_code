@@ -9,18 +9,6 @@ import api from '../../services/api';
 // ═══════════════════════════════════════════════════════════════
 // STATIC OPTIONS
 // ═══════════════════════════════════════════════════════════════
-const VEHICLE_TYPES = [
-  { value: '', label: 'Select vehicle type' },
-  { value: 'Multi-Axle Truck', label: 'Multi-Axle Truck' },
-  { value: '2-Axle Truck', label: '2-Axle Truck' },
-  { value: '3-Axle Truck', label: '3-Axle Truck' },
-  { value: 'Container 20ft', label: 'Container 20ft' },
-  { value: 'Container 40ft', label: 'Container 40ft' },
-  { value: 'Tanker', label: 'Tanker' },
-  { value: 'LCV', label: 'LCV — Light Commercial Vehicle' },
-  { value: 'Tractor-Trailer', label: 'Tractor-Trailer' },
-  { value: 'Tipper / Dumper', label: 'Tipper / Dumper' },
-];
 
 const BILLING_TYPES = [
   { value: '', label: 'Select type' },
@@ -63,7 +51,7 @@ const BRANCHES = [
 // ═══════════════════════════════════════════════════════════════
 function buildFormState(rt) {
   if (!rt) return {
-    name: '', ledgerAccountId: '', vType: '', origin: '', originPin: '', dest: '', destPin: '',
+    name: '', ledgerAccountId: '', vehicleTypeId: '', origin: '', originPin: '', dest: '', destPin: '',
     via: '', dist: '', estTime: '',
     billingType: '', slaHrs: '', payTerms: '',
     documentSeries: '', invoiceTypeId: '', annexureTypeId: '',
@@ -78,7 +66,7 @@ function buildFormState(rt) {
   return {
     name: rt.name || '',
     ledgerAccountId: rt.ledgerAccountId || '',
-    vType: rt.vType || rt.vehicleType || '',
+    vehicleTypeId: rt.vehicleTypeId || '',
     origin: rt.origin || '', originPin: rt.originPin || '',
     dest: rt.dest || rt.destination || '', destPin: rt.destPin || '',
     via: rt.via || '', dist: rt.dist?.toString() || rt.distanceKm?.toString() || '',
@@ -120,7 +108,7 @@ function formToPayload(form) {
     paymentTerms: form.payTerms || null,
     template: form.workflowTemplate || null,
     status: 'ACTIVE',
-    vehicleType: form.vType || null,
+    vehicleTypeId: form.vehicleTypeId || null,
     billingType: form.billingType || null,
     documentSeries: form.documentSeries || null,
     // Charge columns
@@ -316,12 +304,14 @@ function RouteFormSections({ form, set }) {
   const [ledgerAccounts, setLedgerAccounts] = useState([]);
   const [invoiceTypes, setInvoiceTypes] = useState([]);
   const [annexureTypes, setAnnexureTypes] = useState([]);
+  const [vehicleTypes, setVehicleTypes] = useState([]);
 
   // Fetch dropdown data
   useEffect(() => {
     api.get('/ledger-accounts').then(({ data }) => setLedgerAccounts(data || [])).catch(() => setLedgerAccounts([]));
     api.get('/invoice-types').then(({ data }) => setInvoiceTypes(data || [])).catch(() => setInvoiceTypes([]));
     api.get('/annexure-types').then(({ data }) => setAnnexureTypes(data || [])).catch(() => setAnnexureTypes([]));
+    api.get('/masters/vehicle-types/dropdown').then(({ data }) => setVehicleTypes(data || [])).catch(() => setVehicleTypes([]));
   }, []);
 
   const ledgerOptions = [
@@ -339,6 +329,11 @@ function RouteFormSections({ form, set }) {
     ...annexureTypes.map(at => ({ value: at.id, label: at.name })),
   ];
 
+  const vehicleTypeOptions = [
+    { value: '', label: 'Select vehicle type' },
+    ...vehicleTypes.map(vt => ({ value: vt.id, label: vt.name })),
+  ];
+
   return (
     <>
       {/* ═══ 1. ROUTE DETAILS ═══ */}
@@ -348,7 +343,7 @@ function RouteFormSections({ form, set }) {
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
           <FormField label="Ledger Account" value={form.ledgerAccountId} onChange={set('ledgerAccountId')} options={ledgerOptions} />
-          <FormField label="Vehicle Type" value={form.vType} onChange={set('vType')} options={VEHICLE_TYPES} />
+          <FormField label="Vehicle Type" value={form.vehicleTypeId} onChange={set('vehicleTypeId')} options={vehicleTypeOptions} />
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
           <FormField label="Origin" value={form.origin} onChange={set('origin')} placeholder="e.g. JNPT Navi Mumbai" />
@@ -461,7 +456,7 @@ function RouteViewSections({ rt, form }) {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
           <ReadField label="Route Name" value={rt.name} />
           <ReadField label="Ledger Account" value={rt.ledgerAccountName} />
-          <ReadField label="Vehicle Type" value={rt.vType || rt.vehicleType} />
+          <ReadField label="Vehicle Type" value={rt.vehicleTypeName} />
           <ReadField label="Branch" value={rt.branch} />
           <ReadField label="Origin" value={rt.origin} />
           <ReadField label="Origin Pincode" value={rt.originPin} mono />

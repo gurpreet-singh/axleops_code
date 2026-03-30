@@ -1,5 +1,6 @@
 package com.fleetmanagement.entity;
 
+import com.fleetmanagement.entity.master.VehicleTypeMaster;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,8 +25,8 @@ public class Vehicle extends BaseEntity {
     @Column(name = "reference_number", length = 500)
     private String referenceNumber; // Internal reference / fleet code
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vehicle_type_id")
-    private VehicleType vehicleType;
+    @JoinColumn(name = "vehicle_type_master_id")
+    private VehicleTypeMaster vehicleTypeMaster;
 
     @Column(length = 500)
     private String make;
@@ -99,9 +100,6 @@ public class Vehicle extends BaseEntity {
 
     @Column(name = "sold_flag")
     private Boolean soldFlag;
-
-    @Column(name = "vehicle_type_master", length = 500)
-    private String vehicleTypeMaster; // Classification code (e.g., 9 MT 32 FEET)
 
     @Column(length = 500)
     private String hypothecation; // Hypothecation details (bank/financer)

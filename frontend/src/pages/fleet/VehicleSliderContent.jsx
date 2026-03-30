@@ -88,7 +88,7 @@ function buildFormState(v) {
     ulwKg: '', rlwKg: '', payloadCapacityKg: '', seatingCapacity: '', hpCc: '',
     odometer: '', status: 'ACTIVE',
     registrationDate: '', registrationState: '', rtoOffice: '',
-    ownership: 'OWNED', soldFlag: false, vehicleTypeMaster: '', hypothecation: '',
+    ownership: 'OWNED', soldFlag: false, hypothecation: '',
     vehicleGroup: '', groupId: '', branchId: '', clientId: '', operatorId: '',
   };
 
@@ -109,7 +109,7 @@ function buildFormState(v) {
     registrationDate: v.registrationDate || '', registrationState: v.registrationState || '',
     rtoOffice: v.rtoOffice || '',
     ownership: v.ownership || 'OWNED', soldFlag: v.soldFlag || false,
-    vehicleTypeMaster: v.vehicleTypeMaster || '', hypothecation: v.hypothecation || '',
+    hypothecation: v.hypothecation || '',
     vehicleGroup: v.vehicleGroup || '', groupId: v.groupId || '',
     branchId: v.branchId || '', clientId: v.clientId || '', operatorId: v.operatorId || '',
   };
@@ -145,7 +145,6 @@ function formToPayload(form) {
     rtoOffice: form.rtoOffice || null,
     ownership: form.ownership || null,
     soldFlag: form.soldFlag || false,
-    vehicleTypeMaster: form.vehicleTypeMaster || null,
     hypothecation: form.hypothecation || null,
     vehicleGroup: form.vehicleGroup || null,
     groupId: form.groupId || null,
@@ -365,7 +364,7 @@ function VehicleFormSections({ form, set }) {
   const [contacts, setContacts] = useState([]);
 
   useEffect(() => {
-    api.get('/vehicles/types').then(({ data }) => setVehicleTypes(data || [])).catch(() => {});
+    api.get('/masters/vehicle-types/dropdown').then(({ data }) => setVehicleTypes(data || [])).catch(() => {});
     api.get('/branches').then(({ data }) => setBranches(data || [])).catch(() => setBranches([]));
     api.get('/clients').then(({ data }) => setClients(data || [])).catch(() => setClients([]));
     api.get('/contacts').then(({ data }) => setContacts(data || [])).catch(() => setContacts([]));
@@ -455,7 +454,6 @@ function VehicleFormSections({ form, set }) {
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
           <FormField label="Hypothecation" value={form.hypothecation} onChange={set('hypothecation')} placeholder="Bank/financer details" />
-          <FormField label="Vehicle Type Master" value={form.vehicleTypeMaster} onChange={set('vehicleTypeMaster')} placeholder="e.g. 9 MT 32 FEET" />
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
           <FormField label="Odometer (km)" value={form.odometer} onChange={set('odometer')} type="number" placeholder="e.g. 145200" />
@@ -528,7 +526,6 @@ function VehicleViewSections({ v }) {
           <ReadField label="Client (Owner)" value={v.clientName} />
           <ReadField label="Operator" value={v.operatorName} />
           <ReadField label="Ownership" value={v.ownership} />
-          <ReadField label="Vehicle Type Master" value={v.vehicleTypeMaster} />
         </div>
       </Section>
 

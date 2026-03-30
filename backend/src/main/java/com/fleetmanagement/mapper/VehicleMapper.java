@@ -10,8 +10,8 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface VehicleMapper {
 
-    @Mapping(source = "vehicleType.id", target = "vehicleTypeId")
-    @Mapping(source = "vehicleType.name", target = "vehicleTypeName")
+    @Mapping(source = "vehicleTypeMaster.id", target = "vehicleTypeId")
+    @Mapping(source = "vehicleTypeMaster.name", target = "vehicleTypeName")
     @Mapping(source = "branch.id", target = "branchId")
     @Mapping(source = "branch.name", target = "branchName")
     @Mapping(source = "client.id", target = "clientId")
@@ -24,7 +24,7 @@ public interface VehicleMapper {
     @Mapping(target = "tenantId", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "vehicleType", ignore = true)
+    @Mapping(target = "vehicleTypeMaster", ignore = true)
     @Mapping(target = "branch", ignore = true)
     @Mapping(target = "client", ignore = true)
     @Mapping(target = "operator", ignore = true)
@@ -34,7 +34,7 @@ public interface VehicleMapper {
     @Mapping(target = "tenantId", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "vehicleType", ignore = true)
+    @Mapping(target = "vehicleTypeMaster", ignore = true)
     @Mapping(target = "branch", ignore = true)
     @Mapping(target = "client", ignore = true)
     @Mapping(target = "operator", ignore = true)

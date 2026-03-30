@@ -2,10 +2,16 @@ package com.fleetmanagement.csvimport.service;
 
 import com.fleetmanagement.csvimport.model.*;
 import com.fleetmanagement.config.TenantContext;
+import com.fleetmanagement.config.TenantPrincipal;
+import com.fleetmanagement.entity.Branch;
+import com.fleetmanagement.repository.BranchRepository;
+import com.fleetmanagement.service.BranchValidator;
 import jakarta.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,9 +44,15 @@ public class ImportPersistenceService {
     );
 
     private final EntityManager entityManager;
+    private final BranchValidator branchValidator;
+    private final BranchRepository branchRepository;
 
-    public ImportPersistenceService(EntityManager entityManager) {
+    public ImportPersistenceService(EntityManager entityManager,
+                                    BranchValidator branchValidator,
+                                    BranchRepository branchRepository) {
         this.entityManager = entityManager;
+        this.branchValidator = branchValidator;
+        this.branchRepository = branchRepository;
     }
 
     /**
@@ -51,6 +63,9 @@ public class ImportPersistenceService {
     public ImportResult persist(List<ValidatedRow> validatedRows, ImportEntityConfig config,
                                 DuplicateStrategy duplicateStrategy) {
         UUID tenantId = TenantContext.get();
+
+        // Resolve branch from the logged-in user's context
+        Branch resolvedBranch = resolveBranchFromPrincipal(tenantId);
 
         List<ValidatedRow> toImport = validatedRows.stream()
                 .filter(r -> r.getStatus() == RowStatus.VALID)
@@ -84,7 +99,7 @@ public class ImportPersistenceService {
         List<Object> batch = new ArrayList<>();
         for (ValidatedRow row : toImport) {
             try {
-                Object entity = createEntityInstance(row.getData(), config, tenantId);
+                Object entity = createEntityInstance(row.getData(), config, tenantId, resolvedBranch);
                 batch.add(entity);
 
                 if (batch.size() >= BATCH_SIZE) {
@@ -146,12 +161,18 @@ public class ImportPersistenceService {
         entityManager.clear();
     }
 
-    private Object createEntityInstance(Map<String, String> data, ImportEntityConfig config, UUID tenantId) {
+    private Object createEntityInstance(Map<String, String> data, ImportEntityConfig config,
+                                        UUID tenantId, Branch branch) {
         try {
             Object entity = config.getEntityClass().getDeclaredConstructor().newInstance();
 
             // Set tenantId
             setFieldValue(entity, "tenantId", tenantId);
+
+            // Set branch if the entity has a branch field
+            if (branch != null && findField(config.getEntityClass(), "branch") != null) {
+                setFieldValue(entity, "branch", branch);
+            }
 
             // Set each mapped field
             for (ImportFieldDefinition fieldDef : config.getFields()) {
@@ -183,6 +204,26 @@ public class ImportPersistenceService {
         } catch (Exception e) {
             throw new RuntimeException("Failed to create entity: " + e.getMessage(), e);
         }
+    }
+
+    /**
+     * Resolves the branch from the current logged-in user's TenantPrincipal.
+     * Uses BranchValidator.resolve() which handles:
+     * - Branch-scoped user → their branch
+     * - Tenant-wide user with single branch → auto-assign
+     * - Tenant-wide user with multi-branch → error (must specify)
+     */
+    private Branch resolveBranchFromPrincipal(UUID tenantId) {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null && auth.getPrincipal() instanceof TenantPrincipal tp) {
+                UUID branchId = branchValidator.resolve(tp, null);
+                return branchRepository.findById(branchId).orElse(null);
+            }
+        } catch (Exception e) {
+            log.warn("Could not resolve branch for import: {}", e.getMessage());
+        }
+        return null;
     }
 
     /**
