@@ -4,8 +4,7 @@ import com.axleops.mobile.auth.model.UserSession
 import com.axleops.mobile.auth.repository.LoginResult
 import com.axleops.mobile.auth.repository.UserProfile
 import com.axleops.mobile.data.dto.AuthLoginResponseDto
-import com.axleops.mobile.data.dto.AuthMeResponseDto
-import com.axleops.mobile.data.dto.SelectRoleResponseDto
+import com.axleops.mobile.data.dto.AuthUserResponseDto
 import com.axleops.mobile.role.model.AppRole
 
 /**
@@ -22,39 +21,43 @@ fun AuthLoginResponseDto.toDomain(): LoginResult =
     LoginResult.Success(token = token)
 
 /**
- * Map auth/me response DTO to domain user profile.
+ * Map auth/me response DTO (or embedded user from login response) to domain user profile.
  *
  * Handles:
- * - Empty first/last name → displayName = email prefix
+ * - Empty first/last name → displayName = fullName or email prefix
+ * - Roles are RoleInfoDto objects → extract code strings
  * - Empty roles list → preserved as-is (handled by role selector)
  */
-fun AuthMeResponseDto.toDomain(): UserProfile =
+fun AuthUserResponseDto.toDomain(): UserProfile =
     UserProfile(
-        userId = id.toString(),
-        displayName = buildDisplayName(firstName, lastName, email),
-        email = email,
-        roles = roles,
-        tenantId = tenantId?.toString(),
+        userId = id,
+        displayName = fullName
+            ?: buildDisplayName(firstName ?: "", lastName ?: "", email ?: ""),
+        email = email ?: "",
+        roles = roles.map { it.code },
+        tenantId = tenantId,
     )
 
 /**
- * Map select-role response DTO to domain user session.
+ * Map auth/me or select-role user response to domain user session.
  *
- * Handles:
- * - Null contactId/branchId/tenantId → preserved as null
- * - Empty displayName → falls back to "User"
+ * Used after POST /auth/select-role — the response is a LoginResponse
+ * with a role-scoped token + user context.
  */
-fun SelectRoleResponseDto.toDomain(role: AppRole): UserSession =
-    UserSession(
-        userId = userId.toString(),
-        displayName = displayName.ifBlank { "User" },
+fun AuthLoginResponseDto.toSession(role: AppRole): UserSession {
+    val user = user ?: throw IllegalStateException("LoginResponse.user is null")
+    return UserSession(
+        userId = user.id,
+        displayName = user.fullName
+            ?: buildDisplayName(user.firstName ?: "", user.lastName ?: "", user.email ?: ""),
         activeRole = role,
         jwt = token,
-        authorities = authorities,
-        contactId = contactId?.toString(),
-        branchId = branchId?.toString(),
-        tenantId = tenantId?.toString(),
+        authorities = user.authorities,
+        contactId = null, // Gap G1 — no contactId in backend yet
+        branchId = user.branchId,
+        tenantId = user.tenantId,
     )
+}
 
 /**
  * Build a user-friendly display name from first/last name components.

@@ -1,61 +1,74 @@
 package com.axleops.mobile.data.dto
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
  * DTO for `POST /auth/login` request body.
+ *
+ * Backend field is `username` (maps to email in mobile UI).
+ * See: backend LoginRequest.java
  */
 @Serializable
 data class AuthLoginRequestDto(
-    val email: String,
+    val username: String,
     val password: String,
 )
 
 /**
- * DTO for `POST /auth/login` response body.
+ * DTO for `POST /auth/login` and `POST /auth/select-role` response body.
+ *
+ * Backend returns `{ token, user: AuthUserResponse }`.
+ * See: backend LoginResponse.java
  */
 @Serializable
 data class AuthLoginResponseDto(
     val token: String,
+    val user: AuthUserResponseDto? = null,
 )
 
 /**
- * DTO for `GET /auth/me` response body.
+ * DTO for `GET /auth/me` response body and embedded user in LoginResponse.
  *
- * Maps to the backend's user profile shape. Field names use
- * `@SerialName` to match backend JSON conventions (snake_case).
+ * Maps to the backend's AuthUserResponse.java. Field names are camelCase
+ * (Spring Boot default Jackson serialization).
  */
 @Serializable
-data class AuthMeResponseDto(
-    val id: Long,
-    @SerialName("first_name") val firstName: String = "",
-    @SerialName("last_name") val lastName: String = "",
-    val email: String = "",
-    val roles: List<String> = emptyList(),
-    @SerialName("tenant_id") val tenantId: Long? = null,
+data class AuthUserResponseDto(
+    val id: String,
+    val fullName: String? = null,
+    val firstName: String? = null,
+    val lastName: String? = null,
+    val email: String? = null,
+    val tenantId: String? = null,
+    val tenantName: String? = null,
+    val branchId: String? = null,
+    val branchName: String? = null,
+    val branchCode: String? = null,
+    val branchCount: Int = 0,
+    val roles: List<RoleInfoDto> = emptyList(),
+    val authorities: List<String> = emptyList(),
+    val type: String? = null,
+)
+
+/**
+ * Role info object embedded in AuthUserResponse.
+ *
+ * See: backend RoleInfo.java
+ */
+@Serializable
+data class RoleInfoDto(
+    val code: String,
+    val displayName: String? = null,
+    val department: String? = null,
 )
 
 /**
  * DTO for `POST /auth/select-role` request body.
+ *
+ * Backend expects `{ roleCode }`.
+ * See: backend SelectRoleRequest.java
  */
 @Serializable
 data class SelectRoleRequestDto(
-    val role: String,
-)
-
-/**
- * DTO for `POST /auth/select-role` response body.
- *
- * Contains the role-scoped JWT and session metadata.
- */
-@Serializable
-data class SelectRoleResponseDto(
-    @SerialName("user_id") val userId: Long,
-    @SerialName("display_name") val displayName: String = "",
-    val token: String,
-    val authorities: List<String> = emptyList(),
-    @SerialName("contact_id") val contactId: Long? = null,
-    @SerialName("branch_id") val branchId: Long? = null,
-    @SerialName("tenant_id") val tenantId: Long? = null,
+    val roleCode: String,
 )

@@ -1,19 +1,19 @@
 package com.axleops.mobile.data
 
 import com.axleops.mobile.data.dto.AuthLoginResponseDto
-import com.axleops.mobile.data.dto.AuthMeResponseDto
-import com.axleops.mobile.data.dto.SelectRoleResponseDto
+import com.axleops.mobile.data.dto.AuthUserResponseDto
+import com.axleops.mobile.data.dto.RoleInfoDto
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 /**
- * Tests that mock JSON fixtures can be parsed by their corresponding DTOs.
+ * Tests that JSON payloads matching the backend contract can be parsed
+ * by their corresponding DTOs.
  *
- * Ensures the mock fixtures in composeResources/files/mocks/ remain
- * compatible with the DTO shapes. If a fixture or DTO changes, these
- * tests will catch the mismatch.
+ * Ensures the DTOs remain compatible with the actual backend JSON shapes.
+ * Field names must match the backend's Jackson camelCase serialization.
  */
 class FixtureParsingTest {
 
@@ -24,88 +24,105 @@ class FixtureParsingTest {
     }
 
     @Test
-    fun `auth-login fixture parses to AuthLoginResponseDto`() {
-        val fixture = """{"token": "mock-jwt-token-12345"}"""
-        val dto = json.decodeFromString(AuthLoginResponseDto.serializer(), fixture)
-        assertEquals("mock-jwt-token-12345", dto.token)
-    }
-
-    @Test
-    fun `auth-me fixture parses to AuthMeResponseDto`() {
+    fun `login response parses token and embedded user`() {
         val fixture = """
         {
-          "id": 1,
-          "first_name": "Mock",
-          "last_name": "Driver",
-          "email": "driver@axleops-mock.com",
-          "roles": ["ROLE_DRIVER", "ROLE_OPS_EXECUTIVE"],
-          "tenant_id": 1,
-          "contact_id": 42,
-          "branch_id": 1
+          "token": "mock-jwt-token-12345",
+          "user": {
+            "id": "550e8400-e29b-41d4-a716-446655440000",
+            "fullName": "Mock Driver",
+            "firstName": "Mock",
+            "lastName": "Driver",
+            "email": "driver@axleops-mock.com",
+            "roles": [
+              {"code": "DRIVER", "displayName": "Driver", "department": "Operations"}
+            ],
+            "authorities": ["TRIP_READ_OWN"],
+            "tenantId": "tenant-1"
+          }
         }
         """.trimIndent()
-        val dto = json.decodeFromString(AuthMeResponseDto.serializer(), fixture)
-        assertEquals(1L, dto.id)
-        assertEquals("Mock", dto.firstName)
-        assertEquals("Driver", dto.lastName)
-        assertEquals("driver@axleops-mock.com", dto.email)
-        assertEquals(2, dto.roles.size)
-        assertEquals(1L, dto.tenantId)
+        val dto = json.decodeFromString(AuthLoginResponseDto.serializer(), fixture)
+        assertEquals("mock-jwt-token-12345", dto.token)
+        assertEquals("Mock Driver", dto.user?.fullName)
+        assertEquals(1, dto.user?.roles?.size)
+        assertEquals("DRIVER", dto.user?.roles?.first()?.code)
     }
 
     @Test
-    fun `auth-me fixture tolerates extra unknown fields`() {
+    fun `auth-me response parses AuthUserResponseDto with camelCase fields`() {
         val fixture = """
         {
-          "id": 1,
-          "first_name": "Test",
-          "last_name": "User",
+          "id": "550e8400-e29b-41d4-a716-446655440000",
+          "fullName": "Mock Driver",
+          "firstName": "Mock",
+          "lastName": "Driver",
+          "email": "driver@axleops-mock.com",
+          "roles": [
+            {"code": "DRIVER", "displayName": "Driver", "department": "Operations"},
+            {"code": "OPERATIONS_EXECUTIVE", "displayName": "Ops Exec", "department": "Operations"}
+          ],
+          "authorities": ["TRIP_READ_OWN", "TRIP_UPDATE_STATUS"],
+          "tenantId": "tenant-1",
+          "branchId": "branch-1",
+          "branchName": "HQ",
+          "type": "TENANT"
+        }
+        """.trimIndent()
+        val dto = json.decodeFromString(AuthUserResponseDto.serializer(), fixture)
+        assertEquals("550e8400-e29b-41d4-a716-446655440000", dto.id)
+        assertEquals("Mock Driver", dto.fullName)
+        assertEquals(2, dto.roles.size)
+        assertEquals("DRIVER", dto.roles[0].code)
+        assertEquals("OPERATIONS_EXECUTIVE", dto.roles[1].code)
+        assertEquals(2, dto.authorities.size)
+    }
+
+    @Test
+    fun `auth-me response tolerates extra unknown fields`() {
+        val fixture = """
+        {
+          "id": "1",
+          "fullName": "Test User",
           "email": "test@test.com",
           "roles": [],
-          "tenant_id": null,
+          "tenantId": null,
           "some_future_field": "should be ignored"
         }
         """.trimIndent()
-        val dto = json.decodeFromString(AuthMeResponseDto.serializer(), fixture)
-        assertEquals(1L, dto.id)
-        assertEquals("Test", dto.firstName)
+        val dto = json.decodeFromString(AuthUserResponseDto.serializer(), fixture)
+        assertEquals("1", dto.id)
+        assertEquals("Test User", dto.fullName)
     }
 
     @Test
-    fun `select-role response parses correctly`() {
+    fun `select-role response parses as LoginResponse with user`() {
         val fixture = """
         {
-          "user_id": 42,
-          "display_name": "Raj Kumar",
           "token": "role-jwt-xyz",
-          "authorities": ["TRIP_READ", "TRIP_UPDATE", "POD_UPLOAD"],
-          "contact_id": 100,
-          "branch_id": 5,
-          "tenant_id": 1
+          "user": {
+            "id": "42",
+            "fullName": "Raj Kumar",
+            "email": "raj@axleops.com",
+            "roles": [{"code": "DRIVER", "displayName": "Driver"}],
+            "authorities": ["TRIP_READ_OWN", "TRIP_UPDATE_STATUS"],
+            "branchId": "5",
+            "tenantId": "1"
+          }
         }
         """.trimIndent()
-        val dto = json.decodeFromString(SelectRoleResponseDto.serializer(), fixture)
-        assertEquals(42L, dto.userId)
-        assertEquals("Raj Kumar", dto.displayName)
+        val dto = json.decodeFromString(AuthLoginResponseDto.serializer(), fixture)
         assertEquals("role-jwt-xyz", dto.token)
-        assertEquals(3, dto.authorities.size)
-        assertEquals(100L, dto.contactId)
-        assertEquals(5L, dto.branchId)
-        assertEquals(1L, dto.tenantId)
+        assertEquals("42", dto.user?.id)
+        assertEquals("Raj Kumar", dto.user?.fullName)
+        assertEquals(2, dto.user?.authorities?.size)
     }
 
     @Test
-    fun `select-role response handles missing optional fields`() {
-        val fixture = """
-        {
-          "user_id": 1,
-          "token": "jwt"
-        }
-        """.trimIndent()
-        val dto = json.decodeFromString(SelectRoleResponseDto.serializer(), fixture)
-        assertEquals(1L, dto.userId)
-        assertEquals("jwt", dto.token)
-        assertEquals("", dto.displayName)
-        assertTrue(dto.authorities.isEmpty())
+    fun `login response handles missing user field`() {
+        val fixture = """{"token": "jwt-only"}"""
+        val dto = json.decodeFromString(AuthLoginResponseDto.serializer(), fixture)
+        assertEquals("jwt-only", dto.token)
+        assertEquals(null, dto.user)
     }
 }

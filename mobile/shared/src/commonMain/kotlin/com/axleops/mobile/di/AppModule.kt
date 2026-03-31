@@ -41,10 +41,19 @@ val appModule = module {
      */
     single(named("sessionExpired")) { MutableSharedFlow<Unit>(extraBufferCapacity = 1) }
 
-    /** Shared Ktor HTTP client — wired with 401 interceptor. */
+    /**
+     * Backend base URL.
+     * Android emulator uses 10.0.2.2 to reach host's localhost.
+     * TODO: Make configurable via build config or platform expect/actual.
+     */
+    single(named("baseUrl")) { "http://192.168.1.4:8080/api/v1" }
+
+    /** Shared Ktor HTTP client — wired with 401 interceptor and base URL. */
     single<HttpClient> {
         val sessionExpired = get<MutableSharedFlow<Unit>>(named("sessionExpired"))
+        val baseUrl = get<String>(named("baseUrl"))
         HttpClientFactory.create(
+            baseUrl = baseUrl,
             onUnauthorized = { sessionExpired.tryEmit(Unit) },
         )
     }

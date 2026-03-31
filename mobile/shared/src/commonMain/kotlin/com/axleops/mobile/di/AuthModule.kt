@@ -8,6 +8,7 @@ import com.axleops.mobile.auth.viewmodel.AuthViewModel
 import com.axleops.mobile.data.DataSourceConfig
 import com.axleops.mobile.data.DataSourceMode
 import org.koin.core.module.dsl.viewModel
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 /**
@@ -27,7 +28,7 @@ val authModule = module {
         when (config.authSource) {
             DataSourceMode.REAL -> RealAuthRepository(
                 httpClient = get(),
-                baseUrl = "", // Will be configured via build config or env
+                baseUrl = get(named("baseUrl")),
             )
             DataSourceMode.MOCK -> MockAuthRepository()
         }

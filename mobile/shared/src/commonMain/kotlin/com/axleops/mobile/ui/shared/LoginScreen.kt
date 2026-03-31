@@ -52,8 +52,9 @@ fun LoginScreen(
     messageType: MessageType = MessageType.ERROR,
     onLogin: (email: String, password: String) -> Unit,
 ) {
-    var email by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
+    // Debug prefill — remove before release
+    var email by rememberSaveable { mutableStateOf("gurpreet_gt") }
+    var password by rememberSaveable { mutableStateOf("gurpreet_gt") }
 
     // T-FIX-03: Error-clear-on-keystroke (UX interaction-rules §1.3)
     // Wrap external message in local state so it can be cleared on keystroke

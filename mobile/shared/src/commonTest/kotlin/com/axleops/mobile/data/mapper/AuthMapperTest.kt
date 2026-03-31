@@ -1,8 +1,8 @@
 package com.axleops.mobile.data.mapper
 
 import com.axleops.mobile.data.dto.AuthLoginResponseDto
-import com.axleops.mobile.data.dto.AuthMeResponseDto
-import com.axleops.mobile.data.dto.SelectRoleResponseDto
+import com.axleops.mobile.data.dto.AuthUserResponseDto
+import com.axleops.mobile.data.dto.RoleInfoDto
 import com.axleops.mobile.auth.repository.LoginResult
 import com.axleops.mobile.role.model.AppRole
 import kotlin.test.Test
@@ -24,27 +24,32 @@ class AuthMapperTest {
     }
 
     @Test
-    fun `AuthMeResponseDto toDomain maps all fields`() {
-        val dto = AuthMeResponseDto(
-            id = 42,
+    fun `AuthUserResponseDto toDomain maps all fields`() {
+        val dto = AuthUserResponseDto(
+            id = "42",
+            fullName = "Raj Kumar",
             firstName = "Raj",
             lastName = "Kumar",
             email = "raj@axleops.com",
-            roles = listOf("DRIVER", "OPERATIONS_EXECUTIVE"),
-            tenantId = 1,
+            roles = listOf(
+                RoleInfoDto(code = "DRIVER", displayName = "Driver", department = "Operations"),
+                RoleInfoDto(code = "OPERATIONS_EXECUTIVE", displayName = "Ops Executive", department = "Operations"),
+            ),
+            tenantId = "1",
         )
         val profile = dto.toDomain()
         assertEquals("42", profile.userId)
         assertEquals("Raj Kumar", profile.displayName)
         assertEquals("raj@axleops.com", profile.email)
-        assertEquals(2, profile.roles.size)
+        assertEquals(listOf("DRIVER", "OPERATIONS_EXECUTIVE"), profile.roles)
         assertEquals("1", profile.tenantId)
     }
 
     @Test
-    fun `AuthMeResponseDto toDomain falls back to email prefix when names blank`() {
-        val dto = AuthMeResponseDto(
-            id = 1,
+    fun `AuthUserResponseDto toDomain falls back to email prefix when names blank`() {
+        val dto = AuthUserResponseDto(
+            id = "1",
+            fullName = null,
             firstName = "",
             lastName = "",
             email = "driver@axleops.com",
@@ -54,9 +59,10 @@ class AuthMapperTest {
     }
 
     @Test
-    fun `AuthMeResponseDto toDomain falls back to User when all empty`() {
-        val dto = AuthMeResponseDto(
-            id = 1,
+    fun `AuthUserResponseDto toDomain falls back to User when all empty`() {
+        val dto = AuthUserResponseDto(
+            id = "1",
+            fullName = null,
             firstName = "",
             lastName = "",
             email = "",
@@ -66,55 +72,62 @@ class AuthMapperTest {
     }
 
     @Test
-    fun `AuthMeResponseDto toDomain handles null tenantId`() {
-        val dto = AuthMeResponseDto(id = 1, tenantId = null)
+    fun `AuthUserResponseDto toDomain handles null tenantId`() {
+        val dto = AuthUserResponseDto(id = "1", tenantId = null)
         val profile = dto.toDomain()
         assertNull(profile.tenantId)
     }
 
     @Test
-    fun `SelectRoleResponseDto toDomain maps session correctly`() {
-        val dto = SelectRoleResponseDto(
-            userId = 42,
-            displayName = "Raj Kumar",
+    fun `AuthLoginResponseDto toSession maps session correctly`() {
+        val dto = AuthLoginResponseDto(
             token = "role-jwt-xyz",
-            authorities = listOf("TRIP_READ", "TRIP_UPDATE"),
-            contactId = 100,
-            branchId = 5,
-            tenantId = 1,
+            user = AuthUserResponseDto(
+                id = "42",
+                fullName = "Raj Kumar",
+                authorities = listOf("TRIP_READ", "TRIP_UPDATE"),
+                branchId = "5",
+                tenantId = "1",
+            ),
         )
-        val session = dto.toDomain(AppRole.DRIVER)
+        val session = dto.toSession(AppRole.DRIVER)
         assertEquals("42", session.userId)
         assertEquals("Raj Kumar", session.displayName)
         assertEquals(AppRole.DRIVER, session.activeRole)
         assertEquals("role-jwt-xyz", session.jwt)
         assertEquals(listOf("TRIP_READ", "TRIP_UPDATE"), session.authorities)
-        assertEquals("100", session.contactId)
+        assertNull(session.contactId) // Gap G1
         assertEquals("5", session.branchId)
         assertEquals("1", session.tenantId)
     }
 
     @Test
-    fun `SelectRoleResponseDto toDomain uses fallback for blank displayName`() {
-        val dto = SelectRoleResponseDto(
-            userId = 1,
-            displayName = "",
+    fun `AuthLoginResponseDto toSession uses fallback for null fullName`() {
+        val dto = AuthLoginResponseDto(
             token = "jwt",
+            user = AuthUserResponseDto(
+                id = "1",
+                fullName = null,
+                firstName = "",
+                lastName = "",
+                email = "",
+            ),
         )
-        val session = dto.toDomain(AppRole.DRIVER)
+        val session = dto.toSession(AppRole.DRIVER)
         assertEquals("User", session.displayName)
     }
 
     @Test
-    fun `SelectRoleResponseDto toDomain handles null optional fields`() {
-        val dto = SelectRoleResponseDto(
-            userId = 1,
+    fun `AuthLoginResponseDto toSession handles null optional fields`() {
+        val dto = AuthLoginResponseDto(
             token = "jwt",
-            contactId = null,
-            branchId = null,
-            tenantId = null,
+            user = AuthUserResponseDto(
+                id = "1",
+                branchId = null,
+                tenantId = null,
+            ),
         )
-        val session = dto.toDomain(AppRole.DRIVER)
+        val session = dto.toSession(AppRole.DRIVER)
         assertNull(session.contactId)
         assertNull(session.branchId)
         assertNull(session.tenantId)
