@@ -85,7 +85,7 @@ export default function TripCreateContent({ onSave }) {
   const swapToDetail = (trip) => {
     updateSlider({
       title: `Trip ${trip.tripNumber}`,
-      subtitle: `${trip.originCity || '?'} → ${trip.destinationCity || '?'}`,
+      subtitle: trip.routeName || `${trip.originCity || '?'} → ${trip.destinationCity || '?'}`,
       content: <TripDetailContent tripId={trip.id} onRefresh={onSave} />,
     });
   };

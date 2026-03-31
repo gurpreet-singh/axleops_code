@@ -136,13 +136,35 @@ Renders as: uppercase label + input with blue focus ring
 | Red | #FECACA | linear-gradient(135deg, #FEF2F2, #FFE4E6) | #DC2626 |
 | Gray | #E2E8F0 | #F8FAFC | #64748B |
 
-#### `Section` — headerAction Prop (CRITICAL PATTERN)
-When a section supports adding/creating items (e.g., documents, fuel entries, driver assignments),
-the **Add/Action button MUST be placed in the section header** via the `headerAction` prop —
-**never inside the section body**.
+#### `Section` / `SectionCard` — headerAction Prop (CRITICAL PATTERN)
+When a section contains **tabular or list data** (e.g., expenses, advances, documents, fuel entries,
+driver assignments), the **Add/Upload/Action button MUST be placed in the section header** (right side)
+via the `headerAction` prop — **never as a full-width button or inline button inside the section body**.
+
+This applies to **both** `Section` and `SectionCard` components. Common cases:
+- Expenses list → "Add Expense" button in header
+- Advances list → "Add Advance" button in header
+- Documents list → "Upload" button in header
+- Any list with an add/create action
 
 ```jsx
-// ✅ CORRECT — action button in section header
+// ✅ CORRECT — compact action button in section header (right side)
+<Section title="Expenses" icon="fas fa-receipt" iconColor="#DC2626" borderColor="#FECACA" headerBg="#FEF2F2"
+  headerAction={canEdit && (
+    <button onClick={() => setShowAdd(!showAdd)}
+      style={{ padding: '3px 10px', border: '1.5px solid #FECACA', borderRadius: 6, fontSize: 10,
+               fontWeight: 700, cursor: 'pointer', background: showAdd ? '#FEE2E2' : '#fff',
+               color: showAdd ? '#DC2626' : '#1E293B', display: 'flex', alignItems: 'center', gap: 4 }}>
+      <i className={`fas fa-${showAdd ? 'times' : 'plus'}`} style={{ fontSize: 9 }}></i>
+      {showAdd ? 'Cancel' : 'Add Expense'}
+    </button>
+  )}
+>
+  {showAdd && <AddExpenseForm ... />}
+  {/* list content */}
+</Section>
+
+// ✅ ALSO CORRECT — using SectionAddBtn
 <Section title="Fuel Log" emoji="⛽" borderColor="#FDBA74" accentColor="#9A3412"
   headerAction={<SectionAddBtn label="Add Fuel Entry" icon="plus" color="#9A3412" onClick={toggle} />}
 >
@@ -150,11 +172,14 @@ the **Add/Action button MUST be placed in the section header** via the `headerAc
   {/* list content */}
 </Section>
 
-// ❌ WRONG — action button inside section body
-<Section title="Fuel Log" emoji="⛽">
-  <div style={{ display: 'flex', marginBottom: 12 }}>
-    <button onClick={toggle}>Add Fuel Entry</button>  // ← DO NOT DO THIS
-  </div>
+// ❌ WRONG — full-width button inside section body
+<Section title="Documents" emoji="📎">
+  <button style={{ width: '100%' }} onClick={toggle}>Upload Document</button>  // ← DO NOT DO THIS
+</Section>
+
+// ❌ WRONG — action button inside section body with marginBottom
+<Section title="Expenses">
+  <button style={{ marginBottom: 10 }} onClick={toggle}>Add Expense</button>  // ← DO NOT DO THIS
 </Section>
 ```
 
