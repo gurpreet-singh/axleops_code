@@ -551,45 +551,116 @@ function ExpensesTab({ trip, onRefresh }) {
 
 // ─── TIMELINE TAB ─────────────────────────────────────────
 function TimelineTab({ trip }) {
-  const events = [
-    { time: trip.createdAt, label: 'Trip Created', icon: 'fas fa-plus-circle', done: true },
-    ...(trip.vehicleRegistration ? [{ time: trip.createdAt, label: 'Vehicle Assigned', icon: 'fas fa-truck', done: true, detail: trip.vehicleRegistration }] : []),
-    ...(trip.driverName ? [{ time: trip.createdAt, label: 'Driver Assigned', icon: 'fas fa-user', done: true, detail: trip.driverName }] : []),
-    ...(trip.startedAt ? [{ time: trip.startedAt, label: 'Trip Started', icon: 'fas fa-play', done: true }] : []),
-    ...(trip.status === 'IN_TRANSIT' ? [{ time: null, label: 'In Transit', icon: 'fas fa-road', done: false, current: true }] : []),
-    ...(trip.reachedDestination ? [{ time: trip.reachedDestinationAt, label: 'Reached Destination', icon: 'fas fa-map-marker-alt', done: true }] : []),
-    ...(trip.deliveredAt ? [{ time: trip.deliveredAt, label: 'Delivered', icon: 'fas fa-check-circle', done: true }] : []),
-    ...(trip.settledAt ? [{ time: trip.settledAt, label: 'Trip Settled', icon: 'fas fa-lock', done: true }] : []),
-    ...(trip.cancelledAt ? [{ time: trip.cancelledAt, label: 'Cancelled', icon: 'fas fa-ban', done: true, detail: trip.cancellationReason }] : []),
-  ];
+  // ── Build event list ──
+  const events = [];
+  const push = (time, label, icon, detail, isCancellation) => {
+    if (time) events.push({ time: new Date(time), label, icon, detail, isCancellation });
+  };
 
-  const fmtDate = (d) => d ? new Date(d).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : null;
+  push(trip.createdAt, 'Trip Created', 'fa-file-alt', trip.tripNumber);
+  if (trip.vehicleRegistration) push(trip.vehicleAssignedAt || trip.createdAt, 'Vehicle Assigned', 'fa-truck', trip.vehicleRegistration);
+  if (trip.driverName) push(trip.driverAssignedAt || trip.createdAt, 'Driver Assigned', 'fa-id-badge', trip.driverName);
+  if (trip.startedAt) push(trip.startedAt, 'Trip Started', 'fa-play', trip.originCity ? `From ${trip.originCity}` : null);
+  if (trip.reachedDestination && trip.reachedDestinationAt) push(trip.reachedDestinationAt, 'Reached Destination', 'fa-map-marker-alt', trip.destinationCity || null);
+  if (trip.deliveredAt) push(trip.deliveredAt, 'Delivered', 'fa-box-open', trip.destinationCity ? `At ${trip.destinationCity}` : null);
+  if (trip.settledAt) push(trip.settledAt, 'Trip Settled', 'fa-check-circle', null);
+  if (trip.cancelledAt) push(trip.cancelledAt, 'Trip Cancelled', 'fa-ban', trip.cancellationReason || null, true);
+
+  events.sort((a, b) => a.time - b.time);
+
+  const fmt = (d) => d.toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
+
+  const fmtDur = (ms) => {
+    if (!ms || ms <= 0) return null;
+    const m = Math.floor(ms / 60000);
+    if (m < 60) return `${m} min`;
+    const h = Math.floor(m / 60);
+    if (h < 24) return `${h}h ${m % 60}m`;
+    const d = Math.floor(h / 24);
+    return `${d}d ${h % 24}h`;
+  };
+
+  // Total duration
+  const start = trip.createdAt ? new Date(trip.createdAt) : null;
+  const end = trip.settledAt ? new Date(trip.settledAt) : trip.deliveredAt ? new Date(trip.deliveredAt) : trip.cancelledAt ? new Date(trip.cancelledAt) : null;
+  const totalDur = start && end ? fmtDur(end - start) : null;
+
+  // Is currently in-progress
+  const isActive = trip.status === 'IN_TRANSIT' || trip.status === 'CREATED';
 
   return (
-    <div style={{ position: 'relative', paddingLeft: 24 }}>
-      <div style={{ position: 'absolute', left: 11, top: 12, bottom: 12, width: 2, background: 'linear-gradient(to bottom, #16A34A, #E5E7EB)' }}></div>
-      {events.map((ev, i) => (
-        <div key={i} style={{ position: 'relative', padding: '10px 0 10px 20px' }}>
-          <div style={{
-            position: 'absolute', left: -13, top: 12, width: ev.current ? 24 : 20, height: ev.current ? 24 : 20,
-            borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1,
-            background: ev.done ? '#16A34A' : ev.current ? '#2563EB' : '#E5E7EB',
-            boxShadow: ev.current ? '0 0 0 4px rgba(37,99,235,0.15)' : 'none',
-          }}>
-            <i className={ev.done ? 'fas fa-check' : ev.icon} style={{ color: '#fff', fontSize: 8 }}></i>
-          </div>
-          <div style={{ padding: '10px 14px', background: ev.current ? '#EFF6FF' : ev.done ? '#F0FDF4' : '#F9FAFB', border: `1px solid ${ev.current ? '#2563EB' : ev.done ? '#BBF7D0' : '#E5E7EB'}`, borderRadius: 8 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: 12, fontWeight: 700, color: ev.current ? '#1E40AF' : ev.done ? '#166534' : '#6B7280' }}>{ev.label}</span>
-              <span style={{ fontSize: 9, padding: '2px 6px', borderRadius: 3, fontWeight: 600, background: ev.done ? '#16A34A' : ev.current ? '#2563EB' : '#F3F4F6', color: ev.done || ev.current ? '#fff' : '#9CA3AF' }}>
-                {ev.done ? 'DONE' : ev.current ? 'ACTIVE' : 'PENDING'}
-              </span>
-            </div>
-            {ev.time && <div style={{ fontSize: 10, color: '#6B7280', marginTop: 3 }}>{fmtDate(ev.time)}</div>}
-            {ev.detail && <div style={{ fontSize: 10, color: '#475569', marginTop: 2 }}>{ev.detail}</div>}
-          </div>
+    <div>
+      {/* Total Duration Header */}
+      {totalDur && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 14, padding: '8px 12px', background: '#F8FAFC', borderRadius: 8, border: '1px solid #F1F5F9' }}>
+          <i className="fas fa-stopwatch" style={{ fontSize: 10, color: '#94A3B8' }}></i>
+          <span style={{ fontSize: 11, color: '#64748B', fontWeight: 600 }}>Total duration: <strong style={{ color: '#334155' }}>{totalDur}</strong></span>
         </div>
-      ))}
+      )}
+
+      {/* Vertical Timeline */}
+      <div style={{ position: 'relative', paddingLeft: 30 }}>
+        {/* Vertical line */}
+        <div style={{ position: 'absolute', left: 9, top: 8, bottom: 8, width: 1.5, background: '#E2E8F0', borderRadius: 1 }}></div>
+
+        {events.map((ev, i) => {
+          const prevTime = i > 0 ? events[i - 1].time : null;
+          const dur = prevTime ? fmtDur(ev.time - prevTime) : null;
+
+          return (
+            <div key={i}>
+              {/* Duration between events */}
+              {dur && (
+                <div style={{ padding: '3px 0', marginLeft: -4 }}>
+                  <span style={{ fontSize: 9, color: '#B0B8C4', fontWeight: 500, fontStyle: 'italic' }}>
+                    {dur} later
+                  </span>
+                </div>
+              )}
+
+              {/* Event */}
+              <div style={{ position: 'relative', padding: '8px 0', display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+                {/* Dot */}
+                <div style={{
+                  position: 'absolute', left: -25, top: 11, width: 14, height: 14,
+                  borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  background: ev.isCancellation ? '#FEE2E2' : '#F1F5F9',
+                  border: ev.isCancellation ? '1.5px solid #FECACA' : '1.5px solid #CBD5E1',
+                }}>
+                  <i className={`fas ${ev.icon}`} style={{ fontSize: 6, color: ev.isCancellation ? '#DC2626' : '#64748B' }}></i>
+                </div>
+
+                {/* Content */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 8 }}>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: ev.isCancellation ? '#991B1B' : '#1E293B' }}>{ev.label}</span>
+                    <span style={{ fontSize: 10, color: '#94A3B8', whiteSpace: 'nowrap', flexShrink: 0 }}>{fmt(ev.time)}</span>
+                  </div>
+                  {ev.detail && (
+                    <div style={{ fontSize: 11, color: '#64748B', marginTop: 2 }}>{ev.detail}</div>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+
+        {/* Active status indicator */}
+        {isActive && (
+          <div style={{ position: 'relative', padding: '8px 0', display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{
+              position: 'absolute', left: -25, top: 11, width: 14, height: 14,
+              borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              background: '#fff', border: '2px solid #94A3B8',
+            }}>
+              <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#94A3B8' }}></div>
+            </div>
+            <span style={{ fontSize: 11, color: '#94A3B8', fontStyle: 'italic' }}>
+              {trip.status === 'IN_TRANSIT' ? 'In transit…' : 'Awaiting start'}
+            </span>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -669,11 +740,6 @@ function DocumentsTab({ trip, onRefresh }) {
     { value: 'OTHER', label: 'Other' },
   ];
 
-  const DOC_STATUS_COLORS = {
-    PENDING:  { bg: '#FEF3C7', text: '#92400E', border: '#FDE68A', label: 'Pending' },
-    VERIFIED: { bg: '#DCFCE7', text: '#166534', border: '#86EFAC', label: 'Verified' },
-    REJECTED: { bg: '#FEE2E2', text: '#991B1B', border: '#FECACA', label: 'Rejected' },
-  };
 
   useEffect(() => {
     loadDocs();
@@ -808,7 +874,6 @@ function DocumentsTab({ trip, onRefresh }) {
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {documents.map(doc => {
-              const sc = DOC_STATUS_COLORS[doc.status] || DOC_STATUS_COLORS.PENDING;
               return (
                 <div key={doc.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', background: '#FAFAFA', border: '1px solid #F1F5F9', borderRadius: 10, transition: 'all 0.1s' }}
                   onMouseEnter={e => e.currentTarget.style.background = '#F1F5F9'}
@@ -817,23 +882,14 @@ function DocumentsTab({ trip, onRefresh }) {
                     <i className={getDocIcon(doc.documentType)} style={{ fontSize: 14, color: '#2563EB' }}></i>
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
-                      <span style={{ fontSize: 12, fontWeight: 700, color: '#1E293B' }}>{doc.documentType}</span>
-                      <span style={{ fontSize: 9, fontWeight: 700, padding: '2px 6px', borderRadius: 6, background: sc.bg, color: sc.text, border: `1px solid ${sc.border}` }}>{sc.label}</span>
-                    </div>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: '#1E293B', marginBottom: 2 }}>{doc.documentType}</div>
                     <div style={{ fontSize: 11, color: '#64748B', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {doc.fileName || 'No file'}
                       {doc.notes && <span style={{ marginLeft: 6, color: '#94A3B8' }}>• {doc.notes}</span>}
                     </div>
                     <div style={{ fontSize: 10, color: '#94A3B8', marginTop: 2 }}>
                       Uploaded {formatDate(doc.uploadedAt)}
-                      {doc.verifiedAt && <span style={{ color: '#16A34A', marginLeft: 6 }}>• Verified {formatDate(doc.verifiedAt)}</span>}
                     </div>
-                    {doc.rejectionReason && (
-                      <div style={{ fontSize: 10, color: '#DC2626', marginTop: 2, fontStyle: 'italic' }}>
-                        <i className="fas fa-exclamation-circle" style={{ marginRight: 3, fontSize: 9 }}></i>{doc.rejectionReason}
-                      </div>
-                    )}
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
                     {doc.fileUrl && (

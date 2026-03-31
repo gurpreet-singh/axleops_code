@@ -7,7 +7,7 @@
    ─────────────────────────────────────────────
    1. Command Center  — Dashboard, Morning Brief, Alerts & Reminders
    2. Trips           — Active, Settled, Archived, Routes & Rates
-   3. Fleet           — Vehicles, Vehicle Types, Equipment, Assignments, Documents, Fuel Log
+   3. Fleet           — Vehicles, Assignments, Documents, Fuel Log
    4. People & Accounts — Ledger Accounts, Drivers, Employees
    5. Workshop        — Service Records, Job Cards, Inspections, Parts & Stock, Part Fitment History
    6. Billing         — Invoices, Payment Receipts, Aging Analysis
@@ -168,8 +168,6 @@ export function pageToPath(page) {
 
     // ── Fleet ──
     'vehicles': '/fleet',
-    'vehicle-types': '/fleet/types',
-    'equipment': '/equipment',
     'assignments': '/fleet/assignments',
     'documents': '/documents',
     'fuel-log': '/fuel/history',
@@ -317,8 +315,6 @@ const MENU = {
   }),
   fl: {
     vehicles:    { label: 'Vehicles',       page: 'vehicles' },
-    types:       { label: 'Vehicle Types',  page: 'vehicle-types' },
-    equipment:   { label: 'Equipment',      page: 'equipment' },
     assignments: { label: 'Assignments',    page: 'assignments' },
     documents:   { label: 'Documents',      page: 'documents' },
     fuelLog:     { label: 'Fuel Log',       page: 'fuel-log' },
@@ -443,8 +439,6 @@ export const ROLE_MENUS = {
     ]),
     MENU.fleet([
       MENU.fl.vehicles,
-      MENU.fl.types,
-      MENU.fl.equipment,
       MENU.fl.assignments,
       MENU.fl.documents,
       MENU.fl.fuelLog,
@@ -497,7 +491,6 @@ export const ROLE_MENUS = {
      BRANCH_MANAGER
      Cross-department within a single branch.
      Sees most groups but with limited depth:
-     - No Vehicle Types (that's a central config, not branch-level)
      - No Masters or Integrations in Settings (central admin only)
      - Limited Books (no Financial Statements — that's controller territory)
      - Limited Insights (branch-relevant only)
@@ -516,7 +509,6 @@ export const ROLE_MENUS = {
     ]),
     MENU.fleet([
       MENU.fl.vehicles,
-      MENU.fl.equipment,
       MENU.fl.assignments,
       MENU.fl.documents,
       MENU.fl.fuelLog,
@@ -578,8 +570,6 @@ export const ROLE_MENUS = {
     ]),
     MENU.fleet([
       MENU.fl.vehicles,
-      MENU.fl.types,
-      MENU.fl.equipment,
       MENU.fl.assignments,
       MENU.fl.documents,
       MENU.fl.fuelLog,
@@ -844,8 +834,6 @@ export const ROLE_MENUS = {
     ]),
     MENU.fleet([
       MENU.fl.vehicles,
-      MENU.fl.types,
-      MENU.fl.equipment,
       MENU.fl.assignments,
       MENU.fl.documents,
       MENU.fl.fuelLog,

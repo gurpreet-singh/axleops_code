@@ -110,9 +110,7 @@ export default function App() {
         {/* ─── 3. Fleet ──────────────────────────────────── */}
         <Route path="/fleet" element={<VehicleListPage />} />
         <Route path="/fleet/new" element={<PlaceholderPage title="Add Vehicle" icon="fas fa-truck" />} />
-        <Route path="/fleet/types" element={<PlaceholderPage title="Vehicle Types" icon="fas fa-tags" />} />
         <Route path="/fleet/assignments" element={<PlaceholderPage title="Assignments" icon="fas fa-exchange-alt" />} />
-        <Route path="/equipment" element={<PlaceholderPage title="Equipment" icon="fas fa-cogs" />} />
         <Route path="/documents" element={<PlaceholderPage title="Documents" icon="fas fa-file-alt" />} />
         <Route path="/fuel/history" element={<PlaceholderPage title="Fuel Log" icon="fas fa-gas-pump" />} />
 
