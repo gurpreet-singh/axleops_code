@@ -22,7 +22,7 @@ public class DriverAssignment extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "driver_id", nullable = false)
-    private Contact driver;
+    private User driver;
 
     @Column(name = "assigned_from", nullable = false)
     private LocalDate assignedFrom;

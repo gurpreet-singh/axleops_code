@@ -372,7 +372,7 @@ function VehicleFormSections({ form, set }) {
     api.get('/masters/vehicle-types/dropdown').then(({ data }) => setVehicleTypes(data || [])).catch(() => {});
     api.get('/branches').then(({ data }) => setBranches(data || [])).catch(() => setBranches([]));
     api.get('/clients').then(({ data }) => setClients(data || [])).catch(() => setClients([]));
-    api.get('/contacts').then(({ data }) => setContacts(data || [])).catch(() => setContacts([]));
+    api.get('/users').then(({ data }) => setContacts(data || [])).catch(() => setContacts([]));
   }, []);
 
   const vehicleTypeOptions = [
@@ -795,10 +795,10 @@ function AssignDriverForm({ vehicleId, onSaved }) {
   const s = k => v => sF(p => ({ ...p, [k]: v }));
 
   useEffect(() => {
-    api.get('/contacts').then(({ data }) => setDrivers(data || [])).catch(() => setDrivers([]));
+    api.get('/users', { params: { role: 'DRIVER' } }).then(({ data }) => setDrivers(data || [])).catch(() => setDrivers([]));
   }, []);
 
-  const driverOpts = [{ value: '', label: 'Select driver' }, ...drivers.map(d => ({ value: d.id, label: d.name }))];
+  const driverOpts = [{ value: '', label: 'Select driver' }, ...drivers.map(d => ({ value: d.id, label: `${d.firstName}${d.lastName ? ' ' + d.lastName : ''}` }))];
 
   const save = async () => {
     if (!f.driverId) return; setSaving(true);

@@ -28,7 +28,6 @@ public class BranchService {
 
     private final BranchRepository branchRepo;
     private final VehicleRepository vehicleRepo;
-    private final ContactRepository contactRepo;
     private final TripRepository tripRepo;
     private final UserRepository userRepo;
 
@@ -162,7 +161,7 @@ public class BranchService {
         }
 
         long vehicles = vehicleRepo.countByBranchIdAndStatus(branchId, "ACTIVE");
-        long drivers = contactRepo.countByBranchIdAndStatus(branchId, "ACTIVE");
+        long drivers = userRepo.countByBranchIdAndStatus(branchId, "ACTIVE");
         long trips = tripRepo.countByBranchIdAndStatusIn(branchId,
                 List.of(TripStatus.CREATED, TripStatus.IN_TRANSIT));
 
@@ -219,7 +218,7 @@ public class BranchService {
                 .active(b.isActive())
                 .sortOrder(b.getSortOrder())
                 .vehicleCount(vehicleRepo.countByBranchIdAndStatus(b.getId(), "ACTIVE"))
-                .driverCount(contactRepo.countByBranchIdAndStatus(b.getId(), "ACTIVE"))
+                .driverCount(userRepo.countByBranchIdAndStatus(b.getId(), "ACTIVE"))
                 .tripCount(tripRepo.countByBranchIdAndStatusIn(b.getId(),
                         List.of(TripStatus.CREATED, TripStatus.IN_TRANSIT)))
                 .build();

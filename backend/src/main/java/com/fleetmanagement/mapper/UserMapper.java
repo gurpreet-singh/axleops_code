@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
-import java.util.List;
+
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,11 +20,10 @@ public interface UserMapper {
     UserResponse toResponse(User user);
 
     @Named("rolesToStrings")
-    default List<String> rolesToStrings(Set<Role> roles) {
-        if (roles == null) return List.of();
+    default Set<String> rolesToStrings(Set<Role> roles) {
+        if (roles == null) return Set.of();
         return roles.stream()
                 .map(Enum::name)
-                .sorted()
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 }

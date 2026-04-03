@@ -122,5 +122,5 @@ public class Vehicle extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "operator_id")
-    private Contact operator;
+    private User operator;
 }

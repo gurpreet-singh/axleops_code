@@ -14,10 +14,14 @@ import java.util.stream.Collectors;
  * Tenant User — an employee of a transport company.
  * Each user belongs to exactly one tenant and can hold multiple roles.
  * Effective authorities are the union of all authorities from all assigned roles.
+ *
+ * This entity now also serves as the identity for operational personnel
+ * (drivers, mechanics, foremen, helpers) — replacing the former Contact entity.
+ * Non-login users have loginEnabled = false and password = null.
  */
 @Entity
 @Table(name = "users",
-    uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "email"}))
+    uniqueConstraints = @UniqueConstraint(columnNames = {"tenant_id", "username"}))
 @Getter
 @Setter
 public class User {
@@ -36,12 +40,22 @@ public class User {
     private String lastName;
 
     @Column(nullable = false)
+    private String username;
+
     private String email;
 
     private String password;
 
     private String title;
     private String phone;
+
+    private String address;
+
+    @Column(name = "login_enabled")
+    private boolean loginEnabled = true;
+
+    @Column(name = "status")
+    private String status = "ACTIVE";
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "branch_id")

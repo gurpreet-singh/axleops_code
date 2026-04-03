@@ -71,11 +71,11 @@ public class WorkOrder extends BaseEntity {
     // ─── Relationships ──────────────────────────────────────────
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assigned_to")
-    private Contact assignedTo;
+    private User assignedTo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vendor_id")
-    private Contact vendor;
+    private User vendor;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "branch_id")

@@ -23,7 +23,7 @@ public class OperationsService {
     private final VehicleDocumentRepository vehicleDocRepo;
     private final TripRepository tripRepo;
     private final VehicleRepository vehicleRepo;
-    private final ContactRepository contactRepo;
+    private final UserRepository contactRepo;
 
     // ═══════════════════════════════════════════════════════════
     // FUEL ENTRIES
@@ -115,8 +115,8 @@ public class OperationsService {
         UUID tid = TenantContext.get();
         Vehicle v = vehicleRepo.findByIdAndTenantId(vehicleId, tid)
                 .orElseThrow(() -> new ResourceNotFoundException("Vehicle", vehicleId));
-        Contact driver = contactRepo.findByIdAndTenantId(UUID.fromString((String) data.get("driverId")), tid)
-                .orElseThrow(() -> new ResourceNotFoundException("Contact (Driver)", UUID.fromString((String) data.get("driverId"))));
+        User driver = contactRepo.findByIdAndTenantId(UUID.fromString((String) data.get("driverId")), tid)
+                .orElseThrow(() -> new ResourceNotFoundException("User (Driver)", UUID.fromString((String) data.get("driverId"))));
 
         // End previous current assignment
         driverAssignmentRepo.findByVehicleIdAndTenantIdAndIsCurrentTrue(vehicleId, tid)

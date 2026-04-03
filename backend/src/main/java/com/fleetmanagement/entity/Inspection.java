@@ -30,7 +30,7 @@ public class Inspection extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "inspector_id")
-    private Contact inspector;
+    private User inspector;
 
     @Column(name = "inspection_data", columnDefinition = "TEXT")
     private String inspectionData; // JSON: checklist items and results

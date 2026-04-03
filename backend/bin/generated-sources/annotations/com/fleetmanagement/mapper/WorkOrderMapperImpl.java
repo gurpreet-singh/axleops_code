@@ -1,7 +1,7 @@
 package com.fleetmanagement.mapper;
 
 import com.fleetmanagement.dto.response.WorkOrderResponse;
-import com.fleetmanagement.entity.Contact;
+import com.fleetmanagement.entity.User;
 import com.fleetmanagement.entity.Vehicle;
 import com.fleetmanagement.entity.WorkOrder;
 import java.util.UUID;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-30T07:17:25+0530",
+    date = "2026-04-03T07:16:47+0530",
     comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.45.0.v20260224-0835, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -56,7 +56,7 @@ public class WorkOrderMapperImpl implements WorkOrderMapper {
     }
 
     private String workOrderAssignedToFirstName(WorkOrder workOrder) {
-        Contact assignedTo = workOrder.getAssignedTo();
+        User assignedTo = workOrder.getAssignedTo();
         if ( assignedTo == null ) {
             return null;
         }

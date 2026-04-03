@@ -17,7 +17,9 @@ public class AuthUserResponse {
     private String fullName;
     private String firstName;
     private String lastName;
+    private String username;
     private String email;
+    private String phone;
     private UUID tenantId;
     private String tenantName;
 

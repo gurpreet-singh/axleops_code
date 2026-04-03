@@ -7,13 +7,13 @@ import com.fleetmanagement.dto.request.CreateVehicleRequest;
 import com.fleetmanagement.dto.response.VehicleResponse;
 import com.fleetmanagement.entity.Branch;
 import com.fleetmanagement.entity.Client;
-import com.fleetmanagement.entity.Contact;
+import com.fleetmanagement.entity.User;
 import com.fleetmanagement.entity.Vehicle;
 import com.fleetmanagement.entity.master.VehicleTypeMaster;
 import com.fleetmanagement.mapper.VehicleMapper;
 import com.fleetmanagement.repository.BranchRepository;
 import com.fleetmanagement.repository.ClientRepository;
-import com.fleetmanagement.repository.ContactRepository;
+import com.fleetmanagement.repository.UserRepository;
 import com.fleetmanagement.repository.VehicleRepository;
 import com.fleetmanagement.repository.master.VehicleTypeMasterRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +36,7 @@ public class VehicleService {
     private final VehicleMapper vehicleMapper;
     private final BranchRepository branchRepository;
     private final ClientRepository clientRepository;
-    private final ContactRepository contactRepository;
+    private final UserRepository contactRepository;
     private final VehicleTypeMasterRepository vehicleTypeMasterRepository;
     private final BranchScope branchScope;
     private final BranchValidator branchValidator;
@@ -186,10 +186,10 @@ public class VehicleService {
             vehicle.setClient(null);
         }
 
-        // Operator (Contact)
+        // Operator (User)
         if (request.getOperatorId() != null) {
-            Contact operator = contactRepository.findByIdAndTenantId(request.getOperatorId(), tenantId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Contact", request.getOperatorId()));
+            User operator = contactRepository.findByIdAndTenantId(request.getOperatorId(), tenantId)
+                    .orElseThrow(() -> new ResourceNotFoundException("User", request.getOperatorId()));
             vehicle.setOperator(operator);
         } else {
             vehicle.setOperator(null);

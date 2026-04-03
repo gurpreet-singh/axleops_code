@@ -33,15 +33,18 @@ public class RedisSessionService {
      * Supports multi-role by storing roles as a comma-separated string.
      */
     public void createSession(String token, UUID userId, UUID tenantId,
-                              List<String> roles, UUID branchId, String type) {
-        Map<String, String> sessionData = Map.of(
-                "userId", userId.toString(),
-                "tenantId", tenantId != null ? tenantId.toString() : "",
-                "roles", String.join(",", roles),
-                "branchId", branchId != null ? branchId.toString() : "",
-                "type", type,
-                "loginTime", String.valueOf(System.currentTimeMillis())
-        );
+                              List<String> roles, UUID branchId, String type,
+                              String username, String email, String phone) {
+        Map<String, String> sessionData = new java.util.LinkedHashMap<>();
+        sessionData.put("userId", userId.toString());
+        sessionData.put("tenantId", tenantId != null ? tenantId.toString() : "");
+        sessionData.put("roles", String.join(",", roles));
+        sessionData.put("branchId", branchId != null ? branchId.toString() : "");
+        sessionData.put("type", type);
+        sessionData.put("username", username != null ? username : "");
+        sessionData.put("email", email != null ? email : "");
+        sessionData.put("phone", phone != null ? phone : "");
+        sessionData.put("loginTime", String.valueOf(System.currentTimeMillis()));
 
         try {
             String json = objectMapper.writeValueAsString(sessionData);
@@ -56,7 +59,7 @@ public class RedisSessionService {
      */
     public void createSession(String token, UUID userId, UUID tenantId,
                               String role, UUID branchId) {
-        createSession(token, userId, tenantId, List.of(role), branchId, "TENANT");
+        createSession(token, userId, tenantId, List.of(role), branchId, "TENANT", null, null, null);
     }
 
     /**

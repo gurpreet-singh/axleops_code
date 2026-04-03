@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-28T10:54:18+0530",
+    date = "2026-04-03T07:45:50+0530",
     comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.45.0.v20260224-0835, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -29,10 +29,12 @@ public class UserMapperImpl implements UserMapper {
         userResponse.setId( user.getId() );
         userResponse.setFirstName( user.getFirstName() );
         userResponse.setLastName( user.getLastName() );
-        userResponse.setFullName( user.getFullName() );
+        userResponse.setUsername( user.getUsername() );
         userResponse.setEmail( user.getEmail() );
         userResponse.setPhone( user.getPhone() );
         userResponse.setTitle( user.getTitle() );
+        userResponse.setStatus( user.getStatus() );
+        userResponse.setLoginEnabled( user.isLoginEnabled() );
         userResponse.setActive( user.isActive() );
 
         return userResponse;

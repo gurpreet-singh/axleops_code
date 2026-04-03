@@ -41,7 +41,7 @@ public class TripService {
     private final RouteRepository routeRepo;
     private final LedgerAccountRepository ledgerRepo;
     private final VehicleRepository vehicleRepo;
-    private final ContactRepository contactRepo;
+    private final UserRepository contactRepo;
     private final BranchRepository branchRepo;
     private final NumberSeriesMasterRepository numberSeriesRepo;
     private final BranchValidator branchValidator;
@@ -125,8 +125,8 @@ public class TripService {
 
         // Driver (optional at creation)
         if (req.getDriverId() != null) {
-            Contact d = contactRepo.findByIdAndTenantId(req.getDriverId(), tenantId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Contact", req.getDriverId()));
+            User d = contactRepo.findByIdAndTenantId(req.getDriverId(), tenantId)
+                    .orElseThrow(() -> new ResourceNotFoundException("User", req.getDriverId()));
             trip.setDriver(d);
         }
 
@@ -208,8 +208,8 @@ public class TripService {
                 trip.setVehicleOwnership(v.getOwnership());
             }
             if (req.getDriverId() != null) {
-                Contact d = contactRepo.findByIdAndTenantId(req.getDriverId(), tenantId)
-                        .orElseThrow(() -> new ResourceNotFoundException("Contact", req.getDriverId()));
+                User d = contactRepo.findByIdAndTenantId(req.getDriverId(), tenantId)
+                        .orElseThrow(() -> new ResourceNotFoundException("User", req.getDriverId()));
                 trip.setDriver(d);
             }
             if (req.getTripType() != null) trip.setTripType(TripType.valueOf(req.getTripType()));
@@ -280,8 +280,8 @@ public class TripService {
             trip.setVehicleOwnership(v.getOwnership());
         }
         if (req != null && req.getDriverId() != null) {
-            Contact d = contactRepo.findByIdAndTenantId(req.getDriverId(), tenantId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Contact", req.getDriverId()));
+            User d = contactRepo.findByIdAndTenantId(req.getDriverId(), tenantId)
+                    .orElseThrow(() -> new ResourceNotFoundException("User", req.getDriverId()));
             trip.setDriver(d);
         }
 

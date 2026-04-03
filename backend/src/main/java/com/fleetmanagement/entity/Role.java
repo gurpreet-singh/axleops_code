@@ -167,6 +167,14 @@ public enum Role {
         )
     ),
 
+    FOREMAN("Foreman", "Operations",
+        EnumSet.noneOf(Authority.class)
+    ),
+
+    HELPER("Helper", "Operations",
+        EnumSet.noneOf(Authority.class)
+    ),
+
     FINANCE_CONTROLLER("Finance Controller", "Finance & Accounts",
         EnumSet.of(
             DASHBOARD_READ,

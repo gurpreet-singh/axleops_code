@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { TRIP_STATE_COLORS, getTripById, updateTrip, deleteTrip, startTrip, deliverTrip, markReached, settleTrip, cancelTrip, getTripExpenses, addTripExpense, deleteTripExpense, getTripAdvances, addTripAdvance, getSettlementSummary, getTripDocuments, uploadTripDocument, deleteTripDocument } from '../../services/tripService';
 import { getVehicles } from '../../services/vehicleService';
 import { getRoutes } from '../../services/routeService';
-import { getDrivers } from '../../services/contactService';
+import { getDrivers } from '../../services/userService';
 import ledgerAccountService from '../../services/ledgerAccountService';
 import useSliderStore from '../../stores/sliderStore';
 import useToastStore from '../../stores/toastStore';

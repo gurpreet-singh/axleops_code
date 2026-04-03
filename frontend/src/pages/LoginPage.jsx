@@ -5,8 +5,8 @@ import useAuthStore from '../stores/authStore';
 export default function LoginPage() {
   const navigate = useNavigate();
   const login = useAuthStore((s) => s.login);
-  const [username, setUsername] = useState('gurpreet_gt');
-  const [password, setPassword] = useState('gurpreet_gt');
+  const [username, setUsername] = useState('gurpreet_owner');
+  const [password, setPassword] = useState('gurpreet_owner');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 

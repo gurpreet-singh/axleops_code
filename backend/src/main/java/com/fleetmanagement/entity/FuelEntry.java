@@ -63,7 +63,7 @@ public class FuelEntry extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "driver_id")
-    private Contact driver;
+    private User driver;
 
     @Column(name = "trip_id")
     private java.util.UUID tripId;

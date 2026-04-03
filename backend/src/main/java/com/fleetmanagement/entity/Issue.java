@@ -48,7 +48,7 @@ public class Issue extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reported_by")
-    private Contact reportedBy;
+    private User reportedBy;
 
     @Column(name = "work_order_id")
     private UUID workOrderId;

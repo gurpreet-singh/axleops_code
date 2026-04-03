@@ -24,26 +24,124 @@ ON CONFLICT (id) DO NOTHING;
 
 -- ─── BRANCHES ────────────────────────────────────────────────────────────────
 
-INSERT INTO branches (id, tenant_id, name, city, state, is_primary, status, created_at, updated_at) VALUES
-  ('b9999999-9999-9999-9999-999999999999', 'e9999999-9999-9999-9999-999999999999', 'Punjab HQ',  'Amritsar',  'Punjab',      TRUE,  'ACTIVE', NOW(), NOW()),
-  ('b9999999-9999-9999-9999-999999999998', 'e9999999-9999-9999-9999-999999999999', 'Ludhiana',   'Ludhiana',  'Punjab',      FALSE, 'ACTIVE', NOW(), NOW()),
-  ('b9999999-9999-9999-9999-999999999997', 'e9999999-9999-9999-9999-999999999999', 'Delhi NCR',  'Delhi',     'Delhi',       FALSE, 'ACTIVE', NOW(), NOW())
+INSERT INTO branches (id, tenant_id, code, name, city, state, is_headquarters, is_active, created_at, updated_at) VALUES
+  ('b9999999-9999-9999-9999-999999999999', 'e9999999-9999-9999-9999-999999999999', 'PB-HQ',  'Punjab HQ',  'Amritsar',  'Punjab',  TRUE,  TRUE, NOW(), NOW()),
+  ('b9999999-9999-9999-9999-999999999998', 'e9999999-9999-9999-9999-999999999999', 'LDH',    'Ludhiana',   'Ludhiana',  'Punjab',  FALSE, TRUE, NOW(), NOW()),
+  ('b9999999-9999-9999-9999-999999999997', 'e9999999-9999-9999-9999-999999999999', 'DEL',    'Delhi NCR',  'Delhi',     'Delhi',   FALSE, TRUE, NOW(), NOW())
 ON CONFLICT (id) DO NOTHING;
 
 
--- ─── USERS (tenant users — no role column, roles in join table) ──────────────
+-- ─── USERS (all operational & admin personnel — unified identity) ────────────
+-- username = login credential | email = communication (nullable) | phone = E.164 format
 
-INSERT INTO users (id, tenant_id, first_name, last_name, email, password, title, branch_id, is_active, created_at, updated_at) VALUES
-  ('ae999999-9999-9999-9999-999999999999', 'e9999999-9999-9999-9999-999999999999', 'Gurpreet', 'Singh',  'gurpreet_gt', 'gurpreet_gt', 'System Administrator',  'b9999999-9999-9999-9999-999999999999', TRUE, NOW(), NOW())
+INSERT INTO users (id, tenant_id, first_name, last_name, username, email, password, title, phone, login_enabled, status, branch_id, is_active, created_at, updated_at) VALUES
+  -- Owner / Director
+  ('ae999999-9999-9999-9999-999999999999', 'e9999999-9999-9999-9999-999999999999', 'Gurpreet',  'Singh',    'gurpreet_owner',       'gurpreet.singh@gobind.in',      'gurpreet_owner',       'Owner / Director',       '+919800000001', TRUE,  'ACTIVE', 'b9999999-9999-9999-9999-999999999999', TRUE, NOW(), NOW()),
+  ('ae999999-9999-9999-9999-999999999998', 'e9999999-9999-9999-9999-999999999999', 'Ankit',     'Sharma',   'ankit_owner',          'ankit.sharma@gobind.in',       'ankit_owner',          'Owner / Director',       '+919800000002', TRUE,  'ACTIVE', 'b9999999-9999-9999-9999-999999999999', TRUE, NOW(), NOW()),
+
+  -- Branch Manager
+  ('ae999999-9999-9999-9999-999999999997', 'e9999999-9999-9999-9999-999999999999', 'Gurpreet',  'Kaur',     'gurpreet_branch_mgr',  'gurpreet.kaur@gobind.in',      'gurpreet_branch_mgr',  'Branch Manager',         '+919800000003', TRUE,  'ACTIVE', 'b9999999-9999-9999-9999-999999999999', TRUE, NOW(), NOW()),
+  ('ae999999-9999-9999-9999-999999999996', 'e9999999-9999-9999-9999-999999999999', 'Ankit',     'Verma',    'ankit_branch_mgr',     'ankit.verma@gobind.in',        'ankit_branch_mgr',     'Branch Manager',         '+919800000004', TRUE,  'ACTIVE', 'b9999999-9999-9999-9999-999999999999', TRUE, NOW(), NOW()),
+
+  -- Fleet Manager
+  ('ae999999-9999-9999-9999-999999999995', 'e9999999-9999-9999-9999-999999999999', 'Gurpreet',  'Gill',     'gurpreet_fleet_mgr',   'gurpreet.gill@gobind.in',      'gurpreet_fleet_mgr',   'Fleet Manager',          '+919800000005', TRUE,  'ACTIVE', 'b9999999-9999-9999-9999-999999999999', TRUE, NOW(), NOW()),
+  ('ae999999-9999-9999-9999-999999999994', 'e9999999-9999-9999-9999-999999999999', 'Ankit',     'Gupta',    'ankit_fleet_mgr',      'ankit.gupta@gobind.in',        'ankit_fleet_mgr',      'Fleet Manager',          '+919800000006', TRUE,  'ACTIVE', 'b9999999-9999-9999-9999-999999999999', TRUE, NOW(), NOW()),
+
+  -- Operations Executive
+  ('ae999999-9999-9999-9999-999999999993', 'e9999999-9999-9999-9999-999999999999', 'Gurpreet',  'Dhillon',  'gurpreet_ops_exec',    'gurpreet.dhillon@gobind.in',   'gurpreet_ops_exec',    'Operations Executive',   '+919800000007', TRUE,  'ACTIVE', 'b9999999-9999-9999-9999-999999999999', TRUE, NOW(), NOW()),
+  ('ae999999-9999-9999-9999-999999999992', 'e9999999-9999-9999-9999-999999999999', 'Ankit',     'Kumar',    'ankit_ops_exec',       'ankit.kumar@gobind.in',        'ankit_ops_exec',       'Operations Executive',   '+919800000008', TRUE,  'ACTIVE', 'b9999999-9999-9999-9999-999999999999', TRUE, NOW(), NOW()),
+
+  -- Driver
+  ('d0000000-0000-0000-0000-000000000001', 'e9999999-9999-9999-9999-999999999999', 'Gurpreet',  'Driver',   'gurpreet_driver',      NULL,                           'gurpreet_driver',      'Driver',                 '+919876543210', TRUE,  'ACTIVE', 'b9999999-9999-9999-9999-999999999999', TRUE, NOW(), NOW()),
+  ('d0000000-0000-0000-0000-000000000002', 'e9999999-9999-9999-9999-999999999999', 'Ankit',     'Driver',   'ankit_driver',         NULL,                           'ankit_driver',         'Driver',                 '+918765432109', TRUE,  'ACTIVE', 'b9999999-9999-9999-9999-999999999999', TRUE, NOW(), NOW()),
+
+  -- Foreman (non-login)
+  ('ae999999-9999-9999-9999-999999999991', 'e9999999-9999-9999-9999-999999999999', 'Gurpreet',  'Foreman',  'gurpreet_foreman',     NULL,                           NULL,                   'Foreman',                '+919800000011', FALSE, 'ACTIVE', 'b9999999-9999-9999-9999-999999999999', TRUE, NOW(), NOW()),
+  ('ae999999-9999-9999-9999-999999999990', 'e9999999-9999-9999-9999-999999999999', 'Ankit',     'Foreman',  'ankit_foreman',        NULL,                           NULL,                   'Foreman',                '+919800000012', FALSE, 'ACTIVE', 'b9999999-9999-9999-9999-999999999999', TRUE, NOW(), NOW()),
+
+  -- Helper (non-login)
+  ('ae999999-9999-9999-9999-999999999989', 'e9999999-9999-9999-9999-999999999999', 'Gurpreet',  'Helper',   'gurpreet_helper',      NULL,                           NULL,                   'Helper',                 '+919800000013', FALSE, 'ACTIVE', 'b9999999-9999-9999-9999-999999999999', TRUE, NOW(), NOW()),
+  ('ae999999-9999-9999-9999-999999999988', 'e9999999-9999-9999-9999-999999999999', 'Ankit',     'Helper',   'ankit_helper',         NULL,                           NULL,                   'Helper',                 '+919800000014', FALSE, 'ACTIVE', 'b9999999-9999-9999-9999-999999999999', TRUE, NOW(), NOW()),
+
+  -- Finance Controller
+  ('ae999999-9999-9999-9999-999999999987', 'e9999999-9999-9999-9999-999999999999', 'Gurpreet',  'Finance',  'gurpreet_finance',     'gurpreet.finance@gobind.in',   'gurpreet_finance',     'Finance Controller',     '+919800000015', TRUE,  'ACTIVE', 'b9999999-9999-9999-9999-999999999999', TRUE, NOW(), NOW()),
+  ('ae999999-9999-9999-9999-999999999986', 'e9999999-9999-9999-9999-999999999999', 'Ankit',     'Finance',  'ankit_finance',        'ankit.finance@gobind.in',      'ankit_finance',        'Finance Controller',     '+919800000016', TRUE,  'ACTIVE', 'b9999999-9999-9999-9999-999999999999', TRUE, NOW(), NOW()),
+
+  -- Accounts Executive
+  ('ae999999-9999-9999-9999-999999999985', 'e9999999-9999-9999-9999-999999999999', 'Gurpreet',  'Accounts', 'gurpreet_accounts',    'gurpreet.accounts@gobind.in',  'gurpreet_accounts',    'Accounts Executive',     '+919800000017', TRUE,  'ACTIVE', 'b9999999-9999-9999-9999-999999999999', TRUE, NOW(), NOW()),
+  ('ae999999-9999-9999-9999-999999999984', 'e9999999-9999-9999-9999-999999999999', 'Ankit',     'Accounts', 'ankit_accounts',       'ankit.accounts@gobind.in',     'ankit_accounts',       'Accounts Executive',     '+919800000018', TRUE,  'ACTIVE', 'b9999999-9999-9999-9999-999999999999', TRUE, NOW(), NOW()),
+
+  -- Workshop Manager
+  ('ae999999-9999-9999-9999-999999999983', 'e9999999-9999-9999-9999-999999999999', 'Gurpreet',  'Workshop', 'gurpreet_workshop',    'gurpreet.workshop@gobind.in',  'gurpreet_workshop',    'Workshop Manager',       '+919800000019', TRUE,  'ACTIVE', 'b9999999-9999-9999-9999-999999999999', TRUE, NOW(), NOW()),
+  ('ae999999-9999-9999-9999-999999999982', 'e9999999-9999-9999-9999-999999999999', 'Ankit',     'Workshop', 'ankit_workshop',       'ankit.workshop@gobind.in',     'ankit_workshop',       'Workshop Manager',       '+919800000020', TRUE,  'ACTIVE', 'b9999999-9999-9999-9999-999999999999', TRUE, NOW(), NOW()),
+
+  -- Mechanic
+  ('d0000000-0000-0000-0000-000000000007', 'e9999999-9999-9999-9999-999999999999', 'Gurpreet',  'Mechanic', 'gurpreet_mechanic',    NULL,                           'gurpreet_mechanic',    'Mechanic',               '+913210987654', TRUE,  'ACTIVE', 'b9999999-9999-9999-9999-999999999999', TRUE, NOW(), NOW()),
+  ('ae999999-9999-9999-9999-999999999981', 'e9999999-9999-9999-9999-999999999999', 'Ankit',     'Mechanic', 'ankit_mechanic',       NULL,                           'ankit_mechanic',       'Mechanic',               '+919800000022', TRUE,  'ACTIVE', 'b9999999-9999-9999-9999-999999999999', TRUE, NOW(), NOW()),
+
+  -- Inventory Manager
+  ('ae999999-9999-9999-9999-999999999980', 'e9999999-9999-9999-9999-999999999999', 'Gurpreet',  'Inventory','gurpreet_inventory',   'gurpreet.inventory@gobind.in', 'gurpreet_inventory',   'Inventory Manager',      '+919800000023', TRUE,  'ACTIVE', 'b9999999-9999-9999-9999-999999999999', TRUE, NOW(), NOW()),
+  ('ae999999-9999-9999-9999-999999999979', 'e9999999-9999-9999-9999-999999999999', 'Ankit',     'Inventory','ankit_inventory',      'ankit.inventory@gobind.in',    'ankit_inventory',      'Inventory Manager',      '+919800000024', TRUE,  'ACTIVE', 'b9999999-9999-9999-9999-999999999999', TRUE, NOW(), NOW()),
+
+  -- Super Admin (additional — Gurpreet already has it via owner, so Ankit gets a dedicated one)
+  ('ae999999-9999-9999-9999-999999999978', 'e9999999-9999-9999-9999-999999999999', 'Ankit',     'Admin',    'ankit_admin',          'ankit.admin@gobind.in',        'ankit_admin',          'System Administrator',   '+919800000026', TRUE,  'ACTIVE', 'b9999999-9999-9999-9999-999999999999', TRUE, NOW(), NOW())
 ON CONFLICT (id) DO NOTHING;
 
 
 -- ─── TENANT USER ROLES (join table — enum name strings) ──────────────────────
--- Gurpreet gets OWNER_DIRECTOR + SUPER_ADMIN so he has full access
 
 INSERT INTO tenant_user_role (user_id, role) VALUES
+  -- Owner / Director (+ Super Admin for Gurpreet)
   ('ae999999-9999-9999-9999-999999999999', 'OWNER_DIRECTOR'),
-  ('ae999999-9999-9999-9999-999999999999', 'SUPER_ADMIN')
+  ('ae999999-9999-9999-9999-999999999999', 'SUPER_ADMIN'),
+  ('ae999999-9999-9999-9999-999999999998', 'OWNER_DIRECTOR'),
+
+  -- Branch Manager
+  ('ae999999-9999-9999-9999-999999999997', 'BRANCH_MANAGER'),
+  ('ae999999-9999-9999-9999-999999999996', 'BRANCH_MANAGER'),
+
+  -- Fleet Manager
+  ('ae999999-9999-9999-9999-999999999995', 'FLEET_MANAGER'),
+  ('ae999999-9999-9999-9999-999999999994', 'FLEET_MANAGER'),
+
+  -- Operations Executive
+  ('ae999999-9999-9999-9999-999999999993', 'OPERATIONS_EXECUTIVE'),
+  ('ae999999-9999-9999-9999-999999999992', 'OPERATIONS_EXECUTIVE'),
+
+  -- Driver
+  ('d0000000-0000-0000-0000-000000000001', 'DRIVER'),
+  ('d0000000-0000-0000-0000-000000000002', 'DRIVER'),
+
+  -- Foreman
+  ('ae999999-9999-9999-9999-999999999991', 'FOREMAN'),
+  ('ae999999-9999-9999-9999-999999999990', 'FOREMAN'),
+
+  -- Helper
+  ('ae999999-9999-9999-9999-999999999989', 'HELPER'),
+  ('ae999999-9999-9999-9999-999999999988', 'HELPER'),
+
+  -- Finance Controller
+  ('ae999999-9999-9999-9999-999999999987', 'FINANCE_CONTROLLER'),
+  ('ae999999-9999-9999-9999-999999999986', 'FINANCE_CONTROLLER'),
+
+  -- Accounts Executive
+  ('ae999999-9999-9999-9999-999999999985', 'ACCOUNTS_EXECUTIVE'),
+  ('ae999999-9999-9999-9999-999999999984', 'ACCOUNTS_EXECUTIVE'),
+
+  -- Workshop Manager
+  ('ae999999-9999-9999-9999-999999999983', 'WORKSHOP_MANAGER'),
+  ('ae999999-9999-9999-9999-999999999982', 'WORKSHOP_MANAGER'),
+
+  -- Mechanic
+  ('d0000000-0000-0000-0000-000000000007', 'MECHANIC'),
+  ('ae999999-9999-9999-9999-999999999981', 'MECHANIC'),
+
+  -- Inventory Manager
+  ('ae999999-9999-9999-9999-999999999980', 'INVENTORY_MANAGER'),
+  ('ae999999-9999-9999-9999-999999999979', 'INVENTORY_MANAGER'),
+
+  -- Super Admin (Ankit)
+  ('ae999999-9999-9999-9999-999999999978', 'SUPER_ADMIN')
 ON CONFLICT DO NOTHING;
 
 
@@ -76,19 +174,6 @@ INSERT INTO clients (id, tenant_id, name, trade_name, gstin, billing_type, indus
 ON CONFLICT (id) DO NOTHING;
 
 
--- ─── CONTACTS (Drivers + Others) ─────────────────────────────────────────────
-
-INSERT INTO contacts (id, tenant_id, first_name, last_name, phone, email, type, license_number, license_expiry, city, status, branch_id, created_at, updated_at) VALUES
-  ('d0000000-0000-0000-0000-000000000001', 'e9999999-9999-9999-9999-999999999999', 'Rajesh',  'Kumar',  '+91 98765 43210', 'rajesh.kumar@example.com',  'DRIVER',     'MH0420190012345',  '2027-06-15', 'Amritsar', 'ACTIVE', 'b9999999-9999-9999-9999-999999999999', NOW(), NOW()),
-  ('d0000000-0000-0000-0000-000000000002', 'e9999999-9999-9999-9999-999999999999', 'Anita',   'Verma',  '+91 87654 32109', 'anita.verma@example.com',   'DRIVER',     'DL0420200023456',  '2028-03-20', 'Delhi',    'ACTIVE', 'b9999999-9999-9999-9999-999999999997', NOW(), NOW()),
-  ('d0000000-0000-0000-0000-000000000003', 'e9999999-9999-9999-9999-999999999999', 'Priya',   'Sharma', '+91 76543 21098', 'priya.sharma@example.com',  'OPERATIONS', NULL,               NULL,         'Ludhiana', 'ACTIVE', 'b9999999-9999-9999-9999-999999999998', NOW(), NOW()),
-  ('d0000000-0000-0000-0000-000000000004', 'e9999999-9999-9999-9999-999999999999', 'Vikram',  'Singh',  '+91 65432 10987', 'vikram.singh@example.com',  'DRIVER',     'MH1220210034567',  '2029-01-10', 'Ludhiana', 'ACTIVE', 'b9999999-9999-9999-9999-999999999998', NOW(), NOW()),
-  ('d0000000-0000-0000-0000-000000000005', 'e9999999-9999-9999-9999-999999999999', 'Deepak',  'Patel',  '+91 54321 09876', 'deepak.patel@example.com',  'DRIVER',     'DL0120180045678',  '2026-09-30', 'Delhi',    'ACTIVE', 'b9999999-9999-9999-9999-999999999997', NOW(), NOW()),
-  ('d0000000-0000-0000-0000-000000000006', 'e9999999-9999-9999-9999-999999999999', 'Meera',   'Joshi',  '+91 43210 98765', 'meera.joshi@example.com',   'DRIVER',     'MH0420200056789',  '2028-12-05', 'Amritsar', 'ACTIVE', 'b9999999-9999-9999-9999-999999999999', NOW(), NOW()),
-  ('d0000000-0000-0000-0000-000000000007', 'e9999999-9999-9999-9999-999999999999', 'Tarun',   'Mishra', '+91 32109 87654', 'tarun.mishra@example.com',  'MECHANIC',   NULL,               NULL,         'Amritsar', 'ACTIVE', 'b9999999-9999-9999-9999-999999999999', NOW(), NOW())
-ON CONFLICT (id) DO NOTHING;
-
-
 -- ─── VEHICLES ────────────────────────────────────────────────────────────────
 
 INSERT INTO vehicles (id, tenant_id, registration_number, vehicle_type_id, make, model, manufacture_year, chassis_number, fuel_type, odometer, status, vehicle_group, branch_id, created_at, updated_at) VALUES
@@ -109,13 +194,13 @@ INSERT INTO routes (id, tenant_id, name, origin, destination, distance_km, estim
 ON CONFLICT (id) DO NOTHING;
 
 
--- ─── TRIPS ───────────────────────────────────────────────────────────────────
+-- ─── TRIPS (driver_id now references users table) ───────────────────────────
 
 INSERT INTO trips (id, tenant_id, trip_number, client_id, route_id, vehicle_id, driver_id, status, lr_number, revenue, scheduled_start, branch_id, created_at, updated_at) VALUES
   ('10000000-0000-0000-0000-000000000001', 'e9999999-9999-9999-9999-999999999999', 'T-1001', 'c0000000-0000-0000-0000-000000000001', 'f0000000-0000-0000-0000-000000000001', 'e0000000-0000-0000-0000-000000000001', 'd0000000-0000-0000-0000-000000000001', 'IN_TRANSIT', 'LR-2024-0042', 47130, '2024-03-18 08:00:00', 'b9999999-9999-9999-9999-999999999999', NOW(), NOW()),
   ('10000000-0000-0000-0000-000000000002', 'e9999999-9999-9999-9999-999999999999', 'T-1002', 'c0000000-0000-0000-0000-000000000002', 'f0000000-0000-0000-0000-000000000001', 'e0000000-0000-0000-0000-000000000002', 'd0000000-0000-0000-0000-000000000002', 'IN_TRANSIT', 'LR-2024-0043', 48510, '2024-03-17 06:00:00', 'b9999999-9999-9999-9999-999999999999', NOW(), NOW()),
-  ('10000000-0000-0000-0000-000000000003', 'e9999999-9999-9999-9999-999999999999', 'T-1003', 'c0000000-0000-0000-0000-000000000003', 'f0000000-0000-0000-0000-000000000002', 'e0000000-0000-0000-0000-000000000003', 'd0000000-0000-0000-0000-000000000003', 'COMPLETED',  'LR-2024-0044',  8500, '2024-03-16 07:00:00', 'b9999999-9999-9999-9999-999999999999', NOW(), NOW()),
-  ('10000000-0000-0000-0000-000000000004', 'e9999999-9999-9999-9999-999999999999', 'T-1004', 'c0000000-0000-0000-0000-000000000004', 'f0000000-0000-0000-0000-000000000003', 'e0000000-0000-0000-0000-000000000004', 'd0000000-0000-0000-0000-000000000004', 'CREATED',    'LR-2024-0045', 12320, '2024-03-19 09:00:00', 'b9999999-9999-9999-9999-999999999997', NOW(), NOW())
+  ('10000000-0000-0000-0000-000000000003', 'e9999999-9999-9999-9999-999999999999', 'T-1003', 'c0000000-0000-0000-0000-000000000003', 'f0000000-0000-0000-0000-000000000002', 'e0000000-0000-0000-0000-000000000003', 'ae999999-9999-9999-9999-999999999993', 'COMPLETED',  'LR-2024-0044',  8500, '2024-03-16 07:00:00', 'b9999999-9999-9999-9999-999999999999', NOW(), NOW()),
+  ('10000000-0000-0000-0000-000000000004', 'e9999999-9999-9999-9999-999999999999', 'T-1004', 'c0000000-0000-0000-0000-000000000004', 'f0000000-0000-0000-0000-000000000003', 'e0000000-0000-0000-0000-000000000004', 'd0000000-0000-0000-0000-000000000001', 'CREATED',    'LR-2024-0045', 12320, '2024-03-19 09:00:00', 'b9999999-9999-9999-9999-999999999997', NOW(), NOW())
 ON CONFLICT (id) DO NOTHING;
 
 
@@ -128,12 +213,12 @@ INSERT INTO invoices (id, tenant_id, invoice_number, client_id, date, due_date, 
 ON CONFLICT (id) DO NOTHING;
 
 
--- ─── WORK ORDERS ─────────────────────────────────────────────────────────────
+-- ─── WORK ORDERS (assigned_to now references users table) ────────────────────
 
 INSERT INTO work_orders (id, tenant_id, work_order_number, vehicle_id, status, priority, total_cost, issue_date, assigned_to, service_tasks, label, branch_id, created_at, updated_at) VALUES
   ('30000000-0000-0000-0000-000000000001', 'e9999999-9999-9999-9999-999999999999', 'WO-371', 'e0000000-0000-0000-0000-000000000001', 'OPEN',      'NON_SCHEDULED', 82240, '2024-05-10', 'd0000000-0000-0000-0000-000000000001', 'Tire Replacement, Brake Inspection, Engine Oil', 'Tires',  'b9999999-9999-9999-9999-999999999999', NOW(), NOW()),
   ('30000000-0000-0000-0000-000000000002', 'e9999999-9999-9999-9999-999999999999', 'WO-370', 'e0000000-0000-0000-0000-000000000002', 'PENDING',   'SCHEDULED',     0,     '2024-05-09', 'd0000000-0000-0000-0000-000000000002', 'Brake Inspection, Tire Rotation',                 NULL,     'b9999999-9999-9999-9999-999999999999', NOW(), NOW()),
-  ('30000000-0000-0000-0000-000000000003', 'e9999999-9999-9999-9999-999999999999', 'WO-315', 'e0000000-0000-0000-0000-000000000004', 'COMPLETED', 'SCHEDULED',     11862, '2024-05-07', 'd0000000-0000-0000-0000-000000000004', 'Engine Oil & Filter Replacement',                 'Engine', 'b9999999-9999-9999-9999-999999999998', NOW(), NOW())
+  ('30000000-0000-0000-0000-000000000003', 'e9999999-9999-9999-9999-999999999999', 'WO-315', 'e0000000-0000-0000-0000-000000000004', 'COMPLETED', 'SCHEDULED',     11862, '2024-05-07', 'd0000000-0000-0000-0000-000000000007', 'Engine Oil & Filter Replacement',                 'Engine', 'b9999999-9999-9999-9999-999999999998', NOW(), NOW())
 ON CONFLICT (id) DO NOTHING;
 
 

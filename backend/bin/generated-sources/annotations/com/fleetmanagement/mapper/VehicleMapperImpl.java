@@ -4,7 +4,7 @@ import com.fleetmanagement.dto.request.CreateVehicleRequest;
 import com.fleetmanagement.dto.response.VehicleResponse;
 import com.fleetmanagement.entity.Branch;
 import com.fleetmanagement.entity.Client;
-import com.fleetmanagement.entity.Contact;
+import com.fleetmanagement.entity.User;
 import com.fleetmanagement.entity.Vehicle;
 import com.fleetmanagement.entity.master.VehicleTypeMaster;
 import java.util.UUID;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-30T10:18:34+0530",
+    date = "2026-04-03T07:16:36+0530",
     comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.45.0.v20260224-0835, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -190,7 +190,7 @@ public class VehicleMapperImpl implements VehicleMapper {
     }
 
     private UUID vehicleOperatorId(Vehicle vehicle) {
-        Contact operator = vehicle.getOperator();
+        User operator = vehicle.getOperator();
         if ( operator == null ) {
             return null;
         }
@@ -198,7 +198,7 @@ public class VehicleMapperImpl implements VehicleMapper {
     }
 
     private String vehicleOperatorFirstName(Vehicle vehicle) {
-        Contact operator = vehicle.getOperator();
+        User operator = vehicle.getOperator();
         if ( operator == null ) {
             return null;
         }

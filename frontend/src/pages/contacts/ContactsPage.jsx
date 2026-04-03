@@ -1,59 +1,85 @@
 import { useState, useEffect, useMemo } from 'react';
-import { getContacts } from '../../services/contactService';
+import { getUsers } from '../../services/userService';
 import useSliderStore from '../../stores/sliderStore';
 
 export default function ContactsPage() {
-  const [contacts, setContacts] = useState([]);
+  const [users, setUsers] = useState([]);
   const [search, setSearch] = useState('');
-  const [typeFilter, setTypeFilter] = useState('all');
+  const [roleFilter, setRoleFilter] = useState('all');
   const { openSlider } = useSliderStore();
 
-  useEffect(() => { getContacts().then(setContacts); }, []);
+  useEffect(() => { getUsers().then(setUsers); }, []);
 
-  const types = useMemo(() => [...new Set(contacts.map(c=>c.type))].sort(), [contacts]);
+  const roleList = useMemo(() => {
+    const roles = new Set();
+    users.forEach(u => (u.roles || []).forEach(r => roles.add(r)));
+    return [...roles].sort();
+  }, [users]);
 
   const filtered = useMemo(() => {
-    let c = contacts;
-    if (typeFilter !== 'all') c = c.filter(x => x.type === typeFilter);
-    if (search) { const q = search.toLowerCase(); c = c.filter(x => x.name.toLowerCase().includes(q) || x.phone.includes(q)); }
-    return c;
-  }, [contacts, typeFilter, search]);
+    let list = users;
+    if (roleFilter !== 'all') list = list.filter(u => (u.roles || []).includes(roleFilter));
+    if (search) {
+      const q = search.toLowerCase();
+      list = list.filter(u =>
+        (`${u.firstName} ${u.lastName || ''}`).toLowerCase().includes(q)
+        || (u.phone || '').includes(q)
+        || (u.email || '').toLowerCase().includes(q)
+      );
+    }
+    return list;
+  }, [users, roleFilter, search]);
+
+  const roleBadgeColor = (role) => {
+    const map = {
+      DRIVER: { bg: '#dcfce7', color: '#166534' },
+      MECHANIC: { bg: '#fef3c7', color: '#92400e' },
+      FOREMAN: { bg: '#e0e7ff', color: '#3730a3' },
+      HELPER: { bg: '#f3e8ff', color: '#6b21a8' },
+    };
+    return map[role] || { bg: '#f0f9ff', color: '#1e40af' };
+  };
 
   return (
     <div className="page-content">
       <div className="page-header">
-        <h1>Contacts & Drivers</h1>
+        <h1>Drivers & Staff</h1>
         <div className="page-header-actions">
-          <button className="btn btn-primary"><i className="fas fa-plus"></i> Add Contact</button>
+          <button className="btn btn-primary"><i className="fas fa-plus"></i> Add User</button>
         </div>
       </div>
       <div className="table-container">
         <div className="table-toolbar">
           <div className="search-input"><i className="fas fa-search" style={{color:'var(--text-muted)'}}></i>
-            <input placeholder="Search contacts..." value={search} onChange={e=>setSearch(e.target.value)} />
+            <input placeholder="Search by name, phone, or email..." value={search} onChange={e=>setSearch(e.target.value)} />
           </div>
           <div className="filter-btn">
-            <select style={{border:'none',background:'transparent',fontSize:12,fontWeight:600,cursor:'pointer',outline:'none'}} value={typeFilter} onChange={e=>setTypeFilter(e.target.value)}>
-              <option value="all">Type ▾</option>
-              {types.map(t=><option key={t} value={t}>{t}</option>)}
+            <select style={{border:'none',background:'transparent',fontSize:12,fontWeight:600,cursor:'pointer',outline:'none'}} value={roleFilter} onChange={e=>setRoleFilter(e.target.value)}>
+              <option value="all">Role ▾</option>
+              {roleList.map(r=><option key={r} value={r}>{r.replace(/_/g, ' ')}</option>)}
             </select>
           </div>
-          <div className="pagination-info">1-{filtered.length} of {contacts.length}</div>
+          <div className="pagination-info">1-{filtered.length} of {users.length}</div>
         </div>
         <table>
-          <thead><tr><th>Name</th><th>Type</th><th>Phone</th><th>Email</th><th>Branch</th><th>Vehicle</th><th>Status</th></tr></thead>
+          <thead><tr><th>Name</th><th>Role</th><th>Phone</th><th>Email</th><th>Branch</th><th>Login</th><th>Status</th></tr></thead>
           <tbody>
-            {filtered.map(c=>(
-              <tr key={c.id} style={{cursor:'pointer'}} onClick={()=>openSlider({title:c.name,content:<CD c={c}/>,width:'50vw'})}>
-                <td style={{fontWeight:600,color:'var(--primary)'}}>{c.name}</td>
-                <td><span style={{fontSize:10,fontWeight:600,padding:'3px 8px',borderRadius:12,background:c.type==='Driver'?'#dcfce7':'#f0f9ff',color:c.type==='Driver'?'#166534':'#1e40af'}}>{c.type}</span></td>
-                <td style={{fontSize:12}}>{c.phone}</td>
-                <td style={{fontSize:12,color:'var(--text-secondary)'}}>{c.email}</td>
-                <td>{c.branch}</td>
-                <td>{c.vehicleAssigned||'—'}</td>
-                <td><span className={`status-badge ${c.status.toLowerCase()}`}>{c.status}</span></td>
-              </tr>
-            ))}
+            {filtered.map(u=>{
+              const name = `${u.firstName}${u.lastName ? ' ' + u.lastName : ''}`;
+              const primaryRole = (u.roles || [])[0] || '—';
+              const badge = roleBadgeColor(primaryRole);
+              return (
+                <tr key={u.id} style={{cursor:'pointer'}} onClick={()=>openSlider({title:name,content:<UserDetail u={u}/>,width:'50vw'})}>
+                  <td style={{fontWeight:600,color:'var(--primary)'}}>{name}</td>
+                  <td><span style={{fontSize:10,fontWeight:600,padding:'3px 8px',borderRadius:12,background:badge.bg,color:badge.color}}>{primaryRole.replace(/_/g, ' ')}</span></td>
+                  <td style={{fontSize:12}}>{u.phone || '—'}</td>
+                  <td style={{fontSize:12,color:'var(--text-secondary)'}}>{u.email}</td>
+                  <td>{u.branchName || '—'}</td>
+                  <td>{u.loginEnabled ? <span style={{color:'#16a34a',fontSize:11,fontWeight:600}}>✓ Yes</span> : <span style={{color:'#94a3b8',fontSize:11}}>No</span>}</td>
+                  <td><span className={`status-badge ${(u.status||'active').toLowerCase()}`}>{u.status || 'ACTIVE'}</span></td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -61,9 +87,10 @@ export default function ContactsPage() {
   );
 }
 
-function CD({c}){
+function UserDetail({u}){
+  const name = `${u.firstName}${u.lastName ? ' ' + u.lastName : ''}`;
   return(<div style={{padding:20}}><div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
-    {[['Name',c.name],['Type',c.type],['Phone',c.phone],['Email',c.email],['Branch',c.branch],['Status',c.status],['License No',c.licenseNo||'N/A'],['License Expiry',c.licenseExpiry||'N/A'],['Vehicle Assigned',c.vehicleAssigned||'None']].map(([l,v])=>(
+    {[['Name', name],['Roles', (u.roles||[]).map(r=>r.replace(/_/g,' ')).join(', ')],['Phone',u.phone||'—'],['Email',u.email],['Branch',u.branchName||'—'],['Status',u.status||'ACTIVE'],['Login Enabled',u.loginEnabled?'Yes':'No']].map(([l,v])=>(
       <div key={l}><div style={{fontSize:11,fontWeight:700,color:'#64748B',textTransform:'uppercase',marginBottom:5}}>{l}</div>
       <div style={{border:'1.5px solid #F1F5F9',borderRadius:10,padding:'10px 12px',fontSize:13,background:'#F8FAFC',fontWeight:600}}>{v}</div></div>
     ))}

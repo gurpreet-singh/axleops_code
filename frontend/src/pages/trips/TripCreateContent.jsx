@@ -4,7 +4,7 @@ import { FormField, Section } from '../../components/common/FormField';
 import { createTrip, startTrip, uploadTripDocument } from '../../services/tripService';
 import { getVehicles } from '../../services/vehicleService';
 import { getRoutes } from '../../services/routeService';
-import { getDrivers } from '../../services/contactService';
+import { getDrivers } from '../../services/userService';
 import ledgerAccountService from '../../services/ledgerAccountService';
 import { TripDetailContent } from './TripSliderContent';
 

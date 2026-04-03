@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  *
  * <p>Login flow:</p>
  * <ol>
- *   <li>User authenticates with email + password</li>
+ *   <li>User authenticates with username + password</li>
  *   <li>If user has 1 role → JWT generated with that role's authorities</li>
  *   <li>If user has multiple roles → JWT generated with ALL authorities (role selector shown on frontend)</li>
  *   <li>User can call /select-role to get a scoped JWT for a specific role</li>
@@ -64,7 +64,7 @@ public class AuthService {
     @Transactional
     public LoginResponse login(String username, String password) {
         // Try tenant user first
-        User user = userRepository.findByEmail(username).orElse(null);
+        User user = userRepository.findByUsername(username).orElse(null);
         if (user != null) {
             return loginTenantUser(user, password);
         }
@@ -99,7 +99,8 @@ public class AuthService {
         // Store session in Redis
         List<String> roleNames = allRoles.stream().map(Enum::name).collect(Collectors.toList());
         redisSessionService.createSession(token, user.getId(), user.getTenantId(),
-                roleNames, branchId, "TENANT");
+                roleNames, branchId, "TENANT",
+                user.getUsername(), user.getEmail(), user.getPhone());
 
         return LoginResponse.builder()
                 .token(token)
@@ -118,7 +119,8 @@ public class AuthService {
 
         // Store session in Redis
         redisSessionService.createSession(token, admin.getId(), null,
-                List.of("PLATFORM_ADMIN"), null, "PLATFORM");
+                List.of("PLATFORM_ADMIN"), null, "PLATFORM",
+                admin.getEmail(), admin.getEmail(), null);
 
         return LoginResponse.builder()
                 .token(token)
@@ -162,7 +164,8 @@ public class AuthService {
 
         List<String> roleNames = activeRoles.stream().map(Enum::name).collect(Collectors.toList());
         redisSessionService.createSession(token, user.getId(), user.getTenantId(),
-                roleNames, branchId, "TENANT");
+                roleNames, branchId, "TENANT",
+                user.getUsername(), user.getEmail(), user.getPhone());
 
         return LoginResponse.builder()
                 .token(token)
@@ -301,7 +304,9 @@ public class AuthService {
                 .fullName(user.getFullName())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
+                .username(user.getUsername())
                 .email(user.getEmail())
+                .phone(user.getPhone())
                 .tenantId(user.getTenantId())
                 .tenantName(tenantName)
                 .branchId(branchId)
